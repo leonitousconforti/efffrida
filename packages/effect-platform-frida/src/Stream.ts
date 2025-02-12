@@ -23,22 +23,8 @@ export {
  * @category IPC
  */
 export const receiveStream: (
-    bufferSize?:
-        | number
-        | "unbounded"
-        | {
-              readonly bufferSize?: number | undefined;
-              readonly strategy?: "dropping" | "sliding" | "suspend" | undefined;
-          }
-        | undefined
-) => Stream.Stream<
-    {
-        message: string;
-        data?: Uint8Array | undefined;
-    },
-    never,
-    never
-> = internal.receiveStream;
+    bufferSize?: internal.BufferAndChunkSizes["bufferSize"] | undefined
+) => Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> = internal.receiveStream;
 
 /**
  * @since 1.0.0

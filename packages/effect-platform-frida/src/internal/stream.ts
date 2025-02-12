@@ -30,22 +30,8 @@ export interface BufferAndChunkSizes {
 
 /** @internal */
 export const receiveStream = (
-    bufferSize?:
-        | number
-        | "unbounded"
-        | {
-              readonly bufferSize?: number | undefined;
-              readonly strategy?: "dropping" | "sliding" | "suspend" | undefined;
-          }
-        | undefined
-): Stream.Stream<
-    {
-        message: string;
-        data?: Uint8Array | undefined;
-    },
-    never,
-    never
-> =>
+    bufferSize?: BufferAndChunkSizes["bufferSize"] | undefined
+): Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =>
     Stream.async(
         (emit) =>
             Effect.sync(() => {
