@@ -9,8 +9,8 @@ import * as Predicate from "effect/Predicate";
 import * as Runtime from "effect/Runtime";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
-import * as StreamEmit from "effect/StreamEmit";
-// import * as util from "node:util";
+import * as Buffer from "node:buffer";
+import * as util from "node:util";
 
 /** @internal */
 export class InputStreamError extends Data.TaggedError("InputStreamError")<{ cause: unknown }> {}
@@ -47,29 +47,17 @@ export const receiveStream = (
     never
 > =>
     Stream.async(
-        (
-            emit: StreamEmit.Emit<
-                never,
-                never,
-                {
-                    message: string;
-                    data?: Uint8Array | undefined;
-                },
-                void
-            >
-        ): void | Effect.Effect<void, never, never> => {
-            const callback: MessageCallback = (message: string, data: ArrayBuffer | null) =>
-                emit(
-                    Effect.succeed(
-                        Chunk.of({
+        (emit) =>
+            Effect.sync(() => {
+                while (true) {
+                    recv((message: string, data: ArrayBuffer | null) =>
+                        emit.single({
                             message: message,
                             data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
                         })
-                    )
-                );
-
-            return recv(callback).wait();
-        },
+                    ).wait();
+                }
+            }),
         bufferSize ?? ("unbounded" as const)
     );
 
@@ -87,7 +75,7 @@ export const fromInputStream = <OnError extends (error: unknown) => any = (error
             );
 
             yield* Effect.tryPromise({
-                async try() {
+                try: async function () {
                     while (true) {
                         const chunk = await resource.read(options?.chunkSize ?? 1);
                         if (chunk.byteLength === 0) return await emit.end();
@@ -131,15 +119,16 @@ class StreamAdapter<E, R> implements InputStream {
 
     constructor(
         private readonly runtime: Runtime.Runtime<R>,
-        private readonly stream: Stream.Stream<string | Uint8Array, E, R>
+        private readonly stream: Stream.Stream<Uint8Array, E, R>
     ) {
         this.scope = Effect.runSync(Scope.make());
         const pull = this.stream.pipe(
-            Stream.mapConcat((arrayBuffer) => Buffer.from(arrayBuffer)),
+            Stream.mapConcat(Function.identity),
+            Stream.rechunk(1),
             Stream.toPull,
             Scope.extend(this.scope),
             Runtime.runSync(this.runtime),
-            Effect.map(Function.compose(Chunk.unsafeHead, Option.some)),
+            Effect.map(Function.flow(Chunk.head, Option.getOrThrow, Option.some)),
             Effect.catchAll((error) =>
                 Option.isNone(error) ? Effect.succeed(Option.none<number>()) : Effect.fail(error.value)
             )
@@ -159,18 +148,8 @@ class StreamAdapter<E, R> implements InputStream {
 
     private async loop(size: number): Promise<ArrayBuffer> {
         let bytesRead = 0;
-        const buffer = Buffer.alloc(size);
-        // const pullAsync = util.promisify(this.pull.bind(this));
-        const pullAsync = () =>
-            new Promise<Option.Option<number>>((resolve) => {
-                this.pull((error, data) => {
-                    if (error) {
-                        resolve(Option.none());
-                    } else {
-                        resolve(data);
-                    }
-                });
-            });
+        const buffer = Buffer.Buffer.alloc(size);
+        const pullAsync = util.promisify(this.pull.bind(this));
 
         try {
             // Process data in an async loop
@@ -186,11 +165,15 @@ class StreamAdapter<E, R> implements InputStream {
                 bytesRead++;
             }
 
-            return buffer.subarray(0, bytesRead).buffer;
+            if (bytesRead === size) {
+                return buffer.buffer;
+            } else {
+                return Buffer.Buffer.from(buffer.subarray(0, bytesRead)).buffer;
+            }
         } catch (error) {
-            throw error;
-        } finally {
+            console.error("error in loop", error);
             await this.close();
+            throw error;
         }
     }
 
@@ -201,7 +184,7 @@ class StreamAdapter<E, R> implements InputStream {
         }
     }
 
-    public async read(size: number): Promise<ArrayBuffer> {
+    public read(size: number): Promise<ArrayBuffer> {
         return this.loop(size);
     }
 
@@ -218,11 +201,25 @@ class StreamAdapter<E, R> implements InputStream {
 }
 
 /** @internal */
-export const toInputStream = <E, R>(
-    stream: Stream.Stream<string | Uint8Array, E, R>
-): Effect.Effect<InputStream, never, R> =>
+export const toInputStream = <E, R>(stream: Stream.Stream<Uint8Array, E, R>): Effect.Effect<InputStream, never, R> =>
     Effect.map(Effect.runtime<R>(), (runtime) => new StreamAdapter(runtime, stream));
 
 /** @internal */
-export const toInputStreamNever = <E>(stream: Stream.Stream<string | Uint8Array, E, never>): InputStream =>
+export const toInputStreamNever = <E>(stream: Stream.Stream<Uint8Array, E, never>): InputStream =>
     new StreamAdapter(Runtime.defaultRuntime, stream);
+
+/** @internal */
+export const encodeText = <E, R>(self: Stream.Stream<string, E, R>): Stream.Stream<Uint8Array, E, R> =>
+    Stream.map(self, (chars) => Buffer.Buffer.from(chars));
+
+/** @internal */
+export const decodeText = Function.dual<
+    (
+        encoding?: BufferEncoding | undefined
+    ) => <E, R>(self: Stream.Stream<Uint8Array, E, R>) => Stream.Stream<string, E, R>,
+    <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<string, E, R>
+>(
+    (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
+    <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding: BufferEncoding = "utf-8" as const) =>
+        Stream.map(self, (chars) => Buffer.Buffer.from(chars.buffer).toString(encoding))
+);
