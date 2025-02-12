@@ -1,11 +1,11 @@
 {
-    "name": "@shocae/effect-rpc-frida",
+    "name": "@efffrida/effect-rpc-frida",
     "version": "0.0.1",
-    "description": "shocae effect-rpc-frida",
-    "homepage": "https://github.com/leoconforti/fish-bowl",
+    "description": "effect rpc-frida",
+    "homepage": "https://github.com/leoconforti/efffrida",
     "repository": {
         "type": "git",
-        "url": "https://github.com/leoconforti/fish-bowl.git",
+        "url": "https://github.com/leoconforti/efffrida.git",
         "directory": "packages/effect-rpc-frida"
     },
     "license": "GPL-3.0-only",
@@ -20,13 +20,13 @@
         "codegen": "build-utils prepare-v2"
     },
     "dependencies": {
-        "frida": "16.6.1"
+        "frida": "16.6.6"
     },
     "devDependencies": {
-        "@effect/platform": "0.72.1",
-        "@effect/platform-node": "0.68.2",
-        "@effect/rpc": "0.47.1",
-        "effect": "3.12.1"
+        "@effect/platform": "0.76.0",
+        "@effect/platform-node": "0.72.0",
+        "@effect/rpc": "0.51.0",
+        "effect": "3.12.11"
     },
     "peerDependencies": {
         "@effect/rpc": "0.47.1",

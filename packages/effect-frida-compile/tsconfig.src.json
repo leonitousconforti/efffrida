@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "include": ["src"],
     "compilerOptions": {
-        "types": ["frida-gum", "node"],
+        "types": ["node"],
         "outDir": "build/src",
         "tsBuildInfoFile": ".tsbuildinfo/src.tsbuildinfo",
         "rootDir": "src"

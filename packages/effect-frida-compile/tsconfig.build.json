@@ -1,11 +1,10 @@
 {
     "extends": "./tsconfig.src.json",
     "compilerOptions": {
-        "types": ["frida-gum", "node"],
+        "types": ["node"],
         "tsBuildInfoFile": ".tsbuildinfo/build.tsbuildinfo",
         "outDir": "build/esm",
         "declarationDir": "build/dts",
         "stripInternal": true
-    },
-    "include": ["src/**/*.ts"]
+    }
 }

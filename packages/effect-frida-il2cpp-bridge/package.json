@@ -1,12 +1,12 @@
 {
-    "name": "@shocae/effect-frida",
+    "name": "@efffrida/il2cpp-bridge",
     "version": "0.0.1",
-    "description": "shocae effect-frida",
-    "homepage": "https://github.com/leoconforti/fish-bowl",
+    "description": "effect-ts frida-il2cpp-bridge",
+    "homepage": "https://github.com/leoconforti/efffrida",
     "repository": {
         "type": "git",
-        "url": "https://github.com/leoconforti/fish-bowl.git",
-        "directory": "packages/effect-frida"
+        "url": "https://github.com/leoconforti/efffrida.git",
+        "directory": "packages/effect-frida-il2cpp-bridge"
     },
     "license": "GPL-3.0-only",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
@@ -19,15 +19,10 @@
         "check": "tsc -b tsconfig.json",
         "codegen": "build-utils prepare-v2"
     },
-    "dependencies": {
-        "frida": "16.6.1"
-    },
     "devDependencies": {
-        "@effect/platform": "0.72.1",
-        "effect": "3.12.1"
+        "effect": "3.12.11"
     },
     "peerDependencies": {
-        "@effect/platform": "0.72.1",
         "effect": "3.12.1"
     },
     "publishConfig": {

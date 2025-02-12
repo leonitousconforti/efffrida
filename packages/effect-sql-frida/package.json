@@ -1,12 +1,12 @@
 {
-    "name": "@efffrida/effect-frida",
+    "name": "@efffrida/sql-frida",
     "version": "0.0.1",
-    "description": "Frida with effect-ts",
+    "description": "effect-ts sql-frida",
     "homepage": "https://github.com/leoconforti/efffrida",
     "repository": {
         "type": "git",
         "url": "https://github.com/leoconforti/efffrida.git",
-        "directory": "packages/effect-frida"
+        "directory": "packages/effect-sql-frida"
     },
     "license": "GPL-3.0-only",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
@@ -18,9 +18,6 @@
         "build-esm": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",
         "codegen": "build-utils prepare-v2"
-    },
-    "dependencies": {
-        "frida": "16.6.6"
     },
     "devDependencies": {
         "effect": "3.12.11"
