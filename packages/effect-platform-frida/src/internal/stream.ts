@@ -195,8 +195,16 @@ export const toInputStreamNever = <E>(stream: Stream.Stream<Uint8Array, E, never
     new StreamAdapter(Runtime.defaultRuntime, stream);
 
 /** @internal */
-export const encodeText = <E, R>(self: Stream.Stream<string, E, R>): Stream.Stream<Uint8Array, E, R> =>
-    Stream.map(self, (chars) => Buffer.Buffer.from(chars));
+export const encodeText = Function.dual<
+    (
+        encoding?: BufferEncoding | undefined
+    ) => <E, R>(self: Stream.Stream<string, E, R>) => Stream.Stream<Uint8Array, E, R>,
+    <E, R>(self: Stream.Stream<string, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<Uint8Array, E, R>
+>(
+    (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
+    <E, R>(self: Stream.Stream<string, E, R>, encoding: BufferEncoding = "utf-8" as const) =>
+        Stream.map(self, (chars) => Buffer.Buffer.from(chars, encoding))
+);
 
 /** @internal */
 export const decodeText = Function.dual<

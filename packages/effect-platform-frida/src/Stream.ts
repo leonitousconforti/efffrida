@@ -80,8 +80,12 @@ export const toInputStreamNever: <E>(stream: Stream.Stream<Uint8Array, E, never>
  * @since 1.0.0
  * @category Transformations
  */
-export const encodeText: <E, R>(self: Stream.Stream<string, E, R>) => Stream.Stream<Uint8Array, E, R> =
-    internal.encodeText;
+export const encodeText: {
+    (
+        encoding?: BufferEncoding | undefined
+    ): <E, R>(self: Stream.Stream<string, E, R>) => Stream.Stream<Uint8Array, E, R>;
+    <E, R>(self: Stream.Stream<string, E, R>, encoding?: BufferEncoding | undefined): Stream.Stream<Uint8Array, E, R>;
+} = internal.encodeText;
 
 /**
  * @since 1.0.0
