@@ -11,11 +11,11 @@ import type * as FridaEffect from "../Frida.js";
 
 /** @internal */
 export const FridaDeviceTypeId: FridaEffect.FridaDeviceTypeId = Symbol.for(
-    "@efffrida/effect-frida/Frida/FridaDevice"
+    "@efffrida/effect-frida-tools/Frida/FridaDevice"
 ) as FridaEffect.FridaDeviceTypeId;
 
 /** @internal */
-export const Tag = Context.GenericTag<FridaEffect.FridaDevice>("@efffrida/effect-frida/Frida/FridaDevice");
+export const Tag = Context.GenericTag<FridaEffect.FridaDevice>("@efffrida/effect-frida-tools/Frida/FridaDevice");
 
 /** @internal */
 export const isFridaDevice = (u: unknown): u is Frida.Device => Predicate.hasProperty(u, FridaDeviceTypeId);

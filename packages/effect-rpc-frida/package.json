@@ -20,17 +20,25 @@
         "codegen": "build-utils prepare-v2"
     },
     "dependencies": {
-        "frida": "16.6.6"
+        "frida": "16.7.4"
     },
     "devDependencies": {
-        "@effect/platform": "0.76.0",
-        "@effect/platform-node": "0.72.0",
-        "@effect/rpc": "0.51.0",
-        "effect": "3.12.11"
+        "@effect/cluster": "0.29.9",
+        "@effect/experimental": "0.44.5",
+        "@effect/platform": "0.80.5",
+        "@effect/platform-node": "0.76.9",
+        "@effect/rpc": "0.55.7",
+        "@effect/sql": "0.33.5",
+        "effect": "3.14.5"
     },
     "peerDependencies": {
-        "@effect/rpc": "0.47.1",
-        "effect": "3.12.1"
+        "@effect/cluster": "0.29.9",
+        "@effect/experimental": "0.44.5",
+        "@effect/platform": "0.80.5",
+        "@effect/platform-node": "0.76.9",
+        "@effect/rpc": "0.55.7",
+        "@effect/sql": "0.33.5",
+        "effect": "3.14.5"
     },
     "publishConfig": {
         "access": "public",

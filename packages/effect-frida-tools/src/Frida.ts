@@ -4,12 +4,12 @@
  * @since 1.0.0
  */
 
-import * as Cause from "effect/Cause";
-import * as Context from "effect/Context";
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
-import * as Scope from "effect/Scope";
-import * as Frida from "frida";
+import type * as Cause from "effect/Cause";
+import type * as Context from "effect/Context";
+import type * as Effect from "effect/Effect";
+import type * as Layer from "effect/Layer";
+import type * as Scope from "effect/Scope";
+import type * as Frida from "frida";
 
 import * as internal from "./internal/frida.js";
 
@@ -44,7 +44,7 @@ export const FridaDevice: Context.Tag<FridaDevice, FridaDevice> = internal.Tag;
  * @since 1.0.0
  * @category Predicates
  */
-export const isFridaDevice = internal.isFridaDevice;
+export const isFridaDevice: (u: unknown) => u is Frida.Device = internal.isFridaDevice;
 
 /**
  * @since 1.0.0

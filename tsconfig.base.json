@@ -37,9 +37,9 @@
         "removeComments": false,
         "plugins": [{ "name": "@effect/language-service" }],
         "paths": {
-            "@template/effect-frida": ["./packages/effect-frida/src/index.js"],
-            "@template/effect-frida/*": ["./packages/effect-frida/src/*.js"],
-            "@template/effect-frida/test/*": ["./packages/effect-frida/test/*.js"],
+            "@template/effect-frida-tools": ["./packages/effect-frida-tools/src/index.js"],
+            "@template/effect-frida-tools/*": ["./packages/effect-frida-tools/src/*.js"],
+            "@template/effect-frida-tools/test/*": ["./packages/effect-frida-tools/test/*.js"],
             "@template/effect-frida-il2cpp-bridge": ["./packages/effect-frida-il2cpp-bridge/src/index.js"],
             "@template/effect-frida-il2cpp-bridge/*": ["./packages/effect-frida-il2cpp-bridge/src/*.js"],
             "@template/effect-frida-il2cpp-bridge/test/*": ["./packages/effect-frida-il2cpp-bridge/test/*.js"],

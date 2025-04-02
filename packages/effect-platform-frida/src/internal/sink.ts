@@ -1,3 +1,4 @@
+import { options } from "@effect/platform/HttpClientRequest";
 import * as Cause from "effect/Cause";
 import * as Channel from "effect/Channel";
 import * as Chunk from "effect/Chunk";
@@ -60,11 +61,11 @@ export const writableOutput = <IE, E>(
         function handleError(err: unknown) {
             Deferred.unsafeDone(deferred, Effect.fail(onError(err)));
         }
-        // writable.on("error", handleError);
+        writable.on("error", handleError);
         return Effect.ensuring(
             Deferred.await(deferred),
             Effect.sync(() => {
-                // writable.removeListener("error", handleError);
+                writable.removeListener("error", handleError);
             })
         );
     });
@@ -107,7 +108,7 @@ export const writeEffect =
                   function loop() {
                       const item = next;
                       next = iterator.next();
-                      const success = writable.write(item.value, encoding as any);
+                      const success = writable.write(item.value);
                       if (next.done) {
                           resume(Effect.void);
                       } else if (success) {
