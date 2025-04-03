@@ -15,7 +15,6 @@
         "vscode": {
             "extensions": [
                 "dbaeumer.vscode-eslint",
-                "kisstkondoros.vscode-codemetrics",
                 "visualstudioexptteam.vscodeintellicode",
                 "esbenp.prettier-vscode",
                 "editorconfig.editorconfig",
@@ -23,7 +22,9 @@
                 "eamodio.gitlens",
                 "mutantdino.resourcemonitor",
                 "GitHub.vscode-github-actions",
-                "yoavbls.pretty-ts-errors"
+                "yoavbls.pretty-ts-errors",
+                "redhat.vscode-yaml",
+                "vitest.explorer"
             ],
             "settings": {
                 "cSpell.enabled": true,
@@ -35,6 +36,12 @@
                 "editor.defaultFormatter": "EditorConfig.EditorConfig",
                 "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc][yaml]": {
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
+                },
+                "[yaml]": {
+                    "editor.tabSize": 2,
+                    "editor.insertSpaces": true,
+                    "editor.autoIndent": "advanced",
+                    "editor.defaultFormatter": "redhat.vscode-yaml"
                 },
                 "editor.codeActionsOnSave": {
                     "source.organizeImports": "always",
@@ -50,11 +57,13 @@
                 "editor.suggest.localityBonus": true,
                 "editor.suggestSelection": "recentlyUsed",
                 "editor.wordBasedSuggestions": "matchingDocuments",
-                "editor.parameterHints.enabled": true
+                "editor.parameterHints.enabled": true,
+                "typescript.tsdk": "node_modules/typescript/lib"
             }
         }
     },
 
-    "postCreateCommand": "bash -i -c './.devcontainer/setup.sh'",
-    "runArgs": ["--security-opt", "seccomp=unconfined"]
+    "remoteUser": "vscode",
+    "runArgs": ["--security-opt", "seccomp=unconfined"],
+    "postCreateCommand": "bash -i -c './.devcontainer/setup.sh'"
 }
