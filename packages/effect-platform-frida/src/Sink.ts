@@ -4,8 +4,9 @@
  * @since 1.0.0
  */
 
+import type * as Function from "effect/Function";
+
 import * as Effect from "effect/Effect";
-import * as Function from "effect/Function";
 import * as Sink from "effect/Sink";
 
 import * as internal from "./internal/sink.js";

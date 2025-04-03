@@ -38,7 +38,7 @@ export const receiveStream = (
                 while (true) {
                     recv((message: string, data: ArrayBuffer | null) =>
                         emit.single({
-                            message: message,
+                            message,
                             data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
                         })
                     ).wait();
@@ -61,7 +61,7 @@ export const fromInputStream = <OnError extends (error: unknown) => any = (error
             );
 
             yield* Effect.tryPromise({
-                try: async function () {
+                async try() {
                     while (true) {
                         const chunk = await resource.read(options?.chunkSize ?? 1);
                         if (chunk.byteLength === 0) return await emit.end();

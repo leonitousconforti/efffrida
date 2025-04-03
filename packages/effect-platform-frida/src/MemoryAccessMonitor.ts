@@ -4,7 +4,7 @@
  * @since 1.0.0
  */
 
-import * as Stream from "effect/Stream";
+import type * as Stream from "effect/Stream";
 
 import * as internal from "./internal/memoryAccessMonitor.js";
 
@@ -17,7 +17,7 @@ import * as internal from "./internal/memoryAccessMonitor.js";
  * @category Memory Access Monitor
  */
 export const MemoryAccessMonitorStream: (
-    ranges: MemoryAccessRange | MemoryAccessRange[],
+    ranges: MemoryAccessRange | Array<MemoryAccessRange>,
     options?:
         | { readonly bufferSize: "unbounded" }
         | {

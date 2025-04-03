@@ -1,10 +1,11 @@
-import * as Cause from "effect/Cause";
+import type * as Cause from "effect/Cause";
+import type * as Scope from "effect/Scope";
+
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Predicate from "effect/Predicate";
-import * as Scope from "effect/Scope";
 import * as Frida from "frida";
 
 import type * as FridaEffect from "../Frida.js";
@@ -35,7 +36,7 @@ export const spawn = Function.dual<
     ) => Effect.Effect<number, Cause.UnknownException, Scope.Scope>
 >(
     (arguments_) => isFridaDevice(arguments_[0]),
-    (device: FridaEffect.FridaDevice, program: string | string[], options) =>
+    (device: FridaEffect.FridaDevice, program: string | Array<string>, options) =>
         Effect.acquireRelease(
             Effect.tryPromise(() => device.underlying.spawn(program, options)),
             (pid) => Effect.promise(() => device.underlying.kill(pid))

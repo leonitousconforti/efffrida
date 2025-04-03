@@ -1,4 +1,4 @@
-import * as EffectSocket from "@effect/platform/Socket";
+import type * as EffectSocket from "@effect/platform/Socket";
 
 /** @internal */
 export const toTransformStream = (socketConnection: SocketConnection): EffectSocket.InputTransformStream => ({

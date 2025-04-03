@@ -4,8 +4,8 @@
  * @since 1.0.0
  */
 
-import * as Effect from "effect/Effect";
-import * as Stream from "effect/Stream";
+import type * as Effect from "effect/Effect";
+import type * as Stream from "effect/Stream";
 
 import * as internal from "./internal/stream.js";
 import { InputStreamError } from "./internal/stream.js";

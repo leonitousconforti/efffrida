@@ -1,10 +1,11 @@
+import type * as StreamEmit from "effect/StreamEmit";
+
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
-import * as StreamEmit from "effect/StreamEmit";
 
 /** @internal */
 export const memoryAccessMonitorStream = (
-    ranges: MemoryAccessRange | MemoryAccessRange[],
+    ranges: MemoryAccessRange | Array<MemoryAccessRange>,
     options:
         | { readonly bufferSize: "unbounded" }
         | {

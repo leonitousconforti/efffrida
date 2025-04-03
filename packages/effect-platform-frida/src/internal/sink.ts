@@ -1,11 +1,11 @@
-import { options } from "@effect/platform/HttpClientRequest";
-import * as Cause from "effect/Cause";
+import type * as Cause from "effect/Cause";
+import type * as Chunk from "effect/Chunk";
+import type * as Function from "effect/Function";
+import type * as AsyncInput from "effect/SingleProducerAsyncInput";
+
 import * as Channel from "effect/Channel";
-import * as Chunk from "effect/Chunk";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
-import * as Function from "effect/Function";
-import * as AsyncInput from "effect/SingleProducerAsyncInput";
 import * as Sink from "effect/Sink";
 
 /** @internal */
@@ -24,7 +24,7 @@ export const fromOutputStreamChannel = <IE, OE, A>(
                 writeInput<IE, A>(
                     writable,
                     (cause) => Deferred.failCause(deferred, cause),
-                    options,
+                    {},
                     Deferred.complete(deferred, Effect.void)
                 )
             )
