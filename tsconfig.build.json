@@ -2,8 +2,11 @@
     "extends": "./tsconfig.base.json",
     "include": [],
     "references": [
-        { "path": "packages/effect-frida-tools/tsconfig.build.json" },
+        { "path": "packages/effect-frida-compile/tsconfig.build.json" },
         { "path": "packages/effect-frida-il2cpp-bridge/tsconfig.build.json" },
-        { "path": "packages/effect-rpc-frida/tsconfig.build.json" }
+        { "path": "packages/effect-frida-tools/tsconfig.build.json" },
+        { "path": "packages/effect-platform-frida/tsconfig.build.json" },
+        { "path": "packages/effect-rpc-frida/tsconfig.build.json" },
+        { "path": "packages/effect-sql-frida/tsconfig.build.json" }
     ]
 }

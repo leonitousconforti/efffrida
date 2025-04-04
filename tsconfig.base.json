@@ -37,15 +37,24 @@
         "removeComments": false,
         "plugins": [{ "name": "@effect/language-service" }],
         "paths": {
-            "@template/effect-frida-tools": ["./packages/effect-frida-tools/src/index.js"],
-            "@template/effect-frida-tools/*": ["./packages/effect-frida-tools/src/*.js"],
-            "@template/effect-frida-tools/test/*": ["./packages/effect-frida-tools/test/*.js"],
+            "@template/effect-frida-compile": ["./packages/effect-frida-compile/src/index.js"],
+            "@template/effect-frida-compile/*": ["./packages/effect-frida-compile/src/*.js"],
+            "@template/effect-frida-compile/test/*": ["./packages/effect-frida-compile/test/*.js"],
             "@template/effect-frida-il2cpp-bridge": ["./packages/effect-frida-il2cpp-bridge/src/index.js"],
             "@template/effect-frida-il2cpp-bridge/*": ["./packages/effect-frida-il2cpp-bridge/src/*.js"],
             "@template/effect-frida-il2cpp-bridge/test/*": ["./packages/effect-frida-il2cpp-bridge/test/*.js"],
+            "@template/effect-frida-tools": ["./packages/effect-frida-tools/src/index.js"],
+            "@template/effect-frida-tools/*": ["./packages/effect-frida-tools/src/*.js"],
+            "@template/effect-frida-tools/test/*": ["./packages/effect-frida-tools/test/*.js"],
+            "@template/effect-platform-frida": ["./packages/effect-platform-frida/src/index.js"],
+            "@template/effect-platform-frida/*": ["./packages/effect-platform-frida/src/*.js"],
+            "@template/effect-platform-frida/test/*": ["./packages/effect-platform-frida/test/*.js"],
             "@template/effect-rpc-frida": ["./packages/effect-rpc-frida/src/index.js"],
             "@template/effect-rpc-frida/*": ["./packages/effect-rpc-frida/src/*.js"],
-            "@template/effect-rpc-frida/test/*": ["./packages/effect-rpc-frida/test/*.js"]
+            "@template/effect-rpc-frida/test/*": ["./packages/effect-rpc-frida/test/*.js"],
+            "@template/effect-sql-frida": ["./packages/effect-sql-frida/src/index.js"],
+            "@template/effect-sql-frida/*": ["./packages/effect-sql-frida/src/*.js"],
+            "@template/effect-sql-frida/test/*": ["./packages/effect-sql-frida/test/*.js"]
         }
     }
 }
