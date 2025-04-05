@@ -1,1 +1,1 @@
-# @efffrida/effect-rpc-frida
+# @efffrida/rpc

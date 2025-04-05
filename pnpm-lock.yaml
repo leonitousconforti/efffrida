@@ -108,21 +108,14 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.14.0)(tsx@4.19.3)
 
-  packages/effect-frida-compile:
+  packages/frida-compile:
     devDependencies:
       effect:
         specifier: 3.14.5
         version: 3.14.5
     publishDirectory: dist
 
-  packages/effect-frida-il2cpp-bridge:
-    devDependencies:
-      effect:
-        specifier: 3.14.5
-        version: 3.14.5
-    publishDirectory: dist
-
-  packages/effect-frida-tools:
+  packages/frida-tools:
     dependencies:
       frida:
         specifier: 16.7.4
@@ -133,7 +126,14 @@ importers:
         version: 3.14.5
     publishDirectory: dist
 
-  packages/effect-platform-frida:
+  packages/il2cpp-bridge:
+    devDependencies:
+      effect:
+        specifier: 3.14.5
+        version: 3.14.5
+    publishDirectory: dist
+
+  packages/platform:
     devDependencies:
       '@effect/platform':
         specifier: 0.80.5
@@ -146,7 +146,7 @@ importers:
         version: 3.14.5
     publishDirectory: dist
 
-  packages/effect-rpc-frida:
+  packages/rpc:
     dependencies:
       frida:
         specifier: 16.7.4
@@ -175,7 +175,7 @@ importers:
         version: 3.14.5
     publishDirectory: dist
 
-  packages/effect-sql-frida:
+  packages/sql:
     dependencies:
       '@opentelemetry/semantic-conventions':
         specifier: 1.30.0

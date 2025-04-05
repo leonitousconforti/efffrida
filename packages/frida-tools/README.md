@@ -1,1 +1,1 @@
-# @efffrida/effect-frida-tools
+# @efffrida/frida-tools

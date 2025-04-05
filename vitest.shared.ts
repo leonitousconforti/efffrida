@@ -24,12 +24,12 @@ const config: ViteUserConfig = {
         },
         include: ["test/**/*.test.ts"],
         alias: {
-            ...alias("effect-frida-compile"),
-            ...alias("effect-frida-il2cpp-bridge"),
-            ...alias("effect-frida-tools"),
-            ...alias("effect-platform-frida"),
-            ...alias("effect-rpc-frida"),
-            ...alias("effect-sql-frida"),
+            ...alias("frida-compile"),
+            ...alias("frida-tools"),
+            ...alias("il2cpp-bridge"),
+            ...alias("platform"),
+            ...alias("rpc"),
+            ...alias("sql"),
         },
     },
 };

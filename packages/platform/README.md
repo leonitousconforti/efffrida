@@ -1,1 +1,1 @@
-# @efffrida/platform-frida
+# @efffrida/platform
