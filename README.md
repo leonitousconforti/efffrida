@@ -7,6 +7,7 @@ compatibility layer between [Frida's Javascript API's](https://frida.re/docs/jav
 The Efffrida monorepo is organized into multiple packages, each extending a different part of effect. Below is an overview of the packages included:
 
 | Package | Description | Links |
+| ------------------------------------------------------ | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `@efffrida/frida-compile` | Compile frida agents                                                      | [README]()    |
 | `@efffrida/frida-tools`   | Connect to devices and launch frida agents                                | [README]()    |
 | `@efffrida/il2cpp-bridge` | OpenAI utilities                                                          | [README]()    |
