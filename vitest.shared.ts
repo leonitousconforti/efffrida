@@ -14,9 +14,6 @@ const config: ViteUserConfig = {
     esbuild: {
         target: "es2020",
     },
-    optimizeDeps: {
-        exclude: ["bun:sqlite"],
-    },
     test: {
         setupFiles: [path.join(__dirname, "setupTests.ts")],
         fakeTimers: {
@@ -27,9 +24,12 @@ const config: ViteUserConfig = {
         },
         include: ["test/**/*.test.ts"],
         alias: {
-            ...alias("cli"),
-            ...alias("domain"),
-            ...alias("server"),
+            ...alias("effect-frida-compile"),
+            ...alias("effect-frida-il2cpp-bridge"),
+            ...alias("effect-frida-tools"),
+            ...alias("effect-platform-frida"),
+            ...alias("effect-rpc-frida"),
+            ...alias("effect-sql-frida"),
         },
     },
 };
