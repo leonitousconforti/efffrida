@@ -1,5 +1,6 @@
 import type * as Cause from "effect/Cause";
 import type * as Scope from "effect/Scope";
+import type * as FridaEffect from "../Frida.js";
 
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -7,8 +8,6 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Predicate from "effect/Predicate";
 import * as Frida from "frida";
-
-import type * as FridaEffect from "../Frida.js";
 
 /** @internal */
 export const FridaDeviceTypeId: FridaEffect.FridaDeviceTypeId = Symbol.for(
@@ -92,21 +91,17 @@ export const acquireLocalDevice = (): Effect.Effect<FridaEffect.FridaDevice, Cau
     );
 
 /** @internal */
-export const releaseDevice = (_device: FridaEffect.FridaDevice) => Effect.void;
-
-/** @internal */
 export const RemoteDeviceLayer = (
     address: string,
     options?: Frida.RemoteDeviceOptions | undefined
 ): Layer.Layer<FridaEffect.FridaDevice, Cause.UnknownException, never> =>
-    Layer.scoped(Tag, Effect.acquireRelease(acquireRemoteDevice(address, options), releaseDevice));
+    Layer.effect(Tag, acquireRemoteDevice(address, options));
 
 /** @internal */
 export const UsbDeviceLayer = (
     options?: Frida.GetDeviceOptions | undefined
-): Layer.Layer<FridaEffect.FridaDevice, Cause.UnknownException, never> =>
-    Layer.scoped(Tag, Effect.acquireRelease(acquireUsbDevice(options), releaseDevice));
+): Layer.Layer<FridaEffect.FridaDevice, Cause.UnknownException, never> => Layer.effect(Tag, acquireUsbDevice(options));
 
 /** @internal */
 export const LocalDeviceLayer = (): Layer.Layer<FridaEffect.FridaDevice, Cause.UnknownException, never> =>
-    Layer.scoped(Tag, Effect.acquireRelease(acquireLocalDevice(), releaseDevice));
+    Layer.effect(Tag, acquireLocalDevice());
