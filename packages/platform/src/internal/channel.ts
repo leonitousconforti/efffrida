@@ -1,8 +1,8 @@
-import * as Channel from "effect/Channel";
+import type * as Chunk from "effect/Chunk";
 import type * as FridaSink from "../Sink.js";
 import type * as FridaStream from "../Stream.js";
 
-import type { Chunk } from "effect";
+import * as Channel from "effect/Channel";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as internalSink from "./sink.js";
