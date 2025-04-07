@@ -11,6 +11,14 @@ import * as internal from "./internal/sink.js";
 
 /**
  * @since 1.0.0
+ * @category Types
+ */
+export interface FromWritableOptions {
+    readonly endOnDone?: boolean | undefined;
+}
+
+/**
+ * @since 1.0.0
  * @category Constructors
  */
 export const sendSink: () => Sink.Sink<void, string, never, never, never> = internal.sendSink;
@@ -22,7 +30,8 @@ export const sendSink: () => Sink.Sink<void, string, never, never, never> = inte
  */
 export const fromOutputStream: <E>(
     evaluate: Function.LazyArg<OutputStream>,
-    onError: (error: unknown) => E
+    onError: (error: unknown) => E,
+    options?: FromWritableOptions | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never> = internal.fromOutputStream;
 
 /**
@@ -33,7 +42,7 @@ export const fromOutputStream: <E>(
 export const makeUnixOutputStream: <E>(
     fileDescriptor: number,
     onError: (error: unknown) => E,
-    options?: UnixStreamOptions | undefined
+    options?: (UnixStreamOptions & FromWritableOptions) | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never> = internal.makeUnixOutputStream;
 
 /**
@@ -44,5 +53,5 @@ export const makeUnixOutputStream: <E>(
 export const makeWin32OutputStream: <E>(
     handle: NativePointerValue,
     onError: (error: unknown) => E,
-    options?: WindowsStreamOptions | undefined
+    options?: (WindowsStreamOptions & FromWritableOptions) | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never> = internal.makeWin32OutputStream;
