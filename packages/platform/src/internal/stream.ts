@@ -1,6 +1,7 @@
+import type { FromInputStreamOptions } from "../Stream.js";
+
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
-import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Function from "effect/Function";
@@ -13,84 +14,69 @@ import * as Buffer from "node:buffer";
 import * as util from "node:util";
 
 /** @internal */
-export class InputStreamError extends Data.TaggedError("InputStreamError")<{ cause: unknown }> {}
-
-/** @internal */
-export interface BufferAndChunkSizes {
-    chunkSize?: number | undefined;
-    bufferSize?:
-        | number
-        | "unbounded"
-        | {
-              readonly bufferSize?: number | undefined;
-              readonly strategy?: "dropping" | "sliding" | "suspend" | undefined;
-          }
-        | undefined;
-}
-
-/** @internal */
-export const receiveStream = (
-    bufferSize?: BufferAndChunkSizes["bufferSize"] | undefined
-): Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =>
-    Stream.async(
-        (emit) =>
-            Effect.sync(() => {
-                while (true) {
-                    recv((message: string, data: ArrayBuffer | null) =>
-                        emit.single({
-                            message,
-                            data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
-                        })
-                    ).wait();
-                }
-            }),
-        bufferSize ?? ("unbounded" as const)
+export const receiveStream = (): Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =>
+    Stream.fromPull(
+        Effect.sync(() =>
+            Effect.async<Chunk.Chunk<{ message: string; data?: Uint8Array | undefined }>>((resume) => {
+                recv((message: string, data: ArrayBuffer | null) => {
+                    resume(
+                        Effect.succeed(
+                            Chunk.make({
+                                message,
+                                data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
+                            })
+                        )
+                    );
+                });
+            })
+        )
     );
 
 /** @internal */
-export const fromInputStream = <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
-    inputStream: InputStream,
-    onError?: OnError | undefined,
-    options?: BufferAndChunkSizes | undefined
-): Stream.Stream<Uint8Array, ReturnType<OnError>, never> =>
-    Stream.asyncScoped(
-        Effect.fnUntraced(function* (emit) {
-            const resource = yield* Effect.acquireRelease(
-                Effect.sync(() => inputStream),
-                (inputStream) => Effect.promise(() => inputStream.close())
-            );
+export const fromInputStream = <E>(
+    inputStream: Function.LazyArg<InputStream>,
+    onError: (error: unknown) => E,
+    options?: FromInputStreamOptions | undefined
+): Stream.Stream<Uint8Array, E, never> =>
+    Stream.fromPull(
+        Effect.gen(function* () {
+            const acquire = Effect.sync(inputStream);
+            const release = (inputStream: InputStream) => Effect.promise(() => inputStream.close());
+            const resource = yield* Effect.acquireRelease(acquire, release);
 
-            yield* Effect.tryPromise({
+            return Effect.tryPromise({
                 async try() {
-                    while (true) {
-                        const chunk = await resource.read(options?.chunkSize ?? 1);
-                        if (chunk.byteLength === 0) return await emit.end();
-                        else await emit.single(new Uint8Array(chunk));
-                    }
+                    const buffer = await resource.read(options?.chunkSize ? Number(options.chunkSize) : 1);
+                    return new Uint8Array(buffer);
                 },
-                catch: Predicate.isUndefined(onError)
-                    ? (error: unknown) => new InputStreamError({ cause: error })
-                    : onError,
-            });
-        }),
-        options?.bufferSize ?? ("unbounded" as const)
+                catch: Function.flow(onError, Option.some),
+            }).pipe(
+                Effect.flatMap((data) => {
+                    if (data.length > 0) {
+                        return Effect.succeed(Chunk.make(data));
+                    } else {
+                        return Effect.fail(Option.none<E>());
+                    }
+                })
+            );
+        })
     );
 
 /** @internal */
-export const makeUnixInputStream = <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
+export const makeUnixInputStream = <E>(
     fileDescriptor: number,
-    f1?: OnError | undefined,
-    options?: (BufferAndChunkSizes & UnixStreamOptions) | undefined
-): Stream.Stream<Uint8Array, ReturnType<OnError>, never> =>
-    fromInputStream(new UnixInputStream(fileDescriptor, options), f1, options);
+    onError: (error: unknown) => E,
+    options?: (FromInputStreamOptions & UnixStreamOptions) | undefined
+): Stream.Stream<Uint8Array, E, never> =>
+    fromInputStream(() => new UnixInputStream(fileDescriptor, options), onError, options);
 
 /** @internal */
-export const makeWin32InputStream = <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
+export const makeWin32InputStream = <E>(
     handle: NativePointerValue,
-    f1?: OnError | undefined,
-    options?: (BufferAndChunkSizes & WindowsStreamOptions) | undefined
-): Stream.Stream<Uint8Array, ReturnType<OnError>, never> =>
-    fromInputStream(new Win32InputStream(handle, options), f1, options);
+    onError: (error: unknown) => E,
+    options?: (FromInputStreamOptions & WindowsStreamOptions) | undefined
+): Stream.Stream<Uint8Array, E, never> =>
+    fromInputStream(() => new Win32InputStream(handle, options), onError, options);
 
 /**
  * Stream adapter for converting an Effect stream to an InputStream. Modified
@@ -114,14 +100,13 @@ class StreamAdapter<E, R> implements InputStream {
             Stream.toPull,
             Scope.extend(this.scope),
             Runtime.runSync(this.runtime),
-            Effect.map(Function.flow(Chunk.head, Option.getOrThrow, Option.some)),
+            Effect.map(Function.flow(Chunk.unsafeHead, Option.some)),
             Effect.catchAll((error) =>
                 Option.isNone(error) ? Effect.succeed(Option.none<number>()) : Effect.fail(error.value)
             )
         );
-        const runFork = Runtime.runFork(this.runtime);
         this.pull = function (done) {
-            runFork(pull).addObserver((exit: Exit.Exit<Option.Option<number>, E>) => {
+            Runtime.runFork(this.runtime)(pull).addObserver((exit: Exit.Exit<Option.Option<number>, E>) => {
                 done(
                     exit._tag === "Failure"
                         ? new Error("failure in StreamAdapter", { cause: Cause.squash(exit.cause) })
@@ -154,7 +139,9 @@ class StreamAdapter<E, R> implements InputStream {
             if (bytesRead === size) {
                 return buffer.buffer;
             } else {
-                return Buffer.Buffer.from(buffer.subarray(0, bytesRead)).buffer;
+                const newBuffer = Buffer.Buffer.alloc(bytesRead);
+                buffer.copy(newBuffer, 0, 0, bytesRead);
+                return newBuffer.buffer;
             }
         } catch (error) {
             console.error("error in loop", error);
@@ -202,8 +189,10 @@ export const encodeText = Function.dual<
     <E, R>(self: Stream.Stream<string, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<Uint8Array, E, R>
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
-    <E, R>(self: Stream.Stream<string, E, R>, encoding: BufferEncoding = "utf-8" as const) =>
-        Stream.map(self, (chars) => Buffer.Buffer.from(chars, encoding))
+    <E, R>(
+        self: Stream.Stream<string, E, R>,
+        encoding: BufferEncoding = "utf-8" as const
+    ): Stream.Stream<Uint8Array, E, R> => Stream.map(self, (chars) => Buffer.Buffer.from(chars, encoding))
 );
 
 /** @internal */
@@ -214,6 +203,8 @@ export const decodeText = Function.dual<
     <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<string, E, R>
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
-    <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding: BufferEncoding = "utf-8" as const) =>
-        Stream.map(self, (chars) => Buffer.Buffer.from(chars.buffer).toString(encoding))
+    <E, R>(
+        self: Stream.Stream<Uint8Array, E, R>,
+        encoding: BufferEncoding = "utf-8" as const
+    ): Stream.Stream<string, E, R> => Stream.map(self, (chars) => Buffer.Buffer.from(chars.buffer).toString(encoding))
 );

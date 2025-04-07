@@ -5,9 +5,7 @@
  */
 
 import type * as Function from "effect/Function";
-
-import * as Effect from "effect/Effect";
-import * as Sink from "effect/Sink";
+import type * as Sink from "effect/Sink";
 
 import * as internal from "./internal/sink.js";
 
@@ -15,18 +13,17 @@ import * as internal from "./internal/sink.js";
  * @since 1.0.0
  * @category Constructors
  */
-export const sendSink = (): Sink.Sink<void, string, never, never, never> =>
-    Sink.forEach((message) => Effect.sync(() => send(message)));
+export const sendSink: () => Sink.Sink<void, string, never, never, never> = internal.sendSink;
 
 /**
  * @since 1.0.0
  * @category Constructors
  * @see https://frida.re/docs/javascript-api/#outputstream
  */
-export const fromOutputStream: <E, A = Uint8Array>(
+export const fromOutputStream: <E>(
     evaluate: Function.LazyArg<OutputStream>,
     onError: (error: unknown) => E
-) => Sink.Sink<void, A, never, E, never> = internal.fromOutputStream;
+) => Sink.Sink<void, Uint8Array, never, E, never> = internal.fromOutputStream;
 
 /**
  * @since 1.0.0

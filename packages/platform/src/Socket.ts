@@ -4,17 +4,19 @@
  * @since 1.0.0
  */
 
-import * as EffectSocket from "@effect/platform/Socket";
-import * as Effect from "effect/Effect";
+import type * as EffectSocket from "@effect/platform/Socket";
+import type * as Effect from "effect/Effect";
+
+import * as internal from "./internal/socket.js";
 
 /**
- * @internal
+ * @since 1.0.0
+ * @category Network
  * @see https://frida.re/docs/javascript-api/#socketconnection
  */
-export const fromSocketConnection = (
+export const liftSocketConnection: (
     socketConnection: SocketConnection
-): Effect.Effect<EffectSocket.Socket, never, never> =>
-    EffectSocket.fromTransformStream(Effect.sync(() => toTransformStream(socketConnection)));
+) => Effect.Effect<EffectSocket.Socket, never, never> = internal.liftSocketConnection;
 
 /**
  * Connect to a TCP or UNIX server.
@@ -22,16 +24,8 @@ export const fromSocketConnection = (
  * @since 1.0.0
  * @category Network
  */
-export const connect = (options: SocketConnectOptions): Effect.Effect<EffectSocket.Socket, never, never> =>
-    EffectSocket.fromTransformStream(
-        Effect.map(
-            Effect.tryPromise({
-                try: () => Socket.connect(options),
-                catch: (error) => new EffectSocket.SocketGenericError({ reason: "Open" as const, cause: error }),
-            }),
-            toTransformStream
-        )
-    );
+export const connect: (options: SocketConnectOptions) => Effect.Effect<EffectSocket.Socket, never, never> =
+    internal.connect;
 
 /**
  * Opens a TCP or UNIX listening socket. Defaults to listening on both IPv4 and
@@ -41,21 +35,6 @@ export const connect = (options: SocketConnectOptions): Effect.Effect<EffectSock
  * @since 1.0.0
  * @category Network
  */
-export const listen = (options?: SocketListenOptions | undefined): Effect.Effect<EffectSocket.Socket, never, never> => {
-    // Acquire a socket listener
-    const error = (error: unknown) => new EffectSocket.SocketGenericError({ reason: "Open" as const, cause: error });
-    const acquireSocketListener = Effect.tryPromise({ try: () => Socket.listen(options), catch: error });
-    const releaseSocketListener = (socketListener: SocketListener) => Effect.promise(() => socketListener.close());
-
-    // Transform the socket listener into a scoped socket connection
-    const scopedSocketConnection = Effect.flatMap(
-        Effect.acquireRelease(acquireSocketListener, releaseSocketListener),
-        (socketListener) => Effect.tryPromise({ try: () => socketListener.accept(), catch: error })
-    );
-
-    // Transform the scoped socket connection into a transform stream
-    const transformStream = Effect.map(scopedSocketConnection, toTransformStream);
-
-    // Make the socket from the transform stream
-    return EffectSocket.fromTransformStream(transformStream);
-};
+export const listen: (
+    options?: (SocketListenOptions & { readonly closeCodeIsError?: (code: number) => boolean }) | undefined
+) => Effect.Effect<EffectSocket.Socket, never, never> = internal.listen;

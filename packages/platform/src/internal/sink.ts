@@ -9,6 +9,10 @@ import * as Effect from "effect/Effect";
 import * as Sink from "effect/Sink";
 
 /** @internal */
+export const sendSink = (): Sink.Sink<void, string, never, never, never> =>
+    Sink.forEach((message) => Effect.sync(() => send(message)));
+
+/** @internal */
 export const fromOutputStreamChannel = <IE, OE, A>(
     evaluate: Function.LazyArg<OutputStream>,
     onError: (error: unknown) => OE
@@ -20,7 +24,7 @@ export const fromOutputStreamChannel = <IE, OE, A>(
         ),
         ([writable, deferred]) =>
             Channel.embedInput(
-                writableOutput(writable, deferred, onError),
+                Effect.void,
                 writeInput<IE, A>(
                     writable,
                     (cause) => Deferred.failCause(deferred, cause),
@@ -50,25 +54,6 @@ export const makeWin32OutputStream = <E>(
     options?: WindowsStreamOptions | undefined
 ): Sink.Sink<void, Uint8Array, never, E, never> =>
     fromOutputStream(() => new Win32OutputStream(handle, options), onError);
-
-/** @internal */
-export const writableOutput = <IE, E>(
-    writable: OutputStream,
-    deferred: Deferred.Deferred<void, IE | E>,
-    onError: (error: unknown) => E
-) =>
-    Effect.suspend(() => {
-        function handleError(err: unknown) {
-            Deferred.unsafeDone(deferred, Effect.fail(onError(err)));
-        }
-        writable.on("error", handleError);
-        return Effect.ensuring(
-            Deferred.await(deferred),
-            Effect.sync(() => {
-                writable.removeListener("error", handleError);
-            })
-        );
-    });
 
 /** @internal */
 export const writeInput = <IE, A>(

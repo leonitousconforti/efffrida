@@ -4,60 +4,61 @@
  * @since 1.0.0
  */
 
+import type * as FileSystem from "@effect/platform/FileSystem";
 import type * as Effect from "effect/Effect";
+import type * as Function from "effect/Function";
 import type * as Stream from "effect/Stream";
 
 import * as internal from "./internal/stream.js";
-import { InputStreamError } from "./internal/stream.js";
 
-export {
-    /**
-     * @since 1.0.0
-     * @category Errors
-     */
-    InputStreamError,
-};
+/**
+ * @since 1.0.0
+ * @category Types
+ */
+export interface FromInputStreamOptions {
+    /** Defaults to undefined, which lets frida decide the chunk size */
+    readonly chunkSize?: FileSystem.SizeInput | undefined;
+}
 
 /**
  * @since 1.0.0
  * @category IPC
  */
-export const receiveStream: (
-    bufferSize?: internal.BufferAndChunkSizes["bufferSize"] | undefined
-) => Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> = internal.receiveStream;
+export const receiveStream: () => Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =
+    internal.receiveStream;
 
 /**
  * @since 1.0.0
  * @category Constructors
- * @see @see https://frida.re/docs/javascript-api/#inputstream
+ * @see https://frida.re/docs/javascript-api/#inputstream
  */
-export const fromInputStream: <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
-    inputStream: InputStream,
-    onError?: OnError | undefined,
-    options?: internal.BufferAndChunkSizes | undefined
-) => Stream.Stream<Uint8Array, ReturnType<OnError>, never> = internal.fromInputStream;
+export const fromInputStream: <E>(
+    evaluate: Function.LazyArg<InputStream>,
+    onError: (error: unknown) => E,
+    options?: FromInputStreamOptions | undefined
+) => Stream.Stream<Uint8Array, E, never> = internal.fromInputStream;
 
 /**
  * @since 1.0.0
  * @category Constructors
  * @see https://frida.re/docs/javascript-api/#unixinputstream
  */
-export const makeUnixInputStream: <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
+export const makeUnixInputStream: <E>(
     fileDescriptor: number,
-    onError?: OnError | undefined,
-    options?: (internal.BufferAndChunkSizes & UnixStreamOptions) | undefined
-) => Stream.Stream<Uint8Array, ReturnType<OnError>, never> = internal.makeUnixInputStream;
+    onError: (error: unknown) => E,
+    options?: (FromInputStreamOptions & UnixStreamOptions) | undefined
+) => Stream.Stream<Uint8Array, E, never> = internal.makeUnixInputStream;
 
 /**
  * @since 1.0.0
  * @category Constructors
  * @see https://frida.re/docs/javascript-api/#win32inputstream
  */
-export const makeWin32InputStream: <OnError extends (error: unknown) => any = (error: unknown) => InputStreamError>(
+export const makeWin32InputStream: <E>(
     handle: NativePointerValue,
-    onError?: OnError | undefined,
-    options?: (internal.BufferAndChunkSizes & WindowsStreamOptions) | undefined
-) => Stream.Stream<Uint8Array, ReturnType<OnError>, never> = internal.makeWin32InputStream;
+    onError: (error: unknown) => E,
+    options?: (FromInputStreamOptions & WindowsStreamOptions) | undefined
+) => Stream.Stream<Uint8Array, E, never> = internal.makeWin32InputStream;
 
 /**
  * @since 1.0.0

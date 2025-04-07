@@ -95,7 +95,7 @@ export default tseslint.config(
         },
     },
     {
-        files: ["src/index.ts"],
+        files: ["packages/**/src/index.ts"],
         rules: {
             "prettier/prettier": "off",
         },
