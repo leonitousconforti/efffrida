@@ -11,6 +11,11 @@ import type * as FridaStream from "./Stream.js";
 
 import * as internal from "./internal/channel.js";
 
+/**
+ * @since 1.0.0
+ * @category Channel
+ * @see https://frida.re/docs/javascript-api/#iostream
+ */
 export const fromIOStream: <E1, E2>(
     iostream: IOStream,
     onWriteError: (error: unknown) => E1,
