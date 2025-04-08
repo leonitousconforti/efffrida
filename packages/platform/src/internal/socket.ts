@@ -1,9 +1,16 @@
 import * as EffectSocket from "@effect/platform/Socket";
 import * as Effect from "effect/Effect";
+import * as Stream from "effect/Stream";
+import * as internalStream from "./stream.js";
 
 /** @internal */
 export const toTransformStream = (socketConnection: SocketConnection): EffectSocket.InputTransformStream => ({
-    readable: socketConnection.input,
+    readable: internalStream
+        .fromInputStream(
+            () => socketConnection.input,
+            (error) => error
+        )
+        .pipe(Stream.toReadableStream()),
     writable: socketConnection.output,
 });
 
