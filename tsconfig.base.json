@@ -13,7 +13,7 @@
         "experimentalDecorators": true,
         "moduleResolution": "NodeNext",
         "lib": ["ES2022"],
-        "types": ["frida-gum", "node"],
+        "types": ["node"],
         "isolatedModules": true,
         "sourceMap": true,
         "declarationMap": true,

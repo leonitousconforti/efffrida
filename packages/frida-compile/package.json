@@ -19,11 +19,53 @@
         "check": "tsc -b tsconfig.json",
         "codegen": "build-utils prepare-v2"
     },
+    "dependencies": {
+        "@frida/assert": "3.0.2",
+        "@frida/base64-js": "2.0.3",
+        "@frida/buffer": "7.0.4",
+        "@frida/crosspath": "3.0.0",
+        "@frida/crypto": "1.0.1",
+        "@frida/diagnostics_channel": "1.0.0",
+        "@frida/events": "4.0.4",
+        "@frida/http": "4.0.2",
+        "@frida/http-parser-js": "1.0.0",
+        "@frida/https": "1.0.0",
+        "@frida/ieee754": "2.0.2",
+        "@frida/net": "4.0.2",
+        "@frida/os": "1.0.2",
+        "@frida/path": "2.0.3",
+        "@frida/process": "1.2.1",
+        "@frida/punycode": "3.0.0",
+        "@frida/querystring": "1.0.0",
+        "@frida/readable-stream": "4.1.3",
+        "@frida/reserved-words": "1.0.0",
+        "@frida/stream": "1.0.2",
+        "@frida/string_decoder": "2.0.0",
+        "@frida/terser": "1.0.0",
+        "@frida/timers": "3.0.0",
+        "@frida/tty": "1.0.0",
+        "@frida/url": "1.0.2",
+        "@frida/util": "1.0.3",
+        "@frida/vm": "2.0.0",
+        "@swc/core": "1.11.18",
+        "frida-fs": "5.2.5",
+        "msgpackr": "1.11.2",
+        "tsup": "8.4.0"
+    },
     "devDependencies": {
-        "effect": "3.14.5"
+        "@effect/cluster": "0.29.12",
+        "@effect/platform": "0.80.7",
+        "@effect/platform-node": "0.76.12",
+        "@effect/rpc": "0.55.10",
+        "@effect/sql": "0.33.7",
+        "@effect/vitest": "0.20.7",
+        "@types/frida-gum": "18.8.2",
+        "effect": "3.14.7",
+        "vitest": "3.1.1"
     },
     "peerDependencies": {
-        "effect": "3.14.5"
+        "@effect/platform": "0.80.7",
+        "effect": "3.14.7"
     },
     "publishConfig": {
         "access": "public",

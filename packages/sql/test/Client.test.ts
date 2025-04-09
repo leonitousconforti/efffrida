@@ -2,7 +2,7 @@ import { Reactivity } from "@effect/experimental";
 import { FileSystem } from "@effect/platform";
 import { NodeFileSystem } from "@effect/platform-node";
 import { assert, describe, it } from "@effect/vitest";
-import { FridaSqlClient } from "@efffrida/effect-sql-frida";
+import { FridaSqlClient } from "@efffrida/sql";
 import { Effect } from "effect";
 
 const makeFilesystemClient = Effect.gen(function* () {

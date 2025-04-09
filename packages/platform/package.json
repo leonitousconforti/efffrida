@@ -20,13 +20,13 @@
         "codegen": "build-utils prepare-v2"
     },
     "devDependencies": {
-        "@effect/platform": "0.80.5",
+        "@effect/platform": "0.80.7",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.5"
+        "effect": "3.14.7"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.5",
-        "effect": "3.14.5"
+        "@effect/platform": "0.80.7",
+        "effect": "3.14.7"
     },
     "publishConfig": {
         "access": "public",

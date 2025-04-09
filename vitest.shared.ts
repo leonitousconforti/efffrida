@@ -1,11 +1,12 @@
 import * as path from "node:path";
 import type { ViteUserConfig } from "vitest/config";
 
-const alias = (name: string) => {
-    const target = process.env.TEST_DIST !== undefined ? "dist/dist/esm" : "src";
+const alias = (pkg: string, dir = pkg) => {
+    const name = `@efffrida/${pkg}`;
+    const target = process.env.TEST_DIST !== undefined ? path.join("dist", "dist", "esm") : "src";
     return {
-        [`${name}/test`]: path.join(__dirname, "packages", name, "test"),
-        [`${name}`]: path.join(__dirname, "packages", name, target),
+        [`${name}/test`]: path.join(__dirname, "packages", dir, "test"),
+        [`${name}`]: path.join(__dirname, "packages", dir, target),
     };
 };
 
@@ -15,7 +16,7 @@ const config: ViteUserConfig = {
         target: "es2020",
     },
     test: {
-        setupFiles: [path.join(__dirname, "setupTests.ts")],
+        setupFiles: [path.join(__dirname, "vitest.setup.ts")],
         fakeTimers: {
             toFake: undefined,
         },

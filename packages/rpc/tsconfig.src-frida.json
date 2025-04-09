@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "references": [{ "path": "../frida-tools/tsconfig.src.json" }],
+    "include": ["src/FridaRpcServer.ts"],
+    "compilerOptions": {
+        "types": ["frida-gum"],
+        "outDir": "build/src",
+        "tsBuildInfoFile": ".tsbuildinfo/src-frida.tsbuildinfo",
+        "rootDir": "src"
+    }
+}

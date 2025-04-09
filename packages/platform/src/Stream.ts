@@ -16,7 +16,6 @@ import * as internal from "./internal/stream.js";
  * @category Types
  */
 export interface FromInputStreamOptions {
-    /** Defaults to undefined, which lets frida decide the chunk size */
     readonly chunkSize?: FileSystem.SizeInput | undefined;
 }
 

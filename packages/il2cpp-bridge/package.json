@@ -20,10 +20,10 @@
         "codegen": "build-utils prepare-v2"
     },
     "devDependencies": {
-        "effect": "3.14.5"
+        "effect": "3.14.7"
     },
     "peerDependencies": {
-        "effect": "3.14.5"
+        "effect": "3.14.7"
     },
     "publishConfig": {
         "access": "public",

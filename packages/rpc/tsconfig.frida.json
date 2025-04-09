@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "include": ["frida", "shared"],
+    "references": [{ "path": "tsconfig.src-node.json" }, { "path": "tsconfig.src-frida.json" }],
+    "compilerOptions": {
+        "types": ["frida-gum", "node"],
+        "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
+        "rootDir": ".",
+        "noEmit": true,
+        "allowSyntheticDefaultImports": true
+    }
+}

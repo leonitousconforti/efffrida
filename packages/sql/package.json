@@ -23,17 +23,19 @@
         "@opentelemetry/semantic-conventions": "1.30.0"
     },
     "devDependencies": {
-        "@effect/experimental": "0.44.5",
-        "@effect/platform": "0.80.5",
-        "@effect/platform-node": "0.76.9",
-        "@effect/sql": "0.33.5",
+        "@effect/cluster": "0.29.12",
+        "@effect/experimental": "0.44.7",
+        "@effect/platform": "0.80.7",
+        "@effect/platform-node": "0.76.12",
+        "@effect/sql": "0.33.7",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.5"
+        "effect": "3.14.7"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.44.5",
-        "@effect/sql": "0.33.5",
-        "effect": "3.14.5"
+        "@effect/cluster": "0.29.12",
+        "@effect/experimental": "0.44.7",
+        "@effect/sql": "0.33.7",
+        "effect": "3.14.7"
     },
     "publishConfig": {
         "access": "public",

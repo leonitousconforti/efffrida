@@ -2,11 +2,15 @@
     "cSpell.words": [
         "codegen",
         "Conforti",
+        "crosspath",
         "DBSYSTEMVALUES",
         "devcontainers",
         "efffrida",
         "frida",
+        "interruptible",
+        "msgpackr",
         "rechunk",
-        "SEMATTRS"
+        "SEMATTRS",
+        "Transferables"
     ]
 }
