@@ -116,7 +116,7 @@ export const load = Function.dual<
             script.destroyed.connect(destroyedHandler);
 
             const callExport = (exportName: string) =>
-                Effect.fn(`frida export ${exportName}`)(function* (...args: Array<any>) {
+                Effect.fn(`call frida export ${exportName}`)(function* (...args: Array<any>) {
                     yield* Effect.annotateCurrentSpan("args", args);
                     const isDestroyed = yield* Deferred.isDone(destroyed);
                     if (isDestroyed) {
