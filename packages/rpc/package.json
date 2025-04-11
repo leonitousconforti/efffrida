@@ -26,6 +26,7 @@
     },
     "devDependencies": {
         "@effect/experimental": "0.44.7",
+        "@effect/platform": "0.80.7",
         "@effect/platform-node": "0.76.12",
         "@effect/rpc": "0.55.10",
         "@types/frida-gum": "18.8.2",
