@@ -16,6 +16,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Mailbox from "effect/Mailbox";
+import * as Predicate from "effect/Predicate";
 import * as Runtime from "effect/Runtime";
 
 /**
@@ -104,10 +105,20 @@ export const makeProtocolFrida: Effect.Effect<
  * @since 1.0.0
  * @category Protocol
  */
-export const makeProtocolFridaWithExport = (options?: { readonly exportName?: string | undefined } | undefined) =>
+export const makeProtocolFridaWithExport = (
+    options?:
+        | {
+              readonly exportName?: string | undefined;
+              readonly onRpcAvailable?: string | undefined;
+          }
+        | undefined
+) =>
     Effect.gen(function* () {
         const { protocol, rpcExport } = yield* makeProtocolFrida;
         rpc.exports[options?.exportName ?? "rpc"] = rpcExport;
+        if (Predicate.isNotUndefined(options?.onRpcAvailable)) {
+            send(options.onRpcAvailable);
+        }
         return protocol;
     });
 
@@ -116,6 +127,11 @@ export const makeProtocolFridaWithExport = (options?: { readonly exportName?: st
  * @category Layer
  */
 export const layerProtocolFrida = (
-    options?: { readonly exportName?: string | undefined } | undefined
+    options?:
+        | {
+              readonly exportName?: string | undefined;
+              readonly onRpcAvailable?: string | undefined;
+          }
+        | undefined
 ): Layer.Layer<RpcServer.Protocol, never, RpcSerialization.RpcSerialization> =>
     Layer.effect(RpcServer.Protocol, makeProtocolFridaWithExport(options));

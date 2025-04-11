@@ -7,8 +7,8 @@
  */
 
 import type * as RpcMessage from "@effect/rpc/RpcMessage";
+import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 import type * as Types from "effect/Types";
-import type * as Frida from "frida";
 
 import * as RpcClient from "@effect/rpc/RpcClient";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
@@ -16,19 +16,27 @@ import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
+import * as Predicate from "effect/Predicate";
+import * as Stream from "effect/Stream";
 
 /**
  * @since 1.0.0
  * @category Protocol
  */
 export const makeProtocolFrida = (
-    script: Frida.Script,
-    options?: { readonly exportName?: string | undefined } | undefined
-): Effect.Effect<RpcClient.Protocol["Type"], never, RpcSerialization.RpcSerialization> =>
+    script: FridaScript.FridaScript,
+    options?:
+        | {
+              readonly exportName?: string | undefined;
+              readonly rpcIsAvailable?: ((message: string) => boolean) | undefined;
+          }
+        | undefined
+): Effect.Effect<RpcClient.Protocol["Type"], FridaSessionError.FridaSessionError, RpcSerialization.RpcSerialization> =>
     RpcClient.Protocol.make(
         Effect.fnUntraced(function* (writeResponse) {
             const serialization = yield* RpcSerialization.RpcSerialization;
             const exportName = options?.exportName ?? "rpc";
+            const rpcIsAvailable = options?.rpcIsAvailable;
 
             const send = (request: RpcMessage.FromClientEncoded): Effect.Effect<void> => {
                 if (request._tag !== "Request") {
@@ -42,7 +50,7 @@ export const makeProtocolFrida = (
                 }
 
                 return Effect.flatMap(
-                    Effect.promise(() => script.exports[exportName](parser.encode(request))),
+                    Effect.promise(() => script.script.exports[exportName](parser.encode(request))),
                     (responseData) => {
                         try {
                             const responses = parser.decode(responseData) as Array<RpcMessage.FromServerEncoded>;
@@ -60,6 +68,14 @@ export const makeProtocolFrida = (
                 );
             };
 
+            if (Predicate.isNotUndefined(rpcIsAvailable)) {
+                yield* script.stream
+                    .pipe(Stream.map(({ message }) => message))
+                    .pipe(Stream.filter(Predicate.isString))
+                    .pipe(Stream.takeUntil(rpcIsAvailable))
+                    .pipe(Stream.runDrain);
+            }
+
             return {
                 send,
                 supportsAck: false,
@@ -73,9 +89,18 @@ export const makeProtocolFrida = (
  * @category Layers
  */
 export const layerProtocolFrida = (
-    options?: { readonly exportName?: string | undefined } | undefined
-): Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization | FridaScript.FridaScript> =>
+    options?:
+        | {
+              readonly exportName?: string | undefined;
+              readonly rpcIsAvailable?: ((message: string) => boolean) | undefined;
+          }
+        | undefined
+): Layer.Layer<
+    RpcClient.Protocol,
+    FridaSessionError.FridaSessionError,
+    RpcSerialization.RpcSerialization | FridaScript.FridaScript
+> =>
     Layer.effect(
         RpcClient.Protocol,
-        Effect.flatMap(FridaScript.FridaScript, ({ script }) => makeProtocolFrida(script, options))
+        Effect.flatMap(FridaScript.FridaScript, (script) => makeProtocolFrida(script, options))
     );
