@@ -49,23 +49,27 @@ export const makeProtocolFrida = (
                     mutable.id = request.id.toString();
                 }
 
-                return Effect.flatMap(
-                    Effect.promise(() => script.script.exports[exportName](parser.encode(request))),
-                    (responseData) => {
-                        try {
-                            const responses = parser.decode(responseData) as Array<RpcMessage.FromServerEncoded>;
-                            if (responses.length === 0) return Effect.void;
-                            let i = 0;
-                            return Effect.whileLoop({
-                                while: () => i < responses.length,
-                                body: () => writeResponse(responses[i++]),
-                                step: Function.constVoid,
-                            });
-                        } catch (defect) {
-                            return writeResponse({ _tag: "Defect", defect });
-                        }
-                    }
-                );
+                return script
+                    .callExport(exportName)(parser.encode(request))
+                    .pipe(Effect.orDie)
+                    .pipe(
+                        Effect.flatMap((responseData) => {
+                            try {
+                                const responses = parser.decode(
+                                    responseData as string
+                                ) as Array<RpcMessage.FromServerEncoded>;
+                                if (responses.length === 0) return Effect.void;
+                                let i = 0;
+                                return Effect.whileLoop({
+                                    while: () => i < responses.length,
+                                    body: () => writeResponse(responses[i++]),
+                                    step: Function.constVoid,
+                                });
+                            } catch (defect) {
+                                return writeResponse({ _tag: "Defect", defect });
+                            }
+                        })
+                    );
             };
 
             if (Predicate.isNotUndefined(rpcIsAvailable)) {
