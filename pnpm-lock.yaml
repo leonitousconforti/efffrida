@@ -35,6 +35,12 @@ importers:
       '@effect/language-service':
         specifier: 0.6.0
         version: 0.6.0
+      '@effect/platform':
+        specifier: 0.80.7
+        version: 0.80.7(effect@3.14.7)
+      '@effect/platform-node':
+        specifier: 0.76.12
+        version: 0.76.12(@effect/cluster@0.29.12(@effect/platform@0.80.7(effect@3.14.7))(@effect/rpc@0.55.10(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(@effect/sql@0.33.7(@effect/experimental@0.44.7(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(effect@3.14.7))(@effect/platform@0.80.7(effect@3.14.7))(@effect/rpc@0.55.10(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(@effect/sql@0.33.7(@effect/experimental@0.44.7(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(@effect/platform@0.80.7(effect@3.14.7))(effect@3.14.7))(effect@3.14.7)
       '@effect/vitest':
         specifier: ^0.20.7
         version: 0.20.7(effect@3.14.7)(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.0)(tsx@4.19.3))
@@ -80,6 +86,9 @@ importers:
       eslint-plugin-sort-destructure-keys:
         specifier: 2.0.0
         version: 2.0.0(eslint@9.24.0)
+      frida:
+        specifier: 16.7.9
+        version: 16.7.9
       glob:
         specifier: 11.0.1
         version: 11.0.1
@@ -191,6 +200,9 @@ importers:
       '@swc/core':
         specifier: 1.11.18
         version: 1.11.18
+      fast-text-encoding:
+        specifier: 1.0.6
+        version: 1.0.6
       frida-fs:
         specifier: 5.2.5
         version: 5.2.5
@@ -2084,6 +2096,9 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-text-encoding@1.0.6:
+    resolution: {integrity: sha512-VhXlQgj9ioXCqGstD37E/HBeqEGV/qOD/kmbVG8h5xKBYvM1L3lR1Zn4555cQ8GkYbJa8aJSipLPndE1k6zK2w==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -5333,6 +5348,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-text-encoding@1.0.6: {}
 
   fastq@1.19.1:
     dependencies:
