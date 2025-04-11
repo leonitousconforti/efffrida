@@ -28,98 +28,133 @@ export const Tag = Context.GenericTag<FridaScript.FridaScript>("@efffrida/frida-
 export const isFridaScript = (u: unknown): u is FridaScript.FridaScript => Predicate.hasProperty(u, FridaScriptTypeId);
 
 /** @internal */
-export const load: (
-    source: string | Buffer,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-) => Effect.Effect<
-    FridaScript.FridaScript,
-    FridaSessionError.FridaSessionError,
-    FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
-> = Effect.fnUntraced(
-    function* (
+export const load = Function.dual<
+    (
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ) => (
+        source: string | Buffer
+    ) => Effect.Effect<
+        FridaScript.FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    >,
+    (
         source: string | Buffer,
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-    ) {
-        const { device } = yield* FridaDevice.FridaDevice;
-        const { session } = yield* FridaSession.FridaSession;
+    ) => Effect.Effect<
+        FridaScript.FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    >
+>(
+    (arguments_) => Predicate.isString(arguments_[0]) || Buffer.isBuffer(arguments_[0]),
+    Effect.fnUntraced(
+        function* (
+            source: string | Buffer,
+            options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+        ) {
+            const { device } = yield* FridaDevice.FridaDevice;
+            const { session } = yield* FridaSession.FridaSession;
 
-        const script = Predicate.isString(source)
-            ? yield* Effect.tryPromise({
-                  try: () => session.createScript(source, options),
-                  catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
-              })
-            : yield* Effect.tryPromise({
-                  try: () => session.createScriptFromBytes(source, options),
-                  catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
-              });
+            const script = Predicate.isString(source)
+                ? yield* Effect.tryPromise({
+                      try: () => session.createScript(source, options),
+                      catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
+                  })
+                : yield* Effect.tryPromise({
+                      try: () => session.createScriptFromBytes(source, options),
+                      catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
+                  });
 
-        const queue =
-            yield* Queue.unbounded<
-                Take.Take<{ message: any; data: Option.Option<Buffer> }, FridaSessionError.FridaSessionError>
-            >();
+            const queue =
+                yield* Queue.unbounded<
+                    Take.Take<{ message: any; data: Option.Option<Buffer> }, FridaSessionError.FridaSessionError>
+                >();
 
-        const handler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
-            switch (message.type) {
-                case Frida.MessageType.Error: {
-                    const error = new FridaSessionError.FridaSessionError({
-                        when: "message",
-                        cause: {
-                            stack: message.stack,
-                            fileName: message.fileName,
-                            lineNumber: message.lineNumber,
-                            columnNumber: message.columnNumber,
-                            description: message.description,
-                        },
-                    });
-                    const asTake = Take.fail(error);
-                    Queue.unsafeOffer(queue, asTake);
-                    break;
+            const handler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
+                switch (message.type) {
+                    case Frida.MessageType.Error: {
+                        const error = new FridaSessionError.FridaSessionError({
+                            when: "message",
+                            cause: {
+                                stack: message.stack,
+                                fileName: message.fileName,
+                                lineNumber: message.lineNumber,
+                                columnNumber: message.columnNumber,
+                                description: message.description,
+                            },
+                        });
+                        const asTake = Take.fail(error);
+                        Queue.unsafeOffer(queue, asTake);
+                        break;
+                    }
+
+                    case Frida.MessageType.Send: {
+                        const asTake = Take.of({ message: message.payload, data: Option.fromNullable(data) });
+                        Queue.unsafeOffer(queue, asTake);
+                        break;
+                    }
+
+                    default:
+                        Function.absurd(message);
                 }
+            };
 
-                case Frida.MessageType.Send: {
-                    const asTake = Take.of({ message: message.payload, data: Option.fromNullable(data) });
-                    Queue.unsafeOffer(queue, asTake);
-                    break;
-                }
+            script.message.connect(handler);
+            const disconnectHandler = Effect.sync(() => script.message.disconnect(handler));
+            yield* Effect.addFinalizer(() => Effect.flatMap(queue.shutdown, () => disconnectHandler));
 
-                default:
-                    Function.absurd(message);
-            }
-        };
+            const stream = Stream.fromQueue(queue).pipe(Stream.flattenTake);
+            const sink = Sink.forEach<{ message: any; data: Option.Option<Buffer> }, void, never, never>(
+                ({ data, message }) => Effect.sync(() => script.post(message, Option.getOrNull(data)))
+            );
 
-        script.message.connect(handler);
-        const disconnectHandler = Effect.sync(() => script.message.disconnect(handler));
-        yield* Effect.addFinalizer(() => Effect.flatMap(queue.shutdown, () => disconnectHandler));
-
-        const stream = Stream.fromQueue(queue).pipe(Stream.flattenTake);
-        const sink = Sink.forEach<{ message: any; data: Option.Option<Buffer> }, void, never, never>(
-            ({ data, message }) => Effect.sync(() => script.post(message, Option.getOrNull(data)))
-        );
-
-        yield* Effect.tryPromise({
-            try: () => script.load(),
-            catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "load" }),
-        });
-
-        if (options?.resume === true) {
             yield* Effect.tryPromise({
-                try: () => device.resume(session.pid),
-                catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "resume" }),
+                try: () => script.load(),
+                catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "load" }),
             });
-        }
 
-        return {
-            script,
-            stream,
-            sink,
-            [FridaScriptTypeId]: FridaScriptTypeId,
-        } as const;
-    },
-    Effect.acquireRelease(({ script }: FridaScript.FridaScript) => Effect.promise(() => script.unload()))
+            if (options?.resume === true) {
+                yield* Effect.tryPromise({
+                    try: () => device.resume(session.pid),
+                    catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "resume" }),
+                });
+            }
+
+            return {
+                script,
+                stream,
+                sink,
+                [FridaScriptTypeId]: FridaScriptTypeId,
+            } as const;
+        },
+        Effect.acquireRelease(({ script }: FridaScript.FridaScript) => Effect.promise(() => script.unload()))
+    )
 );
 
 /** @internal */
-export const layer = (
-    source: string,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-) => Layer.scoped(Tag, load(source, options));
+export const layer = Function.dual<
+    (
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ) => (
+        source: string | Buffer
+    ) => Layer.Layer<
+        FridaScript.FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice
+    >,
+    (
+        source: string | Buffer,
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ) => Layer.Layer<
+        FridaScript.FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice
+    >
+>(
+    (arguments_) => Predicate.isString(arguments_[0]),
+    (
+        source: string | Buffer,
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ) => Layer.scoped(Tag, load(source, options))
+);

@@ -61,24 +61,46 @@ export const isFridaScript: (u: unknown) => u is FridaScript = internal.isFridaS
  * @since 1.0.0
  * @category Frida
  */
-export const load: (
-    source: string | Buffer,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-) => Effect.Effect<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
-> = internal.load;
+export const load: {
+    (
+        source: string | Buffer,
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ): Effect.Effect<
+        FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    >;
+    (
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ): (
+        source: string | Buffer
+    ) => Effect.Effect<
+        FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    >;
+} = internal.load;
 
 /**
  * @since 1.0.0
  * @category Layers
  */
-export const layer: (
-    source: string,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-) => Layer.Layer<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    FridaDevice.FridaDevice | FridaSession.FridaSession
-> = internal.layer;
+export const layer: {
+    (
+        source: string | Buffer,
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ): Layer.Layer<
+        FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaDevice.FridaDevice | FridaSession.FridaSession
+    >;
+    (
+        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    ): (
+        source: string | Buffer
+    ) => Layer.Layer<
+        FridaScript,
+        FridaSessionError.FridaSessionError,
+        FridaDevice.FridaDevice | FridaSession.FridaSession
+    >;
+} = internal.layer;
