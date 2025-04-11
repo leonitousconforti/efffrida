@@ -1,16 +1,17 @@
 import type * as Scope from "effect/Scope";
-import type * as Frida from "frida";
 import type * as FridaScript from "../FridaScript.js";
 
-import { Take } from "effect";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Queue from "effect/Queue";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as Take from "effect/Take";
+import * as Frida from "frida";
 import * as FridaDevice from "../FridaDevice.js";
 import * as FridaSession from "../FridaSession.js";
 import * as FridaSessionError from "../FridaSessionError.js";
@@ -58,30 +59,31 @@ export const load: (
             >();
 
         const handler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
-            if (message.type === "error") {
-                Queue.unsafeOffer(
-                    queue,
-                    Take.fail(
-                        new FridaSessionError.FridaSessionError({
-                            when: "message",
-                            cause: {
-                                stack: message.stack,
-                                fileName: message.fileName,
-                                lineNumber: message.lineNumber,
-                                columnNumber: message.columnNumber,
-                                description: message.description,
-                            },
-                        })
-                    )
-                );
-            } else if (message.type === "send") {
-                Queue.unsafeOffer(
-                    queue,
-                    Take.of({
-                        message: message.payload,
-                        data: Option.fromNullable(data),
-                    })
-                );
+            switch (message.type) {
+                case Frida.MessageType.Error: {
+                    const error = new FridaSessionError.FridaSessionError({
+                        when: "message",
+                        cause: {
+                            stack: message.stack,
+                            fileName: message.fileName,
+                            lineNumber: message.lineNumber,
+                            columnNumber: message.columnNumber,
+                            description: message.description,
+                        },
+                    });
+                    const asTake = Take.fail(error);
+                    Queue.unsafeOffer(queue, asTake);
+                    break;
+                }
+
+                case Frida.MessageType.Send: {
+                    const asTake = Take.of({ message: message.payload, data: Option.fromNullable(data) });
+                    Queue.unsafeOffer(queue, asTake);
+                    break;
+                }
+
+                default:
+                    Function.absurd(message);
             }
         };
 
