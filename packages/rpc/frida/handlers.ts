@@ -1,6 +1,10 @@
-import type { Rpc } from "@effect/rpc";
+import type * as Rpc from "@effect/rpc/Rpc";
 
-import { Effect, Layer, Ref, Stream } from "effect";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import * as Ref from "effect/Ref";
+import * as Stream from "effect/Stream";
+
 import { User, UserRpcs } from "../shared/requests.js";
 
 // ---------------------------------------------
