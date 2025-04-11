@@ -1,5 +1,5 @@
-// handlers.ts
 import type { Rpc } from "@effect/rpc";
+
 import { Effect, Layer, Ref, Stream } from "effect";
 import { User, UserRpcs } from "../shared/requests.js";
 
