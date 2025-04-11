@@ -112,7 +112,6 @@ export const load = Function.dual<
 
             const destroyed = yield* Deferred.make<void, never>();
             const destroyedHandler = () => Deferred.unsafeDone(destroyed, Effect.void);
-            yield* Effect.addFinalizer(() => Effect.sync(() => script.destroyed.disconnect(destroyedHandler)));
             script.destroyed.connect(destroyedHandler);
 
             const callExport = (exportName: string) =>
