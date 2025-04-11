@@ -5,6 +5,7 @@
  */
 
 import type * as Context from "effect/Context";
+import type * as Deferred from "effect/Deferred";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
@@ -36,12 +37,16 @@ export type FridaScriptTypeId = typeof FridaScriptTypeId;
  */
 export interface FridaScript {
     readonly script: Frida.Script;
+    readonly destroyed: Deferred.Deferred<void, never>;
     readonly stream: Stream.Stream<
         { message: any; data: Option.Option<Buffer> },
         FridaSessionError.FridaSessionError,
         never
     >;
     readonly sink: Sink.Sink<void, { message: any; data: Option.Option<Buffer> }, never, never, never>;
+    readonly callExport: (
+        exportName: string
+    ) => (...args: Array<any>) => Effect.Effect<unknown, FridaSessionError.FridaSessionError, never>;
     readonly [FridaScriptTypeId]: typeof FridaScriptTypeId;
 }
 

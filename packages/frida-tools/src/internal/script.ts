@@ -2,6 +2,7 @@ import type * as Scope from "effect/Scope";
 import type * as FridaScript from "../FridaScript.js";
 
 import * as Context from "effect/Context";
+import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -66,12 +67,12 @@ export const load = Function.dual<
                       catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
                   });
 
-            const queue =
+            const messageQueue =
                 yield* Queue.unbounded<
                     Take.Take<{ message: any; data: Option.Option<Buffer> }, FridaSessionError.FridaSessionError>
                 >();
 
-            const handler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
+            const messageHandler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
                 switch (message.type) {
                     case Frida.MessageType.Error: {
                         const error = new FridaSessionError.FridaSessionError({
@@ -85,13 +86,13 @@ export const load = Function.dual<
                             },
                         });
                         const asTake = Take.fail(error);
-                        Queue.unsafeOffer(queue, asTake);
+                        Queue.unsafeOffer(messageQueue, asTake);
                         break;
                     }
 
                     case Frida.MessageType.Send: {
                         const asTake = Take.of({ message: message.payload, data: Option.fromNullable(data) });
-                        Queue.unsafeOffer(queue, asTake);
+                        Queue.unsafeOffer(messageQueue, asTake);
                         break;
                     }
 
@@ -100,14 +101,37 @@ export const load = Function.dual<
                 }
             };
 
-            script.message.connect(handler);
-            const disconnectHandler = Effect.sync(() => script.message.disconnect(handler));
-            yield* Effect.addFinalizer(() => Effect.flatMap(queue.shutdown, () => disconnectHandler));
+            const disconnectMessageHandler = Effect.sync(() => script.message.disconnect(messageHandler));
+            yield* Effect.addFinalizer(() => Effect.flatMap(messageQueue.shutdown, () => disconnectMessageHandler));
+            script.message.connect(messageHandler);
 
-            const stream = Stream.fromQueue(queue).pipe(Stream.flattenTake);
+            const stream = Stream.fromQueue(messageQueue).pipe(Stream.flattenTake);
             const sink = Sink.forEach<{ message: any; data: Option.Option<Buffer> }, void, never, never>(
                 ({ data, message }) => Effect.sync(() => script.post(message, Option.getOrNull(data)))
             );
+
+            const destroyed = yield* Deferred.make<void, never>();
+            const destroyedHandler = () => Deferred.unsafeDone(destroyed, Effect.void);
+            yield* Effect.addFinalizer(() => Effect.sync(() => script.destroyed.disconnect(destroyedHandler)));
+            script.destroyed.connect(destroyedHandler);
+
+            const callExport = (exportName: string) =>
+                Effect.fn(`frida export ${exportName}`)(function* (...args: Array<any>) {
+                    yield* Effect.annotateCurrentSpan("args", args);
+                    const isDestroyed = yield* Deferred.isDone(destroyed);
+                    if (isDestroyed) {
+                        return yield* new FridaSessionError.FridaSessionError({
+                            when: "rpcCall",
+                            cause: "Script is destroyed",
+                        });
+                    }
+                    const result = yield* Effect.tryPromise({
+                        try: () => script.exports[exportName](args) as Promise<unknown>,
+                        catch: (cause) => new FridaSessionError.FridaSessionError({ when: "rpcCall", cause }),
+                    });
+                    yield* Effect.annotateCurrentSpan("result", result);
+                    return result;
+                });
 
             yield* Effect.tryPromise({
                 try: () => script.load(),
@@ -125,6 +149,8 @@ export const load = Function.dual<
                 script,
                 stream,
                 sink,
+                destroyed,
+                callExport,
                 [FridaScriptTypeId]: FridaScriptTypeId,
             } as const;
         },
