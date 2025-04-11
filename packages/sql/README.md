@@ -1,3 +1,3 @@
 # @efffrida/sql
 
-Interop between https://frida.re/docs/javascript-api/#sqlitedatabase and https://github.com/Effect-TS/effect/tree/main/packages/sql.
+Provides an effect sql implementation for frida agents to be used with the `@effect/sql` package.
