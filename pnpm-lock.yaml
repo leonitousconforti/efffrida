@@ -231,6 +231,9 @@ importers:
       '@effect/vitest':
         specifier: 0.20.7
         version: 0.20.7(effect@3.14.7)(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.0)(terser@5.39.0)(tsx@4.19.3))
+      '@types/fast-text-encoding':
+        specifier: 1.0.3
+        version: 1.0.3
       '@types/frida-gum':
         specifier: 18.8.2
         version: 18.8.2
@@ -1327,6 +1330,9 @@ packages:
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+
+  '@types/fast-text-encoding@1.0.3':
+    resolution: {integrity: sha512-bbGJt6IyiuyAhPOX7htQDDzv2bDGJdWyd6X+e1BcdPzU3e5jyjOdB86LoTSoE80faY9v8Wt7/ix3Sp+coRJ03Q==}
 
   '@types/frida-gum@18.8.2':
     resolution: {integrity: sha512-5KH6ITrKJQe1UWrNnbXXx3KXRe/Lx9I1EwkBdC+AMmlo9F5UC0PxdC959aGxhfjXBRIHWxXwXPi3JmeWIbeqeg==}
@@ -4526,6 +4532,8 @@ snapshots:
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.7': {}
+
+  '@types/fast-text-encoding@1.0.3': {}
 
   '@types/frida-gum@18.8.2': {}
 
