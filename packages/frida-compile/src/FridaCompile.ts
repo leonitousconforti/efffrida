@@ -41,7 +41,13 @@ export const compileAgent: (
         const agentFilename = path.basename(agentLocationString);
         const compiledAgentLocation = path.join(tempOutDir, agentFilename.replace(/\.ts$/, ".js"));
 
-        const processShim = yield* path.fromFileUrl(new URL("./internal/shims/process.js", import.meta.url));
+        const processShim = `
+            import process from "@frida/process";
+            export { process as "process" };
+        `;
+        const processShimFile = yield* path.fromFileUrl(new URL("./process.shim.js", import.meta.url));
+        yield* fileSystem.writeFileString(processShimFile, processShim);
+
         const require = Module.createRequire(import.meta.url);
         const config = Tsup.defineConfig({
             ...(Option.isSome(tsconfigLocationString) ? { tsconfig: tsconfigLocationString.value } : {}),
@@ -60,7 +66,7 @@ export const compileAgent: (
 
                 // Inject polyfills for Node.js built-in modules
                 options.inject = [
-                    processShim,
+                    processShimFile,
                     require.resolve("fast-text-encoding"),
                     require.resolve("@frida/assert"),
                     require.resolve("@frida/base64-js"),
