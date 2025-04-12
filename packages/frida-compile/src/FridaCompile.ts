@@ -23,7 +23,7 @@ export const compileAgent: (
     function* (agentLocation: string | URL, tsconfig?: string | URL | undefined) {
         const path = yield* Path.Path;
         const fileSystem = yield* FileSystem.FileSystem;
-        const tempOutDir = yield* fileSystem.makeTempDirectory();
+        const tempOutDir = yield* fileSystem.makeTempDirectoryScoped();
 
         const agentLocationString = yield* Predicate.isString(agentLocation)
             ? Effect.succeed(agentLocation)
@@ -40,8 +40,8 @@ export const compileAgent: (
 
         const agentFilename = path.basename(agentLocationString);
         const compiledAgentLocation = path.join(tempOutDir, agentFilename.replace(/\.ts$/, ".js"));
-        console.log(compiledAgentLocation);
 
+        const processShim = yield* path.fromFileUrl(new URL("./internal/shims/process.js", import.meta.url));
         const require = Module.createRequire(import.meta.url);
         const config = Tsup.defineConfig({
             ...(Option.isSome(tsconfigLocationString) ? { tsconfig: tsconfigLocationString.value } : {}),
@@ -60,35 +60,33 @@ export const compileAgent: (
 
                 // Inject polyfills for Node.js built-in modules
                 options.inject = [
-                    // require.resolve("fast-text-encoding"),
-                    // require.resolve("@frida/assert"),
-                    // require.resolve("@frida/base64-js"),
-                    // require.resolve("@frida/buffer"),
-                    // require.resolve("@frida/crosspath"),
-                    // require.resolve("@frida/crypto"),
-                    // require.resolve("@frida/diagnostics_channel"),
-                    // require.resolve("@frida/events"),
-                    // require.resolve("frida-fs"),
+                    processShim,
+                    require.resolve("fast-text-encoding"),
+                    require.resolve("@frida/assert"),
+                    require.resolve("@frida/base64-js"),
+                    require.resolve("@frida/buffer"),
+                    require.resolve("@frida/crypto"),
+                    require.resolve("@frida/diagnostics_channel"),
+                    require.resolve("@frida/events"),
+                    require.resolve("frida-fs"),
                     // require.resolve("@frida/http"),
                     // require.resolve("@frida/http-parser-js"),
                     // require.resolve("@frida/https"),
-                    // require.resolve("@frida/ieee754"),
+                    require.resolve("@frida/ieee754"),
                     // require.resolve("@frida/net"),
-                    // require.resolve("@frida/os"),
-                    // require.resolve("@frida/path"),
-                    // require.resolve("@frida/process"),
-                    // require.resolve("@frida/punycode"),
-                    // require.resolve("@frida/querystring"),
-                    // require.resolve("@frida/readable-stream"),
-                    // require.resolve("@frida/reserved-words"),
-                    // require.resolve("@frida/stream"),
-                    // require.resolve("@frida/string_decoder"),
-                    // require.resolve("@frida/terser"),
+                    require.resolve("@frida/os"),
+                    require.resolve("@frida/path"),
+                    require.resolve("@frida/process"),
+                    require.resolve("@frida/punycode"),
+                    require.resolve("@frida/querystring"),
+                    require.resolve("@frida/readable-stream"),
+                    require.resolve("@frida/stream"),
+                    require.resolve("@frida/string_decoder"),
                     // require.resolve("@frida/timers"),
-                    // require.resolve("@frida/tty"),
+                    require.resolve("@frida/tty"),
                     require.resolve("@frida/url"),
-                    // require.resolve("@frida/util"),
-                    // require.resolve("@frida/vm"),
+                    require.resolve("@frida/util"),
+                    require.resolve("@frida/vm"),
                 ];
 
                 // Configure external packages (these will be required at runtime)
@@ -99,7 +97,6 @@ export const compileAgent: (
                     assert: require.resolve("@frida/assert"),
                     "base64-js": require.resolve("@frida/base64-js"),
                     buffer: require.resolve("@frida/buffer"),
-                    crosspath: require.resolve("@frida/crosspath"),
                     crypto: require.resolve("@frida/crypto"),
                     diagnostics_channel: require.resolve("@frida/diagnostics_channel"),
                     events: require.resolve("@frida/events"),
@@ -115,10 +112,8 @@ export const compileAgent: (
                     punycode: require.resolve("@frida/punycode"),
                     querystring: require.resolve("@frida/querystring"),
                     "readable-stream": require.resolve("@frida/readable-stream"),
-                    "reserved-words": require.resolve("@frida/reserved-words"),
                     stream: require.resolve("@frida/stream"),
                     string_decoder: require.resolve("@frida/string_decoder"),
-                    terser: require.resolve("@frida/terser"),
                     // timers: require.resolve("@frida/timers"),
                     tty: require.resolve("@frida/tty"),
                     url: require.resolve("@frida/url"),
@@ -141,7 +136,17 @@ export const compileAgent: (
         //     .pipe(Effect.map((minified) => minified.replace('import*as Msgpackr from"msgpackr";', "")))
         //     .pipe(Effect.flatMap((minified) => fileSystem.writeFileString(compiledAgentLocation, minified)));
 
-        return yield* fileSystem.readFileString(compiledAgentLocation);
+        return yield* fileSystem
+            .readFileString(compiledAgentLocation)
+            .pipe(Effect.map((minified) => minified.replace("import * as Msgpackr from 'msgpackr';", "")))
+            .pipe(
+                Effect.map((result) =>
+                    result.replace(
+                        'var setImmediate = "setImmediate" in globalThis ? globalThis.setImmediate : (f) => setTimeout(f, 0);',
+                        ""
+                    )
+                )
+            );
     },
     Effect.scoped,
     Effect.orDie
