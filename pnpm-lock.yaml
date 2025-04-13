@@ -206,6 +206,9 @@ importers:
       frida-fs:
         specifier: 5.2.5
         version: 5.2.5
+      msgpackr:
+        specifier: 1.11.2
+        version: 1.11.2
       terser:
         specifier: 5.39.0
         version: 5.39.0
