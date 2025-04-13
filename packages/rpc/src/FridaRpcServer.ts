@@ -66,7 +66,10 @@ export const makeProtocolFrida: Effect.Effect<
                     chunks.push(encoded);
 
                     if (Predicate.isTagged(response, "Chunk")) return Effect.void;
-                    else return Deferred.succeed(deferred, chunks.join(""));
+                    const final = Predicate.isString(chunks[0])
+                        ? chunks.join("")
+                        : Buffer.concat(chunks as Array<Uint8Array>);
+                    return Deferred.succeed(deferred, final);
                 } catch (cause) {
                     const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause));
                     return Deferred.succeed(deferred, encoded);
@@ -75,7 +78,10 @@ export const makeProtocolFrida: Effect.Effect<
         });
 
         try {
-            const decoded = parser.decode(String(request)) as ReadonlyArray<RpcMessage.FromClientEncoded>;
+            const incoming: string | Uint8Array = Predicate.isString((request as any)[0])
+                ? (request as any)[0]
+                : new Uint8Array((request as any)[0]["data"]);
+            const decoded = parser.decode(incoming) as ReadonlyArray<RpcMessage.FromClientEncoded>;
             if (decoded.length === 0) return "";
             let i = 0;
             await Runtime.runPromise(

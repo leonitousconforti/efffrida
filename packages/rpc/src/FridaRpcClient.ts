@@ -55,8 +55,11 @@ export const makeProtocolFrida = (
                     .pipe(
                         Effect.flatMap((responseData) => {
                             try {
+                                const incoming = Predicate.isString(responseData)
+                                    ? responseData
+                                    : new Uint8Array((responseData as any)["data"]);
                                 const responses = parser.decode(
-                                    responseData as string | Uint8Array
+                                    incoming as string | Uint8Array
                                 ) as Array<RpcMessage.FromServerEncoded>;
                                 if (responses.length === 0) return Effect.void;
                                 let i = 0;
