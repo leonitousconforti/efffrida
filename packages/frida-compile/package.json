@@ -51,7 +51,6 @@
         "fast-text-encoding": "1.0.6",
         "frida-fs": "5.2.5",
         "msgpackr": "1.11.2",
-        "terser": "5.39.0",
         "tsup": "8.4.0"
     },
     "devDependencies": {
