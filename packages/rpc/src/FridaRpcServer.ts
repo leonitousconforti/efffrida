@@ -49,10 +49,8 @@ export const makeProtocolFrida: Effect.Effect<
         const id = clientId++;
         const parser = serialization.unsafeMake();
 
-        // const endSignal = new AbortController();
         const deferred = await Runtime.runPromise(runtime, Deferred.make<string | Uint8Array, never>());
         clients.set(id, {
-            // end: Effect.sync(() => endSignal.abort()),
             end: Effect.void,
             write: (response: RpcMessage.FromServerEncoded) => {
                 try {
