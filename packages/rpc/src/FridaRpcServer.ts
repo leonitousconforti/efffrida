@@ -49,10 +49,11 @@ export const makeProtocolFrida: Effect.Effect<
         const id = clientId++;
         const parser = serialization.unsafeMake();
 
-        const endSignal = new AbortController();
+        // const endSignal = new AbortController();
         const deferred = await Runtime.runPromise(runtime, Deferred.make<string | Uint8Array, never>());
         clients.set(id, {
-            end: Effect.sync(() => endSignal.abort()),
+            // end: Effect.sync(() => endSignal.abort()),
+            end: Effect.void,
             write: (response: RpcMessage.FromServerEncoded) => {
                 try {
                     if (!serialization.supportsBigInt && "requestId" in response) {
@@ -69,7 +70,7 @@ export const makeProtocolFrida: Effect.Effect<
         });
 
         try {
-            const decoded = parser.decode(request) as ReadonlyArray<RpcMessage.FromClientEncoded>;
+            const decoded = parser.decode(String(request)) as ReadonlyArray<RpcMessage.FromClientEncoded>;
             if (decoded.length === 0) return "";
             let i = 0;
             await Runtime.runPromise(
@@ -84,7 +85,7 @@ export const makeProtocolFrida: Effect.Effect<
             return Promise.resolve(parser.encode(RpcMessage.ResponseDefectEncoded(cause)));
         }
 
-        return Runtime.runPromise(runtime, deferred, { signal: endSignal.signal });
+        return Runtime.runPromise(runtime, deferred);
     };
 
     const protocol = yield* RpcServer.Protocol.make((writeRequest_) => {
@@ -99,6 +100,7 @@ export const makeProtocolFrida: Effect.Effect<
             end(clientId) {
                 const client = clients.get(clientId);
                 if (!client) return Effect.void;
+                clients.delete(clientId);
                 return client.end;
             },
             initialMessage: Effect.succeedNone,
@@ -119,16 +121,16 @@ export const makeProtocolFridaWithExport = (
     options?:
         | {
               readonly exportName?: string | undefined;
-              readonly onRpcAvailable?: string | undefined;
+              readonly messageOnRpcAvailable?: string | undefined;
           }
         | undefined
 ) =>
     Effect.gen(function* () {
         const { protocol, rpcExport } = yield* makeProtocolFrida;
         rpc.exports[options?.exportName ?? "rpc"] = rpcExport;
-        const onRpcAvailable = options?.onRpcAvailable;
-        if (Predicate.isNotUndefined(onRpcAvailable)) {
-            send(onRpcAvailable);
+        const messageOnRpcAvailable = options?.messageOnRpcAvailable;
+        if (Predicate.isNotUndefined(messageOnRpcAvailable)) {
+            send(messageOnRpcAvailable);
         }
         return protocol;
     });

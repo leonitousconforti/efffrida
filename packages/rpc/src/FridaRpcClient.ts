@@ -28,7 +28,7 @@ export const makeProtocolFrida = (
     options?:
         | {
               readonly exportName?: string | undefined;
-              readonly rpcIsAvailable?: ((message: string) => boolean) | undefined;
+              readonly rpcIsAvailableWhen?: ((message: string) => boolean) | undefined;
           }
         | undefined
 ): Effect.Effect<RpcClient.Protocol["Type"], FridaSessionError.FridaSessionError, RpcSerialization.RpcSerialization> =>
@@ -36,7 +36,7 @@ export const makeProtocolFrida = (
         Effect.fnUntraced(function* (writeResponse) {
             const serialization = yield* RpcSerialization.RpcSerialization;
             const exportName = options?.exportName ?? "rpc";
-            const rpcIsAvailable = options?.rpcIsAvailable;
+            const rpcIsAvailableWhen = options?.rpcIsAvailableWhen;
 
             const send = (request: RpcMessage.FromClientEncoded): Effect.Effect<void> => {
                 if (request._tag !== "Request") {
@@ -72,11 +72,11 @@ export const makeProtocolFrida = (
                     );
             };
 
-            if (Predicate.isNotUndefined(rpcIsAvailable)) {
+            if (Predicate.isNotUndefined(rpcIsAvailableWhen)) {
                 yield* script.stream
                     .pipe(Stream.map(({ message }) => message))
                     .pipe(Stream.filter(Predicate.isString))
-                    .pipe(Stream.takeUntil(rpcIsAvailable))
+                    .pipe(Stream.takeUntil(rpcIsAvailableWhen))
                     .pipe(Stream.runDrain);
             }
 
