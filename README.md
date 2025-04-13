@@ -10,7 +10,7 @@ The Efffrida monorepo is organized into multiple packages, each extending a diff
 | ------------------------------------------------------ | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `@efffrida/frida-compile` | Compile frida agents                                                      | [README]()    |
 | `@efffrida/frida-tools`   | Connect to devices and launch frida agents                                | [README]()    |
-| `@efffrida/il2cpp-bridge` | OpenAI utilities                                                          | [README]()    |
+| `@efffrida/il2cpp-bridge` | WIP                                                                       | [README]()    |
 | `@efffrida/platform`      | Platform utilities for Frida                                              | [README]()    |
 | `@efffrida/rpc`           | Frida based RPC utilities for building agents                             | [README]()    |
 | `@efffrida/sql`           | An `@effect/sql` implementation using the frida SqliteDatabase library    | [README]()    |
