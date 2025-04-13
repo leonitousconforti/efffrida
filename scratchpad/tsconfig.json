@@ -1,6 +1,7 @@
 {
     "extends": "../tsconfig.base.json",
     "compilerOptions": {
+        "types": ["node", "frida-gum"],
         "noEmit": true,
         "declaration": false,
         "declarationMap": false,

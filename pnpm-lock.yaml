@@ -47,6 +47,9 @@ importers:
       '@eslint/js':
         specifier: 9.24.0
         version: 9.24.0
+      '@types/frida-gum':
+        specifier: 18.8.2
+        version: 18.8.2
       '@types/node':
         specifier: 22.14.0
         version: 22.14.0
