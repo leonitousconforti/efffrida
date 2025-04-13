@@ -6,9 +6,11 @@
 
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
+import * as Terser from "@frida/terser";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
+import * as String from "effect/String";
 import * as Module from "node:module";
 import * as Tsup from "tsup";
 
@@ -60,6 +62,7 @@ export const compileAgent: (
             sourcemap: false,
             clean: true,
             treeshake: true,
+            minify: false,
             removeNodeProtocol: true,
             esbuildOptions(options) {
                 options.define = { URL: "Url" };
@@ -96,7 +99,7 @@ export const compileAgent: (
                 ];
 
                 // Configure external packages (these will be required at runtime)
-                options.external = ["msgpackr"];
+                // options.external = [];
 
                 // Map Node.js and other modules to their @frida equivalents
                 options.alias = {
@@ -130,29 +133,19 @@ export const compileAgent: (
         }) as Tsup.Options;
 
         yield* Effect.promise(() => Tsup.build(config));
-        // const code = yield* fileSystem.readFileString(compiledAgentLocation);
-        // yield* Effect.promise(() => Terser.minify(code, { compress: false, mangle: false }))
-        //     .pipe(
-        //         Effect.flatMap((result) =>
-        //             Predicate.isUndefined(result.code)
-        //                 ? Effect.dieMessage("Failed to minify code")
-        //                 : Effect.succeed(result.code)
-        //         )
-        //     )
-        //     .pipe(Effect.map((minified) => minified.replace('import*as Msgpackr from"msgpackr";', "")))
-        //     .pipe(Effect.flatMap((minified) => fileSystem.writeFileString(compiledAgentLocation, minified)));
-
         return yield* fileSystem
             .readFileString(compiledAgentLocation)
-            .pipe(Effect.map((minified) => minified.replace("import * as Msgpackr from 'msgpackr';", "")))
             .pipe(
-                Effect.map((result) =>
-                    result.replace(
+                Effect.map(
+                    String.replace(
                         'var setImmediate = "setImmediate" in globalThis ? globalThis.setImmediate : (f) => setTimeout(f, 0);',
                         ""
                     )
                 )
-            );
+            )
+            .pipe(Effect.map((source) => Terser.minify(source, { compress: true, mangle: true })))
+            .pipe(Effect.map(({ code }) => Option.fromNullable(code)))
+            .pipe(Effect.map(Option.getOrThrow));
     },
     Effect.scoped,
     Effect.orDie
