@@ -11,6 +11,7 @@ import type * as Types from "effect/Types";
 import * as RpcMessage from "@effect/rpc/RpcMessage";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
 import * as RpcServer from "@effect/rpc/RpcServer";
+import * as Array from "effect/Array";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
@@ -49,7 +50,9 @@ export const makeProtocolFrida: Effect.Effect<
         const id = clientId++;
         const parser = serialization.unsafeMake();
 
+        const chunks = Array.empty<string | Uint8Array>();
         const deferred = await Runtime.runPromise(runtime, Deferred.make<string | Uint8Array, never>());
+
         clients.set(id, {
             end: Effect.void,
             write: (response: RpcMessage.FromServerEncoded) => {
@@ -58,8 +61,12 @@ export const makeProtocolFrida: Effect.Effect<
                         const mutable = response as Types.Mutable<typeof response>;
                         mutable.requestId = mutable.requestId.toString();
                     }
+
                     const encoded = parser.encode(response);
-                    return Deferred.succeed(deferred, encoded);
+                    chunks.push(encoded);
+
+                    if (Predicate.isTagged(response, "Chunk")) return Effect.void;
+                    else return Deferred.succeed(deferred, chunks.join(""));
                 } catch (cause) {
                     const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause));
                     return Deferred.succeed(deferred, encoded);
