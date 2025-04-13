@@ -5,9 +5,11 @@ import { FridaCompile } from "@efffrida/frida-compile";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { Effect, Layer, Option, Stream } from "effect";
 
-const LocalDeviceLive = Layer.provideMerge(FridaSession.layer("/usr/bin/sleep"), FridaDevice.layerLocalDevice);
+const DeviceLive = FridaDevice.layerLocalDevice;
+const SessionLive = FridaSession.layer("/usr/bin/sleep");
+const Live = Layer.provideMerge(SessionLive, DeviceLive).pipe(Layer.merge(NodeContext.layer));
 
-layer(Layer.merge(LocalDeviceLive, NodeContext.layer))("Local device tests", (it) => {
+layer(Live)("Local device tests", (it) => {
     it.scoped("should load a script", () =>
         Effect.gen(function* () {
             const source = yield* FridaCompile.compileAgent(new URL("../frida/agent.ts", import.meta.url));
