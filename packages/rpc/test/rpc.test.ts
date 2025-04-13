@@ -35,17 +35,14 @@ describe("Should be able to perform rpc communication", () => {
             const client = yield* RpcClient.make(UserRpcs);
             const user = yield* client.UserById({ id: "1" });
             expect(user).toEqual({ id: "1", name: "Alice" });
-            // yield* Console.log("User: ", user);
             let users = yield* Stream.runCollect(client.UserList());
-            // yield* Console.log("Users: ", users);
+            expect(users).toEqual(Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }));
             if (Option.isNone(Chunk.findFirst(users, (user) => user.id === "3"))) {
-                // yield* Console.log(`Creating user "Charlie"`);
                 yield* client.UserCreate({ name: "Charlie" });
-                users = yield* Stream.runCollect(client.UserList({}));
+                users = yield* Stream.runCollect(client.UserList());
             } else {
                 yield* Console.log(`User "Charlie" already exists`);
             }
-            // yield* Console.log("Users: ", users);
             expect(users).toEqual(
                 Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }, { id: "3", name: "Charlie" })
             );
