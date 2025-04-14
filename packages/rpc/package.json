@@ -17,12 +17,9 @@
         "build-cjs": "babel build/esm --plugins @babel/transform-export-namespace-from --plugins @babel/transform-modules-commonjs --out-dir build/cjs --source-maps",
         "build-esm": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",
-        "codegen": "build-utils prepare-v2"
-    },
-    "dependencies": {
-        "@efffrida/frida-compile": "workspace:^",
-        "@efffrida/frida-tools": "workspace:^",
-        "frida": "16.7.10"
+        "codegen": "build-utils prepare-v2",
+        "coverage": "vitest --coverage",
+        "test": "vitest"
     },
     "devDependencies": {
         "@effect/cluster": "0.29.17",
@@ -32,8 +29,11 @@
         "@effect/rpc": "0.55.12",
         "@effect/sql": "0.33.8",
         "@effect/vitest": "0.20.8",
+        "@efffrida/frida-compile": "workspace:^",
+        "@efffrida/frida-tools": "workspace:^",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.8",
+        "frida": "16.7.10",
         "vitest": "3.1.1"
     },
     "peerDependencies": {
