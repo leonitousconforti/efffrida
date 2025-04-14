@@ -19,6 +19,7 @@ import * as Layer from "effect/Layer";
 import * as Mailbox from "effect/Mailbox";
 import * as Predicate from "effect/Predicate";
 import * as Runtime from "effect/Runtime";
+import * as Schema from "effect/Schema";
 
 /**
  * @since 1.0.0
@@ -27,7 +28,7 @@ import * as Runtime from "effect/Runtime";
 export const makeProtocolFrida: Effect.Effect<
     {
         protocol: RpcServer.Protocol["Type"];
-        rpcExport: (request: string | Uint8Array) => Promise<string | Uint8Array>;
+        rpcExport: (request: string | Uint8Array) => Promise<string | ReadonlyArray<number>>;
     },
     never,
     RpcSerialization.RpcSerialization
@@ -46,12 +47,16 @@ export const makeProtocolFrida: Effect.Effect<
     >();
     let writeRequest!: (clientId: number, message: RpcMessage.FromClientEncoded) => Effect.Effect<void>;
 
-    const rpcExport = async function (request: string | Uint8Array): Promise<string | Uint8Array> {
+    const rpcExport = async function (request: string | Uint8Array): Promise<string | ReadonlyArray<number>> {
         const id = clientId++;
         const parser = serialization.unsafeMake();
 
-        const chunks = Array.empty<string | Uint8Array>();
-        const deferred = await Runtime.runPromise(runtime, Deferred.make<string | Uint8Array, never>());
+        const chunks = Array.empty<string | ReadonlyArray<number>>();
+        const deferred = await Runtime.runPromise(runtime, Deferred.make<string | ReadonlyArray<number>, never>());
+
+        const schema = Schema.Union(Schema.String, Schema.Uint8Array);
+        const encode = Function.compose(parser.encode, Schema.encodeSync(schema));
+        const decode = Function.compose(Schema.decodeUnknownSync(schema), parser.decode);
 
         clients.set(id, {
             end: Effect.void,
@@ -62,24 +67,23 @@ export const makeProtocolFrida: Effect.Effect<
                         mutable.requestId = mutable.requestId.toString();
                     }
 
-                    const encoded = parser.encode(response);
-                    chunks.push(encoded);
-
+                    chunks.push(encode(response));
                     if (Predicate.isTagged(response, "Chunk")) return Effect.void;
+
                     const final = Predicate.isString(chunks[0])
                         ? chunks.join("")
-                        : Buffer.concat(chunks as Array<Uint8Array>);
+                        : Array.flatten(chunks as Array<ReadonlyArray<number>>);
                     return Deferred.succeed(deferred, final);
                 } catch (cause) {
-                    const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause));
+                    const message = RpcMessage.ResponseDefectEncoded(cause);
+                    const encoded = encode(message);
                     return Deferred.succeed(deferred, encoded);
                 }
             },
         });
 
         try {
-            const incoming = Predicate.isString(request) ? request : new Uint8Array((request as any)["data"]);
-            const decoded = parser.decode(incoming) as ReadonlyArray<RpcMessage.FromClientEncoded>;
+            const decoded = decode(request) as ReadonlyArray<RpcMessage.FromClientEncoded>;
             if (decoded.length === 0) return "";
             let i = 0;
             await Runtime.runPromise(
@@ -91,7 +95,9 @@ export const makeProtocolFrida: Effect.Effect<
                 })
             );
         } catch (cause) {
-            return Promise.resolve(parser.encode(RpcMessage.ResponseDefectEncoded(cause)));
+            const message = RpcMessage.ResponseDefectEncoded(cause);
+            const encoded = encode(message);
+            return Promise.resolve(encoded);
         }
 
         return Runtime.runPromise(runtime, deferred);

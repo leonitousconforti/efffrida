@@ -17,6 +17,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Predicate from "effect/Predicate";
+import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
 /**
@@ -49,18 +50,17 @@ export const makeProtocolFrida = (
                     mutable.id = request.id.toString();
                 }
 
-                return script
-                    .callExport(exportName)(parser.encode(request))
+                const schema = Schema.Union(Schema.String, Schema.Uint8Array);
+                const encode = Function.compose(parser.encode, Schema.encode(schema));
+                const decode = Function.compose(Schema.decodeUnknownSync(schema), parser.decode);
+
+                return encode(request)
+                    .pipe(Effect.flatMap(script.callExport(exportName)))
                     .pipe(Effect.orDie)
                     .pipe(
-                        Effect.flatMap((responseData) => {
+                        Effect.flatMap((incoming) => {
                             try {
-                                const incoming = Predicate.isString(responseData)
-                                    ? responseData
-                                    : new Uint8Array((responseData as any)["data"]);
-                                const responses = parser.decode(
-                                    incoming as string | Uint8Array
-                                ) as Array<RpcMessage.FromServerEncoded>;
+                                const responses = decode(incoming) as Array<RpcMessage.FromServerEncoded>;
                                 if (responses.length === 0) return Effect.void;
                                 let i = 0;
                                 return Effect.whileLoop({
