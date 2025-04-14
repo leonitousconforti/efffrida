@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "references": [{ "path": "tsconfig.src.json" }, { "path": "../frida-compile/tsconfig.src.json" }],
+    "include": ["test"],
+    "compilerOptions": {
+        "types": ["node"],
+        "tsBuildInfoFile": ".tsbuildinfo/test.tsbuildinfo",
+        "rootDir": "test",
+        "noEmit": true
+    }
+}

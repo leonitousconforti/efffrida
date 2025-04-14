@@ -6,7 +6,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/leoconforti/efffrida.git",
-        "directory": "packages/effect-frida-il2cpp-bridge"
+        "directory": "packages/il2cpp-bridge"
     },
     "license": "GPL-3.0-only",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
@@ -17,7 +17,9 @@
         "build-cjs": "babel build/esm --plugins @babel/transform-export-namespace-from --plugins @babel/transform-modules-commonjs --out-dir build/cjs --source-maps",
         "build-esm": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",
-        "codegen": "build-utils prepare-v2"
+        "codegen": "build-utils prepare-v2",
+        "coverage": "vitest --coverage",
+        "test": "vitest"
     },
     "devDependencies": {
         "effect": "3.14.8"
