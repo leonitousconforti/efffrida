@@ -99,7 +99,7 @@ export const layerProtocolFrida = (
     options?:
         | {
               readonly exportName?: string | undefined;
-              readonly rpcIsAvailable?: ((message: string) => boolean) | undefined;
+              readonly rpcIsAvailableWhen?: ((message: string) => boolean) | undefined;
           }
         | undefined
 ): Layer.Layer<

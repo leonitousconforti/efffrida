@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "include": ["src/FridaRpcClient.ts", "src/index.ts"],
-    "references": [{ "path": "tsconfig.src-frida.json" }],
+    "references": [{ "path": "tsconfig.src-frida.json" }, { "path": "../frida-tools/tsconfig.src.json" }],
     "compilerOptions": {
         "types": ["node"],
         "outDir": "build/src",

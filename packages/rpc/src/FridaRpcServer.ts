@@ -154,7 +154,7 @@ export const layerProtocolFrida = (
     options?:
         | {
               readonly exportName?: string | undefined;
-              readonly onRpcAvailable?: string | undefined;
+              readonly messageOnRpcAvailable?: string | undefined;
           }
         | undefined
 ): Layer.Layer<RpcServer.Protocol, never, RpcSerialization.RpcSerialization> =>
