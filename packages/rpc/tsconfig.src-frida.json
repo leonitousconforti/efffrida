@@ -1,6 +1,5 @@
 {
     "extends": "../../tsconfig.base.json",
-    "references": [{ "path": "../frida-tools/tsconfig.src.json" }],
     "include": ["src/FridaRpcServer.ts"],
     "compilerOptions": {
         "types": ["node", "frida-gum"],

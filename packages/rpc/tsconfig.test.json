@@ -3,6 +3,7 @@
     "references": [
         { "path": "tsconfig.src-node.json" },
         { "path": "tsconfig.src-frida.json" },
+        { "path": "../frida-tools/tsconfig.src.json" },
         { "path": "../frida-compile/tsconfig.src.json" }
     ],
     "include": ["test", "shared"],
