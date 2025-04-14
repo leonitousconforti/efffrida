@@ -4,7 +4,6 @@ import { NodeContext } from "@effect/platform-node";
 import { FridaCompile } from "@efffrida/frida-compile";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { Effect, Layer, Option, Stream } from "effect";
-import { ScriptRuntime } from "frida";
 
 // Pick a device and a session/program
 const DeviceLive = FridaDevice.layerLocalDevice;
@@ -13,7 +12,7 @@ const FridaLive = Layer.provideMerge(SessionLive, DeviceLive);
 
 // Compile the agent
 const ScriptLive = FridaCompile.compileAgent(new URL("../frida/agent.ts", import.meta.url))
-    .pipe(Effect.map(FridaScript.layer({ runtime: ScriptRuntime.V8 })))
+    .pipe(Effect.map(FridaScript.layer()))
     .pipe(Layer.unwrapEffect)
     .pipe(Layer.provide([FridaLive, NodeContext.layer]));
 

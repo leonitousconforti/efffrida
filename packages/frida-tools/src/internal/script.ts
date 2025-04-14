@@ -59,11 +59,11 @@ export const load = Function.dual<
 
             const script = Predicate.isString(source)
                 ? yield* Effect.tryPromise({
-                      try: () => session.createScript(source, options),
+                      try: () => session.createScript(source, { runtime: Frida.ScriptRuntime.V8, ...options }),
                       catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
                   })
                 : yield* Effect.tryPromise({
-                      try: () => session.createScriptFromBytes(source, options),
+                      try: () => session.createScriptFromBytes(source, { runtime: Frida.ScriptRuntime.V8, ...options }),
                       catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
                   });
 

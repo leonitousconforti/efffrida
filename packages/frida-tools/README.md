@@ -18,7 +18,7 @@ const FridaLive = Layer.provideMerge(SessionLive, DeviceLive);
 
 // Compile the agent
 const ScriptLive = FridaCompile.compileAgent(new URL("../frida/agent.ts", import.meta.url))
-    .pipe(Effect.map(FridaScript.layer({ runtime: ScriptRuntime.V8 })))
+    .pipe(Effect.map(FridaScript.layer()))
     .pipe(Layer.unwrapEffect)
     .pipe(Layer.provide([FridaLive, NodeContext.layer]));
 

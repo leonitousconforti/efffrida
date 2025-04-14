@@ -33,7 +33,6 @@
         "@efffrida/frida-tools": "workspace:^",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.8",
-        "frida": "16.7.10",
         "vitest": "3.1.1"
     },
     "peerDependencies": {
