@@ -38,9 +38,6 @@ importers:
       '@eslint/js':
         specifier: 9.24.0
         version: 9.24.0
-      '@types/frida-gum':
-        specifier: 18.8.2
-        version: 18.8.2
       '@types/node':
         specifier: 22.14.1
         version: 22.14.1
@@ -77,9 +74,6 @@ importers:
       eslint-plugin-sort-destructure-keys:
         specifier: 2.0.0
         version: 2.0.0(eslint@9.24.0)
-      frida:
-        specifier: 16.7.10
-        version: 16.7.10
       glob:
         specifier: 11.0.1
         version: 11.0.1
