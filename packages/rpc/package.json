@@ -33,7 +33,7 @@
         "effect": "3.14.8"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.44.7",
+        "@effect/platform": "0.80.8",
         "@effect/rpc": "0.55.10",
         "effect": "3.14.7"
     },

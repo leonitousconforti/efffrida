@@ -34,7 +34,6 @@
         "effect": "3.14.8"
     },
     "peerDependencies": {
-        "@effect/cluster": "0.29.12",
         "@effect/experimental": "0.44.7",
         "@effect/sql": "0.33.7",
         "effect": "3.14.7"
