@@ -125,7 +125,7 @@ export const load = Function.dual<
                         });
                     }
                     const result = yield* Effect.tryPromise({
-                        try: () => script.exports[exportName](args) as Promise<unknown>,
+                        try: () => script.exports[exportName](...args) as Promise<unknown>,
                         catch: (cause) => new FridaSessionError.FridaSessionError({ when: "rpcCall", cause }),
                     });
                     yield* Effect.annotateCurrentSpan("result", result);

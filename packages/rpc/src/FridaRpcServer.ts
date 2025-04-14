@@ -78,9 +78,7 @@ export const makeProtocolFrida: Effect.Effect<
         });
 
         try {
-            const incoming: string | Uint8Array = Predicate.isString((request as any)[0])
-                ? (request as any)[0]
-                : new Uint8Array((request as any)[0]["data"]);
+            const incoming = Predicate.isString(request) ? request : new Uint8Array((request as any)["data"]);
             const decoded = parser.decode(incoming) as ReadonlyArray<RpcMessage.FromClientEncoded>;
             if (decoded.length === 0) return "";
             let i = 0;
