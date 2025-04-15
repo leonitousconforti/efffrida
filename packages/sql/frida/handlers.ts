@@ -12,14 +12,14 @@ export const SqlLive: Layer.Layer<
 > = SqlRpcs.toLayer(
     Effect.gen(function* () {
         const sql = yield* SqlClient.SqlClient;
-
         return {
-            raw: ({ statement }) => Effect.mapError(sql`${statement}`.raw, (error) => error.message),
-            sql: ({ statement }) => Effect.mapError(sql`${statement}`, (error) => error.message),
+            sql: ({ statement }) => Effect.mapError(sql.unsafe(statement), (error) => error.message),
+            raw: ({ statement }) => Effect.mapError(sql.unsafe(statement).raw, (error) => error.message),
             transaction: ({ statement }) =>
-                Effect.mapError(sql.withTransaction(sql`${statement}`), (error) => error.message),
+                Effect.mapError(sql.withTransaction(sql.unsafe(statement)), (error) => error.message),
             transactionRollback: ({ statement }) =>
-                sql`${statement}`
+                sql
+                    .unsafe(statement)
                     .pipe(Effect.andThen(Effect.fail("boom")))
                     .pipe(sql.withTransaction)
                     .pipe(Effect.ignore),
