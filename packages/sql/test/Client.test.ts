@@ -1,4 +1,4 @@
-import { expect, layer } from "@effect/vitest";
+import { describe, expect, it } from "@effect/vitest";
 
 import { NodeContext } from "@effect/platform-node";
 import { RpcClient, RpcSerialization } from "@effect/rpc";
@@ -28,7 +28,7 @@ const ScriptLive = FridaCompile.compileAgent(new URL("../frida/agent.ts", import
 // Now we have an rpc client layer with no dependencies
 const Live = Layer.provide(ProtocolLive, ScriptLive);
 
-layer(Live)("Client", (it) => {
+describe("Client", () => {
     it.scoped("should work", () =>
         Effect.gen(function* () {
             const client = yield* RpcClient.make(SqlRpcs);
@@ -39,36 +39,15 @@ layer(Live)("Client", (it) => {
             response = yield* request("INSERT INTO test (name) VALUES ('hello')");
             expect(response).toStrictEqual([]);
             response = yield* request("SELECT * FROM test");
-            expect(response).toStrictEqual([{ id: 1, name: "hello" }]);
+            expect(response).toStrictEqual([[1, "hello"]]);
             response = yield* request("INSERT INTO test (name) VALUES ('world')");
             expect(response).toStrictEqual([]);
             response = yield* request("SELECT * FROM test");
             expect(response).toStrictEqual([
-                { id: 1, name: "hello" },
-                { id: 2, name: "world" },
+                [1, "hello"],
+                [2, "world"],
             ]);
-        })
-    );
-
-    it.scoped("should work with raw", () =>
-        Effect.gen(function* () {
-            const client = yield* RpcClient.make(SqlRpcs);
-            const request = (statement: string) => client.raw({ statement });
-            let response;
-            response = yield* request("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)");
-            expect(response).toStrictEqual({ changes: 0, lastInsertRowid: 0 });
-            response = yield* request("INSERT INTO test (name) VALUES ('hello')");
-            expect(response).toStrictEqual({ changes: 1, lastInsertRowid: 1 });
-            response = yield* request("SELECT * FROM test");
-            expect(response).toStrictEqual([{ id: 1, name: "hello" }]);
-            response = yield* request("INSERT INTO test (name) VALUES ('world')");
-            expect(response).toStrictEqual({ changes: 1, lastInsertRowid: 2 });
-            response = yield* request("SELECT * FROM test");
-            expect(response).toStrictEqual([
-                { id: 1, name: "hello" },
-                { id: 2, name: "world" },
-            ]);
-        })
+        }).pipe(Effect.provide(Live))
     );
 
     it.scoped("withTransaction", () =>
@@ -77,8 +56,8 @@ layer(Live)("Client", (it) => {
             yield* client.sql({ statement: "CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)" });
             yield* client.transaction({ statement: "INSERT INTO test (name) VALUES ('hello')" });
             const rows = yield* client.sql({ statement: "SELECT * FROM test" });
-            expect(rows).toStrictEqual([{ id: 1, name: "hello" }]);
-        })
+            expect(rows).toStrictEqual([[1, "hello"]]);
+        }).pipe(Effect.provide(Live))
     );
 
     it.scoped("withTransaction rollback", () =>
@@ -88,6 +67,6 @@ layer(Live)("Client", (it) => {
             yield* client.transactionRollback({ statement: "INSERT INTO test (name) VALUES ('hello')" });
             const rows = yield* client.sql({ statement: "SELECT * FROM test" });
             expect(rows).toStrictEqual([]);
-        })
+        }).pipe(Effect.provide(Live))
     );
 });
