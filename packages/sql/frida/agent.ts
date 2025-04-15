@@ -1,6 +1,6 @@
 import { Reactivity } from "@effect/experimental";
 import { FileSystem } from "@effect/platform";
-import { NodeFileSystem } from "@effect/platform-node";
+import { layer } from "@effect/platform-node/NodeFileSystem";
 import { RpcSerialization, RpcServer } from "@effect/rpc";
 import { SqlClient } from "@effect/sql";
 import { layerProtocolFrida } from "@efffrida/rpc/FridaRpcServer";
@@ -14,7 +14,7 @@ const makeFilesystemClient = Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const dir = yield* fs.makeTempDirectoryScoped();
     return yield* FridaSqlClient.make({ filename: dir + "/test.db" });
-}).pipe(Effect.provide([Reactivity.layer, NodeFileSystem.layer]));
+}).pipe(Effect.provide([Reactivity.layer, layer]));
 
 // Create the RPC server layer
 const RpcLayer = RpcServer.layer(SqlRpcs).pipe(Layer.provide(SqlLive));

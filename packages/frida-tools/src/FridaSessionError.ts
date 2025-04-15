@@ -35,4 +35,8 @@ export const isFridaSessionError = (u: unknown): u is FridaSessionError =>
 export class FridaSessionError extends PlatformError.TypeIdError(FridaSessionErrorTypeId, "FridaSessionError")<{
     cause: unknown;
     when: "spawn" | "kill" | "attach" | "detach" | "compile" | "load" | "unload" | "resume" | "message" | "rpcCall";
-}> {}
+}> {
+    get message() {
+        return `A Frida session error occurred on ${this.when}`;
+    }
+}
