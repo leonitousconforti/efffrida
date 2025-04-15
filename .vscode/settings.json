@@ -13,6 +13,7 @@
         "msgpackr",
         "rechunk",
         "SEMATTRS",
-        "Transferables"
+        "Transferables",
+        "vitest"
     ]
 }
