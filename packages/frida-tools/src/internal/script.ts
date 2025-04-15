@@ -76,19 +76,14 @@ export const load = Function.dual<
             const messageHandler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
                 switch (message.type) {
                     case Frida.MessageType.Error: {
-                        // const cause = {
-                        //     stack: message.stack,
-                        //     fileName: message.fileName,
-                        //     lineNumber: message.lineNumber,
-                        //     columnNumber: message.columnNumber,
-                        //     description: message.description,
-                        // };
-                        const error = new Error(message.description);
+                        const error = new Error();
+                        error.name = "FridaScriptDefect";
                         error.stack = message.stack ?? "";
+                        error.message = message.description.replace(/Error: /, "") ?? "";
                         scriptDefectCause = error;
                         const sessionError = new FridaSessionError.FridaSessionError({
                             when: "message",
-                            cause: error,
+                            cause: error.cause,
                         });
                         const asTake = Take.fail(sessionError);
                         Queue.unsafeOffer(messageQueue, asTake);
