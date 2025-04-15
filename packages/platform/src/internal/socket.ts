@@ -11,7 +11,7 @@ export const toTransformStream = (socketConnection: SocketConnection): EffectSoc
             (error) => error
         )
         .pipe(Stream.toReadableStream()),
-    writable: socketConnection.output,
+    writable: {} as any,
 });
 
 /** @internal */
