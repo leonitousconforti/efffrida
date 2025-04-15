@@ -2,6 +2,7 @@
     "extends": ["./tsconfig.src-frida.json", "./tsconfig.src-node.json"],
     "include": ["src/"],
     "compilerOptions": {
+        "types": ["node", "frida-gum"],
         "tsBuildInfoFile": ".tsbuildinfo/build.tsbuildinfo",
         "outDir": "build/esm",
         "declarationDir": "build/dts",

@@ -13,7 +13,7 @@
         "experimentalDecorators": true,
         "moduleResolution": "NodeNext",
         "lib": ["ES2022"],
-        "types": ["node"],
+        "types": [],
         "isolatedModules": true,
         "sourceMap": true,
         "declarationMap": true,
