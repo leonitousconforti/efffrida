@@ -49,10 +49,8 @@
         "@frida/url": "1.0.2",
         "@frida/util": "1.0.3",
         "@frida/vm": "2.0.0",
-        "@swc/core": "1.11.20",
         "fast-text-encoding": "1.0.6",
         "frida-fs": "5.2.5",
-        "msgpackr": "1.11.2",
         "tsup": "8.4.0"
     },
     "devDependencies": {
