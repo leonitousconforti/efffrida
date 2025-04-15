@@ -72,6 +72,7 @@ export const load = Function.dual<
                     Take.Take<{ message: any; data: Option.Option<Buffer> }, FridaSessionError.FridaSessionError>
                 >();
 
+            let scriptDefectCause: unknown = undefined;
             const messageHandler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
                 switch (message.type) {
                     case Frida.MessageType.Error: {
@@ -84,12 +85,12 @@ export const load = Function.dual<
                         // };
                         const error = new Error(message.description);
                         error.stack = message.stack ?? "";
-                        const asTake = Take.fail(
-                            new FridaSessionError.FridaSessionError({
-                                when: "message",
-                                cause: error,
-                            })
-                        );
+                        scriptDefectCause = error;
+                        const sessionError = new FridaSessionError.FridaSessionError({
+                            when: "message",
+                            cause: error,
+                        });
+                        const asTake = Take.fail(sessionError);
                         Queue.unsafeOffer(messageQueue, asTake);
                         break;
                     }
@@ -110,9 +111,23 @@ export const load = Function.dual<
             script.message.connect(messageHandler);
 
             const stream = Stream.fromQueue(messageQueue).pipe(Stream.flattenTake);
-            const sink = Sink.forEach<{ message: any; data: Option.Option<Buffer> }, void, never, never>(
-                ({ data, message }) => Effect.sync(() => script.post(message, Option.getOrNull(data)))
-            );
+            const sink = Sink.forEach<
+                { message: any; data: Option.Option<Buffer> },
+                void,
+                FridaSessionError.FridaSessionError,
+                never
+            >(({ data, message }) => {
+                if (Predicate.isNotUndefined(scriptDefectCause)) {
+                    return Effect.fail(
+                        new FridaSessionError.FridaSessionError({
+                            when: "rpcCall",
+                            cause: scriptDefectCause,
+                        })
+                    );
+                } else {
+                    return Effect.sync(() => script.post(message, Option.getOrNull(data)));
+                }
+            });
 
             const destroyed = yield* Deferred.make<void, never>();
             const destroyedHandler = () => Deferred.unsafeDone(destroyed, Effect.void);
@@ -121,6 +136,7 @@ export const load = Function.dual<
             const callExport = (exportName: string) =>
                 Effect.fn(`call frida export ${exportName}`)(function* (...args: Array<any>) {
                     yield* Effect.annotateCurrentSpan("args", args);
+
                     const isDestroyed = yield* Deferred.isDone(destroyed);
                     if (isDestroyed) {
                         return yield* new FridaSessionError.FridaSessionError({
@@ -128,6 +144,14 @@ export const load = Function.dual<
                             cause: "Script is destroyed",
                         });
                     }
+
+                    if (Predicate.isNotUndefined(scriptDefectCause)) {
+                        return yield* new FridaSessionError.FridaSessionError({
+                            when: "rpcCall",
+                            cause: scriptDefectCause,
+                        });
+                    }
+
                     const result = yield* Effect.tryPromise({
                         try: () => script.exports[exportName](...args) as Promise<unknown>,
                         catch: (cause) => new FridaSessionError.FridaSessionError({ when: "rpcCall", cause }),

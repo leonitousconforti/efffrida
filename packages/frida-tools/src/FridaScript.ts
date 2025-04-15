@@ -38,16 +38,22 @@ export type FridaScriptTypeId = typeof FridaScriptTypeId;
 export interface FridaScript {
     readonly script: Frida.Script;
     readonly destroyed: Deferred.Deferred<void, never>;
+    readonly [FridaScriptTypeId]: typeof FridaScriptTypeId;
     readonly stream: Stream.Stream<
         { message: any; data: Option.Option<Buffer> },
         FridaSessionError.FridaSessionError,
         never
     >;
-    readonly sink: Sink.Sink<void, { message: any; data: Option.Option<Buffer> }, never, never, never>;
+    readonly sink: Sink.Sink<
+        void,
+        { message: any; data: Option.Option<Buffer> },
+        never,
+        FridaSessionError.FridaSessionError,
+        never
+    >;
     readonly callExport: (
         exportName: string
     ) => (...args: Array<any>) => Effect.Effect<unknown, FridaSessionError.FridaSessionError, never>;
-    readonly [FridaScriptTypeId]: typeof FridaScriptTypeId;
 }
 
 /**
