@@ -1,6 +1,7 @@
 import { RpcSerialization, RpcServer } from "@effect/rpc";
+import { FridaRuntime } from "@efffrida/platform";
 import { layerProtocolFrida } from "@efffrida/rpc/FridaRpcServer";
-import { Effect, Layer } from "effect";
+import { Layer } from "effect";
 import { UserRpcs } from "../shared/requests.js";
 import { UsersLive } from "./handlers.js";
 
@@ -15,4 +16,4 @@ const FridaProtocol = layerProtocolFrida().pipe(Layer.provide(NdJsonSerializatio
 const Main = RpcLayer.pipe(Layer.provide(FridaProtocol));
 
 // Start the server
-Effect.runFork(Layer.launch(Main));
+FridaRuntime.runMain(Layer.launch(Main));

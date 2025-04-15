@@ -31,6 +31,7 @@
         "@effect/vitest": "0.20.8",
         "@efffrida/frida-compile": "workspace:^",
         "@efffrida/frida-tools": "workspace:^",
+        "@efffrida/platform": "workspace:*",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.8",
         "vitest": "3.1.1"

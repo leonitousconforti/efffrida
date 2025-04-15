@@ -1,7 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "include": ["frida", "shared"],
-    "references": [{ "path": "../rpc/tsconfig.src-frida.json" }, { "path": "tsconfig.src.json" }],
+    "references": [
+        { "path": "tsconfig.src.json" },
+        { "path": "../platform/tsconfig.src.json" },
+        { "path": "../rpc/tsconfig.src-frida.json" }
+    ],
     "compilerOptions": {
         "types": ["frida-gum", "node"],
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",

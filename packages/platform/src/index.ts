@@ -6,6 +6,13 @@
 export * as Channel from "./Channel.js"
 
 /**
+ * Effect `Runtime` utilities for Frida.
+ *
+ * @since 1.0.0
+ */
+export * as FridaRuntime from "./FridaRuntime.js"
+
+/**
  * Frida `Memory Access Monitor` utilities for Effect.
  *
  * @since 1.0.0

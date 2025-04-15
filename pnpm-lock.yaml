@@ -314,6 +314,9 @@ importers:
       '@efffrida/frida-tools':
         specifier: workspace:^
         version: link:../frida-tools/dist
+      '@efffrida/platform':
+        specifier: workspace:*
+        version: link:../platform/dist
       '@types/frida-gum':
         specifier: 18.8.2
         version: 18.8.2
@@ -352,6 +355,9 @@ importers:
       '@effect/vitest':
         specifier: 0.20.8
         version: 0.20.8(effect@3.14.8)(vitest@3.1.1)
+      '@efffrida/platform':
+        specifier: workspace:*
+        version: link:../platform/dist
       '@efffrida/rpc':
         specifier: workspace:*
         version: link:../rpc/dist
