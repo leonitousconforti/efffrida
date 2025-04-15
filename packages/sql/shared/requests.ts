@@ -17,5 +17,10 @@ export class SqlRpcs extends RpcGroup.make(
         success: Schema.Any,
         error: Schema.String,
         payload: { statement: Schema.String },
+    }),
+    Rpc.make("transactionRollback", {
+        success: Schema.Any,
+        error: Schema.String,
+        payload: { statement: Schema.String },
     })
 ) {}

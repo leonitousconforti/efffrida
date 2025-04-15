@@ -6,7 +6,7 @@ import * as Effect from "effect/Effect";
 import { SqlRpcs } from "../shared/requests.js";
 
 export const SqlLive: Layer.Layer<
-    Rpc.Handler<"raw"> | Rpc.Handler<"sql"> | Rpc.Handler<"transaction">,
+    Rpc.Handler<"raw"> | Rpc.Handler<"sql"> | Rpc.Handler<"transaction"> | Rpc.Handler<"transactionRollback">,
     never,
     SqlClient.SqlClient
 > = SqlRpcs.toLayer(
@@ -18,6 +18,11 @@ export const SqlLive: Layer.Layer<
             sql: ({ statement }) => Effect.mapError(sql`${statement}`, (error) => error.message),
             transaction: ({ statement }) =>
                 Effect.mapError(sql.withTransaction(sql`${statement}`), (error) => error.message),
+            transactionRollback: ({ statement }) =>
+                sql`${statement}`
+                    .pipe(Effect.andThen(Effect.fail("boom")))
+                    .pipe(sql.withTransaction)
+                    .pipe(Effect.ignore),
         };
     })
 );
