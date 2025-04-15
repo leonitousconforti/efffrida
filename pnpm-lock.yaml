@@ -286,6 +286,10 @@ importers:
     publishDirectory: dist
 
   packages/rpc:
+    dependencies:
+      '@efffrida/frida-tools':
+        specifier: workspace:^
+        version: link:../frida-tools/dist
     devDependencies:
       '@effect/cluster':
         specifier: 0.29.17
@@ -311,9 +315,6 @@ importers:
       '@efffrida/frida-compile':
         specifier: workspace:^
         version: link:../frida-compile/dist
-      '@efffrida/frida-tools':
-        specifier: workspace:^
-        version: link:../frida-tools/dist
       '@efffrida/platform':
         specifier: workspace:*
         version: link:../platform/dist
