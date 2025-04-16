@@ -2,10 +2,10 @@
     "name": "@efffrida/frida-compile",
     "version": "0.0.1",
     "description": "effect-ts frida compile",
-    "homepage": "https://github.com/leoconforti/efffrida",
+    "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {
         "type": "git",
-        "url": "https://github.com/leoconforti/efffrida.git",
+        "url": "https://github.com/leonitousconforti/efffrida",
         "directory": "packages/frida-compile"
     },
     "license": "GPL-3.0-only",

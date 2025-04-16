@@ -2,10 +2,10 @@
     "name": "@efffrida/rpc",
     "version": "0.0.1",
     "description": "effect rpc-frida",
-    "homepage": "https://github.com/leoconforti/efffrida",
+    "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {
         "type": "git",
-        "url": "https://github.com/leoconforti/efffrida.git",
+        "url": "https://github.com/leonitousconforti/efffrida.git",
         "directory": "packages/rpc"
     },
     "license": "GPL-3.0-only",
