@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/il2cpp-bridge",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "effect-ts frida-il2cpp-bridge",
     "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {
