@@ -1,16 +1,14 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.0.2/schema.json",
-  "changelog": [
-    "@changesets/changelog-github",
-    {
-      "repo": "<PLACEHOLDER>"
+    "$schema": "https://unpkg.com/@changesets/config@3.0.2/schema.json",
+    "changelog": ["@changesets/changelog-github", { "repo": "leonitousconforti/efffrida" }],
+    "commit": false,
+    "linked": [],
+    "access": "restricted",
+    "baseBranch": "main",
+    "updateInternalDependencies": "patch",
+    "ignore": [],
+    "snapshot": {
+        "useCalculatedVersion": false,
+        "prereleaseTemplate": "{tag}-{commit}"
     }
-  ],
-  "commit": false,
-  "fixed": [],
-  "linked": [],
-  "access": "restricted",
-  "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": []
 }
