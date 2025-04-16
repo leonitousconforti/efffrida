@@ -1,9 +1,12 @@
-.DS_Store
-.direnv
-build/
-dist/
+coverage/
+*.tsbuildinfo
 node_modules/
+.DS_Store
+tmp/
+dist/
+build/
 scratchpad/*
 !scratchpad/tsconfig.json
 examples/*/pnpm-lock.yaml
-*.tsbuildinfo
+.direnv/
+.env
