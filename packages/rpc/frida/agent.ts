@@ -10,11 +10,10 @@ const RpcLayer = RpcServer.layer(UserRpcs).pipe(Layer.provide(UsersLive));
 
 // Choose the protocol and serialization format
 const NdJsonSerialization = RpcSerialization.layerNdjson;
-const FridaProtocol = layerProtocolFrida({ messageOnRpcAvailable: "here" }).pipe(Layer.provide(NdJsonSerialization));
+const FridaProtocol = layerProtocolFrida().pipe(Layer.provide(NdJsonSerialization));
 
 // Create the main rpc layer
 const Main = RpcLayer.pipe(Layer.provide(FridaProtocol));
 
 // Start the server
-console.log("Starting Frida RPC server...");
 FridaRuntime.runMain(Layer.launch(Main));
