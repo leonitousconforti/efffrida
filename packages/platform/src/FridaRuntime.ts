@@ -7,6 +7,10 @@
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 
+/**
+ * @since 1.0.0
+ * @category Runtime
+ */
 export const runMain = <A, E>(effect: Effect.Effect<A, E, never>): void => {
     const throwNextTick = (throwable: unknown): void =>
         Script.nextTick((error) => {
