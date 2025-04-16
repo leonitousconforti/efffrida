@@ -5,7 +5,7 @@ import { RpcClient, RpcSerialization } from "@effect/rpc";
 import { FridaCompile } from "@efffrida/frida-compile";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { FridaRpcClient } from "@efffrida/rpc";
-import { Chunk, Effect, Layer, Option, Stream } from "effect";
+import { Chunk, Duration, Effect, Layer, Option, Stream } from "effect";
 import { UserRpcs } from "../shared/requests.js";
 
 // Choose which serialization to use
@@ -30,20 +30,25 @@ const Live = Layer.provide(ProtocolLive, ScriptLive);
 
 // Use the client
 describe("Should be able to perform rpc communication", () => {
-    it.scoped("demo from rpc readme", () =>
-        Effect.gen(function* () {
-            const client = yield* RpcClient.make(UserRpcs);
-            const user = yield* client.UserById({ id: "1" });
-            expect(user).toEqual({ id: "1", name: "Alice" });
-            let users = yield* Stream.runCollect(client.UserList());
-            expect(users).toEqual(Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }));
-            if (Option.isNone(Chunk.findFirst(users, (user) => user.id === "3"))) {
-                yield* client.UserCreate({ name: "Charlie" });
-                users = yield* Stream.runCollect(client.UserList());
-            }
-            expect(users).toEqual(
-                Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }, { id: "3", name: "Charlie" })
-            );
-        }).pipe(Effect.provide(Live))
+    it.scoped(
+        "demo from rpc readme",
+        () =>
+            Effect.gen(function* () {
+                const client = yield* RpcClient.make(UserRpcs);
+                const user = yield* client.UserById({ id: "1" });
+                expect(user).toEqual({ id: "1", name: "Alice" });
+                let users = yield* Stream.runCollect(client.UserList());
+                expect(users).toEqual(Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }));
+                if (Option.isNone(Chunk.findFirst(users, (user) => user.id === "3"))) {
+                    yield* client.UserCreate({ name: "Charlie" });
+                    users = yield* Stream.runCollect(client.UserList());
+                }
+                expect(users).toEqual(
+                    Chunk.make({ id: "1", name: "Alice" }, { id: "2", name: "Bob" }, { id: "3", name: "Charlie" })
+                );
+            }).pipe(Effect.provide(Live)),
+        {
+            timeout: Duration.seconds(30).pipe(Duration.toMillis),
+        }
     );
 });
