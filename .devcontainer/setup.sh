@@ -16,7 +16,7 @@ pnpm circular
 pnpm build
 
 echo "🧪 Testing..."
-pnpm coverage --run
+pnpm test
 
 echo "✅ Devcontainer setup complete!"
 echo "🙏 Thank you for contributing to efffrida!"
