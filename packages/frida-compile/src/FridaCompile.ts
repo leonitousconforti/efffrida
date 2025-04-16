@@ -47,7 +47,7 @@ export const compileAgent: (
             import process from "@frida/process";
             export { process as "process" };
         `;
-        const processShimFile = yield* path.fromFileUrl(new URL("./process.shim.js", import.meta.url));
+        const processShimFile = yield* fileSystem.makeTempFileScoped();
         yield* fileSystem.writeFileString(processShimFile, processShim);
 
         const timersShim = `
@@ -124,7 +124,7 @@ export const compileAgent: (
 
             };
             `;
-        const timersShimFile = yield* path.fromFileUrl(new URL("./timers.shim.js", import.meta.url));
+        const timersShimFile = yield* fileSystem.makeTempFileScoped();
         yield* fileSystem.writeFileString(timersShimFile, timersShim);
 
         const require = Module.createRequire(import.meta.url);
@@ -205,6 +205,7 @@ export const compileAgent: (
                     os: require.resolve("@frida/os"),
                     "node:path": require.resolve("@frida/path"),
                     path: require.resolve("@frida/path"),
+                    "@frida/process": require.resolve("@frida/process"),
                     "node:process": require.resolve("@frida/process"),
                     process: require.resolve("@frida/process"),
                     punycode: require.resolve("@frida/punycode"),

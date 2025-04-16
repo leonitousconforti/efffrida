@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc -b tsconfig.build.json && pnpm --recursive --parallel run build",
         "changeset-publish": "pnpm build && TEST_DIST= pnpm vitest && changeset publish",
-        "changeset-version": "changeset version && node scripts/version.mjs",
+        "changeset-version": "changeset version",
         "check": "tsc -b tsconfig.json",
         "check-recursive": "pnpm --recursive exec tsc -b tsconfig.json",
         "circular": "node scripts/circular.mjs",
