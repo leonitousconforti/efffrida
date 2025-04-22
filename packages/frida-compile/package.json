@@ -64,7 +64,7 @@
         "@types/fast-text-encoding": "1.0.3",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.8",
-        "vitest": "3.1.1"
+        "vitest": "3.1.2"
     },
     "peerDependencies": {
         "@effect/platform": "0.80.7",

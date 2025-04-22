@@ -36,7 +36,7 @@
         "@efffrida/rpc": "workspace:*",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.8",
-        "vitest": "3.1.1"
+        "vitest": "3.1.2"
     },
     "peerDependencies": {
         "@effect/experimental": "0.44.7",
