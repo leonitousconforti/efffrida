@@ -1,15 +1,18 @@
 {
     "cSpell.words": [
+        "BUILDKIT",
         "codegen",
         "Conforti",
         "crosspath",
         "DBSYSTEMVALUES",
         "dedupe",
         "devcontainers",
+        "dind",
         "effectful",
         "efffrida",
         "frida",
         "interruptible",
+        "leoconforti",
         "leonitousconforti",
         "Millis",
         "msgpackr",
