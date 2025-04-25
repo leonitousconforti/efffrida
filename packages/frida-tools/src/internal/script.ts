@@ -151,6 +151,7 @@ export const load = Function.dual<
                         try: () => script.exports[exportName](...args) as Promise<unknown>,
                         catch: (cause) => new FridaSessionError.FridaSessionError({ when: "rpcCall", cause }),
                     });
+
                     yield* Effect.annotateCurrentSpan("result", result);
                     return result;
                 });
@@ -168,9 +169,9 @@ export const load = Function.dual<
             }
 
             return {
+                sink,
                 script,
                 stream,
-                sink,
                 destroyed,
                 callExport,
                 [FridaScriptTypeId]: FridaScriptTypeId,
