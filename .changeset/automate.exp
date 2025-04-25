@@ -20,8 +20,14 @@ foreach dep_type $dep_types_list {
 if {$dep_should_add_changeset} {
     spawn npx changeset
 
-    expect "What kind of change is this"
-    send "$change_type\r"
+    expect "Which packages would you like to include"
+    send " \r"
+
+    expect "Which packages should have a"
+    send "\r"
+
+    expect "Which packages should have a"
+    send "\r"
 
     expect "Please enter a summary for this change"
     if {$is_group == "true"} {
