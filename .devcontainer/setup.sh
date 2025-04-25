@@ -14,6 +14,7 @@ echo "🏗️ Building..."
 pnpm check
 pnpm lint
 pnpm circular
+pnpm codegen
 pnpm build
 
 echo "🧪 Testing..."
