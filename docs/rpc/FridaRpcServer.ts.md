@@ -68,26 +68,7 @@ export declare const makeProtocolFridaWithExport: (
   options?:
     | { readonly exportName?: string | undefined; readonly messageOnRpcAvailable?: string | undefined }
     | undefined
-) => Effect.Effect<
-  {
-    readonly run: (
-      f: (clientId: number, data: RpcMessage.FromClientEncoded) => Effect.Effect<void>
-    ) => Effect.Effect<never>
-    readonly disconnects: Mailbox.ReadonlyMailbox<number>
-    readonly send: (
-      clientId: number,
-      response: RpcMessage.FromServerEncoded,
-      transferables?: ReadonlyArray<globalThis.Transferable>
-    ) => Effect.Effect<void>
-    readonly end: (clientId: number) => Effect.Effect<void>
-    readonly initialMessage: Effect.Effect<Option<unknown>>
-    readonly supportsAck: boolean
-    readonly supportsTransferables: boolean
-    readonly supportsSpanPropagation: boolean
-  },
-  never,
-  RpcSerialization.RpcSerialization
->
+) => Effect.Effect<RpcServer.Protocol["Type"], never, RpcSerialization.RpcSerialization>
 ```
 
 Added in v1.0.0

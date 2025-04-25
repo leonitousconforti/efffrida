@@ -15,18 +15,23 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
-  - [A](#a)
+  - [il2cppPerformEffect](#il2cppperformeffect)
 
 ---
 
 # utils
 
-## A
+## il2cppPerformEffect
+
+Attaches the caller thread to Il2Cpp domain and executes the given block.
 
 **Signature**
 
 ```ts
-export declare const A: "A"
+export declare const il2cppPerformEffect: <X, E, R>(
+  effect: Effect.Effect<X, E, R>,
+  flag?: "free" | "bind" | "leak" | "main" | undefined
+) => Effect.Effect<void, E, R>
 ```
 
 Added in v1.0.0

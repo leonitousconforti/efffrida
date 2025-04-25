@@ -26,7 +26,15 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const runMain: <A, E>(effect: Effect.Effect<A, E, never>) => void
+export declare const runMain: <A, E>(
+  effect: Effect.Effect<A, E, never>,
+  options?:
+    | {
+        readonly disablePrettyLogger?: boolean | undefined
+        readonly teardown?: ((exit: Exit.Exit<A, E>) => void) | undefined
+      }
+    | undefined
+) => void
 ```
 
 Added in v1.0.0
