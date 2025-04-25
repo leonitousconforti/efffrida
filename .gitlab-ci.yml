@@ -23,7 +23,7 @@ default:
   tags: [docker]
   timeout: 10 minutes
   before_script:
-    - apk add make cmake g++ python3
+    - apk add make cmake g++ python3 git
     - npm install --global corepack@latest
     - corepack install
     - corepack enable
