@@ -124,7 +124,6 @@ release:
     - job: build_job
       artifacts: true
   script:
-    - apk add --update git
     - touch ${GITHUB_ENV}
     - |
       cat << EOF > "$HOME/.npmrc"
