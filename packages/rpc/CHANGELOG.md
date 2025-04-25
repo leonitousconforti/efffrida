@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.3
+
+### Patch Changes
+
+- 14bda9d: Update @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/rpc @effect/sql effect effect effect effect effect effect
+- Updated dependencies [14bda9d]
+  - @efffrida/frida-tools@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
