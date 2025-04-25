@@ -6,8 +6,6 @@
  * @since 1.0.0
  */
 
-import type * as Types from "effect/Types";
-
 import * as RpcMessage from "@effect/rpc/RpcMessage";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
 import * as RpcServer from "@effect/rpc/RpcServer";
@@ -95,11 +93,6 @@ export const makeProtocolFrida: Effect.Effect<
         // Encode the responses
         const chunks: Array<string | ReadonlyArray<number>> = [];
         for (const responseMessage of responses) {
-            if (!serialization.supportsBigInt && "requestId" in responseMessage) {
-                const mutable = responseMessage as Types.Mutable<typeof responseMessage>;
-                mutable.requestId = mutable.requestId.toString();
-            }
-
             try {
                 const encoded = encode(responseMessage);
                 chunks.push(encoded);

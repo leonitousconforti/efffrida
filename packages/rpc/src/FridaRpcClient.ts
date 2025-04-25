@@ -8,7 +8,6 @@
 
 import type * as RpcMessage from "@effect/rpc/RpcMessage";
 import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
-import type * as Types from "effect/Types";
 
 import * as RpcClient from "@effect/rpc/RpcClient";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
@@ -45,11 +44,6 @@ export const makeProtocolFrida = (
                 }
 
                 const parser = serialization.unsafeMake();
-                if (!serialization.supportsBigInt) {
-                    const mutable = request as Types.Mutable<typeof request>;
-                    mutable.id = request.id.toString();
-                }
-
                 const schema = Schema.Union(Schema.String, Schema.Uint8Array);
                 const encode = Function.compose(parser.encode, Schema.encode(schema));
                 const decode = Function.compose(Schema.decodeUnknownSync(schema), parser.decode);

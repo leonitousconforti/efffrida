@@ -38,6 +38,8 @@
         "@effect/rpc": "0.56.2",
         "@effect/sql": "0.33.14",
         "@effect/vitest": "0.20.15",
+        "@efffrida/frida-compile": "workspace:*",
+        "@efffrida/frida-tools": "workspace:*",
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@types/frida-gum": "18.8.2",

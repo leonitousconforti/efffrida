@@ -377,6 +377,12 @@ importers:
       '@effect/vitest':
         specifier: 0.20.15
         version: 0.20.15(effect@3.14.14)(vitest@3.1.2)
+      '@efffrida/frida-compile':
+        specifier: workspace:*
+        version: link:../frida-compile
+      '@efffrida/frida-tools':
+        specifier: workspace:*
+        version: link:../frida-tools
       '@efffrida/platform':
         specifier: workspace:*
         version: link:../platform
