@@ -54,16 +54,16 @@
         "tsup": "8.4.0"
     },
     "devDependencies": {
-        "@effect/cluster": "0.29.17",
-        "@effect/experimental": "0.44.8",
-        "@effect/platform": "0.80.8",
-        "@effect/platform-node": "0.76.17",
-        "@effect/rpc": "0.55.12",
-        "@effect/sql": "0.33.8",
-        "@effect/vitest": "0.20.8",
+        "@effect/cluster": "0.30.2",
+        "@effect/experimental": "0.44.14",
+        "@effect/platform": "0.80.14",
+        "@effect/platform-node": "0.77.2",
+        "@effect/rpc": "0.56.2",
+        "@effect/sql": "0.33.14",
+        "@effect/vitest": "0.20.15",
         "@types/fast-text-encoding": "1.0.3",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.8",
+        "effect": "3.14.14",
         "vitest": "3.1.2"
     },
     "peerDependencies": {
