@@ -34,7 +34,7 @@
         "effect": "3.14.14"
     },
     "peerDependencies": {
-        "effect": "3.14.7"
+        "effect": "3.14.14"
     },
     "publishConfig": {
         "access": "public",

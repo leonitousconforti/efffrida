@@ -47,10 +47,10 @@
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.44.7",
-        "@effect/platform": "0.80.8",
-        "@effect/sql": "0.33.7",
-        "effect": "3.14.7"
+        "@effect/experimental": "0.44.14",
+        "@effect/platform": "0.80.14",
+        "@effect/sql": "0.33.14",
+        "effect": "3.14.14"
     },
     "publishConfig": {
         "access": "public",
