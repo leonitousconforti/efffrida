@@ -73,8 +73,8 @@
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.7",
-        "effect": "3.14.7"
+        "@effect/platform": "0.80.14",
+        "effect": "3.14.14"
     },
     "publishConfig": {
         "access": "public",
