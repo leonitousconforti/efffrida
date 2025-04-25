@@ -54,5 +54,10 @@
         "typescript-eslint": "8.31.0",
         "vitest": "3.1.2"
     },
-    "packageManager": "pnpm@9.15.9"
+    "packageManager": "pnpm@9.15.9",
+    "pnpm": {
+        "patchedDependencies": {
+            "@effect/build-utils": "patches/@effect__build-utils.patch"
+        }
+    }
 }

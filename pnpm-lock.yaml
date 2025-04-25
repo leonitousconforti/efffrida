@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: false
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@effect/build-utils':
+    hash: pdbou7u4inw2ffermbdqcqojmy
+    path: patches/@effect__build-utils.patch
+
 importers:
 
   .:
@@ -28,7 +33,7 @@ importers:
         version: 2.29.2
       '@effect/build-utils':
         specifier: 0.8.3
-        version: 0.8.3
+        version: 0.8.3(patch_hash=pdbou7u4inw2ffermbdqcqojmy)
       '@effect/docgen':
         specifier: 0.5.2
         version: 0.5.2(tsx@4.19.3)(typescript@5.8.3)
@@ -265,7 +270,7 @@ importers:
         version: 0.20.15(effect@3.14.14)(vitest@3.1.2)
       '@efffrida/frida-compile':
         specifier: workspace:^
-        version: link:../frida-compile/dist
+        version: link:../frida-compile
       '@types/frida-gum':
         specifier: 18.8.2
         version: 18.8.2
@@ -305,7 +310,7 @@ importers:
     dependencies:
       '@efffrida/frida-tools':
         specifier: workspace:^
-        version: link:../frida-tools/dist
+        version: link:../frida-tools
     devDependencies:
       '@effect/cluster':
         specifier: 0.30.2
@@ -330,10 +335,10 @@ importers:
         version: 0.20.15(effect@3.14.14)(vitest@3.1.2)
       '@efffrida/frida-compile':
         specifier: workspace:^
-        version: link:../frida-compile/dist
+        version: link:../frida-compile
       '@efffrida/platform':
         specifier: workspace:*
-        version: link:../platform/dist
+        version: link:../platform
       '@types/frida-gum':
         specifier: 18.8.2
         version: 18.8.2
@@ -374,10 +379,10 @@ importers:
         version: 0.20.15(effect@3.14.14)(vitest@3.1.2)
       '@efffrida/platform':
         specifier: workspace:*
-        version: link:../platform/dist
+        version: link:../platform
       '@efffrida/rpc':
         specifier: workspace:*
-        version: link:../rpc/dist
+        version: link:../rpc
       '@types/frida-gum':
         specifier: 18.8.2
         version: 18.8.2
@@ -4474,7 +4479,7 @@ snapshots:
       gonzales-pe: 4.3.0
       node-source-walk: 7.0.1
 
-  '@effect/build-utils@0.8.3':
+  '@effect/build-utils@0.8.3(patch_hash=pdbou7u4inw2ffermbdqcqojmy)':
     dependencies:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.1
