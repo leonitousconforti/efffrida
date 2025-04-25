@@ -104,7 +104,7 @@ build_job:
   cache: []
   artifacts:
     paths:
-      - dist/
+      - packages/**/dist/
     reports:
       coverage_report:
         coverage_format: cobertura
