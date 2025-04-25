@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.4
+
+### Patch Changes
+
+- a6bd5d7: test publish
+- Updated dependencies [a6bd5d7]
+  - @efffrida/frida-tools@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

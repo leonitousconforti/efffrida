@@ -1,5 +1,11 @@
 # @efffrida/frida-compile
 
+## 0.0.4
+
+### Patch Changes
+
+- a6bd5d7: test publish
+
 ## 0.0.3
 
 ### Patch Changes
