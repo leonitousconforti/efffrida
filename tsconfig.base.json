@@ -30,31 +30,10 @@
         "noImplicitThis": true,
         "noUncheckedIndexedAccess": false,
         "strictNullChecks": true,
-        "baseUrl": ".",
         "target": "ES2022",
         "module": "NodeNext",
         "incremental": true,
         "removeComments": false,
         "plugins": [{ "name": "@effect/language-service" }],
-        "paths": {
-            "@efffrida/frida-compile": ["./packages/frida-compile/src/index.js"],
-            "@efffrida/frida-compile/*": ["./packages/frida-compile/src/*.js"],
-            "@efffrida/frida-compile/test/*": ["./packages/frida-compile/test/*.js"],
-            "@efffrida/frida-tools": ["./packages/frida-tools/src/index.js"],
-            "@efffrida/frida-tools/*": ["./packages/frida-tools/src/*.js"],
-            "@efffrida/frida-tools/test/*": ["./packages/frida-tools/test/*.js"],
-            "@efffrida/il2cpp-bridge": ["./packages/il2cpp-bridge/src/index.js"],
-            "@efffrida/il2cpp-bridge/*": ["./packages/il2cpp-bridge/src/*.js"],
-            "@efffrida/il2cpp-bridge/test/*": ["./packages/il2cpp-bridge/test/*.js"],
-            "@efffrida/platform": ["./packages/platform/src/index.js"],
-            "@efffrida/platform/*": ["./packages/platform/src/*.js"],
-            "@efffrida/platform/test/*": ["./packages/platform/test/*.js"],
-            "@efffrida/rpc": ["./packages/rpc/src/index.js"],
-            "@efffrida/rpc/*": ["./packages/rpc/src/*.js"],
-            "@efffrida/rpc/test/*": ["./packages/rpc/test/*.js"],
-            "@efffrida/sql": ["./packages/sql/src/index.js"],
-            "@efffrida/sql/*": ["./packages/sql/src/*.js"],
-            "@efffrida/sql/test/*": ["./packages/sql/test/*.js"]
-        }
     }
 }

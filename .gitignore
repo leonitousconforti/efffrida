@@ -11,6 +11,3 @@ coverage/
 node_modules/
 docs/examples/
 /.devcontainer/.devpod-internal/
-
-scratchpad/*
-!scratchpad/tsconfig.json

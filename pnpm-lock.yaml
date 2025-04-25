@@ -389,6 +389,27 @@ importers:
         version: 3.1.2
     publishDirectory: dist
 
+  scratchpad:
+    dependencies:
+      '@efffrida/frida-compile':
+        specifier: workspace:*
+        version: link:../packages/frida-compile
+      '@efffrida/frida-tools':
+        specifier: workspace:*
+        version: link:../packages/frida-tools
+      '@efffrida/il2cpp-bridge':
+        specifier: workspace:*
+        version: link:../packages/il2cpp-bridge
+      '@efffrida/platform':
+        specifier: workspace:*
+        version: link:../packages/platform
+      '@efffrida/rpc':
+        specifier: workspace:*
+        version: link:../packages/rpc
+      '@efffrida/sql':
+        specifier: workspace:*
+        version: link:../packages/sql
+
 packages:
 
   '@actions/core@1.11.1':
