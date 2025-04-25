@@ -12,12 +12,13 @@ import * as RpcMessage from "@effect/rpc/RpcMessage";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
 import * as RpcServer from "@effect/rpc/RpcServer";
 import * as Array from "effect/Array";
-import * as Deferred from "effect/Deferred";
+import * as Chunk from "effect/Chunk";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Mailbox from "effect/Mailbox";
 import * as Predicate from "effect/Predicate";
+import * as Queue from "effect/Queue";
 import * as Runtime from "effect/Runtime";
 import * as Schema from "effect/Schema";
 
@@ -49,39 +50,23 @@ export const makeProtocolFrida: Effect.Effect<
 
     const rpcExport = async function (request: string | Uint8Array): Promise<string | ReadonlyArray<number>> {
         const id = clientId++;
+
         const parser = serialization.unsafeMake();
-
-        const chunks = Array.empty<string | ReadonlyArray<number>>();
-        const deferred = await Runtime.runPromise(runtime, Deferred.make<string | ReadonlyArray<number>, never>());
-
         const schema = Schema.Union(Schema.String, Schema.Uint8Array);
         const encode = Function.compose(parser.encode, Schema.encodeSync(schema));
         const decode = Function.compose(Schema.decodeUnknownSync(schema), parser.decode);
 
+        const latch = await Effect.makeLatch(false).pipe(Runtime.runPromise(runtime));
+        const queue = await Queue.unbounded<RpcMessage.FromServerEncoded>().pipe(Runtime.runPromise(runtime));
+
+        // When the implementation is done, do this with it's response
         clients.set(id, {
             end: Effect.void,
-            write: (response: RpcMessage.FromServerEncoded) => {
-                try {
-                    if (!serialization.supportsBigInt && "requestId" in response) {
-                        const mutable = response as Types.Mutable<typeof response>;
-                        mutable.requestId = mutable.requestId.toString();
-                    }
-
-                    chunks.push(encode(response));
-                    if (Predicate.isTagged(response, "Chunk")) return Effect.void;
-
-                    const final = Predicate.isString(chunks[0])
-                        ? chunks.join("")
-                        : Array.flatten(chunks as Array<ReadonlyArray<number>>);
-                    return Deferred.succeed(deferred, final);
-                } catch (cause) {
-                    const message = RpcMessage.ResponseDefectEncoded(cause);
-                    const encoded = encode(message);
-                    return Deferred.succeed(deferred, encoded);
-                }
-            },
+            write: (response: RpcMessage.FromServerEncoded): Effect.Effect<void, never, never> =>
+                Effect.andThen(queue.offer(response), Predicate.isTagged(response, "Chunk") ? Effect.void : latch.open),
         });
 
+        // Parse the request and send it to the implementation
         try {
             const decoded = decode(request) as ReadonlyArray<RpcMessage.FromClientEncoded>;
             if (decoded.length === 0) return "";
@@ -100,7 +85,36 @@ export const makeProtocolFrida: Effect.Effect<
             return Promise.resolve(encoded);
         }
 
-        return Runtime.runPromise(runtime, deferred);
+        // Wait for the implementation to respond
+        const responses = await latch.await
+            .pipe(Effect.andThen(queue.takeAll))
+            .pipe(Effect.tap(queue.shutdown))
+            .pipe(Effect.map(Chunk.toReadonlyArray))
+            .pipe(Runtime.runPromise(runtime));
+
+        // Encode the responses
+        const chunks: Array<string | ReadonlyArray<number>> = [];
+        for (const responseMessage of responses) {
+            if (!serialization.supportsBigInt && "requestId" in responseMessage) {
+                const mutable = responseMessage as Types.Mutable<typeof responseMessage>;
+                mutable.requestId = mutable.requestId.toString();
+            }
+
+            try {
+                const encoded = encode(responseMessage);
+                chunks.push(encoded);
+            } catch (cause) {
+                const message = RpcMessage.ResponseDefectEncoded(cause);
+                const encoded = encode(message);
+                return Promise.resolve(encoded);
+            }
+        }
+
+        // Concatenate the responses
+        const final = Predicate.isString(chunks[0])
+            ? chunks.join("")
+            : Array.flatten(chunks as Array<ReadonlyArray<number>>);
+        return Promise.resolve(final);
     };
 
     const protocol = yield* RpcServer.Protocol.make((writeRequest_) => {
@@ -139,7 +153,7 @@ export const makeProtocolFridaWithExport = (
               readonly messageOnRpcAvailable?: string | undefined;
           }
         | undefined
-) =>
+): Effect.Effect<RpcServer.Protocol["Type"], never, RpcSerialization.RpcSerialization> =>
     Effect.gen(function* () {
         const { protocol, rpcExport } = yield* makeProtocolFrida;
         rpc.exports[options?.exportName ?? "rpc"] = rpcExport;
