@@ -33,8 +33,8 @@ importers:
         specifier: 0.5.2
         version: 0.5.2(tsx@4.19.3)(typescript@5.8.3)
       '@effect/language-service':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.1
+        version: 0.7.1
       '@eslint/js':
         specifier: 9.24.0
         version: 9.24.0
@@ -278,6 +278,10 @@ importers:
     publishDirectory: dist
 
   packages/il2cpp-bridge:
+    dependencies:
+      frida-il2cpp-bridge:
+        specifier: 0.9.1
+        version: 0.9.1
     devDependencies:
       effect:
         specifier: 3.14.8
@@ -599,8 +603,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.6.0':
-    resolution: {integrity: sha512-qwoxzi3VogP5pYEu+GseK76FFUuktaiJCoFh13/Z2M6hoy45mSN1hvs1Y2JMNG9St7HHiarzQPxF14fGKwjTaQ==}
+  '@effect/language-service@0.7.1':
+    resolution: {integrity: sha512-Cp5F846sqMmHl3cDNxAi3CKdB3MHbSOek+Dg3PoYYgchN8MUDMG+/qfaPVjNfGfEXdbcjvhPQkTpJEDOKo0iYA==}
 
   '@effect/markdown-toc@0.1.0':
     resolution: {integrity: sha512-IRfvvwqQLabVTIw9hhIj4scOGIYPfa13QuEFv+dBWE6p47R+RR0J8jQvfDINFf0Vn80XXVjNRtZxkZpkKXLx2A==}
@@ -2361,6 +2365,9 @@ packages:
 
   frida-fs@5.2.5:
     resolution: {integrity: sha512-Eyb4OqUlcv1/Eq7Q+B9IZmYZIgIM2YjqDojrjmAGzPSSXBuUKwSkuObQcQ8Dup9JTOMIUcSII9/I8DaTe6LFKw==}
+
+  frida-il2cpp-bridge@0.9.1:
+    resolution: {integrity: sha512-D0rPvF7icyOu+Z3UkwzgLkMHrM1wgaQrjcqJUksJ31RZafwba73CTk840Ecbw82UmN9yNCmJxh+ox/k4lcnyGQ==}
 
   frida@16.7.10:
     resolution: {integrity: sha512-ZtWJw11wYfWxDVjlITuEEpCffXw+gU5XZH0EJh6XCFRw+R3K/hezXH71mhXujVUITyUiVE4dpsUqzmI00h3gRg==}
@@ -4451,7 +4458,7 @@ snapshots:
       effect: 3.14.8
       uuid: 11.1.0
 
-  '@effect/language-service@0.6.0': {}
+  '@effect/language-service@0.7.1': {}
 
   '@effect/markdown-toc@0.1.0':
     dependencies:
@@ -6223,6 +6230,8 @@ snapshots:
   fp-ts@2.16.9: {}
 
   frida-fs@5.2.5: {}
+
+  frida-il2cpp-bridge@0.9.1: {}
 
   frida@16.7.10:
     dependencies:
