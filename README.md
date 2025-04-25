@@ -14,3 +14,7 @@ The Efffrida monorepo is organized into multiple packages, each extending a diff
 | `@efffrida/platform`      | Platform utilities for Frida                                              | [README]()    |
 | `@efffrida/rpc`           | Frida based RPC utilities for building agents                             | [README]()    |
 | `@efffrida/sql`           | An `@effect/sql` implementation using the frida SqliteDatabase library    | [README]()    |
+
+## Docs
+
+https://leoconforti.pages.ltgk.net/efffrida/
