@@ -28,7 +28,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "frida-il2cpp-bridge": "0.9.1"
+        "frida-il2cpp-bridge": "0.10.0"
     },
     "devDependencies": {
         "effect": "3.14.14"
