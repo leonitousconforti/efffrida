@@ -19,7 +19,7 @@ variables:
   GIT_STRATEGY: fetch
 
 default:
-  image: node:lts@sha256:120a74c2ae5bf7f51ab253caef82e7ec3491ac85ef5b1c25751e6c3b55f49cf8
+  image: node:lts@sha256:012715bdfd7227cc531be9c1190daf48eaff8d33431e9a46762adbde8ce9764b
   tags: [docker]
   timeout: 10 minutes
   before_script:
