@@ -31,26 +31,26 @@
         "@opentelemetry/semantic-conventions": "1.32.0"
     },
     "devDependencies": {
-        "@effect/cluster": "0.30.3",
-        "@effect/experimental": "0.44.15",
-        "@effect/platform": "0.80.15",
-        "@effect/platform-node": "0.77.3",
-        "@effect/rpc": "0.56.3",
-        "@effect/sql": "0.33.15",
+        "@effect/cluster": "0.30.4",
+        "@effect/experimental": "0.44.16",
+        "@effect/platform": "0.80.16",
+        "@effect/platform-node": "0.77.4",
+        "@effect/rpc": "0.56.4",
+        "@effect/sql": "0.33.16",
         "@effect/vitest": "0.20.16",
         "@efffrida/frida-compile": "workspace:*",
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.15",
+        "effect": "3.14.16",
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.44.15",
-        "@effect/platform": "0.80.15",
-        "@effect/sql": "0.33.15",
-        "effect": "3.14.15"
+        "@effect/experimental": "0.44.16",
+        "@effect/platform": "0.80.16",
+        "@effect/sql": "0.33.16",
+        "effect": "3.14.16"
     },
     "publishConfig": {
         "access": "public",
