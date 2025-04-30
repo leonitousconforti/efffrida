@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/frida-compile",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "effect-ts frida compile",
     "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {
