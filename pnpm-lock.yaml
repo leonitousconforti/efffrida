@@ -225,8 +225,8 @@ importers:
         specifier: 0.33.16
         version: 0.33.16(@effect/experimental@0.44.16(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16))(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16)
       '@effect/vitest':
-        specifier: 0.20.16
-        version: 0.20.16(effect@3.14.16)(vitest@3.1.2)
+        specifier: 0.20.17
+        version: 0.20.17(effect@3.14.16)(vitest@3.1.2)
       '@types/fast-text-encoding':
         specifier: 1.0.3
         version: 1.0.3
@@ -266,8 +266,8 @@ importers:
         specifier: 0.33.16
         version: 0.33.16(@effect/experimental@0.44.16(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16))(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16)
       '@effect/vitest':
-        specifier: 0.20.16
-        version: 0.20.16(effect@3.14.16)(vitest@3.1.2)
+        specifier: 0.20.17
+        version: 0.20.17(effect@3.14.16)(vitest@3.1.2)
       '@efffrida/frida-compile':
         specifier: workspace:^
         version: link:../frida-compile
@@ -331,8 +331,8 @@ importers:
         specifier: 0.33.16
         version: 0.33.16(@effect/experimental@0.44.16(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16))(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16)
       '@effect/vitest':
-        specifier: 0.20.16
-        version: 0.20.16(effect@3.14.16)(vitest@3.1.2)
+        specifier: 0.20.17
+        version: 0.20.17(effect@3.14.16)(vitest@3.1.2)
       '@efffrida/frida-compile':
         specifier: workspace:^
         version: link:../frida-compile
@@ -375,8 +375,8 @@ importers:
         specifier: 0.33.16
         version: 0.33.16(@effect/experimental@0.44.16(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16))(@effect/platform@0.80.16(effect@3.14.16))(effect@3.14.16)
       '@effect/vitest':
-        specifier: 0.20.16
-        version: 0.20.16(effect@3.14.16)(vitest@3.1.2)
+        specifier: 0.20.17
+        version: 0.20.17(effect@3.14.16)(vitest@3.1.2)
       '@efffrida/frida-compile':
         specifier: workspace:*
         version: link:../frida-compile
@@ -679,10 +679,10 @@ packages:
       '@effect/platform': ^0.80.16
       effect: ^3.14.16
 
-  '@effect/vitest@0.20.16':
-    resolution: {integrity: sha512-jFbeqeuEff9BeFvTa4DSyv9D1T3UOx1furG/VBRhzi2nvMNMmCUzQQYlB5oMkQDWAGWHMUftwdzE2Bo4klP/ZA==}
+  '@effect/vitest@0.20.17':
+    resolution: {integrity: sha512-CFieUpcFCMkaeppdTztMaXEQTA6SikCQig5fAQDbS7HxSeEf2NBeoojht0//357tKiueEqM6GRG05x9axO+5iw==}
     peerDependencies:
-      effect: ^3.14.15
+      effect: ^3.14.16
       vitest: ^3.0.0
 
   '@emnapi/core@1.4.3':
@@ -4533,7 +4533,7 @@ snapshots:
       effect: 3.14.16
       uuid: 11.1.0
 
-  '@effect/vitest@0.20.16(effect@3.14.16)(vitest@3.1.2)':
+  '@effect/vitest@0.20.17(effect@3.14.16)(vitest@3.1.2)':
     dependencies:
       effect: 3.14.16
       vitest: 3.1.2

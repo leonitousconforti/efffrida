@@ -66,7 +66,7 @@
         "@effect/platform-node": "0.77.4",
         "@effect/rpc": "0.56.4",
         "@effect/sql": "0.33.16",
-        "@effect/vitest": "0.20.16",
+        "@effect/vitest": "0.20.17",
         "@types/fast-text-encoding": "1.0.3",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.16",
