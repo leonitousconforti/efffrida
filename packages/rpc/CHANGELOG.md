@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.7
+
+### Patch Changes
+
+- 0462d89: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql effect effect effect effect effect effect effect effect effect effect effect effect
+- Updated dependencies [0462d89]
+  - @efffrida/frida-tools@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes
