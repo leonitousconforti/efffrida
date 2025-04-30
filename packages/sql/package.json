@@ -37,7 +37,7 @@
         "@effect/platform-node": "0.77.4",
         "@effect/rpc": "0.56.4",
         "@effect/sql": "0.33.16",
-        "@effect/vitest": "0.20.16",
+        "@effect/vitest": "0.20.17",
         "@efffrida/frida-compile": "workspace:*",
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/platform": "workspace:*",
