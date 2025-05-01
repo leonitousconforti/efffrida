@@ -60,21 +60,21 @@
         "tsup": "8.4.0"
     },
     "devDependencies": {
-        "@effect/cluster": "0.30.5",
-        "@effect/experimental": "0.44.17",
-        "@effect/platform": "0.80.17",
-        "@effect/platform-node": "0.77.5",
-        "@effect/rpc": "0.56.5",
-        "@effect/sql": "0.33.17",
-        "@effect/vitest": "0.21.0",
+        "@effect/cluster": "0.30.6",
+        "@effect/experimental": "0.44.18",
+        "@effect/platform": "0.80.18",
+        "@effect/platform-node": "0.77.6",
+        "@effect/rpc": "0.56.6",
+        "@effect/sql": "0.33.18",
+        "@effect/vitest": "0.21.1",
         "@types/fast-text-encoding": "1.0.3",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.17",
+        "effect": "3.14.18",
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.17",
-        "effect": "3.14.17"
+        "@effect/platform": "0.80.18",
+        "effect": "3.14.18"
     },
     "publishConfig": {
         "access": "public",
