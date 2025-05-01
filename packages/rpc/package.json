@@ -31,23 +31,23 @@
         "@efffrida/frida-tools": "workspace:^"
     },
     "devDependencies": {
-        "@effect/cluster": "0.30.4",
-        "@effect/experimental": "0.44.16",
-        "@effect/platform": "0.80.16",
-        "@effect/platform-node": "0.77.4",
-        "@effect/rpc": "0.56.4",
-        "@effect/sql": "0.33.16",
-        "@effect/vitest": "0.20.17",
+        "@effect/cluster": "0.30.5",
+        "@effect/experimental": "0.44.17",
+        "@effect/platform": "0.80.17",
+        "@effect/platform-node": "0.77.5",
+        "@effect/rpc": "0.56.5",
+        "@effect/sql": "0.33.17",
+        "@effect/vitest": "0.21.0",
         "@efffrida/frida-compile": "workspace:^",
         "@efffrida/platform": "workspace:*",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.16",
+        "effect": "3.14.17",
         "vitest": "3.1.2"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.16",
-        "@effect/rpc": "0.56.4",
-        "effect": "3.14.16"
+        "@effect/platform": "0.80.17",
+        "@effect/rpc": "0.56.5",
+        "effect": "3.14.17"
     },
     "publishConfig": {
         "access": "public",
