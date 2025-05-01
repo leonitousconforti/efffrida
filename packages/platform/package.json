@@ -28,13 +28,13 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@effect/platform": "0.80.16",
+        "@effect/platform": "0.80.17",
         "@types/frida-gum": "18.8.2",
-        "effect": "3.14.16"
+        "effect": "3.14.17"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.16",
-        "effect": "3.14.16"
+        "@effect/platform": "0.80.17",
+        "effect": "3.14.17"
     },
     "publishConfig": {
         "access": "public",
