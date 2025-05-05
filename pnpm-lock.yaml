@@ -285,8 +285,8 @@ importers:
   packages/il2cpp-bridge:
     dependencies:
       frida-il2cpp-bridge:
-        specifier: 0.10.0
-        version: 0.10.0
+        specifier: 0.11.0
+        version: 0.11.0
     devDependencies:
       effect:
         specifier: 3.14.18
@@ -2450,8 +2450,8 @@ packages:
   frida-fs@5.2.5:
     resolution: {integrity: sha512-Eyb4OqUlcv1/Eq7Q+B9IZmYZIgIM2YjqDojrjmAGzPSSXBuUKwSkuObQcQ8Dup9JTOMIUcSII9/I8DaTe6LFKw==}
 
-  frida-il2cpp-bridge@0.10.0:
-    resolution: {integrity: sha512-eaH5X2S+BWfXHEou4xX0XQ6YWccevZMNo7DSeX00oSLAUo30GYkVn6zL5CdIhBulxMgOd3cf2yNySjnKfjnnHw==}
+  frida-il2cpp-bridge@0.11.0:
+    resolution: {integrity: sha512-STauXoR+mAvF4pzzbRdDAiQhT8g8/5fBF8KX7DTPsM8YvNUCEP1FC8K1b1gU0lg8JrId8yO/Tjamtq+K483+Kg==}
     hasBin: true
 
   frida@16.7.14:
@@ -6495,7 +6495,7 @@ snapshots:
 
   frida-fs@5.2.5: {}
 
-  frida-il2cpp-bridge@0.10.0: {}
+  frida-il2cpp-bridge@0.11.0: {}
 
   frida@16.7.14:
     dependencies:
