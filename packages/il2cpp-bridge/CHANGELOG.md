@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.9
+
+### Patch Changes
+
+- 5368820: Update frida-il2cpp-bridge from 0.10.0 to 0.11.0
+
 ## 0.0.8
 
 ### Patch Changes
