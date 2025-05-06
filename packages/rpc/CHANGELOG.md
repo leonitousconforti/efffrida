@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.9
+
+### Patch Changes
+
+- d54213c: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
+- Updated dependencies [d54213c]
+  - @efffrida/frida-tools@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
