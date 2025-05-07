@@ -28,7 +28,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@opentelemetry/semantic-conventions": "1.32.0"
+        "@opentelemetry/semantic-conventions": "1.33.0"
     },
     "devDependencies": {
         "@effect/cluster": "0.30.10",
