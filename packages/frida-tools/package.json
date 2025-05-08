@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/frida-tools",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Frida with effect-ts",
     "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {
