@@ -1,5 +1,12 @@
 # @efffrida/sql
 
+## 0.0.10
+
+### Patch Changes
+
+- 4bb96c5: Update @opentelemetry/semantic-conventions from 1.32.0 to 1.33.0
+- fe78d3e: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
+
 ## 0.0.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.12
+
+### Patch Changes
+
+- fe78d3e: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
+
 ## 0.0.11
 
 ### Patch Changes
