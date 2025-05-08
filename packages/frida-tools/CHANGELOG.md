@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.12
+
+### Patch Changes
+
+- 8d762d3: Update frida from 16.7.14 to 16.7.16
+
 ## 0.0.11
 
 ### Patch Changes
