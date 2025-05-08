@@ -244,8 +244,8 @@ importers:
   packages/frida-tools:
     dependencies:
       frida:
-        specifier: 16.7.14
-        version: 16.7.14
+        specifier: 16.7.16
+        version: 16.7.16
     devDependencies:
       '@effect/cluster':
         specifier: 0.30.11
@@ -2479,9 +2479,9 @@ packages:
     resolution: {integrity: sha512-STauXoR+mAvF4pzzbRdDAiQhT8g8/5fBF8KX7DTPsM8YvNUCEP1FC8K1b1gU0lg8JrId8yO/Tjamtq+K483+Kg==}
     hasBin: true
 
-  frida@16.7.14:
-    resolution: {integrity: sha512-NYKN3Cn5LB/SdtLfvSQiLvk8YmszwJbB1cETdcqDD9NnHiUbabPeMtgI+vo3faz96RTAByoQ1HxOfqrtJeUSHA==}
-    engines: {node: '>=16 || 14 >=14.17'}
+  frida@16.7.16:
+    resolution: {integrity: sha512-fSF8qFgK9cT9O2ACvSO/Nmtm9t1hsZia/fad9iHQXKgIbBMFAHQlTgJE3i8PqE7ioLnIwX3V7JuzuM0LHdXh9w==}
+    engines: {node: '>=16'}
 
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
@@ -3193,9 +3193,6 @@ packages:
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
-
-  nan@2.22.2:
-    resolution: {integrity: sha512-DANghxFkS1plDdRsX0X9pm0Z6SJNN6gBdtXfanwoZ8hooC5gosGFSBGRYHUVPz1asKA/kMRqDRdHrluZ61SpBQ==}
 
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
@@ -6559,11 +6556,10 @@ snapshots:
 
   frida-il2cpp-bridge@0.11.0: {}
 
-  frida@16.7.14:
+  frida@16.7.16:
     dependencies:
       bindings: 1.5.0
-      minimatch: 9.0.5
-      nan: 2.22.2
+      minimatch: 10.0.1
       prebuild-install: 7.1.3
 
   fs-constants@1.0.0: {}
@@ -7373,8 +7369,6 @@ snapshots:
       any-promise: 1.3.0
       object-assign: 4.1.1
       thenify-all: 1.6.0
-
-  nan@2.22.2: {}
 
   nanoid@3.3.11: {}
 
