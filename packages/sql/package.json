@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/sql",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "effect-ts sql-frida",
     "homepage": "https://github.com/leonitousconforti/efffrida",
     "repository": {

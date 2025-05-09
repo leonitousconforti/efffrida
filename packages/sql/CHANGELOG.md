@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.11
+
+### Patch Changes
+
+- 6c1bdb0: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql
+
 ## 0.0.10
 
 ### Patch Changes
