@@ -31,10 +31,10 @@
         "frida-il2cpp-bridge": "0.11.0"
     },
     "devDependencies": {
-        "effect": "3.14.21"
+        "effect": "3.14.22"
     },
     "peerDependencies": {
-        "effect": "3.14.21"
+        "effect": "3.14.22"
     },
     "publishConfig": {
         "access": "public",
