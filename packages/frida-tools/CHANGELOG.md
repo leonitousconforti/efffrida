@@ -1,5 +1,13 @@
 # @efffrida/frida-tools
 
+## 0.0.14
+
+### Patch Changes
+
+- a71390b: Update frida from 16.7.16 to 16.7.17
+- 278eb60: Update frida from 16.7.17 to 16.7.18
+- 09df298: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
+
 ## 0.0.13
 
 ### Patch Changes
