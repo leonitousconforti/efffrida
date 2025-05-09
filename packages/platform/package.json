@@ -28,12 +28,12 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@effect/platform": "0.80.21",
+        "@effect/platform": "0.81.0",
         "@types/frida-gum": "18.8.2",
         "effect": "3.14.21"
     },
     "peerDependencies": {
-        "@effect/platform": "0.80.21",
+        "@effect/platform": "0.81.0",
         "effect": "3.14.21"
     },
     "publishConfig": {
