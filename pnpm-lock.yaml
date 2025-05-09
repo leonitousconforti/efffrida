@@ -244,8 +244,8 @@ importers:
   packages/frida-tools:
     dependencies:
       frida:
-        specifier: 16.7.16
-        version: 16.7.16
+        specifier: 16.7.17
+        version: 16.7.17
     devDependencies:
       '@effect/cluster':
         specifier: 0.31.0
@@ -2479,8 +2479,8 @@ packages:
     resolution: {integrity: sha512-STauXoR+mAvF4pzzbRdDAiQhT8g8/5fBF8KX7DTPsM8YvNUCEP1FC8K1b1gU0lg8JrId8yO/Tjamtq+K483+Kg==}
     hasBin: true
 
-  frida@16.7.16:
-    resolution: {integrity: sha512-fSF8qFgK9cT9O2ACvSO/Nmtm9t1hsZia/fad9iHQXKgIbBMFAHQlTgJE3i8PqE7ioLnIwX3V7JuzuM0LHdXh9w==}
+  frida@16.7.17:
+    resolution: {integrity: sha512-xdocyFqo1lWDMULLZnIHOtTlH3zxH4NeCy526OKiAB/JDTxRetjOU3/mr4iaSJi0Lwjkdh9KSvhZC5c1Nafn9Q==}
     engines: {node: '>=16'}
 
   fs-constants@1.0.0:
@@ -6556,7 +6556,7 @@ snapshots:
 
   frida-il2cpp-bridge@0.11.0: {}
 
-  frida@16.7.16:
+  frida@16.7.17:
     dependencies:
       bindings: 1.5.0
       minimatch: 10.0.1
