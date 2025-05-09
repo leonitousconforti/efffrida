@@ -28,7 +28,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "frida": "16.7.17"
+        "frida": "16.7.18"
     },
     "devDependencies": {
         "@effect/cluster": "0.31.1",
