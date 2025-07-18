@@ -8,8 +8,8 @@
         "ghcr.io/devcontainers/features/node:1.6.2": {},
         "ghcr.io/devcontainers/features/python:1.7.1": {},
         "ghcr.io/devcontainers/features/github-cli:1.0.14": {},
-        "ghcr.io/devcontainers/features/common-utils:2.5.3": {},
-        "ghcr.io/devcontainers-extra/features/direnv:1.0.2": {}
+        "ghcr.io/devcontainers/features/common-utils:2.5.3": {}
+        // "ghcr.io/devcontainers-extra/features/direnv:1.0.2": {}
     },
 
     "customizations": {
