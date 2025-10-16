@@ -4,7 +4,6 @@
     "private": true,
     "type": "module",
     "dependencies": {
-        "@efffrida/frida-compile": "workspace:*",
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/il2cpp-bridge": "workspace:*",
         "@efffrida/platform": "workspace:*",

@@ -1,10 +1,6 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "references": [
-        { "path": "../rpc/tsconfig.src-node.json" },
-        { "path": "../frida-tools/tsconfig.src.json" },
-        { "path": "../frida-compile/tsconfig.src.json" }
-    ],
+    "extends": "../../tsconfig.base.jsonc",
+    "references": [{ "path": "../rpc/tsconfig.src-node.json" }, { "path": "../frida-tools/tsconfig.src.json" }],
     "include": ["test", "shared"],
     "compilerOptions": {
         "types": ["node"],

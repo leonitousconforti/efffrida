@@ -1,6 +1,6 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "references": [{ "path": "tsconfig.src.json" }, { "path": "../frida-compile/tsconfig.src.json" }],
+    "extends": "../../tsconfig.base.jsonc",
+    "references": [{ "path": "tsconfig.src.json" }],
     "include": ["test"],
     "compilerOptions": {
         "types": ["node"],

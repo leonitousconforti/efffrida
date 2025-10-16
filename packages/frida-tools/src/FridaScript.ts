@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import type * as Path from "@effect/platform/Path";
 import type * as Context from "effect/Context";
 import type * as Deferred from "effect/Deferred";
 import type * as Effect from "effect/Effect";
@@ -40,13 +41,13 @@ export interface FridaScript {
     readonly destroyed: Deferred.Deferred<void, never>;
     readonly [FridaScriptTypeId]: typeof FridaScriptTypeId;
     readonly stream: Stream.Stream<
-        { message: any; data: Option.Option<Buffer> },
+        { message: unknown; data: Option.Option<Buffer> },
         FridaSessionError.FridaSessionError,
         never
     >;
     readonly sink: Sink.Sink<
         void,
-        { message: any; data: Option.Option<Buffer> },
+        { message: unknown; data: Option.Option<Buffer> },
         never,
         FridaSessionError.FridaSessionError,
         never
@@ -74,21 +75,21 @@ export const isFridaScript: (u: unknown) => u is FridaScript = internal.isFridaS
  */
 export const load: {
     (
-        source: string | Buffer,
+        entrypoint: URL,
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ): Effect.Effect<
         FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
     >;
     (
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ): (
-        source: string | Buffer
+        entrypoint: URL
     ) => Effect.Effect<
         FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
     >;
 } = internal.load;
 
@@ -98,20 +99,20 @@ export const load: {
  */
 export const layer: {
     (
-        source: string | Buffer,
+        entrypoint: URL,
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ): Layer.Layer<
         FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaDevice.FridaDevice | FridaSession.FridaSession
+        Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
     >;
     (
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ): (
-        source: string | Buffer
+        entrypoint: URL
     ) => Layer.Layer<
         FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaDevice.FridaDevice | FridaSession.FridaSession
+        Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
     >;
 } = internal.layer;

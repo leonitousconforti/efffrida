@@ -39,21 +39,21 @@ Added in v1.0.0
 ```ts
 export declare const load: {
   (
-    source: string | Buffer,
+    entrypoint: URL,
     options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
   ): Effect.Effect<
     FridaScript,
     FridaSessionError.FridaSessionError,
-    FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
   >
   (
     options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
   ): (
-    source: string | Buffer
+    entrypoint: URL
   ) => Effect.Effect<
     FridaScript,
     FridaSessionError.FridaSessionError,
-    FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
   >
 }
 ```
@@ -69,17 +69,21 @@ Added in v1.0.0
 ```ts
 export declare const layer: {
   (
-    source: string | Buffer,
+    entrypoint: URL,
     options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-  ): Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | FridaSession.FridaSession>
+  ): Layer.Layer<
+    FridaScript,
+    FridaSessionError.FridaSessionError,
+    Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
+  >
   (
     options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
   ): (
-    source: string | Buffer
+    entrypoint: URL
   ) => Layer.Layer<
     FridaScript,
     FridaSessionError.FridaSessionError,
-    FridaDevice.FridaDevice | FridaSession.FridaSession
+    Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
   >
 }
 ```

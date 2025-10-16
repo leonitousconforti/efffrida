@@ -1,8 +1,8 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../../tsconfig.base.jsonc",
     "include": ["frida"],
     "compilerOptions": {
-        "types": ["frida-gum", "node"],
+        "types": ["frida-gum"],
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
         "rootDir": "frida",
         "noEmit": true,

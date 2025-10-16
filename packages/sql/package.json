@@ -28,29 +28,29 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@opentelemetry/semantic-conventions": "1.33.0"
+        "@opentelemetry/semantic-conventions": "1.37.0"
     },
     "devDependencies": {
-        "@effect/cluster": "0.31.1",
-        "@effect/experimental": "0.45.1",
-        "@effect/platform": "0.81.1",
-        "@effect/platform-node": "0.78.1",
-        "@effect/rpc": "0.57.1",
-        "@effect/sql": "0.34.1",
-        "@effect/vitest": "0.21.5",
-        "@efffrida/frida-compile": "workspace:*",
+        "@effect/cluster": "0.50.4",
+        "@effect/experimental": "0.56.0",
+        "@effect/platform": "0.92.1",
+        "@effect/platform-node": "0.98.3",
+        "@effect/rpc": "0.71.0",
+        "@effect/sql": "0.46.0",
+        "@effect/vitest": "0.26.0",
+        "@effect/workflow": "0.11.3",
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
-        "@types/frida-gum": "18.8.2",
-        "effect": "3.14.22",
-        "vitest": "3.1.3"
+        "@types/frida-gum": "19.0.1",
+        "effect": "3.18.4",
+        "vitest": "3.2.4"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.45.1",
-        "@effect/platform": "0.81.1",
-        "@effect/sql": "0.34.1",
-        "effect": "3.14.22"
+        "@effect/experimental": "0.56.0",
+        "@effect/platform": "0.92.1",
+        "@effect/sql": "0.46.0",
+        "effect": "3.18.4"
     },
     "publishConfig": {
         "access": "public",

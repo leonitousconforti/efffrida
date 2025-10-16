@@ -16,6 +16,8 @@
         "leonitousconforti",
         "Millis",
         "msgpackr",
+        "nixpkgs",
+        "pkgs",
         "rechunk",
         "SEMATTRS",
         "Transferables",

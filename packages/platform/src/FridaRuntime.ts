@@ -38,7 +38,7 @@ export const runMain = <A, E>(
         Effect.tapErrorCause((cause): Effect.Effect<void, never, never> => {
             if (!Cause.isInterruptedOnly(cause)) {
                 throwNextTick(cause);
-                return Function.absurd(cause as never);
+                return Function.absurd(void undefined as never);
             }
             return Effect.void;
         });

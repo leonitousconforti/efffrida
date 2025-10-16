@@ -1,21 +1,24 @@
 import type * as Scope from "effect/Scope";
 import type * as FridaScript from "../FridaScript.js";
 
+import * as Path from "@effect/platform/Path";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
+import * as Exit from "effect/Exit";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
+import * as Mailbox from "effect/Mailbox";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
-import * as Queue from "effect/Queue";
 import * as Sink from "effect/Sink";
-import * as Stream from "effect/Stream";
-import * as Take from "effect/Take";
 import * as Frida from "frida";
 import * as FridaDevice from "../FridaDevice.js";
 import * as FridaSession from "../FridaSession.js";
 import * as FridaSessionError from "../FridaSessionError.js";
+
+/** @internal */
+const compiler = new Frida.Compiler();
 
 /** @internal */
 export const FridaScriptTypeId: FridaScript.FridaScriptTypeId = Symbol.for(
@@ -31,68 +34,118 @@ export const isFridaScript = (u: unknown): u is FridaScript.FridaScript => Predi
 /** @internal */
 export const load = Function.dual<
     (
-        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+        options?:
+            | (Frida.ScriptOptions & {
+                  readonly resume?: boolean | undefined;
+                  readonly messageMailboxCapacity?:
+                      | number
+                      | {
+                            readonly capacity?: number;
+                            readonly strategy?: "suspend" | "dropping" | "sliding";
+                        }
+                      | undefined;
+              })
+            | undefined
     ) => (
-        source: string | Buffer
+        entrypoint: URL
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
     >,
     (
-        source: string | Buffer,
-        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+        entrypoint: URL,
+        options?:
+            | (Frida.ScriptOptions & {
+                  readonly resume?: boolean | undefined;
+                  readonly messageMailboxCapacity?:
+                      | number
+                      | {
+                            readonly capacity?: number;
+                            readonly strategy?: "suspend" | "dropping" | "sliding";
+                        }
+                      | undefined;
+              })
+            | undefined
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
     >
 >(
-    (arguments_) => Predicate.isString(arguments_[0]) || Buffer.isBuffer(arguments_[0]),
+    (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
     Effect.fnUntraced(
         function* (
-            source: string | Buffer,
-            options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+            entrypoint: URL,
+            options?:
+                | (Frida.ScriptOptions & {
+                      readonly resume?: boolean | undefined;
+                      readonly messageMailboxCapacity?:
+                          | number
+                          | {
+                                readonly capacity?: number;
+                                readonly strategy?: "suspend" | "dropping" | "sliding";
+                            }
+                          | undefined;
+                  })
+                | undefined
         ) {
+            const path = yield* Path.Path;
             const { device } = yield* FridaDevice.FridaDevice;
             const { session } = yield* FridaSession.FridaSession;
 
-            const script = Predicate.isString(source)
-                ? yield* Effect.tryPromise({
-                      try: () => session.createScript(source, { runtime: Frida.ScriptRuntime.V8, ...options }),
-                      catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
-                  })
-                : yield* Effect.tryPromise({
-                      try: () => session.createScriptFromBytes(source, { runtime: Frida.ScriptRuntime.V8, ...options }),
-                      catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
-                  });
+            const source = yield* path
+                .fromFileUrl(entrypoint)
+                .pipe(
+                    Effect.flatMap((path) =>
+                        Effect.tryPromise(() =>
+                            compiler.build(path, {
+                                typeCheck: "full",
+                                compression: "none",
+                                bundleFormat: "esm",
+                                outputFormat: "unescaped",
+                                sourceMaps: Frida.SourceMaps.Included,
+                            })
+                        )
+                    )
+                )
+                .pipe(Effect.mapError((cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" })));
 
-            const messageQueue =
-                yield* Queue.unbounded<
-                    Take.Take<{ message: any; data: Option.Option<Buffer> }, FridaSessionError.FridaSessionError>
-                >();
+            const script = yield* Effect.tryPromise({
+                catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "compile" }),
+                try: () => session.createScript(source, { runtime: Frida.ScriptRuntime.V8, ...options }),
+            });
+
+            const messageMailbox = yield* Mailbox.make<
+                { message: unknown; data: Option.Option<Buffer> },
+                FridaSessionError.FridaSessionError
+            >(options?.messageMailboxCapacity);
 
             let scriptDefectCause: unknown = undefined;
             const messageHandler: Frida.ScriptMessageHandler = (message: Frida.Message, data: Buffer | null): void => {
                 switch (message.type) {
                     case Frida.MessageType.Error: {
-                        const error = new Error();
-                        error.name = "FridaScriptDefect";
-                        error.stack = message.stack ?? "";
-                        error.message = message.description.replace(/Error: /, "") ?? "";
-                        scriptDefectCause = error;
-                        const sessionError = new FridaSessionError.FridaSessionError({
-                            when: "message",
-                            cause: error.cause,
-                        });
-                        const asTake = Take.fail(sessionError);
-                        Queue.unsafeOffer(messageQueue, asTake);
+                        const cause = new Error();
+                        cause.name = "FridaScriptDefect";
+                        cause.stack = message.stack ?? "";
+                        cause.message = message.description.replace(/^\w{0,}: /, "") ?? "";
+                        scriptDefectCause = cause;
+                        messageMailbox.unsafeDone(
+                            Exit.fail(
+                                new FridaSessionError.FridaSessionError({
+                                    cause,
+                                    when: "message",
+                                })
+                            )
+                        );
                         break;
                     }
 
                     case Frida.MessageType.Send: {
-                        const asTake = Take.of({ message: message.payload, data: Option.fromNullable(data) });
-                        Queue.unsafeOffer(messageQueue, asTake);
+                        messageMailbox.unsafeOffer({
+                            message: message.payload,
+                            data: Option.fromNullable(data),
+                        });
                         break;
                     }
 
@@ -102,12 +155,12 @@ export const load = Function.dual<
             };
 
             const disconnectMessageHandler = Effect.sync(() => script.message.disconnect(messageHandler));
-            yield* Effect.addFinalizer(() => Effect.flatMap(messageQueue.shutdown, () => disconnectMessageHandler));
+            yield* Effect.addFinalizer(() => Effect.flatMap(messageMailbox.shutdown, () => disconnectMessageHandler));
             script.message.connect(messageHandler);
 
-            const stream = Stream.fromQueue(messageQueue).pipe(Stream.flattenTake);
+            const stream = Mailbox.toStream(messageMailbox);
             const sink = Sink.forEach<
-                { message: any; data: Option.Option<Buffer> },
+                { message: unknown; data: Option.Option<Buffer> },
                 void,
                 FridaSessionError.FridaSessionError,
                 never
@@ -115,7 +168,7 @@ export const load = Function.dual<
                 if (Predicate.isNotUndefined(scriptDefectCause)) {
                     return Effect.fail(
                         new FridaSessionError.FridaSessionError({
-                            when: "rpcCall",
+                            when: "message",
                             cause: scriptDefectCause,
                         })
                     );
@@ -186,24 +239,22 @@ export const layer = Function.dual<
     (
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ) => (
-        source: string | Buffer
+        entrypoint: URL
     ) => Layer.Layer<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice
     >,
     (
-        source: string | Buffer,
+        entrypoint: URL,
         options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
     ) => Layer.Layer<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        FridaSession.FridaSession | FridaDevice.FridaDevice
+        Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice
     >
 >(
-    (arguments_) => Predicate.isString(arguments_[0]),
-    (
-        source: string | Buffer,
-        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-    ) => Layer.scoped(Tag, load(source, options))
+    (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
+    (entrypoint: URL, options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined) =>
+        Layer.scoped(Tag, load(entrypoint, options))
 );

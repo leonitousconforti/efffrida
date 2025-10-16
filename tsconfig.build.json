@@ -1,8 +1,11 @@
 {
-    "extends": "./tsconfig.base.json",
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.base.jsonc",
     "include": [],
+    "compilerOptions": {
+        "stripInternal": true
+    },
     "references": [
-        { "path": "packages/frida-compile/tsconfig.build.json" },
         { "path": "packages/frida-tools/tsconfig.build.json" },
         { "path": "packages/il2cpp-bridge/tsconfig.build.json" },
         { "path": "packages/platform/tsconfig.build.json" },

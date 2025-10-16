@@ -1,8 +1,9 @@
 import * as path from "node:path";
+import viteTsconfigPaths from "vite-tsconfig-paths";
 import type { ViteUserConfig } from "vitest/config";
 
-// This is a workaround, see https://github.com/vitest-dev/vitest/issues/4744
 const config: ViteUserConfig = {
+    plugins: [viteTsconfigPaths()],
     esbuild: {
         target: "es2020",
     },
@@ -15,6 +16,14 @@ const config: ViteUserConfig = {
             concurrent: true,
         },
         include: ["test/**/*.test.ts"],
+        reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
+        coverage: {
+            all: true,
+            provider: "v8",
+            include: ["src/**/*.ts"],
+            reporter: ["cobertura", "text"],
+            reportsDirectory: "coverage",
+        },
     },
 };
 

@@ -1,10 +1,5 @@
 {
   "features": {
-    "ghcr.io/devcontainers-extra/features/direnv:1.0.2": {
-      "version": "1.0.2",
-      "resolved": "ghcr.io/devcontainers-extra/features/direnv@sha256:c79d9689ff46f7a216d486966e49f420199b68eebd56af182366f12b0aafc02d",
-      "integrity": "sha256:c79d9689ff46f7a216d486966e49f420199b68eebd56af182366f12b0aafc02d"
-    },
     "ghcr.io/devcontainers/features/common-utils:2.5.3": {
       "version": "2.5.3",
       "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:3cf7ca93154faf9bdb128f3009cf1d1a91750ec97cc52082cf5d4edef5451f85",
