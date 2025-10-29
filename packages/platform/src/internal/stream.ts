@@ -173,7 +173,6 @@ class StreamAdapter<E, R> implements InputStream {
                 return newBuffer.buffer;
             }
         } catch (error) {
-            console.error("error in loop", error);
             await this.close();
             throw error;
         }
