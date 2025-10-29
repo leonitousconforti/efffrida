@@ -8,7 +8,7 @@ const config: ViteUserConfig = {
         pool: createFridaPool({
             device: "local",
             preSpawn: true,
-            spawn: ["sleep", "INFINITY"],
+            spawn: ["sleep", "infinity"],
         }),
     },
 };

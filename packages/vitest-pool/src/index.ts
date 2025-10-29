@@ -107,7 +107,7 @@ export class FridaPoolWorker implements PoolWorker {
                 ? Layer.unwrapScoped(
                       Effect.gen(function* () {
                           const executor = yield* CommandExecutor.CommandExecutor;
-                          const command = Command.make("sleep", "INFINITY");
+                          const command = Command.make("sleep", "infinity");
                           const process = yield* executor.start(command);
                           return FridaSession.layer(process.pid);
                       })

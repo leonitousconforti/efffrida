@@ -19,7 +19,7 @@ const DeviceLive = FridaDevice.layerLocalDevice;
 const SessionLive = Layer.unwrapScoped(
     Effect.gen(function* () {
         const executor = yield* CommandExecutor.CommandExecutor;
-        const command = Command.make("sleep", "INFINITY");
+        const command = Command.make("sleep", "infinity");
         const process = yield* executor.start(command);
         const pid = process.pid;
         return FridaSession.layer(pid);
