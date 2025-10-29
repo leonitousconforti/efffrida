@@ -54,11 +54,4 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install dependencies
         uses: ./.github/actions/setup
-      - name: Allow ptrace for tests (required by Frida)
-        run: |
-          echo "Original ptrace scope:"
-          if [ -f /proc/sys/kernel/yama/ptrace_scope ]; then cat /proc/sys/kernel/yama/ptrace_scope; else echo "no /proc/sys/kernel/yama/ptrace_scope"; fi
-          sudo sysctl -w kernel.yama.ptrace_scope=0 || true
-          echo "New ptrace scope:"
-          if [ -f /proc/sys/kernel/yama/ptrace_scope ]; then cat /proc/sys/kernel/yama/ptrace_scope; else echo "no /proc/sys/kernel/yama/ptrace_scope"; fi
       - run: pnpm test
