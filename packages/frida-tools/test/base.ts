@@ -11,7 +11,7 @@ export const SessionLive = Layer.unwrapScoped(
         const command = Command.make("sleep", "infinity");
         const process = yield* executor.start(command);
         const pid = process.pid;
-        return FridaSession.layer(pid);
+        return FridaSession.layer(pid, { persistTimeout: 1 });
     })
 );
 
