@@ -14,8 +14,8 @@ export const SessionLive = Layer.unwrapScoped(
         const command = Command.make("sleep", "infinity");
         const process = yield* executor.start(command);
         const pid = process.pid;
-        return FridaSession.layer(pid);
+        return Layer.retry(FridaSession.layer(pid), retryPolicy);
     })
-).pipe(Layer.retry(retryPolicy));
+);
 
 export const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
