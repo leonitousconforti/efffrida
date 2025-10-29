@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.base.jsonc",
+    "include": [],
+    "references": [
+        { "path": "tsconfig.src-node.json" },
+        { "path": "tsconfig.src-frida.json" },
+        { "path": "tsconfig.test.json" }
+    ]
+}

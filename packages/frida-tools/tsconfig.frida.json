@@ -1,11 +1,11 @@
 {
+    "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
-    "include": ["frida"],
+    "include": ["test/**/*.agent.ts"],
     "compilerOptions": {
-        "types": ["frida-gum"],
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
-        "rootDir": "frida",
-        "noEmit": true,
-        "allowSyntheticDefaultImports": true
+        "outDir": ".tsbuildinfo/frida",
+        "types": ["frida-gum"],
+        "rootDir": "test"
     }
 }

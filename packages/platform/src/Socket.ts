@@ -7,7 +7,7 @@
 import type * as EffectSocket from "@effect/platform/Socket";
 import type * as Effect from "effect/Effect";
 
-import * as internal from "./internal/socket.js";
+import * as internal from "./internal/socket.ts";
 
 /**
  * @since 1.0.0

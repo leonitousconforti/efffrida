@@ -4,83 +4,91 @@ nav_order: 6
 parent: "@efffrida/frida-tools"
 ---
 
-## index overview
+## index.ts overview
 
-Frida devices
-
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
-- [exports](#exports)
-  - [From "./FridaDevice.js"](#from-fridadevicejs)
-  - [From "./FridaDeviceAcquisitionError.js"](#from-fridadeviceacquisitionerrorjs)
-  - [From "./FridaScript.js"](#from-fridascriptjs)
-  - [From "./FridaSession.js"](#from-fridasessionjs)
-  - [From "./FridaSessionError.js"](#from-fridasessionerrorjs)
+- [utils](#utils)
+  - [FridaDevice (namespace export)](#fridadevice-namespace-export)
+  - [FridaDeviceAcquisitionError (namespace export)](#fridadeviceacquisitionerror-namespace-export)
+  - [FridaScript (namespace export)](#fridascript-namespace-export)
+  - [FridaSession (namespace export)](#fridasession-namespace-export)
+  - [FridaSessionError (namespace export)](#fridasessionerror-namespace-export)
 
 ---
 
-# exports
+# utils
 
-## From "./FridaDevice.js"
+## FridaDevice (namespace export)
 
-Frida devices
-
-**Signature**
-
-```ts
-export * as FridaDevice from "./FridaDevice.js"
-```
-
-Added in v1.0.0
-
-## From "./FridaDeviceAcquisitionError.js"
-
-Frida device acquisition errors
+Re-exports all named exports from the "./FridaDevice.ts" module as `FridaDevice`.
 
 **Signature**
 
 ```ts
-export * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.js"
+export * as FridaDevice from "./FridaDevice.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L10)
 
-## From "./FridaScript.js"
+Since v1.0.0
 
-Frida scripts
+## FridaDeviceAcquisitionError (namespace export)
+
+Re-exports all named exports from the "./FridaDeviceAcquisitionError.ts" module as `FridaDeviceAcquisitionError`.
 
 **Signature**
 
 ```ts
-export * as FridaScript from "./FridaScript.js"
+export * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L17)
 
-## From "./FridaSession.js"
+Since v1.0.0
 
-Frida sessions
+## FridaScript (namespace export)
+
+Re-exports all named exports from the "./FridaScript.ts" module as `FridaScript`.
 
 **Signature**
 
 ```ts
-export * as FridaSession from "./FridaSession.js"
+export * as FridaScript from "./FridaScript.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L24)
 
-## From "./FridaSessionError.js"
+Since v1.0.0
 
-Frida session errors
+## FridaSession (namespace export)
+
+Re-exports all named exports from the "./FridaSession.ts" module as `FridaSession`.
 
 **Signature**
 
 ```ts
-export * as FridaSessionError from "./FridaSessionError.js"
+export * as FridaSession from "./FridaSession.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L31)
+
+Since v1.0.0
+
+## FridaSessionError (namespace export)
+
+Re-exports all named exports from the "./FridaSessionError.ts" module as `FridaSessionError`.
+
+**Signature**
+
+```ts
+export * as FridaSessionError from "./FridaSessionError.ts"
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L38)
+
+Since v1.0.0

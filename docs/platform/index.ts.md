@@ -4,96 +4,106 @@ nav_order: 3
 parent: "@efffrida/platform"
 ---
 
-## index overview
+## index.ts overview
 
-Effect `Channel` utilities for Frida.
-
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
-- [exports](#exports)
-  - [From "./Channel.js"](#from-channeljs)
-  - [From "./FridaRuntime.js"](#from-fridaruntimejs)
-  - [From "./MemoryAccessMonitor.js"](#from-memoryaccessmonitorjs)
-  - [From "./Sink.js"](#from-sinkjs)
-  - [From "./Socket.js"](#from-socketjs)
-  - [From "./Stream.js"](#from-streamjs)
+- [utils](#utils)
+  - [Channel (namespace export)](#channel-namespace-export)
+  - [FridaRuntime (namespace export)](#fridaruntime-namespace-export)
+  - [MemoryAccessMonitor (namespace export)](#memoryaccessmonitor-namespace-export)
+  - [Sink (namespace export)](#sink-namespace-export)
+  - [Socket (namespace export)](#socket-namespace-export)
+  - [Stream (namespace export)](#stream-namespace-export)
 
 ---
 
-# exports
+# utils
 
-## From "./Channel.js"
+## Channel (namespace export)
 
-Effect `Channel` utilities for Frida.
-
-**Signature**
-
-```ts
-export * as Channel from "./Channel.js"
-```
-
-Added in v1.0.0
-
-## From "./FridaRuntime.js"
-
-Effect `Runtime` utilities for Frida.
+Re-exports all named exports from the "./Channel.ts" module as `Channel`.
 
 **Signature**
 
 ```ts
-export * as FridaRuntime from "./FridaRuntime.js"
+export * as Channel from "./Channel.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L10)
 
-## From "./MemoryAccessMonitor.js"
+Since v1.0.0
 
-Frida `Memory Access Monitor` utilities for Effect.
+## FridaRuntime (namespace export)
+
+Re-exports all named exports from the "./FridaRuntime.ts" module as `FridaRuntime`.
 
 **Signature**
 
 ```ts
-export * as MemoryAccessMonitor from "./MemoryAccessMonitor.js"
+export * as FridaRuntime from "./FridaRuntime.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L17)
 
-## From "./Sink.js"
+Since v1.0.0
 
-Effect `Sink` utilities for Frida.
+## MemoryAccessMonitor (namespace export)
+
+Re-exports all named exports from the "./MemoryAccessMonitor.ts" module as `MemoryAccessMonitor`.
 
 **Signature**
 
 ```ts
-export * as Sink from "./Sink.js"
+export * as MemoryAccessMonitor from "./MemoryAccessMonitor.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L24)
 
-## From "./Socket.js"
+Since v1.0.0
 
-Effect `Socket` utilities for Frida.
+## Sink (namespace export)
+
+Re-exports all named exports from the "./Sink.ts" module as `Sink`.
 
 **Signature**
 
 ```ts
-export * as Socket from "./Socket.js"
+export * as Sink from "./Sink.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L31)
 
-## From "./Stream.js"
+Since v1.0.0
 
-Effect `Stream` utilities for Frida.
+## Socket (namespace export)
+
+Re-exports all named exports from the "./Socket.ts" module as `Socket`.
 
 **Signature**
 
 ```ts
-export * as Stream from "./Stream.js"
+export * as Socket from "./Socket.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L38)
+
+Since v1.0.0
+
+## Stream (namespace export)
+
+Re-exports all named exports from the "./Stream.ts" module as `Stream`.
+
+**Signature**
+
+```ts
+export * as Stream from "./Stream.ts"
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L45)
+
+Since v1.0.0

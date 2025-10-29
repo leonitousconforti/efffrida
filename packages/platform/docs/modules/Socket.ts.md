@@ -4,15 +4,15 @@ nav_order: 6
 parent: Modules
 ---
 
-## Socket overview
+## Socket.ts overview
 
 Effect `Socket` utilities for Frida.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Network](#network)
   - [connect](#connect)
@@ -30,22 +30,30 @@ Connect to a TCP or UNIX server.
 **Signature**
 
 ```ts
-export declare const connect: (options: SocketConnectOptions) => Effect.Effect<EffectSocket.Socket, never, never>
+declare const connect: (options: SocketConnectOptions) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L27)
+
+Since v1.0.0
 
 ## liftSocketConnection
+
+**See**
+
+- https://frida.re/docs/javascript-api/#socketconnection
 
 **Signature**
 
 ```ts
-export declare const liftSocketConnection: (
+declare const liftSocketConnection: (
   socketConnection: SocketConnection
 ) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L17)
+
+Since v1.0.0
 
 ## listen
 
@@ -56,9 +64,11 @@ port.
 **Signature**
 
 ```ts
-export declare const listen: (
+declare const listen: (
   options?: (SocketListenOptions & { readonly closeCodeIsError?: (code: number) => boolean }) | undefined
 ) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L38)
+
+Since v1.0.0

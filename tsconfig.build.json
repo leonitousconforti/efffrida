@@ -10,6 +10,7 @@
         { "path": "packages/il2cpp-bridge/tsconfig.build.json" },
         { "path": "packages/platform/tsconfig.build.json" },
         { "path": "packages/rpc/tsconfig.build.json" },
-        { "path": "packages/sql/tsconfig.build.json" }
+        { "path": "packages/sql/tsconfig.build.json" },
+        { "path": "packages/vitest-pool/tsconfig.build.json" }
     ]
 }

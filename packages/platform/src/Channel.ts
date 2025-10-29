@@ -6,10 +6,10 @@
 
 import type * as Channel from "effect/Channel";
 import type * as Chunk from "effect/Chunk";
-import type * as FridaSink from "./Sink.js";
-import type * as FridaStream from "./Stream.js";
+import type * as FridaSink from "./Sink.ts";
+import type * as FridaStream from "./Stream.ts";
 
-import * as internal from "./internal/channel.js";
+import * as internal from "./internal/channel.ts";
 
 /**
  * @since 1.0.0

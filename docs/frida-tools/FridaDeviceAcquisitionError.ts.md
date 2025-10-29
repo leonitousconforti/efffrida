@@ -4,15 +4,15 @@ nav_order: 2
 parent: "@efffrida/frida-tools"
 ---
 
-## FridaDeviceAcquisitionError overview
+## FridaDeviceAcquisitionError.ts overview
 
 Frida device acquisition errors
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Errors](#errors)
   - [FridaDeviceAcquisitionError (class)](#fridadeviceacquisitionerror-class)
@@ -29,37 +29,45 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare class FridaDeviceAcquisitionError
+declare class FridaDeviceAcquisitionError
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L35)
+
+Since v1.0.0
 
 ## FridaDeviceAcquisitionErrorTypeId
 
 **Signature**
 
 ```ts
-export declare const FridaDeviceAcquisitionErrorTypeId: typeof FridaDeviceAcquisitionErrorTypeId
+declare const FridaDeviceAcquisitionErrorTypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L14)
+
+Since v1.0.0
 
 ## FridaDeviceAcquisitionErrorTypeId (type alias)
 
 **Signature**
 
 ```ts
-export type FridaDeviceAcquisitionErrorTypeId = typeof FridaDeviceAcquisitionErrorTypeId
+type FridaDeviceAcquisitionErrorTypeId = typeof FridaDeviceAcquisitionErrorTypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L22)
+
+Since v1.0.0
 
 ## isFridaDeviceAcquisitionError
 
 **Signature**
 
 ```ts
-export declare const isFridaDeviceAcquisitionError: (u: unknown) => u is FridaDeviceAcquisitionError
+declare const isFridaDeviceAcquisitionError: (u: unknown) => u is FridaDeviceAcquisitionError
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L28)
+
+Since v1.0.0

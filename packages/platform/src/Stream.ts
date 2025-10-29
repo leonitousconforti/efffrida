@@ -5,11 +5,13 @@
  */
 
 import type * as FileSystem from "@effect/platform/FileSystem";
+import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
 import type * as Function from "effect/Function";
+import type * as Scope from "effect/Scope";
 import type * as Stream from "effect/Stream";
 
-import * as internal from "./internal/stream.js";
+import * as internal from "./internal/stream.ts";
 
 /**
  * @since 1.0.0
@@ -23,8 +25,31 @@ export interface FromInputStreamOptions {
  * @since 1.0.0
  * @category IPC
  */
-export const receiveStream: () => Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =
-    internal.receiveStream;
+export const receiveStream: (
+    shareOptions:
+        | {
+              readonly capacity: "unbounded";
+              readonly replay?: number | undefined;
+              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+          }
+        | {
+              readonly capacity: number;
+              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
+              readonly replay?: number | undefined;
+              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+          }
+) => Effect.Effect<
+    Stream.Stream<
+        {
+            message: string;
+            data?: Uint8Array | undefined;
+        },
+        never,
+        never
+    >,
+    never,
+    Scope.Scope
+> = internal.receiveStream;
 
 /**
  * @since 1.0.0

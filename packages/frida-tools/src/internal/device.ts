@@ -1,11 +1,12 @@
-import type * as FridaDevice from "../FridaDevice.js";
+import type * as FridaDevice from "../FridaDevice.ts";
 
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Predicate from "effect/Predicate";
 import * as Frida from "frida";
-import * as FridaDeviceAcquisitionError from "../FridaDeviceAcquisitionError.js";
+
+import * as FridaDeviceAcquisitionError from "../FridaDeviceAcquisitionError.ts";
 
 /** @internal */
 export const FridaDeviceTypeId: FridaDevice.FridaDeviceTypeId = Symbol.for(
@@ -24,7 +25,11 @@ export const acquireUsbDevice = (
 ): Effect.Effect<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =>
     Effect.map(
         Effect.tryPromise({
-            try: () => Frida.getUsbDevice(options),
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return Frida.getUsbDevice(options, cancellable);
+            },
             catch: (cause) =>
                 new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                     cause,
@@ -42,7 +47,11 @@ export const acquireRemoteDevice = (
 ): Effect.Effect<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =>
     Effect.map(
         Effect.tryPromise({
-            try: () => Frida.getDeviceManager().addRemoteDevice(address, options),
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return Frida.getDeviceManager().addRemoteDevice(address, options, cancellable);
+            },
             catch: (cause) =>
                 new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                     cause,
@@ -61,7 +70,11 @@ export const acquireLocalDevice = (): Effect.Effect<
 > =>
     Effect.map(
         Effect.tryPromise({
-            try: () => Frida.getLocalDevice(),
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return Frida.getLocalDevice();
+            },
             catch: (cause) =>
                 new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                     cause,

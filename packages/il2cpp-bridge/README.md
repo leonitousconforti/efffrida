@@ -1,3 +1,3 @@
 # @efffrida/il2cpp-bridge
 
-Not sure what this is going to turn out to be yet
+Effect integration for <https://github.com/vfsfitvnm/frida-il2cpp-bridge>

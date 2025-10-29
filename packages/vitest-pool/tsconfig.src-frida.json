@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.base.jsonc",
+    "include": ["frida"],
+    "references": [{ "path": "../platform/tsconfig.src.json" }],
+    "compilerOptions": {
+        "tsBuildInfoFile": ".tsbuildinfo/src-frida.tsbuildinfo",
+        // "outDir": ".tsbuildinfo/src",
+        "outDir": "dist/frida",
+        "types": ["frida-gum"],
+        "rootDir": "frida"
+    }
+}

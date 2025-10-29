@@ -4,15 +4,15 @@ nav_order: 3
 parent: Modules
 ---
 
-## FridaScript overview
+## FridaScript.ts overview
 
 Frida scripts
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Frida](#frida)
   - [load](#load)
@@ -20,6 +20,8 @@ Added in v1.0.0
   - [layer](#layer)
 - [Models](#models)
   - [FridaScript (interface)](#fridascript-interface)
+- [Options](#options)
+  - [LoadOptions (interface)](#loadoptions-interface)
 - [Predicates](#predicates)
   - [isFridaScript](#isfridascript)
 - [Tags](#tags)
@@ -37,28 +39,30 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const load: {
+declare const load: {
   (
     entrypoint: URL,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    options?: LoadOptions | undefined
   ): Effect.Effect<
     FridaScript,
     FridaSessionError.FridaSessionError,
-    Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    Path.Path | FridaSession.FridaSession | Scope.Scope
   >
   (
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+    options?: LoadOptions | undefined
   ): (
     entrypoint: URL
   ) => Effect.Effect<
     FridaScript,
     FridaSessionError.FridaSessionError,
-    Path.Path | FridaSession.FridaSession | FridaDevice.FridaDevice | Scope.Scope
+    Path.Path | FridaSession.FridaSession | Scope.Scope
   >
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L108)
+
+Since v1.0.0
 
 # Layers
 
@@ -67,28 +71,20 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const layer: {
+declare const layer: {
   (
     entrypoint: URL,
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-  ): Layer.Layer<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
-  >
+    options?: LoadOptions | undefined
+  ): Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
   (
-    options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
-  ): (
-    entrypoint: URL
-  ) => Layer.Layer<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    Path.Path | FridaDevice.FridaDevice | FridaSession.FridaSession
-  >
+    options?: LoadOptions | undefined
+  ): (entrypoint: URL) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L132)
+
+Since v1.0.0
 
 # Models
 
@@ -99,27 +95,67 @@ Added in v1.0.0
 ```ts
 export interface FridaScript {
   readonly script: Frida.Script
-  readonly destroyed: Deferred.Deferred<void, never>
   readonly [FridaScriptTypeId]: typeof FridaScriptTypeId
+  readonly destroyed: Deferred.Deferred<void, never>
+  readonly scriptError: Deferred.Deferred<unknown, never>
   readonly stream: Stream.Stream<
-    { message: any; data: Option.Option<Buffer> },
+    { message: unknown; data: Option.Option<Buffer> },
     FridaSessionError.FridaSessionError,
     never
   >
   readonly sink: Sink.Sink<
     void,
-    { message: any; data: Option.Option<Buffer> },
+    { message: unknown; data: Option.Option<Buffer> },
     never,
     FridaSessionError.FridaSessionError,
     never
   >
-  readonly callExport: (
-    exportName: string
-  ) => (...args: Array<any>) => Effect.Effect<unknown, FridaSessionError.FridaSessionError, never>
+  readonly callExport: <A, I, R>(
+    exportName: string,
+    schema: Schema.Schema<A, I, R>
+  ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | ParseResult.ParseError, R>
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L41)
+
+Since v1.0.0
+
+# Options
+
+## LoadOptions (interface)
+
+**Signature**
+
+```ts
+export interface LoadOptions extends Frida.ScriptOptions {
+  readonly resume?: boolean | undefined
+  readonly messageMailboxCapacity?:
+    | number
+    | {
+        readonly capacity?: number
+        readonly strategy?: "suspend" | "dropping" | "sliding"
+      }
+    | undefined
+  readonly streamShareOptions?:
+    | {
+        readonly capacity: "unbounded"
+        readonly replay?: number | undefined
+        readonly idleTimeToLive?: Duration.DurationInput | undefined
+      }
+    | {
+        readonly capacity: number
+        readonly strategy?: "sliding" | "dropping" | "suspend" | undefined
+        readonly replay?: number | undefined
+        readonly idleTimeToLive?: Duration.DurationInput | undefined
+      }
+    | undefined
+}
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L80)
+
+Since v1.0.0
 
 # Predicates
 
@@ -128,10 +164,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isFridaScript: (u: unknown) => u is FridaScript
+declare const isFridaScript: (u: unknown) => u is FridaScript
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L74)
+
+Since v1.0.0
 
 # Tags
 
@@ -140,10 +178,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaScript: Context.Tag<FridaScript, FridaScript>
+declare const FridaScript: Context.Tag<FridaScript, FridaScript>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L68)
+
+Since v1.0.0
 
 # Type ids
 
@@ -152,17 +192,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaScriptTypeId: typeof FridaScriptTypeId
+declare const FridaScriptTypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L29)
+
+Since v1.0.0
 
 ## FridaScriptTypeId (type alias)
 
 **Signature**
 
 ```ts
-export type FridaScriptTypeId = typeof FridaScriptTypeId
+type FridaScriptTypeId = typeof FridaScriptTypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L35)
+
+Since v1.0.0

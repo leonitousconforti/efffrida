@@ -1,6 +1,6 @@
 # @efffrida/frida-tools
 
-Provides effectful abstractions for frida such as: connecting to devices, managing sessions, and creating script.
+Provides effectful abstractions for frida such as connecting to devices, managing sessions, and creating scripts.
 
 ### Example usage
 
@@ -13,6 +13,7 @@ import { Effect, Layer, Stream } from "effect";
 const DeviceLive = FridaDevice.layerLocalDevice;
 const SessionLive = FridaSession.layer("/usr/bin/sleep");
 const FridaLive = Layer.provideMerge(SessionLive, DeviceLive);
+
 const ScriptLive = FridaScript.layer(new URL("agent.ts", import.meta.url))
     .pipe(Layer.provide(FridaLive))
     .pipe(Layer.provide(Path.layer));
@@ -21,7 +22,5 @@ const program = Effect.gen(function* () {
     const script = yield* FridaScript.FridaScript;
     const messages = yield* Stream.runHead(script.stream);
     // ...
-})
-    .pipe(Effect.provide(ScriptLive))
-    .pipe(Effect.scoped)
+}).pipe(Effect.provide(ScriptLive));
 ```

@@ -4,15 +4,15 @@ nav_order: 4
 parent: Modules
 ---
 
-## MemoryAccessMonitor overview
+## MemoryAccessMonitor.ts overview
 
 Frida `Memory Access Monitor` utilities for Effect.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Memory Access Monitor](#memory-access-monitor)
   - [MemoryAccessMonitorStream](#memoryaccessmonitorstream)
@@ -30,7 +30,7 @@ is interrupted or the stream is finished.
 **Signature**
 
 ```ts
-export declare const MemoryAccessMonitorStream: (
+declare const MemoryAccessMonitorStream: (
   ranges: MemoryAccessRange | Array<MemoryAccessRange>,
   options?:
     | { readonly bufferSize: "unbounded" }
@@ -39,4 +39,6 @@ export declare const MemoryAccessMonitorStream: (
 ) => Stream.Stream<MemoryAccessDetails, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/MemoryAccessMonitor.ts#L19)
+
+Since v1.0.0

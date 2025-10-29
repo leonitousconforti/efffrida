@@ -4,15 +4,15 @@ nav_order: 2
 parent: Modules
 ---
 
-## FridaRuntime overview
+## FridaRuntime.ts overview
 
 Effect `Runtime` utilities for Frida.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Runtime](#runtime)
   - [runMain](#runmain)
@@ -26,7 +26,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const runMain: <A, E>(
+declare const runMain: <A, E>(
   effect: Effect.Effect<A, E, never>,
   options?:
     | {
@@ -37,4 +37,6 @@ export declare const runMain: <A, E>(
 ) => void
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/FridaRuntime.ts#L23)
+
+Since v1.0.0

@@ -1,11 +1,17 @@
 {
-    "extends": "./tsconfig.src.json",
-    "references": [{ "path": "../frida-tools/tsconfig.build.json" }],
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.base.jsonc",
+    "references": [
+        { "path": "../frida-tools/tsconfig.build.json" },
+        { "path": "../platform/tsconfig.build.json" },
+        { "path": "./tsconfig.src-frida.json" },
+        { "path": "./tsconfig.src-node.json" }
+    ],
+    "include": [],
     "compilerOptions": {
-        "types": ["node", "frida-gum"],
         "tsBuildInfoFile": ".tsbuildinfo/build.tsbuildinfo",
-        "outDir": "build/esm",
-        "declarationDir": "build/dts",
+        "outDir": "dist",
+        "types": [],
         "stripInternal": true
     }
 }

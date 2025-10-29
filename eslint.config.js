@@ -38,7 +38,6 @@ export default tseslint.config(
         },
 
         rules: {
-            "local-rules/no-opaque-instance-fields": "error",
             "no-fallthrough": "off",
             "no-irregular-whitespace": "off",
             "object-shorthand": "error",
@@ -105,7 +104,7 @@ export default tseslint.config(
         },
     },
     {
-        files: ["packages/**/src/index.ts"],
+        files: ["packages/**/index.ts"],
         rules: {
             "prettier/prettier": "off",
         },

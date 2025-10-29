@@ -1,14 +1,7 @@
-/* eslint-disable no-undef */
 import * as glob from "glob";
 import madge from "madge";
 
-madge(glob.globSync(["packages/*/src/**/*.ts"]), {
-    detectiveOptions: {
-        ts: {
-            skipTypeImports: true,
-        },
-    },
-}).then((res) => {
+madge(glob.globSync(["packages/*/src/**/*.ts"])).then((res) => {
     const circular = res.circular();
     if (circular.length) {
         console.error("Circular dependencies found");

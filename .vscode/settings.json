@@ -1,6 +1,16 @@
 {
+    "direnv.restart.automatic": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.defaultFormatter": "EditorConfig.EditorConfig",
+    "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    "cSpell.enabled": true,
     "cSpell.words": [
         "BUILDKIT",
+        "cancelables",
         "codegen",
         "Conforti",
         "crosspath",

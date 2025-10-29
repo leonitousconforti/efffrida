@@ -4,15 +4,15 @@ nav_order: 1
 parent: Modules
 ---
 
-## FridaDevice overview
+## FridaDevice.ts overview
 
 Frida devices
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Device acquisition](#device-acquisition)
   - [acquireLocalDevice](#acquirelocaldevice)
@@ -41,39 +41,45 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const acquireLocalDevice: () => Effect.Effect<
+declare const acquireLocalDevice: () => Effect.Effect<
   FridaDevice,
   FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
   never
 >
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L71)
+
+Since v1.0.0
 
 ## acquireRemoteDevice
 
 **Signature**
 
 ```ts
-export declare const acquireRemoteDevice: (
+declare const acquireRemoteDevice: (
   address: string,
   options?: Frida.RemoteDeviceOptions | undefined
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L61)
+
+Since v1.0.0
 
 ## acquireUsbDevice
 
 **Signature**
 
 ```ts
-export declare const acquireUsbDevice: (
+declare const acquireUsbDevice: (
   options?: Frida.GetDeviceOptions | undefined
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L52)
+
+Since v1.0.0
 
 # Layers
 
@@ -82,39 +88,41 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const layerLocalDevice: Layer.Layer<
-  FridaDevice,
-  FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-  never
->
+declare const layerLocalDevice: Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L99)
+
+Since v1.0.0
 
 ## layerRemoteDevice
 
 **Signature**
 
 ```ts
-export declare const layerRemoteDevice: (
+declare const layerRemoteDevice: (
   address: string,
   options?: Frida.RemoteDeviceOptions | undefined
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L81)
+
+Since v1.0.0
 
 ## layerUsbDevice
 
 **Signature**
 
 ```ts
-export declare const layerUsbDevice: (
+declare const layerUsbDevice: (
   options?: Frida.GetDeviceOptions | undefined
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L91)
+
+Since v1.0.0
 
 # Models
 
@@ -129,7 +137,9 @@ export interface FridaDevice {
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L31)
+
+Since v1.0.0
 
 # Predicates
 
@@ -138,10 +148,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isFridaDevice: (u: unknown) => u is FridaDevice
+declare const isFridaDevice: (u: unknown) => u is FridaDevice
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L46)
+
+Since v1.0.0
 
 # Tags
 
@@ -150,10 +162,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaDevice: Context.Tag<FridaDevice, FridaDevice>
+declare const FridaDevice: Context.Tag<FridaDevice, FridaDevice>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L40)
+
+Since v1.0.0
 
 # Type ids
 
@@ -162,17 +176,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaDeviceTypeId: typeof FridaDeviceTypeId
+declare const FridaDeviceTypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L19)
+
+Since v1.0.0
 
 ## FridaDeviceTypeId (type alias)
 
 **Signature**
 
 ```ts
-export type FridaDeviceTypeId = typeof FridaDeviceTypeId
+type FridaDeviceTypeId = typeof FridaDeviceTypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L25)
+
+Since v1.0.0

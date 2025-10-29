@@ -7,7 +7,7 @@
 import type * as Function from "effect/Function";
 import type * as Sink from "effect/Sink";
 
-import * as internal from "./internal/sink.js";
+import * as internal from "./internal/sink.ts";
 
 /**
  * @since 1.0.0

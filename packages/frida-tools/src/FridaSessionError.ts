@@ -36,7 +36,7 @@ export class FridaSessionError extends PlatformError.TypeIdError(FridaSessionErr
     cause: unknown;
     when: "spawn" | "kill" | "attach" | "detach" | "compile" | "load" | "unload" | "resume" | "message" | "rpcCall";
 }> {
-    get message() {
+    override get message() {
         return `A Frida session error occurred on ${this.when}`;
     }
 }

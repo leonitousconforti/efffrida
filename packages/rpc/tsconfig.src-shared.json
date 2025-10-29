@@ -1,10 +1,12 @@
 {
+    "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
-    "include": ["src/shared.ts"],
+    "include": ["src/shared"],
     "compilerOptions": {
-        "types": [],
-        "outDir": "build/src",
         "tsBuildInfoFile": ".tsbuildinfo/src-shared.tsbuildinfo",
+        // "outDir": ".tsbuildinfo/src",
+        "outDir": "dist",
+        "types": [],
         "rootDir": "src"
     }
 }

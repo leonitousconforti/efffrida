@@ -4,15 +4,15 @@ nav_order: 5
 parent: Modules
 ---
 
-## Sink overview
+## Sink.ts overview
 
 Effect `Sink` utilities for Frida.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Constructors](#constructors)
   - [fromOutputStream](#fromoutputstream)
@@ -28,55 +28,75 @@ Added in v1.0.0
 
 ## fromOutputStream
 
+**See**
+
+- https://frida.re/docs/javascript-api/#outputstream
+
 **Signature**
 
 ```ts
-export declare const fromOutputStream: <E>(
+declare const fromOutputStream: <E>(
   evaluate: Function.LazyArg<OutputStream>,
   onError: (error: unknown) => E,
   options?: FromWritableOptions | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L31)
+
+Since v1.0.0
 
 ## makeUnixOutputStream
+
+**See**
+
+- https://frida.re/docs/javascript-api/#unixoutputstream
 
 **Signature**
 
 ```ts
-export declare const makeUnixOutputStream: <E>(
+declare const makeUnixOutputStream: <E>(
   fileDescriptor: number,
   onError: (error: unknown) => E,
   options?: (UnixStreamOptions & FromWritableOptions) | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L42)
+
+Since v1.0.0
 
 ## makeWin32OutputStream
+
+**See**
+
+- https://frida.re/docs/javascript-api/#win32outputstream
 
 **Signature**
 
 ```ts
-export declare const makeWin32OutputStream: <E>(
+declare const makeWin32OutputStream: <E>(
   handle: NativePointerValue,
   onError: (error: unknown) => E,
   options?: (WindowsStreamOptions & FromWritableOptions) | undefined
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L53)
+
+Since v1.0.0
 
 ## sendSink
 
 **Signature**
 
 ```ts
-export declare const sendSink: () => Sink.Sink<void, string, never, never, never>
+declare const sendSink: () => Sink.Sink<void, string, never, never, never>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L24)
+
+Since v1.0.0
 
 # Types
 
@@ -90,4 +110,6 @@ export interface FromWritableOptions {
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L16)
+
+Since v1.0.0

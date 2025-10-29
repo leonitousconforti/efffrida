@@ -6,7 +6,7 @@
 
 import type * as Stream from "effect/Stream";
 
-import * as internal from "./internal/memoryAccessMonitor.js";
+import * as internal from "./internal/memoryAccessMonitor.ts";
 
 /**
  * Starts monitoring one or more memory ranges for access, and notifies on the

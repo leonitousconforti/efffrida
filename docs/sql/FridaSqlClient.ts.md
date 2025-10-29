@@ -4,15 +4,15 @@ nav_order: 1
 parent: "@efffrida/sql"
 ---
 
-## FridaSqlClient overview
+## FridaSqlClient.ts overview
 
 Frida sql client for effect-ts.
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Constructor](#constructor)
   - [make](#make)
@@ -37,12 +37,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (
+declare const make: (
   options: SqliteClientConfig
 ) => Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity>
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L94)
+
+Since v1.0.0
 
 # Layers
 
@@ -51,22 +53,26 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError>
+declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError>
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L250)
+
+Since v1.0.0
 
 ## layerConfig
 
 **Signature**
 
 ```ts
-export declare const layerConfig: (
+declare const layerConfig: (
   config: Config.Config.Wrap<SqliteClientConfig>
 ) => Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError>
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L236)
+
+Since v1.0.0
 
 # Models
 
@@ -93,14 +99,16 @@ export interface SqliteClient extends SqlClient.SqlClient {
 }
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L42)
+
+Since v1.0.0
 
 ## SqliteClientConfig (type alias)
 
 **Signature**
 
 ```ts
-export type SqliteClientConfig = (
+type SqliteClientConfig = (
   | { readonly inlineData: string }
   | { readonly filename: string; readonly openFlags?: Array<SqliteOpenFlag> | undefined }
 ) & {
@@ -113,7 +121,9 @@ export type SqliteClientConfig = (
 }
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L69)
+
+Since v1.0.0
 
 # Tags
 
@@ -122,10 +132,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const SqliteClient: Context.Tag<SqliteClient, SqliteClient>
+declare const SqliteClient: Context.Tag<SqliteClient, SqliteClient>
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L63)
+
+Since v1.0.0
 
 # Type ids
 
@@ -134,17 +146,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const TypeId: typeof TypeId
+declare const TypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L30)
+
+Since v1.0.0
 
 ## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type TypeId = typeof TypeId
+type TypeId = typeof TypeId
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/FridaSqlClient.ts#L36)
+
+Since v1.0.0

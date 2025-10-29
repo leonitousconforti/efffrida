@@ -4,31 +4,31 @@ nav_order: 2
 parent: Modules
 ---
 
-## index overview
+## index.ts overview
 
-FridaIl2cppBridge.ts
-
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
-- [exports](#exports)
-  - [From "./FridaIl2cppBridge.js"](#from-fridail2cppbridgejs)
+- [utils](#utils)
+  - [FridaIl2cppBridge (namespace export)](#fridail2cppbridge-namespace-export)
 
 ---
 
-# exports
+# utils
 
-## From "./FridaIl2cppBridge.js"
+## FridaIl2cppBridge (namespace export)
 
-FridaIl2cppBridge.ts
+Re-exports all named exports from the "./FridaIl2cppBridge.ts" module as `FridaIl2cppBridge`.
 
 **Signature**
 
 ```ts
-export * as FridaIl2cppBridge from "./FridaIl2cppBridge.js"
+export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L10)
+
+Since v1.0.0

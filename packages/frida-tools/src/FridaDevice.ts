@@ -8,9 +8,9 @@ import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Frida from "frida";
-import type * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.js";
+import type * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts";
 
-import * as internal from "./internal/device.js";
+import * as internal from "./internal/device.ts";
 
 /**
  * @since 1.0.0

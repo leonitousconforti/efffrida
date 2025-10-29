@@ -7,7 +7,6 @@
 import "frida-il2cpp-bridge";
 
 import * as Effect from "effect/Effect";
-import * as Exit from "effect/Exit";
 import * as Runtime from "effect/Runtime";
 
 /**
@@ -18,7 +17,7 @@ import * as Runtime from "effect/Runtime";
 export const il2cppPerformEffect: <X, E, R>(
     effect: Effect.Effect<X, E, R>,
     flag?: "free" | "bind" | "leak" | "main" | undefined
-) => Effect.Effect<void, E, R> = Effect.fnUntraced(function* <X, E, R>(
+) => Effect.Effect<X, E, R> = Effect.fnUntraced(function* <X, E, R>(
     effect: Effect.Effect<X, E, R>,
     flag?: "free" | "bind" | "leak" | "main" | undefined
 ) {
@@ -33,6 +32,5 @@ export const il2cppPerformEffect: <X, E, R>(
             flag
         )
     );
-    const voided = Exit.asVoid(exit);
-    return yield* voided;
+    return yield* exit;
 });

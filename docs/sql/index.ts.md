@@ -4,31 +4,31 @@ nav_order: 2
 parent: "@efffrida/sql"
 ---
 
-## index overview
+## index.ts overview
 
-Frida sql client for effect-ts.
-
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
-- [exports](#exports)
-  - [From "./FridaSqlClient.js"](#from-fridasqlclientjs)
+- [utils](#utils)
+  - [FridaSqlClient (namespace export)](#fridasqlclient-namespace-export)
 
 ---
 
-# exports
+# utils
 
-## From "./FridaSqlClient.js"
+## FridaSqlClient (namespace export)
 
-Frida sql client for effect-ts.
+Re-exports all named exports from the "./FridaSqlClient.ts" module as `FridaSqlClient`.
 
 **Signature**
 
 ```ts
-export * as FridaSqlClient from "./FridaSqlClient.js"
+export * as FridaSqlClient from "./FridaSqlClient.ts"
 ```
 
-Added in v1.0.0
+[Source](/blob/main/src/index.ts#L10)
+
+Since v1.0.0

@@ -4,15 +4,16 @@
  * @since 1.0.0
  */
 
+import type * as Cause from "effect/Cause";
 import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Scope from "effect/Scope";
 import type * as Frida from "frida";
-import type * as FridaDevice from "./FridaDevice.js";
-import type * as FridaSessionError from "./FridaSessionError.js";
+import type * as FridaDevice from "./FridaDevice.ts";
+import type * as FridaSessionError from "./FridaSessionError.ts";
 
-import * as internal from "./internal/session.js";
+import * as internal from "./internal/session.ts";
 
 /**
  * @since 1.0.0
@@ -33,6 +34,14 @@ export type FridaSessionTypeId = typeof FridaSessionTypeId;
 export interface FridaSession {
     readonly session: Frida.Session;
     readonly [FridaSessionTypeId]: typeof FridaSessionTypeId;
+    readonly resume: Effect.Effect<void, Cause.UnknownException>;
+    enableChildGating(): Effect.Effect<void, Cause.UnknownException>;
+    disableChildGating(): Effect.Effect<void, Cause.UnknownException>;
+    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>;
+    joinPortal(
+        address: string,
+        options?: Frida.PortalOptions | undefined
+    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownException>;
 }
 
 /**
@@ -71,6 +80,6 @@ export const attach: (
  * @category Layers
  */
 export const layer: (
-    target: string,
+    target: number | string | ReadonlyArray<string>,
     options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layer;

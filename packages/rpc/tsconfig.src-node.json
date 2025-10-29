@@ -1,11 +1,13 @@
 {
+    "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
-    "include": ["src/FridaRpcClient.ts", "src/index.ts"],
+    "include": ["src/node"],
     "references": [{ "path": "tsconfig.src-shared.json" }, { "path": "../frida-tools/tsconfig.src.json" }],
     "compilerOptions": {
-        "types": ["node"],
-        "outDir": "build/src",
         "tsBuildInfoFile": ".tsbuildinfo/src-node.tsbuildinfo",
+        // "outDir": ".tsbuildinfo/src",
+        "outDir": "dist",
+        "types": ["node"],
         "rootDir": "src"
     }
 }

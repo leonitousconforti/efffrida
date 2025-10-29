@@ -4,15 +4,15 @@ nav_order: 4
 parent: Modules
 ---
 
-## FridaSession overview
+## FridaSession.ts overview
 
 Frida sessions
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Frida](#frida)
   - [attach](#attach)
@@ -38,26 +38,30 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const attach: (
+declare const attach: (
   target: Frida.TargetProcess,
   options?: Frida.SessionOptions | undefined
 ) => Effect.Effect<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L72)
+
+Since v1.0.0
 
 ## spawn
 
 **Signature**
 
 ```ts
-export declare const spawn: (
+declare const spawn: (
   program: string | Array<string>,
   options?: Frida.SpawnOptions | undefined
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L63)
+
+Since v1.0.0
 
 # Layers
 
@@ -66,13 +70,15 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const layer: (
-  target: string,
+declare const layer: (
+  target: number | string | ReadonlyArray<string>,
   options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L82)
+
+Since v1.0.0
 
 # Models
 
@@ -84,10 +90,20 @@ Added in v1.0.0
 export interface FridaSession {
   readonly session: Frida.Session
   readonly [FridaSessionTypeId]: typeof FridaSessionTypeId
+  readonly resume: Effect.Effect<void, Cause.UnknownException>
+  enableChildGating(): Effect.Effect<void, Cause.UnknownException>
+  disableChildGating(): Effect.Effect<void, Cause.UnknownException>
+  setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>
+  joinPortal(
+    address: string,
+    options?: Frida.PortalOptions | undefined
+  ): Effect.Effect<Frida.PortalMembership, Cause.UnknownException>
 }
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L34)
+
+Since v1.0.0
 
 # Predicates
 
@@ -96,10 +112,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isFridaSession: (u: unknown) => u is FridaSession
+declare const isFridaSession: (u: unknown) => u is FridaSession
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L57)
+
+Since v1.0.0
 
 # Tags
 
@@ -108,10 +126,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaSession: Context.Tag<FridaSession, FridaSession>
+declare const FridaSession: Context.Tag<FridaSession, FridaSession>
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L51)
+
+Since v1.0.0
 
 # Type ids
 
@@ -120,17 +140,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FridaSessionTypeId: typeof FridaSessionTypeId
+declare const FridaSessionTypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L22)
+
+Since v1.0.0
 
 ## FridaSessionTypeId (type alias)
 
 **Signature**
 
 ```ts
-export type FridaSessionTypeId = typeof FridaSessionTypeId
+type FridaSessionTypeId = typeof FridaSessionTypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L28)
+
+Since v1.0.0

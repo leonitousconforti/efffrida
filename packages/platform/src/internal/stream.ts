@@ -1,4 +1,5 @@
-import type { FromInputStreamOptions } from "../Stream.js";
+import type * as Duration from "effect/Duration";
+import type { FromInputStreamOptions } from "../Stream.ts";
 
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
@@ -14,23 +15,49 @@ import * as Buffer from "node:buffer";
 import * as util from "node:util";
 
 /** @internal */
-export const receiveStream = (): Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never> =>
+export const receiveStream = (
+    shareOptions:
+        | {
+              readonly capacity: "unbounded";
+              readonly replay?: number | undefined;
+              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+          }
+        | {
+              readonly capacity: number;
+              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
+              readonly replay?: number | undefined;
+              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+          }
+): Effect.Effect<
+    Stream.Stream<
+        {
+            message: string;
+            data?: Uint8Array | undefined;
+        },
+        never,
+        never
+    >,
+    never,
+    Scope.Scope
+> =>
     Stream.fromPull(
         Effect.sync(() =>
-            Effect.async<Chunk.Chunk<{ message: string; data?: Uint8Array | undefined }>>((resume) => {
-                recv((message: string, data: ArrayBuffer | null) => {
-                    resume(
-                        Effect.succeed(
-                            Chunk.make({
-                                message,
-                                data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
-                            })
-                        )
-                    );
-                });
-            })
+            Effect.async<Chunk.Chunk<{ message: string; data?: Uint8Array | undefined }>, Option.None<never>, never>(
+                (resume) => {
+                    recv((message: string, data: ArrayBuffer | null): void => {
+                        resume(
+                            Effect.succeed(
+                                Chunk.make({
+                                    message,
+                                    data: Predicate.isNotNull(data) ? new Uint8Array(data) : undefined,
+                                })
+                            )
+                        );
+                    });
+                }
+            )
         )
-    );
+    ).pipe(Stream.share(shareOptions));
 
 /** @internal */
 export const fromInputStream = <E>(
@@ -89,10 +116,12 @@ class StreamAdapter<E, R> implements InputStream {
     private readonly scope: Scope.CloseableScope;
     private readonly pull: (callback: (error: Error | null, data: Option.Option<number>) => void) => void;
 
-    constructor(
-        private readonly runtime: Runtime.Runtime<R>,
-        private readonly stream: Stream.Stream<Uint8Array, E, R>
-    ) {
+    private readonly runtime: Runtime.Runtime<R>;
+    private readonly stream: Stream.Stream<Uint8Array, E, R>;
+
+    constructor(_runtime: Runtime.Runtime<R>, _stream: Stream.Stream<Uint8Array, E, R>) {
+        this.runtime = _runtime;
+        this.stream = _stream;
         this.scope = Effect.runSync(Scope.make());
         const pull = this.stream.pipe(
             Stream.mapConcat(Function.identity),

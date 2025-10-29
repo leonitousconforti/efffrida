@@ -4,15 +4,15 @@ nav_order: 5
 parent: "@efffrida/frida-tools"
 ---
 
-## FridaSessionError overview
+## FridaSessionError.ts overview
 
 Frida session errors
 
-Added in v1.0.0
+Since v1.0.0
 
 ---
 
-<h2 class="text-delta">Table of contents</h2>
+## Exports Grouped by Category
 
 - [Errors](#errors)
   - [FridaSessionError (class)](#fridasessionerror-class)
@@ -29,37 +29,45 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare class FridaSessionError
+declare class FridaSessionError
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L35)
+
+Since v1.0.0
 
 ## FridaSessionErrorTypeId
 
 **Signature**
 
 ```ts
-export declare const FridaSessionErrorTypeId: typeof FridaSessionErrorTypeId
+declare const FridaSessionErrorTypeId: unique symbol
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L14)
+
+Since v1.0.0
 
 ## FridaSessionErrorTypeId (type alias)
 
 **Signature**
 
 ```ts
-export type FridaSessionErrorTypeId = typeof FridaSessionErrorTypeId
+type FridaSessionErrorTypeId = typeof FridaSessionErrorTypeId
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L22)
+
+Since v1.0.0
 
 ## isFridaSessionError
 
 **Signature**
 
 ```ts
-export declare const isFridaSessionError: (u: unknown) => u is FridaSessionError
+declare const isFridaSessionError: (u: unknown) => u is FridaSessionError
 ```
 
-Added in v1.0.0
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L28)
+
+Since v1.0.0

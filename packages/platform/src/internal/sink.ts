@@ -1,6 +1,6 @@
 import type * as Function from "effect/Function";
 import type * as SingleProducerAsyncInput from "effect/SingleProducerAsyncInput";
-import type { FromWritableOptions } from "../Sink.js";
+import type { FromWritableOptions } from "../Sink.ts";
 
 import * as Channel from "effect/Channel";
 import * as Chunk from "effect/Chunk";
