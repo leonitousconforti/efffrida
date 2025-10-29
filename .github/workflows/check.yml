@@ -54,4 +54,11 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install dependencies
         uses: ./.github/actions/setup
-      - run: pnpm test
+      - run: |
+          docker run --rm \
+            -v "$(pwd)":/workspace \
+            -w /workspace \
+            --cap-add=SYS_PTRACE \
+            --security-opt seccomp=unconfined \
+            -u "$(id -u):$(id -g)" \
+            node:24 sh -lc "corepack enable && pnpm rebuild && pnpm test"
