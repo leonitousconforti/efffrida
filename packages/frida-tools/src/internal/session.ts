@@ -126,5 +126,14 @@ export const layer = (
             );
             const session = yield* attach(pid, options);
             return session;
-        })
+        }).pipe(
+            Effect.timeoutFail({
+                duration: "5 seconds",
+                onTimeout: () =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "attach",
+                        cause: "operation timed out",
+                    }),
+            })
+        )
     );
