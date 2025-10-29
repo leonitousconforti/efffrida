@@ -64,7 +64,7 @@ export const attach = (
                     try: (signal) => {
                         const cancellable = new Frida.Cancellable();
                         signal.onabort = () => cancellable.cancel();
-                        return device.attach(target, options, cancellable);
+                        return device.attach(target, options);
                     },
                     catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "attach" }),
                 }),
