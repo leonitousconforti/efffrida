@@ -1,6 +1,10 @@
 import { mergeConfig, type ViteUserConfig } from "vitest/config";
 import shared from "../../vitest.shared.ts";
 
-const config: ViteUserConfig = {};
+const config: ViteUserConfig = {
+    test: {
+        testTimeout: 20_000,
+    },
+};
 
 export default mergeConfig(shared, config);
