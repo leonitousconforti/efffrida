@@ -3,6 +3,7 @@ import shared from "../../vitest.shared.ts";
 
 const config: ViteUserConfig = {
     test: {
+        // For GitHub Actions 🤮
         hookTimeout: 30_000,
     },
 };
