@@ -4,7 +4,7 @@ import { Effect, Option, Stream } from "effect";
 
 import { FridaLive } from "../base.ts";
 
-const ScriptLive = FridaScript.layer(new URL("main.agent.ts", import.meta.url));
+const ScriptLive = FridaScript.layer(new URL("main.agent.ts", import.meta.url), { resume: true });
 
 layer(FridaLive)("local device tests", (it) => {
     it.layer(ScriptLive)((it) => {
