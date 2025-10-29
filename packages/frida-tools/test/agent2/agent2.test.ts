@@ -6,7 +6,7 @@ import { FridaLive } from "../base.ts";
 
 const ScriptLive = FridaScript.layer(new URL("main.agent.ts", import.meta.url));
 
-layer(FridaLive)("local device tests", (it) => {
+layer(FridaLive, { excludeTestServices: true })("local device tests", (it) => {
     it.layer(ScriptLive)((it) => {
         it.scoped("agent2 on local device", () =>
             Effect.gen(function* () {
