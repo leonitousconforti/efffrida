@@ -1,7 +1,10 @@
 import { Command, CommandExecutor } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { FridaDevice, FridaSession } from "@efffrida/frida-tools";
-import { Effect, Layer, Schedule } from "effect";
+import { Duration, Effect, Layer, Schedule } from "effect";
+
+// For GitHub Actions 🤮
+const retryPolicy = Schedule.addDelay(Schedule.recurs(2), () => Duration.seconds(1));
 
 // Pick a device and a session/program
 export const DeviceLive = FridaDevice.layerLocalDevice;
@@ -13,6 +16,6 @@ export const SessionLive = Layer.unwrapScoped(
         const pid = process.pid;
         return FridaSession.layer(pid);
     })
-).pipe(Layer.retry(Schedule.recurs(2).pipe(Schedule.addDelay(() => "1 second"))));
+).pipe(Layer.retry(retryPolicy));
 
 export const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
