@@ -55,3 +55,6 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/setup
       - run: sudo -E env "PATH=$PATH" pnpm test
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
