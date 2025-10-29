@@ -8,7 +8,6 @@ import * as Match from "effect/Match";
 import * as Predicate from "effect/Predicate";
 import * as Frida from "frida";
 
-import * as Console from "effect/Console";
 import * as FridaDevice from "../FridaDevice.ts";
 import * as FridaSessionError from "../FridaSessionError.ts";
 
@@ -64,7 +63,7 @@ export const attach = (
                     try: (signal) => {
                         const cancellable = new Frida.Cancellable();
                         signal.onabort = () => cancellable.cancel();
-                        return device.attach(target, options);
+                        return device.attach(target, options, cancellable);
                     },
                     catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "attach" }),
                 }),
@@ -110,18 +109,7 @@ export const attach = (
                     return session.detach(cancellable);
                 })
         )
-    )
-        .pipe(
-            Effect.timeoutFail({
-                duration: "10 seconds",
-                onTimeout: () =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "attach",
-                        cause: "operation timed out",
-                    }),
-            })
-        )
-        .pipe(Effect.tapError(Console.log));
+    );
 
 /** @internal */
 export const layer = (
