@@ -21,6 +21,20 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install dependencies
         uses: ./.github/actions/setup
+      - name: CI diagnostics
+        run: |
+          echo "=== which sleep ==="
+          which sleep || true
+          echo "=== sleep --version (if supported) ==="
+          sleep --version 2>&1 || sleep -V 2>&1 || echo "sleep --version not supported"
+          echo "=== try running 'sleep infinity' briefly ==="
+          sleep infinity & pid=$!
+          ps -p $pid -o pid,cmd,etime || true
+          kill $pid || true
+          echo "=== ptrace scope (Linux) ==="
+          if [ -f /proc/sys/kernel/yama/ptrace_scope ]; then cat /proc/sys/kernel/yama/ptrace_scope; else echo "no /proc/sys/kernel/yama/ptrace_scope"; fi
+          echo "=== node frida require check ==="
+          node -e 'try { const f = require("frida"); console.log("frida loaded", typeof f); } catch (e) { console.error("frida require failed:", e && e.message); process.exit(0); }' || true
       - run: pnpm codegen
       - name: Check source state
         run: git add packages/*/src && git diff-index --cached HEAD --exit-code packages/*/src
