@@ -54,6 +54,13 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Install dependencies
         uses: ./.github/actions/setup
+      - run: |
+          NODE_BIN=$(which node)
+          echo "node binary: ${NODE_BIN}"
+          sudo setcap cap_sys_admin+ep "${NODE_BIN}"
+          sudo setcap cap_sys_ptrace+ep "${NODE_BIN}"
+          echo "Verified capabilities:"
+          getcap "${NODE_BIN}"
       - run: pnpm test
       - name: Setup tmate session
         if: ${{ failure() }}
