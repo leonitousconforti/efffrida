@@ -79,6 +79,13 @@ export const isFridaScript: (u: unknown) => u is FridaScript = internal.isFridaS
  */
 export interface LoadOptions extends Frida.ScriptOptions {
     readonly resume?: boolean | undefined;
+    readonly typeCheck?: Frida.TypeCheckMode | undefined;
+    readonly compression?: Frida.JsCompression | undefined;
+    readonly bundleFormat?: Frida.BundleFormat | undefined;
+    readonly outputFormat?: Frida.OutputFormat | undefined;
+    readonly sourceMaps?: Frida.SourceMaps | undefined;
+    readonly platform?: Frida.JsPlatform | undefined;
+    readonly externals?: ReadonlyArray<string> | undefined;
     readonly messageMailboxCapacity?:
         | number
         | {

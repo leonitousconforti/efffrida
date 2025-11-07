@@ -16,9 +16,11 @@ Since v1.0.0
 
 - [Frida](#frida)
   - [attach](#attach)
+  - [frontmost](#frontmost)
   - [spawn](#spawn)
 - [Layers](#layers)
   - [layer](#layer)
+  - [layerFrontmost](#layerfrontmost)
 - [Models](#models)
   - [FridaSession (interface)](#fridasession-interface)
 - [Predicates](#predicates)
@@ -44,7 +46,21 @@ declare const attach: (
 ) => Effect.Effect<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L72)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L81)
+
+Since v1.0.0
+
+## frontmost
+
+**Signature**
+
+```ts
+declare const frontmost: (
+  options?: Frida.FrontmostQueryOptions | undefined
+) => Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L63)
 
 Since v1.0.0
 
@@ -59,7 +75,7 @@ declare const spawn: (
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L63)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L72)
 
 Since v1.0.0
 
@@ -76,7 +92,21 @@ declare const layer: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L82)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L91)
+
+Since v1.0.0
+
+## layerFrontmost
+
+**Signature**
+
+```ts
+declare const layerFrontmost: (
+  options?: Frida.FrontmostQueryOptions | undefined
+) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L100)
 
 Since v1.0.0
 

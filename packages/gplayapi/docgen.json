@@ -1,0 +1,19 @@
+{
+    "$schema": "../../node_modules/@effect/docgen/schema.json",
+    "exclude": ["src/internal/**/*.ts", "src/generated/**/*.ts"],
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/gplayapi",
+    "examplesCompilerOptions": {
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "moduleResolution": "Bundler",
+        "module": "ES2022",
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "baseUrl": "../../",
+        "paths": {
+            "@efffrida/gplayapi": ["./src/index.js"],
+            "@efffrida/gplayapi/*": ["./src/*.js"]
+        }
+    }
+}

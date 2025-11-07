@@ -60,6 +60,15 @@ export const isFridaSession: (u: unknown) => u is FridaSession = internal.isFrid
  * @since 1.0.0
  * @category Frida
  */
+export const frontmost: (
+    options?: Frida.FrontmostQueryOptions | undefined
+) => Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =
+    internal.frontmost;
+
+/**
+ * @since 1.0.0
+ * @category Frida
+ */
 export const spawn: (
     program: string | Array<string>,
     options?: Frida.SpawnOptions | undefined
@@ -83,3 +92,11 @@ export const layer: (
     target: number | string | ReadonlyArray<string>,
     options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layer;
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const layerFrontmost: (
+    options?: Frida.FrontmostQueryOptions | undefined
+) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layerFrontmost;

@@ -23,6 +23,7 @@ import * as Match from "effect/Match";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
+// First, pick your device
 class DeviceSchema extends Schema.Union(
     Schema.Struct({
         device: Schema.Literal("local"),
@@ -37,16 +38,29 @@ class DeviceSchema extends Schema.Union(
         token: Schema.optionalWith(Schema.String, { nullable: true }),
         origin: Schema.optionalWith(Schema.String, { nullable: true }),
         keepaliveInterval: Schema.optionalWith(Schema.DurationFromMillis, { nullable: true }),
+    }),
+    Schema.Struct({
+        emulatorName: Schema.String,
+        device: Schema.Literal("android-emulator"),
+        hidden: Schema.optionalWith(Schema.Boolean, { nullable: true }),
+        adbExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
+        fridaExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
+        emulatorExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
     })
 ) {}
 
+// Second, pick your session
 class AttachSchema extends Schema.Union(
     Schema.Struct({
-        preSpawn: Schema.optionalWith(Schema.Boolean, { nullable: true }),
-        spawn: Schema.Union(Schema.String, Schema.Array(Schema.String)),
+        attach: Schema.Number.pipe(Schema.brand("pid")),
     }),
     Schema.Struct({
-        attach: Schema.Number,
+        spawn: Schema.NonEmptyArrayEnsure(Schema.String),
+        preSpawn: Schema.optionalWith(Schema.Boolean, { nullable: true }),
+    }),
+    Schema.Struct({
+        attachFrontmost: Schema.Literal(true),
+        frontmostScope: Schema.optionalWith(Schema.Literal("minimal", "metadata", "full"), { nullable: true }),
     })
 ) {}
 
@@ -99,25 +113,41 @@ export class FridaPoolWorker implements PoolWorker {
                     keepaliveInterval: keepaliveInterval ? Duration.toSeconds(keepaliveInterval) : undefined,
                 } as Frida.RemoteDeviceOptions)
             ),
+            Match.when(
+                { device: "android-emulator" },
+                ({ adbExecutable, emulatorExecutable, emulatorName, fridaExecutable, hidden }) =>
+                    FridaDevice.layerAndroidEmulatorDevice(emulatorName, {
+                        hidden,
+                        adbExecutable,
+                        fridaExecutable,
+                        emulatorExecutable,
+                    })
+            ),
             Match.exhaustive
         );
 
-        const SessionLive =
-            "preSpawn" in this.customOptions && this.customOptions.preSpawn
-                ? Layer.unwrapScoped(
-                      Effect.gen(function* () {
-                          const executor = yield* CommandExecutor.CommandExecutor;
-                          const command = Command.make("sleep", "infinity");
-                          const process = yield* executor.start(command);
-                          return FridaSession.layer(process.pid);
-                      })
-                  )
-                : FridaSession.layer(
-                      "spawn" in this.customOptions ? this.customOptions.spawn : this.customOptions.attach
-                  );
+        const SessionLive = Match.value(this.customOptions).pipe(
+            Match.when({ attach: Match.number }, ({ attach }) => FridaSession.layer(attach)),
+            Match.when({ attachFrontmost: true }, ({ frontmostScope }) =>
+                FridaSession.layerFrontmost({ scope: frontmostScope } as Frida.FrontmostQueryOptions)
+            ),
+            Match.when({ preSpawn: true }, ({ spawn }) =>
+                Layer.unwrapScoped(
+                    Effect.gen(function* () {
+                        const executor = yield* CommandExecutor.CommandExecutor;
+                        const command = Command.make(...spawn);
+                        const process = yield* executor.start(command);
+                        return FridaSession.layer(process.pid);
+                    })
+                )
+            ),
+            Match.orElse(({ spawn }) => FridaSession.layer(spawn))
+        );
 
-        const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
-        const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url))
+        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeContext.layer));
+        const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url), {
+            externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
+        })
             .pipe(Layer.provide(FridaLive))
             .pipe(Layer.fresh);
 

@@ -116,18 +116,26 @@ export const load = Function.dual<
                                 .build(
                                     path,
                                     {
-                                        // external: [] // FIXME: support externals for @efffrida/vitest-pool
-                                        // platform: "web", // FIXME: https://github.com/frida/frida-core/pull/1197
-                                        typeCheck: "full",
-                                        compression: "none",
-                                        bundleFormat: "esm",
-                                        outputFormat: "unescaped",
-                                        sourceMaps: Frida.SourceMaps.Included,
+                                        externals: options?.externals,
+                                        platform: options?.platform ?? Frida.JsPlatform.Gum,
+                                        typeCheck: options?.typeCheck ?? Frida.TypeCheckMode.Full,
+                                        sourceMaps: options?.sourceMaps ?? Frida.SourceMaps.Included,
+                                        compression: options?.compression ?? Frida.JsCompression.None,
+                                        bundleFormat: options?.bundleFormat ?? Frida.BundleFormat.Esm,
+                                        outputFormat: options?.outputFormat ?? Frida.OutputFormat.Unescaped,
                                     },
                                     cancellable
                                 )
-                                .then(() => void 0)
-                                .catch(() => void 0);
+                                .catch((error) =>
+                                    resume(
+                                        Effect.fail(
+                                            new FridaSessionError.FridaSessionError({
+                                                cause: error,
+                                                when: "compile",
+                                            })
+                                        )
+                                    )
+                                );
 
                             // return Effect.sync(() => compiler.dispose());
                             return Effect.void;
@@ -164,7 +172,14 @@ export const load = Function.dual<
                 try: (signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return session.createScript(source, { runtime: Frida.ScriptRuntime.V8, ...options }, cancellable);
+                    return session.createScript(
+                        source,
+                        {
+                            runtime: Frida.ScriptRuntime.V8,
+                            ...options,
+                        },
+                        cancellable
+                    );
                 },
             });
 

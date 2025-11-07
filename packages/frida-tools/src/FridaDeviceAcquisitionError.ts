@@ -38,5 +38,9 @@ export class FridaDeviceAcquisitionError extends PlatformError.TypeIdError(
 )<{
     cause: unknown;
     attempts: number;
-    acquisitionMethod: "usb" | "remote" | "local";
-}> {}
+    acquisitionMethod: "usb" | "remote" | "local" | "android-emulator";
+}> {
+    public override get message(): string {
+        return `Failed to acquire ${this.acquisitionMethod} Frida device after ${this.attempts} attempt(s)`;
+    }
+}

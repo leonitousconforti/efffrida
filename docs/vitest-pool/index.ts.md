@@ -35,7 +35,7 @@ declare class FridaPoolWorker {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L63)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L77)
 
 Since v1.0.0
 
@@ -47,7 +47,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L127)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L157)
 
 ### stop (method)
 
@@ -57,7 +57,7 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L133)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L163)
 
 ### send (method)
 
@@ -67,7 +67,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: WorkerRequest) => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L137)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L167)
 
 ### on (method)
 
@@ -77,7 +77,7 @@ declare const send: (message: WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L145)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L175)
 
 ### off (method)
 
@@ -87,7 +87,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (_event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L185)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L215)
 
 ### deserialize (method)
 
@@ -97,7 +97,7 @@ declare const off: (_event: string, callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => unknown
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L193)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L223)
 
 ### name (property)
 
@@ -107,7 +107,7 @@ declare const deserialize: (data: unknown) => unknown
 readonly name: "frida-pool"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L64)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L78)
 
 ## createFridaPool
 
@@ -119,6 +119,6 @@ declare const createFridaPool: (
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L202)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L232)
 
 Since v1.0.0

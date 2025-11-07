@@ -24,6 +24,20 @@ export const isFridaSession = (u: unknown): u is FridaSession.FridaSession =>
     Predicate.hasProperty(u, FridaSessionTypeId);
 
 /** @internal */
+export const frontmost = (
+    options?: Frida.FrontmostQueryOptions | undefined
+): Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
+    Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+        Effect.tryPromise((signal) => {
+            const cancellable = new Frida.Cancellable();
+            signal.onabort = () => cancellable.cancel();
+            return device.getFrontmostApplication(options, cancellable);
+        })
+    )
+        .pipe(Effect.flatMap(Effect.fromNullable))
+        .pipe(Effect.mapError((cause) => new FridaSessionError.FridaSessionError({ cause, when: "attach" })));
+
+/** @internal */
 export const spawn = (
     program: string | Array<string>,
     options?: Frida.SpawnOptions | undefined
@@ -128,3 +142,9 @@ export const layer = (
             return session;
         })
     );
+
+/** @internal */
+export const layerFrontmost = (
+    options?: Frida.FrontmostQueryOptions | undefined
+): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
+    Layer.unwrapEffect(Effect.map(frontmost(options), (app) => layer(app.pid)));

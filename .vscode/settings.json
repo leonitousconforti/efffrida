@@ -9,8 +9,10 @@
 
     "cSpell.enabled": true,
     "cSpell.words": [
+        "bufbuild",
         "BUILDKIT",
         "cancelables",
+        "checkin",
         "codegen",
         "Conforti",
         "crosspath",
@@ -20,7 +22,10 @@
         "dind",
         "effectful",
         "efffrida",
+        "fdfe",
         "frida",
+        "frontmost",
+        "gplayapi",
         "interruptible",
         "leoconforti",
         "leonitousconforti",
@@ -31,6 +36,7 @@
         "rechunk",
         "SEMATTRS",
         "Transferables",
-        "vitest"
+        "vitest",
+        "xxhdpi"
     ]
 }

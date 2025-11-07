@@ -15,10 +15,12 @@ Since v1.0.0
 ## Exports Grouped by Category
 
 - [Device acquisition](#device-acquisition)
+  - [acquireAndroidEmulatorDevice](#acquireandroidemulatordevice)
   - [acquireLocalDevice](#acquirelocaldevice)
   - [acquireRemoteDevice](#acquireremotedevice)
   - [acquireUsbDevice](#acquireusbdevice)
 - [Layers](#layers)
+  - [layerAndroidEmulatorDevice](#layerandroidemulatordevice)
   - [layerLocalDevice](#layerlocaldevice)
   - [layerRemoteDevice](#layerremotedevice)
   - [layerUsbDevice](#layerusbdevice)
@@ -36,6 +38,32 @@ Since v1.0.0
 
 # Device acquisition
 
+## acquireAndroidEmulatorDevice
+
+**Signature**
+
+```ts
+declare const acquireAndroidEmulatorDevice: (
+  name: string,
+  options?:
+    | {
+        hidden?: boolean | undefined
+        adbExecutable?: string | undefined
+        fridaExecutable?: string | undefined
+        emulatorExecutable?: string | undefined
+      }
+    | undefined
+) => Effect.Effect<
+  FridaDevice,
+  FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+  CommandExecutor.CommandExecutor | Scope.Scope
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L84)
+
+Since v1.0.0
+
 ## acquireLocalDevice
 
 **Signature**
@@ -48,7 +76,7 @@ declare const acquireLocalDevice: () => Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L71)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L55)
 
 Since v1.0.0
 
@@ -60,10 +88,10 @@ Since v1.0.0
 declare const acquireRemoteDevice: (
   address: string,
   options?: Frida.RemoteDeviceOptions | undefined
-) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
+) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L61)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L74)
 
 Since v1.0.0
 
@@ -77,11 +105,33 @@ declare const acquireUsbDevice: (
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L52)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L65)
 
 Since v1.0.0
 
 # Layers
+
+## layerAndroidEmulatorDevice
+
+**Signature**
+
+```ts
+declare const layerAndroidEmulatorDevice: (
+  name: string,
+  options?:
+    | {
+        hidden?: boolean | undefined
+        adbExecutable?: string | undefined
+        fridaExecutable?: string | undefined
+        emulatorExecutable?: string | undefined
+      }
+    | undefined
+) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, CommandExecutor.CommandExecutor>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L132)
+
+Since v1.0.0
 
 ## layerLocalDevice
 
@@ -91,7 +141,7 @@ Since v1.0.0
 declare const layerLocalDevice: Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L99)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L104)
 
 Since v1.0.0
 
@@ -106,7 +156,7 @@ declare const layerRemoteDevice: (
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L81)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L114)
 
 Since v1.0.0
 
@@ -120,7 +170,7 @@ declare const layerUsbDevice: (
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L91)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L124)
 
 Since v1.0.0
 
@@ -133,11 +183,12 @@ Since v1.0.0
 ```ts
 export interface FridaDevice {
   readonly device: Frida.Device
+  readonly host: `usb://` | `local://` | `remote://${string}` | `android-emulator://${string}`
   readonly [FridaDeviceTypeId]: typeof FridaDeviceTypeId
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L33)
 
 Since v1.0.0
 
@@ -151,7 +202,7 @@ Since v1.0.0
 declare const isFridaDevice: (u: unknown) => u is FridaDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L46)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L49)
 
 Since v1.0.0
 
@@ -165,7 +216,7 @@ Since v1.0.0
 declare const FridaDevice: Context.Tag<FridaDevice, FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L40)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L43)
 
 Since v1.0.0
 
@@ -179,7 +230,7 @@ Since v1.0.0
 declare const FridaDeviceTypeId: unique symbol
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L21)
 
 Since v1.0.0
 
@@ -191,6 +242,6 @@ Since v1.0.0
 type FridaDeviceTypeId = typeof FridaDeviceTypeId
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L25)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDevice.ts#L27)
 
 Since v1.0.0

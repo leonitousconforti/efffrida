@@ -4,9 +4,11 @@
  * @since 1.0.0
  */
 
+import type * as CommandExecutor from "@effect/platform/CommandExecutor";
 import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
+import type * as Scope from "effect/Scope";
 import type * as Frida from "frida";
 import type * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts";
 
@@ -30,6 +32,7 @@ export type FridaDeviceTypeId = typeof FridaDeviceTypeId;
  */
 export interface FridaDevice {
     readonly device: Frida.Device;
+    readonly host: `usb://` | `local://` | `remote://${string}` | `android-emulator://${string}`;
     readonly [FridaDeviceTypeId]: typeof FridaDeviceTypeId;
 }
 
@@ -49,6 +52,16 @@ export const isFridaDevice: (u: unknown) => u is FridaDevice = internal.isFridaD
  * @since 1.0.0
  * @category Device acquisition
  */
+export const acquireLocalDevice: () => Effect.Effect<
+    FridaDevice,
+    FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    never
+> = internal.acquireLocalDevice;
+
+/**
+ * @since 1.0.0
+ * @category Device acquisition
+ */
 export const acquireUsbDevice: (
     options?: Frida.GetDeviceOptions | undefined
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =
@@ -61,18 +74,38 @@ export const acquireUsbDevice: (
 export const acquireRemoteDevice: (
     address: string,
     options?: Frida.RemoteDeviceOptions | undefined
-) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =
+) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, Scope.Scope> =
     internal.acquireRemoteDevice;
 
 /**
  * @since 1.0.0
  * @category Device acquisition
  */
-export const acquireLocalDevice: () => Effect.Effect<
+export const acquireAndroidEmulatorDevice: (
+    name: string,
+    options?:
+        | {
+              hidden?: boolean | undefined;
+              adbExecutable?: string | undefined;
+              fridaExecutable?: string | undefined;
+              emulatorExecutable?: string | undefined;
+          }
+        | undefined
+) => Effect.Effect<
+    FridaDevice,
+    FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    CommandExecutor.CommandExecutor | Scope.Scope
+> = internal.acquireAndroidEmulatorDevice;
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const layerLocalDevice: Layer.Layer<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
     never
-> = internal.acquireLocalDevice;
+> = internal.layerLocalDevice;
 
 /**
  * @since 1.0.0
@@ -96,8 +129,18 @@ export const layerUsbDevice: (
  * @since 1.0.0
  * @category Layers
  */
-export const layerLocalDevice: Layer.Layer<
+export const layerAndroidEmulatorDevice: (
+    name: string,
+    options?:
+        | {
+              hidden?: boolean | undefined;
+              adbExecutable?: string | undefined;
+              fridaExecutable?: string | undefined;
+              emulatorExecutable?: string | undefined;
+          }
+        | undefined
+) => Layer.Layer<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-    never
-> = internal.layerLocalDevice;
+    CommandExecutor.CommandExecutor
+> = internal.layerAndroidEmulatorDevice;

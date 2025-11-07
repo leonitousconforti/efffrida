@@ -1,0 +1,1 @@
+# @efffrida/gplayapi
