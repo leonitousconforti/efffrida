@@ -250,7 +250,10 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                 )
             );
 
-        yield* Command.make(adbExecutable, "-s", emulator, "shell", fridaExecutable).pipe(Command.start);
+        yield* Command.make(adbExecutable, "-s", emulator, "shell", `"${fridaExecutable}"`)
+            .pipe(Command.start)
+            .pipe(Effect.andThen(Effect.sleep("3 seconds")));
+
         const fridaPort = yield* Command.make(adbExecutable, "-s", emulator, "forward", "tcp:0", "tcp:27042")
             .pipe(Command.string)
             .pipe(Effect.flatMap(Schema.decode(Schema.NumberFromString)));
