@@ -282,6 +282,7 @@ export const load = Function.dual<
                     capacity: "unbounded",
                 }
             );
+
             const sink = Sink.forEach<
                 { message: unknown; data: Option.Option<Buffer> },
                 void,
