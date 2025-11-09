@@ -18,6 +18,7 @@ import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as Frida from "frida";
 import * as net from "node:net";
+import * as path from "node:path";
 
 import * as FridaDeviceAcquisitionError from "../FridaDeviceAcquisitionError.ts";
 
@@ -299,10 +300,14 @@ export const acquireAndroidEmulatorDeviceConfig = (
         | undefined
 ) =>
     Config.string("ANDROID_SDK").pipe(
-        Config.map((path) => ({
-            adbExecutable: `${path}/platform-tools/adb`,
-            emulatorExecutable: `${path}/emulator/emulator`,
+        Config.map((androidSdk) => ({
+            adbExecutable: path.join(androidSdk, "platform-tools", "adb"),
+            emulatorExecutable: path.join(androidSdk, "emulator", "emulator"),
         })),
+        Config.withDefault({
+            adbExecutable: "adb",
+            emulatorExecutable: "emulator",
+        }),
         Effect.flatMap((androidSdk) =>
             acquireAndroidEmulatorDevice(name, {
                 ...androidSdk,
