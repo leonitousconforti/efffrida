@@ -304,6 +304,7 @@ export const acquireAndroidEmulatorDeviceConfig = (
             adbExecutable: path.join(androidSdk, "platform-tools", "adb"),
             emulatorExecutable: path.join(androidSdk, "emulator", "emulator"),
         })),
+        // TODO: Should this be optional?
         Config.withDefault({
             adbExecutable: "adb",
             emulatorExecutable: "emulator",
