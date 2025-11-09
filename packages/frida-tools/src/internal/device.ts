@@ -1,10 +1,12 @@
 import type * as CommandExecutor from "@effect/platform/CommandExecutor";
+import type * as ConfigError from "effect/ConfigError";
 import type * as Scope from "effect/Scope";
 import type * as FridaDevice from "../FridaDevice.ts";
 
 import * as Command from "@effect/platform/Command";
 import * as PlatformError from "@effect/platform/Error";
 import * as Chunk from "effect/Chunk";
+import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -286,6 +288,30 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
 );
 
 /** @internal */
+export const acquireAndroidEmulatorDeviceConfig = (
+    name: string,
+    options?:
+        | {
+              hidden?: boolean | undefined;
+              fridaExecutable?: string | undefined;
+              extraEmulatorArgs?: Array<string> | undefined;
+          }
+        | undefined
+) =>
+    Config.string("ANDROID_SDK").pipe(
+        Config.map((path) => ({
+            adbExecutable: `${path}/platform-tools/adb`,
+            emulatorExecutable: `${path}/emulator/emulator`,
+        })),
+        Effect.flatMap((androidSdk) =>
+            acquireAndroidEmulatorDevice(name, {
+                ...androidSdk,
+                ...options,
+            })
+        )
+    );
+
+/** @internal */
 export const layerLocalDevice: Layer.Layer<
     FridaDevice.FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -314,6 +340,7 @@ export const layerAndroidEmulatorDevice = (
               adbExecutable?: string | undefined;
               fridaExecutable?: string | undefined;
               emulatorExecutable?: string | undefined;
+              extraEmulatorArgs?: Array<string> | undefined;
           }
         | undefined
 ): Layer.Layer<
@@ -321,3 +348,19 @@ export const layerAndroidEmulatorDevice = (
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
     CommandExecutor.CommandExecutor
 > => Layer.scoped(Tag, acquireAndroidEmulatorDevice(name, options));
+
+/** @internal */
+export const layerAndroidEmulatorDeviceConfig = (
+    name: string,
+    options?:
+        | {
+              hidden?: boolean | undefined;
+              fridaExecutable?: string | undefined;
+              extraEmulatorArgs?: Array<string> | undefined;
+          }
+        | undefined
+): Layer.Layer<
+    FridaDevice.FridaDevice,
+    ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    CommandExecutor.CommandExecutor
+> => Layer.scoped(Tag, acquireAndroidEmulatorDeviceConfig(name, options));
