@@ -21,3 +21,5 @@ docs/examples/
 
 # scratchpad files
 scratchpad/**/*.ts
+!scratchpad/agent.ts
+!scratchpad/playground.ts
