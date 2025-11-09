@@ -2,6 +2,7 @@ import type * as Scope from "effect/Scope";
 import type * as FridaScript from "../FridaScript.ts";
 
 import * as Path from "@effect/platform/Path";
+import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -16,7 +17,6 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as Frida from "frida";
 
-import * as Cause from "effect/Cause";
 import * as FridaSession from "../FridaSession.ts";
 import * as FridaSessionError from "../FridaSessionError.ts";
 
@@ -30,6 +30,106 @@ export const Tag = Context.GenericTag<FridaScript.FridaScript>("@efffrida/frida-
 
 /** @internal */
 export const isFridaScript = (u: unknown): u is FridaScript.FridaScript => Predicate.hasProperty(u, FridaScriptTypeId);
+
+/** @internal */
+export const compile = Function.dual<
+    (
+        options?: Frida.CompilerOptions | undefined
+    ) => (path: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>,
+    (
+        path: string,
+        options?: Frida.CompilerOptions | undefined
+    ) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
+>(
+    (arguments_) => Predicate.isString(arguments_[0]),
+    (path: string, options?: Frida.CompilerOptions | undefined) =>
+        Effect.asyncEffect<string, FridaSessionError.FridaSessionError, never, never, never, Scope.Scope>(
+            Effect.fnUntraced(function* (resume) {
+                // https://github.com/frida/frida-compile/blob/e81ae27369466c69868fc6ee36c0f227bbfe340c/src/cli.ts#L173-L182
+                interface Diagnostic {
+                    category: string;
+                    code: number;
+                    text: string;
+                    file?: {
+                        path: string;
+                        line: number;
+                        character: number;
+                    };
+                }
+
+                const formatDiagnostic = (diagnostic: Diagnostic): FridaSessionError.FridaSessionError => {
+                    const location = diagnostic.file
+                        ? `${diagnostic.file.path}:${diagnostic.file.line}:${diagnostic.file.character}`
+                        : undefined;
+                    const message = `TS${diagnostic.code}: ${diagnostic.text}`;
+                    const cause = location ? `${location} - ${message}` : message;
+                    return new FridaSessionError.FridaSessionError({ cause, when: "compile" });
+                };
+
+                const compileErrors: Array<Diagnostic> = [];
+                const compiler = new Frida.Compiler();
+
+                const onOutput = (bundle: string) => resume(Effect.succeed(bundle));
+                yield* Effect.addFinalizer(() => Effect.sync(() => compiler.output.disconnect(onOutput)));
+                compiler.output.connect(onOutput);
+
+                const onDiagnostic = (diagnostic: Array<Diagnostic>) => {
+                    for (const diag of diagnostic) {
+                        if (diag.category === "error") {
+                            compileErrors.push(diag);
+                        }
+                    }
+                };
+                yield* Effect.addFinalizer(() => Effect.sync(() => compiler.diagnostics.disconnect(onDiagnostic)));
+                compiler.diagnostics.connect(onDiagnostic);
+
+                const onFinished = () => {
+                    if (compileErrors.length > 0) {
+                        resume(
+                            Effect.failCauseSync(() => {
+                                const [first, ...rest] = compileErrors;
+                                let cause = Cause.fail(formatDiagnostic(first));
+                                for (const diag of rest) {
+                                    cause = Cause.parallel(cause, Cause.fail(formatDiagnostic(diag)));
+                                }
+                                return cause;
+                            })
+                        );
+                    }
+                };
+                yield* Effect.addFinalizer(() => Effect.sync(() => compiler.finished.disconnect(onFinished)));
+                compiler.finished.connect(onFinished);
+
+                const cancellable = new Frida.Cancellable();
+                compiler
+                    .build(
+                        path,
+                        {
+                            externals: options?.externals,
+                            platform: options?.platform ?? Frida.JsPlatform.Gum,
+                            typeCheck: options?.typeCheck ?? Frida.TypeCheckMode.Full,
+                            sourceMaps: options?.sourceMaps ?? Frida.SourceMaps.Included,
+                            compression: options?.compression ?? Frida.JsCompression.None,
+                            bundleFormat: options?.bundleFormat ?? Frida.BundleFormat.Esm,
+                            outputFormat: options?.outputFormat ?? Frida.OutputFormat.Unescaped,
+                        },
+                        cancellable
+                    )
+                    .catch((error) =>
+                        resume(
+                            Effect.fail(
+                                new FridaSessionError.FridaSessionError({
+                                    cause: error,
+                                    when: "compile",
+                                })
+                            )
+                        )
+                    );
+
+                return Effect.sync(() => cancellable.cancel());
+            })
+        )
+);
 
 /** @internal */
 export const load = Function.dual<
@@ -59,89 +159,8 @@ export const load = Function.dual<
 
             const source = yield* path
                 .fromFileUrl(entrypoint)
-                .pipe(
-                    Effect.flatMap((path) =>
-                        Effect.async<string, FridaSessionError.FridaSessionError, never>((resume, signal) => {
-                            // https://github.com/frida/frida-compile/blob/e81ae27369466c69868fc6ee36c0f227bbfe340c/src/cli.ts#L173-L182
-                            interface Diagnostic {
-                                category: string;
-                                code: number;
-                                text: string;
-                                file?: {
-                                    path: string;
-                                    line: number;
-                                    character: number;
-                                };
-                            }
-
-                            const formatDiagnostic = (diagnostic: Diagnostic): FridaSessionError.FridaSessionError => {
-                                const location = diagnostic.file
-                                    ? `${diagnostic.file.path}:${diagnostic.file.line}:${diagnostic.file.character}`
-                                    : undefined;
-                                const message = `TS${diagnostic.code}: ${diagnostic.text}`;
-                                const cause = location ? `${location} - ${message}` : message;
-                                return new FridaSessionError.FridaSessionError({ cause, when: "compile" });
-                            };
-
-                            const compileErrors: Array<Diagnostic> = [];
-                            const compiler = new Frida.Compiler();
-                            compiler.output.connect((bundle: string) => resume(Effect.succeed(bundle)));
-
-                            compiler.diagnostics.connect((diagnostic: Array<Diagnostic>) => {
-                                for (const diag of diagnostic) {
-                                    if (diag.category === "error") {
-                                        compileErrors.push(diag);
-                                    }
-                                }
-                            });
-
-                            compiler.finished.connect(() => {
-                                if (compileErrors.length > 0) {
-                                    resume(
-                                        Effect.failCauseSync(() => {
-                                            const [first, ...rest] = compileErrors;
-                                            let cause = Cause.fail(formatDiagnostic(first));
-                                            for (const diag of rest) {
-                                                cause = Cause.parallel(cause, Cause.fail(formatDiagnostic(diag)));
-                                            }
-                                            return cause;
-                                        })
-                                    );
-                                }
-                            });
-
-                            const cancellable = new Frida.Cancellable();
-                            signal.onabort = () => cancellable.cancel();
-                            compiler
-                                .build(
-                                    path,
-                                    {
-                                        externals: options?.externals,
-                                        platform: options?.platform ?? Frida.JsPlatform.Gum,
-                                        typeCheck: options?.typeCheck ?? Frida.TypeCheckMode.Full,
-                                        sourceMaps: options?.sourceMaps ?? Frida.SourceMaps.Included,
-                                        compression: options?.compression ?? Frida.JsCompression.None,
-                                        bundleFormat: options?.bundleFormat ?? Frida.BundleFormat.Esm,
-                                        outputFormat: options?.outputFormat ?? Frida.OutputFormat.Unescaped,
-                                    },
-                                    cancellable
-                                )
-                                .catch((error) =>
-                                    resume(
-                                        Effect.fail(
-                                            new FridaSessionError.FridaSessionError({
-                                                cause: error,
-                                                when: "compile",
-                                            })
-                                        )
-                                    )
-                                );
-
-                            // return Effect.sync(() => compiler.dispose());
-                            return Effect.void;
-                        })
-                    )
-                )
+                .pipe(Effect.flatMap(compile(options)))
+                .pipe(Effect.scoped)
                 .pipe(
                     Effect.timeoutFail({
                         duration: "1 minute",
@@ -328,16 +347,16 @@ export const load = Function.dual<
 /** @internal */
 export const layer = Function.dual<
     (
-        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+        options?: FridaScript.LoadOptions | undefined
     ) => (
         entrypoint: URL
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>,
     (
         entrypoint: URL,
-        options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined
+        options?: FridaScript.LoadOptions | undefined
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
-    (entrypoint: URL, options?: (Frida.ScriptOptions & { readonly resume?: boolean | undefined }) | undefined) =>
+    (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) =>
         Layer.scoped(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer))
 );

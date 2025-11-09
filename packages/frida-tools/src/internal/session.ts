@@ -50,13 +50,17 @@ export const spawn = (
                     signal.onabort = () => cancellable.cancel();
                     return device.spawn(program, options, cancellable);
                 },
-                catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "spawn" }),
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        cause,
+                        when: "spawn",
+                    }),
             }),
             (pid) =>
                 Effect.promise((signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return device.kill(pid);
+                    return device.kill(pid, cancellable);
                 })
         )
     );
@@ -79,7 +83,11 @@ export const attach = (
                         signal.onabort = () => cancellable.cancel();
                         return device.attach(target, options, cancellable);
                     },
-                    catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "attach" }),
+                    catch: (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            cause,
+                            when: "attach",
+                        }),
                 }),
                 (session) =>
                     ({

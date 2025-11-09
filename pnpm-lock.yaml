@@ -416,6 +416,9 @@ importers:
       '@efffrida/sql':
         specifier: workspace:*
         version: link:../packages/sql
+      frida:
+        specifier: 17.5.1
+        version: 17.5.1
     devDependencies:
       '@effect/cluster':
         specifier: 0.52.1

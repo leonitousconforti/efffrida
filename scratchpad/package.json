@@ -9,7 +9,8 @@
         "@efffrida/il2cpp-bridge": "workspace:*",
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
-        "@efffrida/sql": "workspace:*"
+        "@efffrida/sql": "workspace:*",
+        "frida": "17.5.1"
     },
     "devDependencies": {
         "@effect/cluster": "0.52.1",

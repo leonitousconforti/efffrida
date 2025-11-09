@@ -22,6 +22,7 @@ Since v1.0.0
   - [download](#download)
   - [purchase](#purchase)
 - [Auth](#auth)
+  - [defaultHttpClient](#defaulthttpclient)
   - [makeHttpClient](#makehttpclient)
 - [Device](#device)
   - [Device](#device-1)
@@ -40,7 +41,7 @@ declare const bulkDetails: (
 ) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L55)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L75)
 
 Since v1.0.0
 
@@ -60,7 +61,7 @@ declare const delivery: (
 ) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L97)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L117)
 
 Since v1.0.0
 
@@ -74,7 +75,7 @@ declare const details: (
 ) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L43)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L63)
 
 Since v1.0.0
 
@@ -85,10 +86,20 @@ Since v1.0.0
 ```ts
 declare const download: (
   bundleIdentifier: string
-) => Effect.Effect<void, HttpClientError.HttpClientError, HttpClient.HttpClient>
+) => Effect.Effect<
+  [
+    { file: string; name: string; url: string; size: bigint; integrity: { sha256: string } },
+    ...(
+      | { file: string; url: string; size: bigint; name: string; integrity: { sha256: string } }
+      | { file: string; name: string; size: bigint; url: string; integrity: { sha1: string } }
+    )[]
+  ],
+  HttpClientError.HttpClientError | Error | PlatformError,
+  HttpClient.HttpClient | FileSystem.FileSystem | Scope
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L123)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L143)
 
 Since v1.0.0
 
@@ -103,11 +114,27 @@ declare const purchase: (
 ) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L73)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L93)
 
 Since v1.0.0
 
 # Auth
+
+## defaultHttpClient
+
+**Signature**
+
+```ts
+declare const defaultHttpClient: Layer.Layer<
+  HttpClient.HttpClient,
+  HttpClientError.HttpClientError | PlatformError | ParseError,
+  FileSystem.FileSystem
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L52)
+
+Since v1.0.0
 
 ## makeHttpClient
 
@@ -116,10 +143,10 @@ Since v1.0.0
 ```ts
 declare const makeHttpClient: (
   device: Device
-) => Layer<HttpClient.HttpClient, HttpClientError.HttpClientError | ParseError, HttpClient.HttpClient>
+) => Layer.Layer<HttpClient.HttpClient, HttpClientError.HttpClientError | ParseError, HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L37)
 
 Since v1.0.0
 
@@ -133,6 +160,6 @@ Since v1.0.0
 declare const Device: typeof Device
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L36)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L45)
 
 Since v1.0.0

@@ -174,7 +174,7 @@ export const download = Effect.fnUntraced(function* (bundleIdentifier: string) {
         yield* Stream.run(stream, fileSystem.sink(file));
 
         yield* Effect.logDebug(
-            `main APK of ${mainDeliveryData.downloadSize}bytes at ${mainDeliveryData.downloadUrl} with integrity ${mainDeliveryData.sha256}(sha256) downloaded to ${file}`
+            `main APK of ${mainDeliveryData.downloadSize}bytes from ${mainDeliveryData.downloadUrl} with integrity ${mainDeliveryData.sha256}(sha256) downloaded to ${file}`
         );
 
         return {
@@ -194,7 +194,7 @@ export const download = Effect.fnUntraced(function* (bundleIdentifier: string) {
             yield* Stream.run(stream, fileSystem.sink(file));
 
             yield* Effect.logDebug(
-                `split ${split.name} of ${split.downloadSize}bytes at ${split.downloadUrl} with integrity ${split.sha256}(sha256) downloaded to ${file}`
+                `split ${split.name} of ${split.downloadSize}bytes from ${split.downloadUrl} with integrity ${split.sha256}(sha256) downloaded to ${file}`
             );
 
             return {
@@ -217,7 +217,7 @@ export const download = Effect.fnUntraced(function* (bundleIdentifier: string) {
             yield* Stream.run(stream, fileSystem.sink(file));
 
             yield* Effect.logDebug(
-                `expansion file ${name} of ${expansion.size}bytes at ${expansion.downloadUrl} with integrity ${expansion.sha1}(sha1) downloaded to ${file}`
+                `expansion file ${name} of ${expansion.size}bytes from ${expansion.downloadUrl} with integrity ${expansion.sha1}(sha1) downloaded to ${file}`
             );
 
             return {

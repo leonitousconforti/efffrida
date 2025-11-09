@@ -12,6 +12,7 @@ import * as ParseResult from "effect/ParseResult";
 import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
+import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
 import * as Frida from "frida";
 import * as net from "node:net";
@@ -208,12 +209,17 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                 .pipe(Effect.orDie)
         );
 
+        const isBootCompletedPredicate = Predicate.or(
+            String.includes("Successfully loaded"),
+            String.includes("Boot completed")
+        );
+
         const decoder = new TextDecoder();
         yield* emulatorProcess.stderr.pipe(Stream.take(0)).pipe(Stream.runDrain);
         yield* emulatorProcess.stdout
             .pipe(Stream.mapChunks(Chunk.map((bytes) => decoder.decode(bytes))))
             .pipe(Stream.splitLines)
-            .pipe(Stream.takeUntil((line) => line.includes("Successfully loaded")))
+            .pipe(Stream.takeUntil(isBootCompletedPredicate))
             .pipe(Stream.runDrain);
 
         yield* Command.make(adbExecutable, `-s`, emulator, "wait-for-device")
