@@ -1,0 +1,3 @@
+send("Hello, World!");
+
+recv(() => {});
