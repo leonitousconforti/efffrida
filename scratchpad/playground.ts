@@ -7,6 +7,7 @@ import { Cause, Context, Effect, Layer, Logger, LogLevel, pipe, Stream, String, 
 const DeviceLive = pipe(
     FridaDevice.layerAndroidEmulatorDeviceConfig("Medium_Phone", {
         fridaExecutable: "/data/local/tmp/frida-server-17.5.1-android-arm64",
+        extraEmulatorArgs: ["-gpu", "swiftshader_indirect"],
     }),
     Layer.tap(
         Effect.fnUntraced(
