@@ -218,7 +218,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
         );
 
         const decoder = new TextDecoder();
-        yield* emulatorProcess.stderr.pipe(Stream.take(0)).pipe(Stream.runDrain);
+        yield* emulatorProcess.stderr.pipe(Stream.runHead).pipe(Effect.forkScoped);
         yield* emulatorProcess.stdout
             .pipe(Stream.mapChunks(Chunk.map((bytes) => decoder.decode(bytes))))
             .pipe(Stream.splitLines)
