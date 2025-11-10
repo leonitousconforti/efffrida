@@ -2,26 +2,16 @@ import { Command } from "@effect/platform";
 import { NodeContext, NodeRuntime } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { GooglePlayApi } from "@efffrida/gplayapi";
-import { Cause, Effect, Layer, Logger, LogLevel, pipe, Schedule, Stream, String, Tuple } from "effect";
+import { Cause, Context, Effect, Layer, Logger, LogLevel, pipe, Stream, String, Tuple } from "effect";
 
 const DeviceLive = pipe(
-    Effect.retryOrElse(
-        FridaDevice.acquireAndroidEmulatorDevice("Small_Phone", {
-            fridaExecutable: "/data/local/tmp/frida-server-17.5.1-android-arm64",
-            adbExecutable: "/Users/leo.conforti/Library/Android/sdk/platform-tools/adb",
-            emulatorExecutable: "/Users/leo.conforti/Library/Android/sdk/emulator/emulator",
-        }),
-        Schedule.recurs(0).pipe(Schedule.addDelay(() => "1 second")),
-        (error, attempts) =>
-            new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                cause: error.cause,
-                attempts: attempts + 1,
-                acquisitionMethod: "android-emulator",
-            })
-    ),
-    Effect.tap(
+    FridaDevice.layerAndroidEmulatorDeviceConfig("Medium_Phone", {
+        fridaExecutable: "/data/local/tmp/frida-server-17.5.1-android-arm64",
+    }),
+    Layer.tap(
         Effect.fnUntraced(
-            function* (device) {
+            function* (deviceCtx: Context.Context<FridaDevice.FridaDevice>) {
+                const device = Context.get(deviceCtx, FridaDevice.FridaDevice);
                 const emulatorName = String.replace("android-emulator://", "")(device.host);
                 const apks = yield* Effect.provide(
                     GooglePlayApi.download("com.nimblebit.tinytower"),
@@ -61,7 +51,6 @@ const DeviceLive = pipe(
             Effect.asVoid
         )
     ),
-    Layer.scoped(FridaDevice.FridaDevice),
     Layer.provide(NodeContext.layer)
 );
 
