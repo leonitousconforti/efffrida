@@ -73,65 +73,82 @@ export const attach = (
     FridaSession.FridaSession,
     FridaSessionError.FridaSessionError,
     FridaDevice.FridaDevice | Scope.Scope
-> =>
-    Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-        Effect.acquireRelease(
-            Effect.map(
-                Effect.tryPromise({
-                    try: (signal) => {
-                        const cancellable = new Frida.Cancellable();
-                        signal.onabort = () => cancellable.cancel();
-                        return device.attach(target, options, cancellable);
-                    },
-                    catch: (cause) =>
-                        new FridaSessionError.FridaSessionError({
-                            cause,
-                            when: "attach",
-                        }),
+> => {
+    const attachEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+        Effect.tryPromise({
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return device.attach(target, options, cancellable);
+            },
+            catch: (cause) =>
+                new FridaSessionError.FridaSessionError({
+                    cause,
+                    when: "attach",
                 }),
-                (session) =>
-                    ({
-                        session,
-                        resume: Effect.tryPromise((signal) => {
-                            const cancellable = new Frida.Cancellable();
-                            signal.onabort = () => cancellable.cancel();
-                            return session.resume(cancellable);
-                        }),
-                        enableChildGating: () =>
-                            Effect.tryPromise((signal) => {
-                                const cancellable = new Frida.Cancellable();
-                                signal.onabort = () => cancellable.cancel();
-                                return session.enableChildGating(cancellable);
-                            }),
-                        disableChildGating: () =>
-                            Effect.tryPromise((signal) => {
-                                const cancellable = new Frida.Cancellable();
-                                signal.onabort = () => cancellable.cancel();
-                                return session.disableChildGating(cancellable);
-                            }),
-                        setupPeerConnection: (opts?: Frida.PeerOptions | undefined) =>
-                            Effect.tryPromise((signal) => {
-                                const cancellable = new Frida.Cancellable();
-                                signal.onabort = () => cancellable.cancel();
-                                return session.setupPeerConnection(opts, cancellable);
-                            }),
-                        joinPortal: (address: string, opts?: Frida.PortalOptions | undefined) =>
-                            Effect.tryPromise((signal) => {
-                                const cancellable = new Frida.Cancellable();
-                                signal.onabort = () => cancellable.cancel();
-                                return session.joinPortal(address, opts, cancellable);
-                            }),
-                        [FridaSessionTypeId]: FridaSessionTypeId,
-                    }) as const
-            ),
-            ({ session }: FridaSession.FridaSession) =>
-                Effect.promise((signal) => {
+        })
+    );
+
+    const resumeEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+        Effect.tryPromise({
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return device.resume(target, cancellable);
+            },
+            catch: (cause) =>
+                new FridaSessionError.FridaSessionError({
+                    cause,
+                    when: "resume",
+                }),
+        })
+    );
+
+    const acquire = Effect.zipLeft(attachEffect, resumeEffect);
+    const release = (session: Frida.Session) =>
+        Effect.promise((signal) => {
+            const cancellable = new Frida.Cancellable();
+            signal.onabort = () => cancellable.cancel();
+            return session.detach(cancellable);
+        });
+
+    const resource = Effect.acquireRelease(acquire, release);
+    return Effect.map(
+        resource,
+        (session) =>
+            ({
+                session,
+                resume: Effect.tryPromise((signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return session.detach(cancellable);
-                })
-        )
+                    return session.resume(cancellable);
+                }),
+                enableChildGating: Effect.tryPromise((signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return session.enableChildGating(cancellable);
+                }),
+                disableChildGating: Effect.tryPromise((signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return session.disableChildGating(cancellable);
+                }),
+                setupPeerConnection: (opts?: Frida.PeerOptions | undefined) =>
+                    Effect.tryPromise((signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return session.setupPeerConnection(opts, cancellable);
+                    }),
+                joinPortal: (address: string, opts?: Frida.PortalOptions | undefined) =>
+                    Effect.tryPromise((signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return session.joinPortal(address, opts, cancellable);
+                    }),
+                [FridaSessionTypeId]: FridaSessionTypeId,
+            }) as const
     );
+};
 
 /** @internal */
 export const layer = (

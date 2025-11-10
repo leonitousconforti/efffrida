@@ -155,7 +155,7 @@ export const load = Function.dual<
     Effect.fnUntraced(
         function* (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) {
             const path = yield* Path.Path;
-            const { resume, session } = yield* FridaSession.FridaSession;
+            const { session } = yield* FridaSession.FridaSession;
 
             const source = yield* path
                 .fromFileUrl(entrypoint)
@@ -183,11 +183,6 @@ export const load = Function.dual<
                 );
 
             const script = yield* Effect.tryPromise({
-                catch: (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        cause,
-                        when: "compile",
-                    }),
                 try: (signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
@@ -200,6 +195,11 @@ export const load = Function.dual<
                         cancellable
                     );
                 },
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        cause,
+                        when: "compile",
+                    }),
             });
 
             const destroyed = yield* Deferred.make<void, never>();
@@ -317,13 +317,6 @@ export const load = Function.dual<
                 },
                 catch: (cause) => new FridaSessionError.FridaSessionError({ cause, when: "load" }),
             });
-
-            if (options?.resume === true) {
-                yield* Effect.mapError(
-                    resume,
-                    ({ cause }) => new FridaSessionError.FridaSessionError({ cause, when: "resume" })
-                );
-            }
 
             return {
                 sink,

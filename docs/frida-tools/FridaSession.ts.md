@@ -121,8 +121,8 @@ export interface FridaSession {
   readonly session: Frida.Session
   readonly [FridaSessionTypeId]: typeof FridaSessionTypeId
   readonly resume: Effect.Effect<void, Cause.UnknownException>
-  enableChildGating(): Effect.Effect<void, Cause.UnknownException>
-  disableChildGating(): Effect.Effect<void, Cause.UnknownException>
+  readonly enableChildGating: Effect.Effect<void, Cause.UnknownException>
+  readonly disableChildGating: Effect.Effect<void, Cause.UnknownException>
   setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>
   joinPortal(
     address: string,

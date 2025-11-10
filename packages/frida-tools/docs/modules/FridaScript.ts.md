@@ -60,7 +60,7 @@ declare const load: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L108)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L107)
 
 Since v1.0.0
 
@@ -82,7 +82,7 @@ declare const layer: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L132)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L131)
 
 Since v1.0.0
 
@@ -129,7 +129,6 @@ Since v1.0.0
 
 ```ts
 export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions {
-  readonly resume?: boolean
   readonly messageMailboxCapacity?:
     | number
     | {
