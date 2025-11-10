@@ -41,29 +41,51 @@ export const frontmost = (
 export const spawn = (
     program: string | Array<string>,
     options?: Frida.SpawnOptions | undefined
-): Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> =>
-    Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-        Effect.acquireRelease(
+): Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> => {
+    const spawnEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+        Effect.tryPromise({
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return device.spawn(program, options, cancellable);
+            },
+            catch: (cause) =>
+                new FridaSessionError.FridaSessionError({
+                    cause,
+                    when: "spawn",
+                }),
+        })
+    );
+
+    const resumeEffect = (pid: number) =>
+        Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
             Effect.tryPromise({
                 try: (signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return device.spawn(program, options, cancellable);
+                    return device.resume(pid, cancellable);
                 },
                 catch: (cause) =>
                     new FridaSessionError.FridaSessionError({
                         cause,
-                        when: "spawn",
+                        when: "resume",
                     }),
-            }),
-            (pid) =>
-                Effect.promise((signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return device.kill(pid, cancellable);
-                })
-        )
-    );
+            })
+        );
+
+    const release = (pid: number) =>
+        Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+            Effect.promise((signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return device.kill(pid, cancellable);
+            })
+        );
+
+    const acquire = Effect.tap(spawnEffect, resumeEffect);
+    const resource = Effect.acquireRelease(acquire, release);
+    return resource;
+};
 
 /** @internal */
 export const attach = (
@@ -74,7 +96,7 @@ export const attach = (
     FridaSessionError.FridaSessionError,
     FridaDevice.FridaDevice | Scope.Scope
 > => {
-    const attachEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+    const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
             try: (signal) => {
                 const cancellable = new Frida.Cancellable();
@@ -89,22 +111,6 @@ export const attach = (
         })
     );
 
-    const resumeEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-        Effect.tryPromise({
-            try: (signal) => {
-                const cancellable = new Frida.Cancellable();
-                signal.onabort = () => cancellable.cancel();
-                return device.resume(target, cancellable);
-            },
-            catch: (cause) =>
-                new FridaSessionError.FridaSessionError({
-                    cause,
-                    when: "resume",
-                }),
-        })
-    );
-
-    const acquire = Effect.zipLeft(attachEffect, resumeEffect);
     const release = (session: Frida.Session) =>
         Effect.promise((signal) => {
             const cancellable = new Frida.Cancellable();
