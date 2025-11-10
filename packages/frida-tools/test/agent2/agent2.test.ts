@@ -11,7 +11,7 @@ layer(FridaLive, { excludeTestServices: true })("local device tests", (it) => {
         it.scoped("agent2 on local device", () =>
             Effect.gen(function* () {
                 const script = yield* FridaScript.FridaScript;
-                const firstMessage = yield* script.stream.pipe(Stream.runHead);
+                const firstMessage = yield* Stream.runHead(script.stream);
                 expect(firstMessage).toStrictEqual(
                     Option.some({
                         message: "Hello from Frida other->A",
