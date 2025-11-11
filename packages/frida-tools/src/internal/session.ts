@@ -39,7 +39,7 @@ export const frontmost = (
 
 /** @internal */
 export const spawn = (
-    program: string | Array<string>,
+    program: string | ReadonlyArray<string>,
     options?: Frida.SpawnOptions | undefined
 ): Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> => {
     const spawnEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
@@ -47,7 +47,7 @@ export const spawn = (
             try: (signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
-                return device.spawn(program, options, cancellable);
+                return device.spawn(program as string | Array<string>, options, cancellable);
             },
             catch: (cause) =>
                 new FridaSessionError.FridaSessionError({
@@ -167,7 +167,7 @@ export const layer = (
             const pid = yield* Match.value(target).pipe(
                 Match.when(Match.number, (pid) => Effect.succeed(pid)),
                 Match.when(Match.string, (proc) => spawn(proc)),
-                Match.orElse((proc) => spawn(proc as Array<string>))
+                Match.orElse((proc) => spawn(proc))
             );
             const session = yield* attach(pid, options);
             return session;

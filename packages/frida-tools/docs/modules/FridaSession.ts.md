@@ -70,7 +70,7 @@ Since v1.0.0
 
 ```ts
 declare const spawn: (
-  program: string | Array<string>,
+  program: string | ReadonlyArray<string>,
   options?: Frida.SpawnOptions | undefined
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```

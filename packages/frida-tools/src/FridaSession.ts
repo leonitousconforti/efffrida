@@ -70,7 +70,7 @@ export const frontmost: (
  * @category Frida
  */
 export const spawn: (
-    program: string | Array<string>,
+    program: string | ReadonlyArray<string>,
     options?: Frida.SpawnOptions | undefined
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> = internal.spawn;
 
