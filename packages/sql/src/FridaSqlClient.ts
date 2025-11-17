@@ -128,7 +128,7 @@ export const make = (
 
             const isInt8Array = (input: unknown): input is Int8Array => input instanceof Int8Array;
 
-            const bind = (statement: SqliteStatement, index: number, param: Statement.Primitive) =>
+            const bind = (statement: SqliteStatement, index: number, param: unknown) =>
                 Function.pipe(
                     Match.value(param),
                     Match.when(Predicate.isNull, () => statement.bindNull(index)),
@@ -140,10 +140,10 @@ export const make = (
                     Match.when(Predicate.isUint8Array, (p) => statement.bindBlob(index, Array.from(p))),
                     Match.when(Predicate.isUint8Array, (p) => statement.bindBlob(index, Array.from(p))),
                     Match.when(isInt8Array, (p) => statement.bindBlob(index, Array.from(p))),
-                    Match.exhaustive
+                    Match.orElseAbsurd
                 );
 
-            const bindAll = (statement: SqliteStatement, params: ReadonlyArray<Statement.Primitive>) => {
+            const bindAll = (statement: SqliteStatement, params: ReadonlyArray<unknown>) => {
                 for (let i = 0; i < params.length; i++) {
                     const p = params[i];
                     bind(statement, i + 1, p);
@@ -152,7 +152,7 @@ export const make = (
 
             const runStatement = (
                 statement: SqliteStatement,
-                params: ReadonlyArray<Statement.Primitive>
+                params: ReadonlyArray<unknown>
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
                 Effect.try({
                     try: () => {
@@ -168,7 +168,7 @@ export const make = (
 
             const run = (
                 sql: string,
-                params: ReadonlyArray<Statement.Primitive>
+                params: ReadonlyArray<unknown>
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
                 Effect.flatMap(prepareCache.get(sql), (s) => runStatement(s, params));
 
