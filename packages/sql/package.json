@@ -38,29 +38,29 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@opentelemetry/semantic-conventions": "1.37.0"
+        "@opentelemetry/semantic-conventions": "1.38.0"
     },
     "devDependencies": {
-        "@effect/cluster": "0.52.1",
-        "@effect/experimental": "0.57.0",
-        "@effect/platform": "0.93.0",
+        "@effect/cluster": "0.52.11",
+        "@effect/experimental": "0.57.3",
+        "@effect/platform": "0.93.3",
         "@effect/platform-node": "0.100.0",
         "@effect/rpc": "0.72.1",
         "@effect/sql": "0.48.0",
         "@effect/vitest": "0.27.0",
-        "@effect/workflow": "0.12.1",
+        "@effect/workflow": "0.12.5",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "24.10.0",
-        "core-js": "3.46.0",
-        "effect": "3.19.0",
-        "vitest": "4.0.7"
+        "@types/node": "24.10.1",
+        "core-js": "3.47.0",
+        "effect": "3.19.4",
+        "vitest": "4.0.10"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.57.0",
-        "@effect/platform": "0.93.0",
+        "@effect/experimental": "0.57.3",
+        "@effect/platform": "0.93.3",
         "@effect/sql": "0.48.0",
-        "effect": "3.19.0"
+        "effect": "3.19.4"
     },
     "publishConfig": {
         "access": "public",

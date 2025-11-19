@@ -44,13 +44,13 @@
         "@effect/vitest": "0.27.0",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "24.10.0",
-        "core-js": "3.46.0",
-        "effect": "3.19.0",
-        "vitest": "4.0.7"
+        "@types/node": "24.10.1",
+        "core-js": "3.47.0",
+        "effect": "3.19.4",
+        "vitest": "4.0.10"
     },
     "peerDependencies": {
-        "effect": "3.19.0"
+        "effect": "3.19.4"
     },
     "publishConfig": {
         "access": "public",

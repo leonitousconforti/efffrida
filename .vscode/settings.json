@@ -9,6 +9,7 @@
 
     "cSpell.enabled": true,
     "cSpell.words": [
+        "Birpc",
         "bufbuild",
         "BUILDKIT",
         "cancelables",

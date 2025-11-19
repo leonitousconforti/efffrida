@@ -38,27 +38,33 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@efffrida/frida-tools": "workspace:*"
+        "@efffrida/frida-tools": "workspace:*",
+        "birpc": "2.8.0",
+        "core-js": "3.47.0",
+        "event-target-polyfill": "0.0.4"
     },
     "devDependencies": {
-        "@effect/cluster": "0.52.1",
-        "@effect/experimental": "0.57.0",
-        "@effect/platform": "0.93.0",
+        "@effect/cluster": "0.52.11",
+        "@effect/experimental": "0.57.3",
+        "@effect/platform": "0.93.3",
         "@effect/platform-node": "0.100.0",
         "@effect/rpc": "0.72.1",
         "@effect/sql": "0.48.0",
-        "@effect/workflow": "0.12.1",
+        "@effect/workflow": "0.12.5",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "24.10.0",
-        "core-js": "3.46.0",
-        "effect": "3.19.0",
+        "@types/node": "24.10.1",
+        "@vitest/runner": "4.0.10",
+        "@vitest/utils": "4.0.10",
+        "effect": "3.19.4",
         "frida": "17.5.1",
-        "vitest": "4.0.7"
+        "vitest": "4.0.10"
     },
     "peerDependencies": {
-        "@effect/platform": "0.93.0",
-        "effect": "3.19.0",
-        "vitest": "4.0.7"
+        "@effect/platform": "0.93.3",
+        "@vitest/runner": "4.0.10",
+        "@vitest/utils": "4.0.10",
+        "effect": "3.19.4",
+        "vitest": "4.0.10"
     },
     "publishConfig": {
         "access": "public",
