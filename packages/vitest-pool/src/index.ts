@@ -1,6 +1,7 @@
 import type * as PlatformError from "@effect/platform/Error";
 import type * as FridaDeviceAcquisitionError from "@efffrida/frida-tools/FridaDeviceAcquisitionError";
 import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
+import type * as Option from "effect/Option";
 import type * as Runtime from "effect/Runtime";
 import type * as Frida from "frida";
 import type * as VitestNode from "vitest/node";
@@ -21,6 +22,7 @@ import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Match from "effect/Match";
 import * as Schema from "effect/Schema";
+import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
 // First, pick your device
@@ -147,9 +149,7 @@ export class FridaPoolWorker implements PoolWorker {
         const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeContext.layer));
         const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url), {
             externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
-        })
-            .pipe(Layer.provide(FridaLive))
-            .pipe(Layer.fresh);
+        }).pipe(Layer.provide(FridaLive));
 
         this.managedRuntime = ManagedRuntime.make(ScriptLive);
     }
@@ -180,14 +180,24 @@ export class FridaPoolWorker implements PoolWorker {
             | FridaSessionError.FridaSessionError
         >;
 
+        const sink = Sink.forEach<
+            {
+                message: unknown;
+                data: Option.Option<Buffer<ArrayBufferLike>>;
+            },
+            void,
+            never,
+            never
+        >((input) =>
+            Effect.sync(() => {
+                callback(input.message);
+            })
+        );
+
         switch (event) {
             case "message":
                 cancelable = this.managedRuntime.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                        fridaScript.stream.pipe(
-                            Stream.runForEach(({ message }) => Effect.sync(() => callback(message)))
-                        )
-                    )
+                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Stream.run(fridaScript.stream, sink))
                 );
                 break;
 
