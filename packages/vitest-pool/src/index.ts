@@ -5,7 +5,6 @@ import type * as Option from "effect/Option";
 import type * as Runtime from "effect/Runtime";
 import type * as Frida from "frida";
 import type * as VitestNode from "vitest/node";
-import type { PoolWorker, WorkerRequest } from "vitest/node";
 
 import * as NodeContext from "@effect/platform-node/NodeContext";
 import * as Command from "@effect/platform/Command";
@@ -76,7 +75,7 @@ class ConfigSchema extends Schema.Struct({
  * @since 1.0.0
  * @category Tests
  */
-export class FridaPoolWorker implements PoolWorker {
+export class FridaPoolWorker implements VitestNode.PoolWorker {
     readonly name = "frida-pool";
 
     private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
@@ -164,7 +163,7 @@ export class FridaPoolWorker implements PoolWorker {
         return this.managedRuntime.dispose();
     }
 
-    async send(message: WorkerRequest): Promise<void> {
+    async send(message: VitestNode.WorkerRequest): Promise<void> {
         await this.managedRuntime.runPromise(
             Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                 fridaScript.callExport("onMessage", Schema.Void)(message)
