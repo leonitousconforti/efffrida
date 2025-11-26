@@ -156,7 +156,8 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     async start(): Promise<void> {
         const exit = await this.managedRuntime.runPromiseExit(Effect.void);
         if (Exit.isSuccess(exit)) return;
-        throw Cause.pretty(exit.cause, { renderErrorCause: true });
+        const prettyError = Cause.pretty(exit.cause, { renderErrorCause: true });
+        throw new Error(prettyError);
     }
 
     async stop(): Promise<void> {
