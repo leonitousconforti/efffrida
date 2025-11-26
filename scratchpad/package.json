@@ -13,13 +13,13 @@
         "frida": "17.5.1"
     },
     "devDependencies": {
-        "@effect/cluster": "0.52.11",
-        "@effect/experimental": "0.57.3",
+        "@effect/cluster": "0.53.5",
+        "@effect/experimental": "0.57.4",
         "@effect/platform": "0.93.3",
-        "@effect/platform-node": "0.100.0",
-        "@effect/rpc": "0.72.1",
+        "@effect/platform-node": "0.101.1",
+        "@effect/rpc": "0.72.2",
         "@effect/sql": "0.48.0",
-        "@effect/workflow": "0.12.5",
-        "effect": "3.19.4"
+        "@effect/workflow": "0.13.0",
+        "effect": "3.19.6"
     }
 }

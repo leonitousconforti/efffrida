@@ -44,12 +44,12 @@
         "@types/frida-gum": "19.0.1",
         "@types/node": "24.10.1",
         "core-js": "3.47.0",
-        "effect": "3.19.4",
-        "vitest": "4.0.10"
+        "effect": "3.19.6",
+        "vitest": "4.0.14"
     },
     "peerDependencies": {
         "@effect/platform": "0.93.3",
-        "effect": "3.19.4"
+        "effect": "3.19.6"
     },
     "publishConfig": {
         "access": "public",
