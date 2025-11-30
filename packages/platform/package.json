@@ -38,25 +38,25 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@effect/platform": "0.93.3",
+        "@effect/platform": "0.93.5",
         "@effect/vitest": "0.27.0",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
         "@types/node": "24.10.1",
         "core-js": "3.47.0",
-        "effect": "3.19.6",
+        "effect": "3.19.8",
         "vitest": "4.0.14"
     },
     "peerDependencies": {
-        "@effect/platform": "0.93.3",
-        "effect": "3.19.6"
+        "@effect/platform": "0.93.5",
+        "effect": "3.19.8"
     },
     "publishConfig": {
         "access": "public",
         "exports": {
             "./package.json": "./package.json",
-            ".": "./dist/index.ts",
-            "./*": "./dist/*.ts",
+            ".": "./dist/index.js",
+            "./*": "./dist/*.js",
             "./internal/*": null
         }
     },
