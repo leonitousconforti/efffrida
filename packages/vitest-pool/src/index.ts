@@ -233,6 +233,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     deserialize(data: unknown) {
         return data;
     }
+
+    serialize(data: unknown) {
+        return data;
+    }
 }
 
 /**
