@@ -5,6 +5,7 @@ import { createFridaPool } from "./src/index.ts";
 
 const config: ViteUserConfig = {
     test: {
+        setupFiles: undefined,
         pool: createFridaPool({
             device: "local",
             preSpawn: true,
@@ -13,4 +14,6 @@ const config: ViteUserConfig = {
     },
 };
 
-export default mergeConfig(shared, config);
+const merged = mergeConfig(shared, config);
+delete merged.test.setupFiles;
+export default merged;
