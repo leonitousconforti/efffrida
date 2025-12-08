@@ -156,8 +156,8 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     async start(): Promise<void> {
         const exit = await this.managedRuntime.runPromiseExit(Effect.void);
         if (Exit.isSuccess(exit)) return;
-        const prettyError = Cause.pretty(exit.cause, { renderErrorCause: true });
-        throw new Error(prettyError);
+        const prettyError = Cause.prettyErrors(exit.cause);
+        throw prettyError[0];
     }
 
     async stop(): Promise<void> {
@@ -165,11 +165,14 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
-        await this.managedRuntime.runPromise(
+        const exit = await this.managedRuntime.runPromiseExit(
             Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                 fridaScript.callExport("onMessage", Schema.Void)(message)
             )
         );
+        if (Exit.isSuccess(exit)) return;
+        const prettyError = Cause.prettyErrors(exit.cause);
+        throw prettyError[0];
     }
 
     on(event: string, callback: (arg: any) => void): void {

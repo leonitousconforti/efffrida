@@ -40,6 +40,7 @@
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
         "@vitest/mocker": "4.0.14",
+        "abort-controller": "3.0.0",
         "birpc": "2.8.0",
         "core-js": "3.47.0",
         "event-target-polyfill": "0.0.4",
