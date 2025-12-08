@@ -164,18 +164,28 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
             const entrypoint = message.type === "run" ? startTests : collectTests;
             const testRunner: VitestRunner = {
                 config: setupContext.config as VitestRunner["config"],
-                importFile: async (_file: string, _source: string): Promise<unknown> => {
-                    const { expect: vitestExpect } = await import("vitest");
-                    const { describe: vitestDescribe, it: vitestIt } = await import("@vitest/runner");
+                importFile: async (file: string, _source: string): Promise<void> => {
+                    const { describe, it } = await import("@vitest/runner");
+                    const { expect } = await import("vitest");
+                    (globalThis as any).__vitest_describe = describe;
+                    (globalThis as any).__vitest_it = it;
+                    (globalThis as any).__vitest_expect = expect;
+                    const testSource = `
+                        const describe = globalThis.__vitest_describe;
+                        const it = globalThis.__vitest_it;
+                        const expect = globalThis.__vitest_expect;
 
-                    vitestDescribe("vitest-pool", () => {
-                        vitestIt("placeholder test", () => {
-                            console.log(Frida.version);
-                            vitestExpect(true).toBe(true);
+                        describe("vitest-pool", () => {
+                            it("placeholder test using Script.evaluate", () => {
+                                expect(true).toBe(true);
+                            });
+
+                            it("can access Frida APIs", () => {
+                                expect(Frida.version).toBe("17.5.1");
+                            });
                         });
-                    });
-
-                    return {};
+                    `;
+                    await Script.evaluate(file, testSource);
                 },
             };
 
