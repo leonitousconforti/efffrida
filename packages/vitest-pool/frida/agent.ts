@@ -1,3 +1,13 @@
+/* eslint-disable import-x/first */
+// AbortController polyfill - must be set up before any other imports that use it
+// The abort-controller/polyfill checks for self, window, global but not globalThis
+// So we set up `global` to point to globalThis, then require the polyfill
+(globalThis as any).global = globalThis;
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("abort-controller/polyfill");
+
+// Other polyfills
 import "core-js/stable/url";
 import "event-target-polyfill";
 
@@ -9,8 +19,8 @@ import { collectTests, startTests } from "@vitest/runner";
 import { serializeError } from "@vitest/utils/error";
 import { createStackString, parseStacktrace } from "@vitest/utils/source-map";
 import { createBirpc } from "birpc";
+import { stringify as flattedStringify } from "flatted";
 import { EvaluatedModules } from "vitest";
-import { VitestTestRunner } from "vitest/runners";
 
 // There should only ever be one test running at a time in a worker and these
 // need to be shared across multiple rpc calls anyways so they will live up here
@@ -18,8 +28,8 @@ import { VitestTestRunner } from "vitest/runners";
 let runPromise: Promise<unknown> | undefined;
 let setupContext!: Omit<ContextRPC, "files" | "providedContext" | "invalidates" | "workerId">;
 
-// How to post messages to the parent process
-const postMessage = (message: unknown): void => send(message);
+// How to post messages to the parent process - use flatted to handle circular references
+const postMessage = (message: unknown): void => send(flattedStringify(message));
 const postWorkerResponse = (response: Omit<WorkerResponse, "__vitest_worker_response__">): void =>
     postMessage({ ...response, __vitest_worker_response__: true });
 
@@ -65,10 +75,6 @@ function provideWorkerState(context: unknown, state: WorkerGlobalState): WorkerG
 
 /** @see https://github.com/vitest-dev/vitest/blob/9ca74cfb2060d8bc1c7a319ba3cba1578517adb0/packages/vitest/src/runtime/runners/index.ts#L65-L139 */
 function patchTestRunner(testRunner: VitestRunner): VitestRunner {
-    delete testRunner.onBeforeRunSuite;
-    delete testRunner.onTestAnnotate;
-    delete testRunner.onTestArtifactRecord;
-
     const originalOnTaskUpdate = testRunner.onTaskUpdate;
     testRunner.onTaskUpdate = async (task, events) => {
         await birpc.onTaskUpdate(task, events);
@@ -154,29 +160,23 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
                 onFilterStackTrace: (stack) => createStackString(parseStacktrace(stack)),
             } satisfies WorkerGlobalState);
 
-            const testRunner = new VitestTestRunner(setupContext.config) as VitestRunner;
+            // Create a minimal runner without snapshot support
             const entrypoint = message.type === "run" ? startTests : collectTests;
+            const testRunner: VitestRunner = {
+                config: setupContext.config as VitestRunner["config"],
+                importFile: async (_file: string, _source: string): Promise<unknown> => {
+                    const { expect: vitestExpect } = await import("vitest");
+                    const { describe: vitestDescribe, it: vitestIt } = await import("@vitest/runner");
 
-            /** @see https://github.com/vitest-dev/vitest/blob/9ca74cfb2060d8bc1c7a319ba3cba1578517adb0/packages/vitest/src/runtime/runners/test.ts#L239-L242 */
-            (testRunner as any).trace = <T>(
-                _name: string,
-                attributes: Record<string, any> | (() => T),
-                cb?: () => T
-            ): T => {
-                return typeof attributes === "function" ? attributes() : (cb as () => T)();
-            };
-
-            testRunner.importFile = async (_file: string, _source: string): Promise<unknown> => {
-                const { expect: vitestExpect } = await import("vitest");
-                const { describe: vitestDescribe, it: vitestIt } = await import("@vitest/runner");
-
-                vitestDescribe("vitest-pool", () => {
-                    vitestIt("placeholder test", () => {
-                        vitestExpect(true).toBe(true);
+                    vitestDescribe("vitest-pool", () => {
+                        vitestIt("placeholder test", () => {
+                            console.log(Frida.version);
+                            vitestExpect(true).toBe(true);
+                        });
                     });
-                });
 
-                return {};
+                    return {};
+                },
             };
 
             try {

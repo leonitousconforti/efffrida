@@ -39,12 +39,13 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "@vitest/mocker": "4.0.14",
+        "@vitest/runner": "4.0.14",
+        "@vitest/utils": "4.0.14",
         "abort-controller": "3.0.0",
         "birpc": "2.8.0",
         "core-js": "3.47.0",
         "event-target-polyfill": "0.0.4",
-        "vite": "7.2.4"
+        "flatted": "3.3.3"
     },
     "devDependencies": {
         "@effect/cluster": "0.54.0",
@@ -56,8 +57,6 @@
         "@effect/workflow": "0.14.0",
         "@types/frida-gum": "19.0.1",
         "@types/node": "24.10.1",
-        "@vitest/runner": "4.0.14",
-        "@vitest/utils": "4.0.14",
         "effect": "3.19.8",
         "frida": "17.5.1",
         "vitest": "4.0.14"

@@ -23,6 +23,7 @@ import * as Match from "effect/Match";
 import * as Schema from "effect/Schema";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as Flatted from "flatted";
 
 // First, pick your device
 class DeviceSchema extends Schema.Union(
@@ -234,6 +235,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     deserialize(data: unknown) {
+        // Messages from the Frida agent are serialized with flatted to handle circular references
+        if (typeof data === "string") {
+            return Flatted.parse(data);
+        }
         return data;
     }
 
