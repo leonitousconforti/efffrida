@@ -235,11 +235,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     deserialize(data: unknown) {
-        // Messages from the Frida agent are serialized with flatted to handle circular references
-        if (typeof data === "string") {
-            return Flatted.parse(data);
-        }
-        return data;
+        return typeof data === "string" ? Flatted.parse(data) : data;
     }
 
     serialize(data: unknown) {
