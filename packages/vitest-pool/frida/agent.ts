@@ -54,6 +54,7 @@ const birpc = createBirpc<RuntimeRPC, RunnerRPC>(
         off: (rpcListener) => messageListeners.delete(rpcListener),
 
         // Names of remote functions that do not need response.
+        // These are fire-and-forget messages to the vitest pool coordinator.
         eventNames: ["onUserConsoleLog", "onCollected", "onCancel"],
 
         // Maximum timeout for waiting for response, in milliseconds.
@@ -177,7 +178,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
 
                         describe("vitest-pool", () => {
                             it("placeholder test using Script.evaluate", () => {
-                                expect(true).toBe(true);
+                                expect(true).toBe(false);
                             });
 
                             it("can access Frida APIs", () => {
