@@ -1,17 +1,27 @@
-import { Command, CommandExecutor } from "@effect/platform";
-import { NodeContext } from "@effect/platform-node";
 import { FridaDevice, FridaSession } from "@efffrida/frida-tools";
-import { Effect, Layer } from "effect";
+import { Effect, Layer, Scope } from "effect";
+import { spawn } from "node:child_process";
 
 // Pick a device and a session/program
 export const DeviceLive = FridaDevice.layerLocalDevice;
 export const SessionLive = Layer.unwrapScoped(
     Effect.gen(function* () {
-        const executor = yield* CommandExecutor.CommandExecutor;
-        const command = Command.make("sleep", "infinity");
-        const process = yield* executor.start(command);
-        return FridaSession.layer(process.pid);
+        const scope = yield* Scope.Scope;
+
+        // Use raw Node.js child_process to spawn
+        const child = spawn("sleep", ["infinity"], {
+            detached: false,
+            stdio: "ignore",
+        });
+
+        // Kill the process when scope closes
+        yield* Scope.addFinalizer(
+            scope,
+            Effect.sync(() => child.kill())
+        );
+
+        return FridaSession.layer(child.pid!);
     })
 );
 
-export const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
+export const FridaLive = Layer.provide(SessionLive, DeviceLive);
