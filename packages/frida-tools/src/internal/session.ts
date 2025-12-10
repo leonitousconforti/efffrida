@@ -98,11 +98,11 @@ export const attach = (
 > => {
     const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
-            try: (signal) => {
+            try: async (signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
                 console.log("here0");
-                const session = device.attach(target, options, cancellable);
+                const session = await device.attach(target, options, cancellable);
                 console.log("here1");
                 return session;
             },
