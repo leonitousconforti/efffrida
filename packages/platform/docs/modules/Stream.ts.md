@@ -23,9 +23,6 @@ Since v1.0.0
   - [toInputStreamNever](#toinputstreamnever)
 - [IPC](#ipc)
   - [receiveStream](#receivestream)
-- [Transformations](#transformations)
-  - [decodeText](#decodetext)
-  - [encodeText](#encodetext)
 - [Types](#types)
   - [FromInputStreamOptions (interface)](#frominputstreamoptions-interface)
 
@@ -149,38 +146,6 @@ declare const receiveStream: (
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L28)
-
-Since v1.0.0
-
-# Transformations
-
-## decodeText
-
-**Signature**
-
-```ts
-declare const decodeText: {
-  (encoding?: BufferEncoding | undefined): <E, R>(self: Stream.Stream<Uint8Array, E, R>) => Stream.Stream<string, E, R>
-  <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding?: BufferEncoding | undefined): Stream.Stream<string, E, R>
-}
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L119)
-
-Since v1.0.0
-
-## encodeText
-
-**Signature**
-
-```ts
-declare const encodeText: {
-  (encoding?: BufferEncoding | undefined): <E, R>(self: Stream.Stream<string, E, R>) => Stream.Stream<Uint8Array, E, R>
-  <E, R>(self: Stream.Stream<string, E, R>, encoding?: BufferEncoding | undefined): Stream.Stream<Uint8Array, E, R>
-}
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L108)
 
 Since v1.0.0
 

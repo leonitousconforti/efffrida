@@ -5,6 +5,8 @@
  * @since 1.0.0
  */
 
+import "@efffrida/polyfills";
+
 import * as RpcMessage from "@effect/rpc/RpcMessage";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
 import * as RpcServer from "@effect/rpc/RpcServer";
@@ -45,11 +47,11 @@ export const makeProtocolFrida = (
         const clients = new Map<number, { readonly write: (bytes: RpcMessage.FromServerEncoded) => void }>();
 
         let writeRequest!: (clientId: number, message: RpcMessage.FromClientEncoded) => Effect.Effect<void>;
-        const exportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
+        const makeExportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
 
         // Listen for new clients on the main rpc export
         const rpcExport = Effect.gen(function* () {
-            const id = clientId++;
+            const id = ++clientId;
             const parser = serialization.unsafeMake();
 
             const writeRaw = (data: string | Uint8Array): void => {
@@ -69,7 +71,9 @@ export const makeProtocolFrida = (
             clientIds.add(id);
             clients.set(id, { write });
 
-            const onMessage = (data: string | Uint8Array): Effect.Effect<void, never, never> => {
+            const onMessage = (input: string | Record<number, string>): Effect.Effect<void, never, never> => {
+                const data = typeof input === "string" ? input : Uint8Array.from(Object.values(input));
+
                 try {
                     const decoded = parser.decode(data) as ReadonlyArray<RpcMessage.FromClientEncoded>;
                     if (decoded.length === 0) return Effect.void;
@@ -87,10 +91,10 @@ export const makeProtocolFrida = (
                 }
             };
 
-            rpc.exports[exportName(clientId)] = (data: string | Uint8Array): Promise<void> =>
+            rpc.exports[makeExportName(id)] = (data: string | Record<number, string>): Promise<void> =>
                 Effect.runPromise(onMessage(data));
 
-            return clientId;
+            return id;
         });
 
         const protocol = yield* RpcServer.Protocol.make((writeRequest_) => {
@@ -105,8 +109,8 @@ export const makeProtocolFrida = (
                 end(clientId) {
                     clientIds.delete(clientId); // TODO: Is this required?
                     clients.delete(clientId); // TODO: Is this required?
-                    const exportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
-                    delete rpc.exports[exportName(clientId)];
+                    const makeExportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
+                    delete rpc.exports[makeExportName(clientId)];
                     return Effect.void;
                 },
                 clientIds: Effect.sync(() => clientIds),

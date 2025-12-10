@@ -1,15 +1,4 @@
-/* eslint-disable import-x/first */
-// AbortController polyfill - must be set up before any other imports that use it
-// The abort-controller/polyfill checks for self, window, global but not globalThis
-// So we set up `global` to point to globalThis, then require the polyfill
-(globalThis as any).global = globalThis;
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("abort-controller/polyfill");
-
-// Other polyfills
-import "core-js/stable/url";
-import "event-target-polyfill";
+import "@efffrida/polyfills";
 
 import type { CancelReason, VitestRunner } from "@vitest/runner";
 import type { ContextRPC, RunnerRPC, RuntimeRPC, WorkerGlobalState } from "vitest";
@@ -22,6 +11,8 @@ import { createBirpc } from "birpc";
 import { stringify as flattedStringify } from "flatted";
 import { EvaluatedModules } from "vitest";
 
+const testFiles: Record<string, string> = {};
+
 // There should only ever be one test running at a time in a worker and these
 // need to be shared across multiple rpc calls anyways so they will live up here
 // in the module scope.
@@ -29,7 +20,27 @@ let runPromise: Promise<unknown> | undefined;
 let setupContext!: Omit<ContextRPC, "files" | "providedContext" | "invalidates" | "workerId">;
 
 // How to post messages to the parent process - use flatted to handle circular references
-const postMessage = (message: unknown): void => send(flattedStringify(message));
+const postMessage = (message: unknown): void =>
+    send(
+        flattedStringify(message, (_key: string, value: unknown): unknown => {
+            /** @see https://github.com/vitest-dev/vitest/blob/372e86fdef381038a2c4999fc9007dd7292a0628/packages/vitest/src/node/ast-collect.ts#L216-L236 */
+            if (
+                value !== null &&
+                typeof value === "object" &&
+                "name" in value &&
+                "message" in value &&
+                "stack" in value &&
+                typeof value.stack !== "string"
+            ) {
+                return {
+                    ...value,
+                    stack: value.stack === undefined ? undefined : JSON.stringify(value.stack),
+                };
+            } else {
+                return value;
+            }
+        })
+    );
 const postWorkerResponse = (response: Omit<WorkerResponse, "__vitest_worker_response__">): void =>
     postMessage({ ...response, __vitest_worker_response__: true });
 
@@ -165,28 +176,53 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
             const entrypoint = message.type === "run" ? startTests : collectTests;
             const testRunner: VitestRunner = {
                 config: setupContext.config as VitestRunner["config"],
-                importFile: async (file: string, _source: string): Promise<void> => {
-                    const { describe, it } = await import("@vitest/runner");
-                    const { expect } = await import("vitest");
-                    (globalThis as any).__vitest_describe = describe;
-                    (globalThis as any).__vitest_it = it;
-                    (globalThis as any).__vitest_expect = expect;
-                    const testSource = `
-                        const describe = globalThis.__vitest_describe;
-                        const it = globalThis.__vitest_it;
-                        const expect = globalThis.__vitest_expect;
+                importFile: async (file: string): Promise<void> => {
+                    const nodeAssert = await import("node:assert");
+                    const nodeBuffer = await import("node:buffer");
+                    const nodeCrypto = await import("node:crypto");
+                    const diagnosticsChannel = await import("node:diagnostics_channel");
+                    const nodeEvents = await import("node:events");
+                    const nodeFs = await import("node:fs");
+                    const nodeNet = await import("node:net");
+                    const nodeOs = await import("node:os");
+                    const nodePath = await import("node:path");
+                    const nodeProcess = await import("node:process");
+                    const nodeStream = await import("node:stream");
+                    const nodeTimers = await import("node:timers");
+                    const nodeTty = await import("node:tty");
+                    const nodeUrl = await import("node:url");
+                    const nodeUtil = await import("node:util");
+                    const nodeVm = await import("node:vm");
+                    const vitestModule = await import("vitest");
+                    const vitestRunnerModule = await import("@vitest/runner");
 
-                        describe("vitest-pool", () => {
-                            it("placeholder test using Script.evaluate", () => {
-                                expect(true).toBe(false);
-                            });
+                    (globalThis as any).__node_assert = nodeAssert;
+                    (globalThis as any).__node_buffer = nodeBuffer;
+                    (globalThis as any).__node_crypto = nodeCrypto;
+                    (globalThis as any).__node_diagnosticsChannel = diagnosticsChannel;
+                    (globalThis as any).__node_events = nodeEvents;
+                    (globalThis as any).__node_fs = nodeFs;
+                    (globalThis as any).__node_net = nodeNet;
+                    (globalThis as any).__node_os = nodeOs;
+                    (globalThis as any).__node_path = nodePath;
+                    (globalThis as any).__node_process = nodeProcess;
+                    (globalThis as any).__node_stream = nodeStream;
+                    (globalThis as any).__node_timers = nodeTimers;
+                    (globalThis as any).__node_tty = nodeTty;
+                    (globalThis as any).__node_url = nodeUrl;
+                    (globalThis as any).__node_util = nodeUtil;
+                    (globalThis as any).__node_vm = nodeVm;
+                    (globalThis as any).__vitest = vitestModule;
+                    (globalThis as any).__vitest_runner = vitestRunnerModule;
 
-                            it("can access Frida APIs", () => {
-                                expect(Frida.version).toBe("17.5.1");
-                            });
-                        });
-                    `;
-                    await Script.evaluate(file, testSource);
+                    // TODO: warning if file not found
+                    const source64 = testFiles[file];
+                    if (source64 === undefined) {
+                        return;
+                    }
+
+                    const source = Buffer.from(source64, "base64").toString("utf-8");
+                    await Script.load(file, source);
                 },
             };
 

@@ -39,8 +39,9 @@ export const runMain = <A, E>(
             if (!Cause.isInterruptedOnly(cause)) {
                 throwNextTick(cause);
                 return Function.absurd(void undefined as never);
+            } else {
+                return Effect.void;
             }
-            return Effect.void;
         });
 
     const addPrettyLogger = (refs: FiberRefs.FiberRefs, fiberId: FiberId.Runtime): FiberRefs.FiberRefs => {

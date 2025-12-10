@@ -21,14 +21,25 @@ import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
-import * as shared from "../shared/constants.ts";
+import * as constants from "../shared/constants.ts";
 
 /**
  * @since 1.0.0
  * @category Protocol
  */
 export const makeProtocolFrida = (
-    options?: { readonly exportName?: string | undefined } | undefined
+    options?:
+        | {
+              /**
+               * Name for the main rpc export that all clients start by
+               * connecting to.
+               */
+              readonly exportName?: string | undefined;
+
+              /** Generates server listener rpc exports for individual clients. */
+              readonly generateExportName?: ((clientId: number) => string) | undefined;
+          }
+        | undefined
 ): Effect.Effect<
     RpcClient.Protocol["Type"],
     FridaSessionError.FridaSessionError,
@@ -39,9 +50,9 @@ export const makeProtocolFrida = (
             const script = yield* FridaScript.FridaScript;
             const serialization = yield* RpcSerialization.RpcSerialization;
 
-            const encoder = new TextEncoder();
             const parser = serialization.unsafeMake();
-            const exportName = options?.exportName ?? shared.defaultServerMainExportName;
+            const mainExportName = options?.exportName ?? constants.defaultServerMainExportName;
+            const makeExportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
 
             /**
              * Obtain a client id from the frida script export, this will allow
@@ -49,7 +60,7 @@ export const makeProtocolFrida = (
              * are shared.
              */
             const clientId = yield* Effect.catchIf(
-                script.callExport(exportName, Schema.Number)(),
+                script.callExport(mainExportName, Schema.Number)(),
                 ParseResult.isParseError,
                 () => Effect.dieMessage("Failed to obtain client ID from Frida script export")
             );
@@ -95,8 +106,7 @@ export const makeProtocolFrida = (
             const send = Effect.fnUntraced(function* (message: RpcMessage.FromClientEncoded) {
                 const encoded = parser.encode(message);
                 if (Predicate.isUndefined(encoded)) return;
-                const transformed = typeof encoded === "string" ? encoder.encode(encoded) : encoded;
-                script.script.post({ clientId }, Buffer.from(transformed));
+                yield* script.callExport(makeExportName(clientId), Schema.Void)(encoded).pipe(Effect.orDie);
             });
 
             return {
@@ -112,7 +122,18 @@ export const makeProtocolFrida = (
  * @category Layers
  */
 export const layerProtocolFrida = (
-    options?: { readonly exportName?: string | undefined } | undefined
+    options?:
+        | {
+              /**
+               * Name for the main rpc export that all clients start by
+               * connecting to.
+               */
+              readonly exportName?: string | undefined;
+
+              /** Generates server listener rpc exports for individual clients. */
+              readonly generateExportName?: ((clientId: number) => string) | undefined;
+          }
+        | undefined
 ): Layer.Layer<
     RpcClient.Protocol,
     FridaSessionError.FridaSessionError,

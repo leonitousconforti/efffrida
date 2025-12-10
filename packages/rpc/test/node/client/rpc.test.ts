@@ -6,6 +6,7 @@ import { RpcClient, RpcSerialization } from "@effect/rpc";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { FridaRpcClient } from "@efffrida/rpc/node";
 import { Chunk, Effect, Layer, Option, Stream } from "effect";
+import { JsPlatform } from "frida";
 import { UserRpcs } from "../../shared/requests.ts";
 
 // Choose which serialization to use
@@ -28,8 +29,10 @@ const SessionLive = Layer.unwrapScoped(
 
 const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
 
-// Now we have an rpc client layer with no dependencies
-const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url));
+const ScriptLive = FridaScript.layer(new URL("../../frida/server/agent.ts", import.meta.url), {
+    platform: JsPlatform.Browser,
+});
+
 const Live = Layer.provide(ProtocolLive, ScriptLive);
 
 // Use the client

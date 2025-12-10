@@ -15,6 +15,7 @@ Since v1.0.0
 ## Exports Grouped by Category
 
 - [Frida](#frida)
+  - [compile](#compile)
   - [load](#load)
 - [Layers](#layers)
   - [layer](#layer)
@@ -33,6 +34,26 @@ Since v1.0.0
 ---
 
 # Frida
+
+## compile
+
+**Signature**
+
+```ts
+declare const compile: {
+  (
+    entrypoint: string,
+    options?: Frida.CompilerOptions | undefined
+  ): Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
+  (
+    options?: Frida.CompilerOptions | undefined
+  ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
+}
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L107)
+
+Since v1.0.0
 
 ## load
 
@@ -60,7 +81,7 @@ declare const load: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L107)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L121)
 
 Since v1.0.0
 
@@ -82,7 +103,7 @@ declare const layer: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L131)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L145)
 
 Since v1.0.0
 

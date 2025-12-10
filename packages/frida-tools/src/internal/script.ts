@@ -106,6 +106,7 @@ export const compile = Function.dual<
                         path,
                         {
                             externals: options?.externals,
+                            projectRoot: options?.projectRoot,
                             platform: options?.platform ?? Frida.JsPlatform.Gum,
                             typeCheck: options?.typeCheck ?? Frida.TypeCheckMode.Full,
                             sourceMaps: options?.sourceMaps ?? Frida.SourceMaps.Included,
@@ -157,9 +158,29 @@ export const load = Function.dual<
             const path = yield* Path.Path;
             const { session } = yield* FridaSession.FridaSession;
 
+            const projectRoot = yield* path
+                .fromFileUrl(entrypoint)
+                .pipe(
+                    Effect.mapError(
+                        (cause) =>
+                            new FridaSessionError.FridaSessionError({
+                                when: "compile",
+                                cause,
+                            })
+                    )
+                )
+                .pipe(Effect.map((p) => path.dirname(p)));
+
             const source = yield* path
                 .fromFileUrl(entrypoint)
-                .pipe(Effect.flatMap(compile(options)))
+                .pipe(
+                    Effect.flatMap(
+                        compile({
+                            ...options,
+                            projectRoot: options?.projectRoot ?? projectRoot,
+                        })
+                    )
+                )
                 .pipe(Effect.scoped)
                 .pipe(
                     Effect.timeoutFail({

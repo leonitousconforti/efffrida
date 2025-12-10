@@ -18,7 +18,9 @@ parent: Modules
     - [on (method)](#on-method)
     - [off (method)](#off-method)
     - [deserialize (method)](#deserialize-method)
+    - [serialize (method)](#serialize-method)
     - [name (property)](#name-property)
+    - [agentTemplatePath (property)](#agenttemplatepath-property)
   - [createFridaPool](#createfridapool)
 
 ---
@@ -31,11 +33,11 @@ parent: Modules
 
 ```ts
 declare class FridaPoolWorker {
-  constructor(_poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>)
+  constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<ConfigSchema>)
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L77)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L85)
 
 Since v1.0.0
 
@@ -47,7 +49,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L157)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L120)
 
 ### stop (method)
 
@@ -57,17 +59,17 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L163)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L202)
 
 ### send (method)
 
 **Signature**
 
 ```ts
-declare const send: (message: WorkerRequest) => Promise<void>
+declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L167)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L207)
 
 ### on (method)
 
@@ -77,7 +79,7 @@ declare const send: (message: WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L175)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L218)
 
 ### off (method)
 
@@ -87,17 +89,27 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (_event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L215)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L268)
 
 ### deserialize (method)
 
 **Signature**
 
 ```ts
-declare const deserialize: (data: unknown) => unknown
+declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L223)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L276)
+
+### serialize (method)
+
+**Signature**
+
+```ts
+declare const serialize: (data: unknown) => unknown
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L281)
 
 ### name (property)
 
@@ -107,18 +119,26 @@ declare const deserialize: (data: unknown) => unknown
 readonly name: "frida-pool"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L78)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L86)
+
+### agentTemplatePath (property)
+
+**Signature**
+
+```ts
+readonly agentTemplatePath: URL
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L87)
 
 ## createFridaPool
 
 **Signature**
 
 ```ts
-declare const createFridaPool: (
-  customOptions: Schema.Schema.Encoded<typeof ConfigSchema>
-) => VitestNode.PoolRunnerInitializer
+declare const createFridaPool: (customOptions: Schema.Schema.Encoded<ConfigSchema>) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L232)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L290)
 
 Since v1.0.0

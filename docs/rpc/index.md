@@ -2,5 +2,5 @@
 title: "@efffrida/rpc"
 has_children: true
 permalink: /docs/rpc
-nav_order: 6
+nav_order: 7
 ---

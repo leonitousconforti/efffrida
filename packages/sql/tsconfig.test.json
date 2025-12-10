@@ -13,7 +13,7 @@
         "noEmit": true,
         "erasableSyntaxOnly": false,
         "baseUrl": ".",
-        "types": ["frida-gum"],
+        "types": ["frida-gum", "node"],
         "paths": {
             "@efffrida/sql": ["./src/index.ts"],
             "@efffrida/sql/*": ["./src/*/index.ts", "./src/*.ts"]

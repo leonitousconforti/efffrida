@@ -1,4 +1,4 @@
-import "core-js/stable/url";
+import "@efffrida/polyfills";
 
 import { describe, it } from "@effect/vitest";
 import { FridaIl2cppBridge } from "@efffrida/il2cpp-bridge";

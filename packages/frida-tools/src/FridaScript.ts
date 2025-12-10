@@ -104,6 +104,20 @@ export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions 
  * @since 1.0.0
  * @category Frida
  */
+export const compile: {
+    (
+        entrypoint: string,
+        options?: Frida.CompilerOptions | undefined
+    ): Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
+    (
+        options?: Frida.CompilerOptions | undefined
+    ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
+} = internal.compile;
+
+/**
+ * @since 1.0.0
+ * @category Frida
+ */
 export const load: {
     (
         entrypoint: URL,

@@ -1,8 +1,9 @@
 {
     "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
-    "include": ["frida"],
-    "references": [{ "path": "../platform/tsconfig.src.json" }],
+    "include": ["frida/agent.ts"],
+    "exclude": ["frida/.agent-*/"],
+    "references": [{ "path": "../platform/tsconfig.src.json" }, { "path": "../polyfills/tsconfig.src.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/src-frida.tsbuildinfo",
         // "outDir": ".tsbuildinfo/src",

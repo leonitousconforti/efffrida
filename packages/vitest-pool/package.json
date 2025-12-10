@@ -39,12 +39,11 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
+        "@efffrida/polyfills": "workspace:*",
         "@vitest/runner": "4.0.14",
         "@vitest/utils": "4.0.14",
-        "abort-controller": "3.0.0",
         "birpc": "2.8.0",
-        "core-js": "3.47.0",
-        "event-target-polyfill": "0.0.4",
+        "esbuild": "0.27.1",
         "flatted": "3.3.3"
     },
     "devDependencies": {

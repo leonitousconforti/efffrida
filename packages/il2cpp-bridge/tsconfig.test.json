@@ -3,6 +3,7 @@
     "extends": "../../tsconfig.base.jsonc",
     "references": [
         { "path": "tsconfig.src.json" },
+        { "path": "../polyfills/tsconfig.src.json" },
         { "path": "../vitest-pool/tsconfig.src-node.json" },
         { "path": "../vitest-pool/tsconfig.src-frida.json" }
     ],

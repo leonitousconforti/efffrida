@@ -1,4 +1,4 @@
-import "core-js/stable/url";
+import "@efffrida/polyfills";
 
 import { Effect } from "effect";
 

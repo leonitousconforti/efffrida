@@ -208,31 +208,3 @@ export const toInputStream = <E, R>(stream: Stream.Stream<Uint8Array, E, R>): Ef
 /** @internal */
 export const toInputStreamNever = <E>(stream: Stream.Stream<Uint8Array, E, never>): InputStream =>
     new StreamAdapter(Runtime.defaultRuntime, stream);
-
-/** @internal */
-export const encodeText = Function.dual<
-    (
-        encoding?: BufferEncoding | undefined
-    ) => <E, R>(self: Stream.Stream<string, E, R>) => Stream.Stream<Uint8Array, E, R>,
-    <E, R>(self: Stream.Stream<string, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<Uint8Array, E, R>
->(
-    (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
-    <E, R>(
-        self: Stream.Stream<string, E, R>,
-        encoding: BufferEncoding = "utf-8" as const
-    ): Stream.Stream<Uint8Array, E, R> => Stream.map(self, (chars) => Buffer.Buffer.from(chars, encoding))
-);
-
-/** @internal */
-export const decodeText = Function.dual<
-    (
-        encoding?: BufferEncoding | undefined
-    ) => <E, R>(self: Stream.Stream<Uint8Array, E, R>) => Stream.Stream<string, E, R>,
-    <E, R>(self: Stream.Stream<Uint8Array, E, R>, encoding?: BufferEncoding | undefined) => Stream.Stream<string, E, R>
->(
-    (arguments_) => Predicate.hasProperty(arguments_[0], Stream.StreamTypeId),
-    <E, R>(
-        self: Stream.Stream<Uint8Array, E, R>,
-        encoding: BufferEncoding = "utf-8" as const
-    ): Stream.Stream<string, E, R> => Stream.map(self, (chars) => Buffer.Buffer.from(chars.buffer).toString(encoding))
-);

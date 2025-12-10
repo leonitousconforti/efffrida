@@ -1,3 +1,4 @@
+import * as Frida from "frida";
 import { mergeConfig, type ViteUserConfig } from "vitest/config";
 import shared from "../../vitest.shared.ts";
 
@@ -5,15 +6,19 @@ import { createFridaPool } from "./src/index.ts";
 
 const config: ViteUserConfig = {
     test: {
-        setupFiles: undefined,
+        // maxWorkers: 1,
+        // fileParallelism: false,
+        // sequence: {
+        //     concurrent: true,
+        // },
         pool: createFridaPool({
             device: "local",
             preSpawn: true,
             spawn: ["sleep", "infinity"],
+            platform: Frida.JsPlatform.Gum,
+            runtime: Frida.ScriptRuntime.Default,
         }),
     },
 };
 
-const merged = mergeConfig(shared, config);
-delete merged.test.setupFiles;
-export default merged;
+export default mergeConfig(shared, config);

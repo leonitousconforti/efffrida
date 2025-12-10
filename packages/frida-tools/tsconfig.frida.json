@@ -1,6 +1,7 @@
 {
     "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
+    "references": [{ "path": "../polyfills/tsconfig.src.json" }],
     "include": ["test/**/*.agent.ts"],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
