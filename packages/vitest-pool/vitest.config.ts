@@ -11,13 +11,21 @@ const config: ViteUserConfig = {
         // sequence: {
         //     concurrent: true,
         // },
-        pool: createFridaPool({
-            device: "local",
-            preSpawn: true,
-            spawn: ["sleep", "infinity"],
-            platform: Frida.JsPlatform.Gum,
-            runtime: Frida.ScriptRuntime.Default,
-        }),
+        pool:
+            "CI" in process.env
+                ? createFridaPool({
+                      device: "local",
+                      spawn: ["/usr/bin/sleep", "infinity"],
+                      platform: Frida.JsPlatform.Gum,
+                      runtime: Frida.ScriptRuntime.Default,
+                  })
+                : createFridaPool({
+                      device: "local",
+                      preSpawn: true,
+                      spawn: ["sleep", "infinity"],
+                      platform: Frida.JsPlatform.Gum,
+                      runtime: Frida.ScriptRuntime.Default,
+                  }),
     },
 };
 

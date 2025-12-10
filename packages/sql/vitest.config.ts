@@ -5,11 +5,17 @@ import { createFridaPool } from "@efffrida/vitest-pool";
 
 const config: ViteUserConfig = {
     test: {
-        pool: createFridaPool({
-            device: "local",
-            preSpawn: true,
-            spawn: ["sleep", "infinity"],
-        }),
+        pool:
+            "CI" in process.env
+                ? createFridaPool({
+                      device: "local",
+                      spawn: ["/usr/bin/sleep", "infinity"],
+                  })
+                : createFridaPool({
+                      device: "local",
+                      preSpawn: true,
+                      spawn: ["sleep", "infinity"],
+                  }),
     },
 };
 
