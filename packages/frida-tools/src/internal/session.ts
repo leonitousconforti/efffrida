@@ -164,33 +164,8 @@ export const layer = (
     Layer.scoped(
         Tag,
         Effect.gen(function* () {
-            const getProcessByPid = Effect.fn(function* (
-                pid: number
-            ): Effect.fn.Return<Frida.Process, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> {
-                const { device } = yield* FridaDevice.FridaDevice;
-                return yield* Effect.tryPromise({
-                    try: (signal) => {
-                        const cancellable = new Frida.Cancellable();
-                        signal.onabort = () => cancellable.cancel();
-                        return device.getProcessByPid(
-                            pid,
-                            {
-                                timeout: 1000,
-                                scope: Frida.Scope.Full,
-                            },
-                            cancellable
-                        );
-                    },
-                    catch: (cause) =>
-                        new FridaSessionError.FridaSessionError({
-                            cause,
-                            when: "attach",
-                        }),
-                });
-            });
-
             const pid = yield* Match.value(target).pipe(
-                Match.when(Match.number, (pid) => Effect.as(getProcessByPid(pid), pid)),
+                Match.when(Match.number, (pid) => Effect.succeed(pid)),
                 Match.when(Match.string, (proc) => spawn(proc)),
                 Match.orElse((proc) => spawn(proc))
             );

@@ -5,8 +5,6 @@ import { Effect, Layer } from "effect";
 
 // Pick a device and a session/program
 export const DeviceLive = FridaDevice.layerLocalDevice;
-
-// For nix 😍
 export const SessionLive = Layer.unwrapScoped(
     Effect.gen(function* () {
         const executor = yield* CommandExecutor.CommandExecutor;
