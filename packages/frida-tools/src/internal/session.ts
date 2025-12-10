@@ -101,7 +101,10 @@ export const attach = (
             try: (signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
-                return device.attach(target, options, cancellable);
+                console.log("here0");
+                const session = device.attach(target, options, cancellable);
+                console.log("here1");
+                return session;
             },
             catch: (cause) =>
                 new FridaSessionError.FridaSessionError({
@@ -171,7 +174,6 @@ export const layer = (
             );
             const session = yield* attach(pid, options);
             console.log("Attached to process with PID:", pid);
-            yield* session.resume.pipe(Effect.orDie);
             return session;
         })
     );
