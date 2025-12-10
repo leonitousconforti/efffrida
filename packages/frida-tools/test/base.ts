@@ -10,11 +10,13 @@ export const DeviceLive = FridaDevice.layerLocalDevice;
 export const SessionLive = Layer.unwrapScoped(
     Effect.gen(function* () {
         const executor = yield* CommandExecutor.CommandExecutor;
-        const command = Command.make("sleep", "infinity");
+        const command = Command.make("sleep", "infinity")
+            .pipe(Command.stdin("inherit"))
+            .pipe(Command.stdout("inherit"))
+            .pipe(Command.stderr("inherit"));
+
         const process = yield* executor.start(command);
         const pid = process.pid;
-        const a = yield* process.isRunning;
-        console.log(a);
         return FridaSession.layer(pid);
     })
 );
