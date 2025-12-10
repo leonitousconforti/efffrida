@@ -30,7 +30,12 @@ Since v1.0.0
 
 ```ts
 declare const layerProtocolFrida: (
-  options?: { readonly exportName?: string | undefined } | undefined
+  options?:
+    | {
+        readonly exportName?: string | undefined
+        readonly generateExportName?: ((clientId: number) => string) | undefined
+      }
+    | undefined
 ) => Layer.Layer<
   RpcClient.Protocol,
   FridaSessionError.FridaSessionError,
@@ -38,7 +43,7 @@ declare const layerProtocolFrida: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L114)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L124)
 
 Since v1.0.0
 
@@ -50,7 +55,12 @@ Since v1.0.0
 
 ```ts
 declare const makeProtocolFrida: (
-  options?: { readonly exportName?: string | undefined } | undefined
+  options?:
+    | {
+        readonly exportName?: string | undefined
+        readonly generateExportName?: ((clientId: number) => string) | undefined
+      }
+    | undefined
 ) => Effect.Effect<
   RpcClient.Protocol["Type"],
   FridaSessionError.FridaSessionError,
