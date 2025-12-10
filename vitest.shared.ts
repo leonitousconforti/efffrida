@@ -15,8 +15,6 @@ const config: ViteUserConfig = {
         sequence: {
             concurrent: true,
         },
-        maxWorkers: process.env.CI ? 1 : undefined,
-        maxConcurrency: process.env.CI ? 1 : undefined,
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
         coverage: {
