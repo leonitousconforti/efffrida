@@ -12,8 +12,9 @@ const config: ViteUserConfig = {
         fakeTimers: {
             toFake: undefined,
         },
+        fileParallelism: "CI" in process.env ? false : true,
         sequence: {
-            concurrent: true,
+            concurrent: "CI" in process.env ? false : true,
         },
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
