@@ -98,13 +98,10 @@ export const attach = (
 > => {
     const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
-            try: async (signal) => {
+            try: (signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
-                console.log("here0");
-                const session = await device.attach(target, options, cancellable);
-                console.log("here1");
-                return session;
+                return device.attach(target, options, cancellable);
             },
             catch: (cause) =>
                 new FridaSessionError.FridaSessionError({
@@ -167,13 +164,31 @@ export const layer = (
     Layer.scoped(
         Tag,
         Effect.gen(function* () {
+            const getProcessByPid = Effect.fn(function* (
+                pid: number
+            ): Effect.fn.Return<Frida.Process, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> {
+                const device = yield* FridaDevice.FridaDevice;
+                return yield* Effect.tryPromise({
+                    try: (signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return device.device.getProcessByPid(pid, undefined, cancellable);
+                    },
+                    catch: (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            cause,
+                            when: "attach",
+                        }),
+                });
+            });
+
             const pid = yield* Match.value(target).pipe(
-                Match.when(Match.number, (pid) => Effect.succeed(pid)),
+                Match.when(Match.number, (pid) => Effect.map(getProcessByPid(pid), (process) => process.pid)),
                 Match.when(Match.string, (proc) => spawn(proc)),
                 Match.orElse((proc) => spawn(proc))
             );
+
             const session = yield* attach(pid, options);
-            console.log("Attached to process with PID:", pid);
             return session;
         })
     );
