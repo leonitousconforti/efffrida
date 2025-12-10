@@ -12,7 +12,6 @@ const config: ViteUserConfig = {
         fakeTimers: {
             toFake: undefined,
         },
-        fileParallelism: "CI" in process.env ? false : true,
         sequence: {
             concurrent: "CI" in process.env ? false : true,
         },
