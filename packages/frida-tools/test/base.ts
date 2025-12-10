@@ -20,6 +20,7 @@ export const SessionLive = Layer.unwrapScoped(
         //     Schedule.addDelay(Schedule.recurs(2), () => Duration.seconds(1))
         // );
 
+        yield* Effect.sleep("100 millis");
         return FridaSession.layer(pid);
     })
 );
