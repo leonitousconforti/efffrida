@@ -7,10 +7,6 @@ import { Effect, Layer } from "effect";
 export const DeviceLive = FridaDevice.layerLocalDevice;
 export const SessionLive = Layer.unwrapScoped(
     Effect.gen(function* () {
-        if ("CI" in process.env) {
-            return FridaSession.layer(["/usr/bin/sleep", "infinity"]);
-        }
-
         const executor = yield* CommandExecutor.CommandExecutor;
         const command = Command.make("sleep", "infinity");
         const proc = yield* executor.start(command);
