@@ -10,7 +10,6 @@ export const SessionLive = Layer.unwrapScoped(
         const executor = yield* CommandExecutor.CommandExecutor;
         const command = Command.make("sleep", "infinity");
         const process = yield* executor.start(command);
-        yield* Effect.sleep("5 seconds");
         return FridaSession.layer(process.pid);
     })
 );
