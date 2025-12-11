@@ -2,6 +2,7 @@ import type * as PlatformError from "@effect/platform/Error";
 import type * as FridaDeviceAcquisitionError from "@efffrida/frida-tools/FridaDeviceAcquisitionError";
 import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 import type * as Option from "effect/Option";
+import type * as ParseResult from "effect/ParseResult";
 import type * as Runtime from "effect/Runtime";
 import type * as VitestNode from "vitest/node";
 
@@ -109,6 +110,17 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
               | FridaSessionError.FridaSessionError
           >
         | undefined;
+    private sends: Array<
+        Promise<
+            Exit.Exit<
+                void,
+                | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
+                | PlatformError.PlatformError
+                | FridaSessionError.FridaSessionError
+                | ParseResult.ParseError
+            >
+        >
+    > = [];
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<ConfigSchema>) {
         this.poolOptions = poolOptions;
@@ -208,16 +220,21 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async stop(): Promise<void> {
+        await Promise.allSettled(this.sends);
         await this.managedRuntime!.dispose();
         await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
-        const exit = await this.managedRuntime!.runPromiseExit(
+        const sendPromise = this.managedRuntime!.runPromiseExit(
             Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                 fridaScript.callExport("onMessage", Schema.Void)(message)
             )
         );
+
+        this.sends.push(sendPromise);
+        const exit = await sendPromise;
+        this.sends = this.sends.filter((p) => p !== sendPromise);
         if (Exit.isSuccess(exit)) return;
         const prettyError = Cause.prettyErrors(exit.cause);
         throw prettyError[0];
@@ -262,7 +279,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             case "exit":
                 cancelable = this.managedRuntime!.runCallback(
                     Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
-                    { onExit: () => callback(undefined) }
+                    { onExit: () => callback(void 0) }
                 );
                 break;
 

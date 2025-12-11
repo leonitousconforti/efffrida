@@ -9,7 +9,7 @@ const config: ViteUserConfig = {
         // maxWorkers: 1,
         // fileParallelism: false,
         // sequence: {
-        //     concurrent: true,
+        //     concurrent: false,
         // },
         pool: createFridaPool({
             device: "local",
