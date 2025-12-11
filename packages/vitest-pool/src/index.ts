@@ -21,6 +21,7 @@ import * as Exit from "effect/Exit";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Match from "effect/Match";
+import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
@@ -184,7 +185,14 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.orElse(({ spawn }) => FridaSession.layer(spawn))
         );
 
-        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeContext.layer));
+        const FridaLive = Layer.provide(
+            Layer.retry(
+                SessionLive,
+                Schedule.addDelay(Schedule.recurs(2), () => Duration.seconds(1))
+            ),
+            DeviceLive
+        ).pipe(Layer.provide(NodeContext.layer));
+
         const ScriptLive = FridaScript.layer(tempAgentUrl, {
             externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
             ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
