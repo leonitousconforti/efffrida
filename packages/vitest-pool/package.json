@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/vitest-pool",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "effect frida vitest-pool",
     "keywords": [
         "frida.re",
@@ -40,32 +40,32 @@
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/polyfills": "workspace:*",
-        "@vitest/runner": "4.0.14",
-        "@vitest/utils": "4.0.14",
-        "birpc": "2.8.0",
-        "esbuild": "0.27.1",
+        "@vitest/runner": "4.0.16",
+        "@vitest/utils": "4.0.16",
+        "birpc": "4.0.0",
+        "esbuild": "0.27.2",
         "flatted": "3.3.3"
     },
     "devDependencies": {
-        "@effect/cluster": "0.54.0",
-        "@effect/experimental": "0.57.8",
-        "@effect/platform": "0.93.5",
-        "@effect/platform-node": "0.102.0",
-        "@effect/rpc": "0.72.2",
-        "@effect/sql": "0.48.5",
-        "@effect/workflow": "0.14.0",
+        "@effect/cluster": "0.56.0",
+        "@effect/experimental": "0.58.0",
+        "@effect/platform": "0.94.0",
+        "@effect/platform-node": "0.104.0",
+        "@effect/rpc": "0.73.0",
+        "@effect/sql": "0.49.0",
+        "@effect/workflow": "0.16.0",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "24.10.1",
-        "effect": "3.19.8",
+        "@types/node": "25.0.3",
+        "effect": "3.19.13",
         "frida": "17.5.1",
-        "vitest": "4.0.14"
+        "vitest": "4.0.16"
     },
     "peerDependencies": {
-        "@effect/platform": "0.93.5",
-        "@vitest/runner": "4.0.14",
-        "@vitest/utils": "4.0.14",
-        "effect": "3.19.8",
-        "vitest": "4.0.14"
+        "@effect/platform": "0.94.0",
+        "@vitest/runner": "4.0.16",
+        "@vitest/utils": "4.0.16",
+        "effect": "3.19.13",
+        "vitest": "4.0.16"
     },
     "publishConfig": {
         "access": "public",
