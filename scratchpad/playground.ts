@@ -5,8 +5,8 @@ import { GooglePlayApi } from "@efffrida/gplayapi";
 import { Cause, Context, Effect, Layer, Logger, LogLevel, pipe, Stream, String, Tuple } from "effect";
 
 const DeviceLive = pipe(
-    FridaDevice.layerAndroidEmulatorDeviceConfig("Medium_Phone", {
-        fridaExecutable: "/data/local/tmp/frida-server-17.5.1-android-arm64",
+    FridaDevice.layerAndroidEmulatorDeviceConfig("Small_Phone", {
+        fridaExecutable: "/data/local/tmp/frida-server-17.5.2-android-arm64",
         extraEmulatorArgs: ["-gpu", "swiftshader_indirect"],
     }),
     Layer.tap(
