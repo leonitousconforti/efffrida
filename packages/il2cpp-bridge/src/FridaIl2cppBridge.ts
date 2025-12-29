@@ -1,7 +1,6 @@
 /**
- * FridaIl2cppBridge.ts
- *
  * @since 1.0.0
+ * @category FridaIl2cppBridge
  */
 
 import "frida-il2cpp-bridge";

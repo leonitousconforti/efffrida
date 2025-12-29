@@ -15,8 +15,7 @@ export * as Assembly from "./Assembly.ts"
 export * as Class from "./Class.ts"
 
 /**
- * FridaIl2cppBridge.ts
- *
  * @since 1.0.0
+ * @category FridaIl2cppBridge
  */
 export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
