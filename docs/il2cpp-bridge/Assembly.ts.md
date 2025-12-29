@@ -14,8 +14,10 @@ Since v1.0.0
 
 - [Assembly](#assembly)
   - [assembly](#assembly-1)
+  - [assemblyCached](#assemblycached)
   - [attach](#attach)
   - [tryAssembly](#tryassembly)
+  - [tryAssemblyCached](#tryassemblycached)
 
 ---
 
@@ -29,7 +31,23 @@ Since v1.0.0
 declare const assembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L18)
+
+Since v1.0.0
+
+## assemblyCached
+
+**Signature**
+
+```ts
+declare const assemblyCached: Effect.Effect<
+  (name: string) => Effect.Effect<Il2Cpp.Assembly, never, never>,
+  never,
+  never
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L35)
 
 Since v1.0.0
 
@@ -41,7 +59,7 @@ Since v1.0.0
 declare const attach: Effect.Effect<Il2Cpp.Thread, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L34)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L53)
 
 Since v1.0.0
 
@@ -53,6 +71,22 @@ Since v1.0.0
 declare const tryAssembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementException, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L25)
+
+Since v1.0.0
+
+## tryAssemblyCached
+
+**Signature**
+
+```ts
+declare const tryAssemblyCached: Effect.Effect<
+  (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementException, never>,
+  never,
+  never
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L44)
 
 Since v1.0.0

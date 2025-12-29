@@ -38,6 +38,8 @@
         "rechunk",
         "SEMATTRS",
         "Transferables",
+        "tupled",
+        "untupled",
         "vitest",
         "xxhdpi"
     ]

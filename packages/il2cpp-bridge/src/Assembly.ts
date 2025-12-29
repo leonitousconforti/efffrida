@@ -9,6 +9,7 @@ import type * as Scope from "effect/Scope";
 
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
+import * as Equivalence from "effect/Equivalence";
 
 /**
  * @since 1.0.0
@@ -26,6 +27,24 @@ export const tryAssembly = (name: string): Effect.Effect<Il2Cpp.Assembly, Cause.
         try: () => Il2Cpp.domain.tryAssembly(name),
         catch: () => new Cause.NoSuchElementException(`No assembly with name ${name}`),
     }).pipe(Effect.flatMap(Effect.fromNullable));
+
+/**
+ * @since 1.0.0
+ * @category Assembly
+ */
+export const assemblyCached: Effect.Effect<typeof assembly, never, never> = Effect.cachedFunction(
+    assembly,
+    Equivalence.string
+);
+
+/**
+ * @since 1.0.0
+ * @category Assembly
+ */
+export const tryAssemblyCached: Effect.Effect<typeof tryAssembly, never, never> = Effect.cachedFunction(
+    tryAssembly,
+    Equivalence.string
+);
 
 /**
  * @since 1.0.0

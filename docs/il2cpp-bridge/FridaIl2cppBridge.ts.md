@@ -1,12 +1,10 @@
 ---
 title: FridaIl2cppBridge.ts
-nav_order: 3
+nav_order: 4
 parent: "@efffrida/il2cpp-bridge"
 ---
 
 ## FridaIl2cppBridge.ts overview
-
-FridaIl2cppBridge.ts
 
 Since v1.0.0
 
@@ -34,6 +32,6 @@ declare const il2cppPerformEffect: <X, E, R>(
 ) => Effect.Effect<X, E, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/FridaIl2cppBridge.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/FridaIl2cppBridge.ts#L16)
 
 Since v1.0.0

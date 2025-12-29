@@ -16,6 +16,12 @@ export * as Class from "./Class.ts"
 
 /**
  * @since 1.0.0
+ * @category Equivalence
+ */
+export * as Equivalence from "./Equivalence.ts"
+
+/**
+ * @since 1.0.0
  * @category FridaIl2cppBridge
  */
 export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
