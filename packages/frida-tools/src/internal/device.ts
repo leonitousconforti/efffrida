@@ -234,7 +234,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                         new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                             attempts: 1,
                             acquisitionMethod: "android-emulator",
-                            cause: new Error(`ADB wait-for-device failed with exit code ${code}`),
+                            cause: `ADB wait-for-device failed with exit code ${code}`,
                         })
                 )
             );
@@ -248,7 +248,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                         new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                             attempts: 1,
                             acquisitionMethod: "android-emulator",
-                            cause: new Error(`ADB root failed with exit code ${code}`),
+                            cause: `ADB root failed with exit code ${code}`,
                         })
                 )
             );
@@ -274,7 +274,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
             new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
                 attempts: 1,
                 acquisitionMethod: "android-emulator",
-                cause: new Error("Timeout while acquiring Android emulator device"),
+                cause: "Timeout while acquiring Android emulator device",
             }),
     }),
     Effect.catchIf(

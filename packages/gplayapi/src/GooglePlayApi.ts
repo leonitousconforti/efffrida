@@ -156,7 +156,7 @@ export const download = Effect.fnUntraced(function* (bundleIdentifier: string) {
 
     const mainDeliveryData = deliveryResult?.appDeliveryData;
     if (mainDeliveryData === undefined) {
-        return yield* Effect.fail(new Error("No delivery data available"));
+        return yield* Effect.dieMessage("No delivery data available");
     }
 
     type Result = {

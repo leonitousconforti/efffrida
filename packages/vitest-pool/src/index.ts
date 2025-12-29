@@ -487,7 +487,7 @@ const compileTestFiles = Effect.fnUntraced(function* (
         );
 
         if (!result.outputFiles || result.outputFiles.length === 0) {
-            throw new Error(`esbuild produced no output for ${testFile}`);
+            return yield* Effect.dieMessage(`esbuild produced no output for ${testFile}`);
         } else {
             testFilesMap[testFile] = Buffer.from(result.outputFiles[0].text).toString("base64");
         }
