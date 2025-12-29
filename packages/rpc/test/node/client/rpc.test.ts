@@ -13,7 +13,7 @@ import { UserRpcs } from "../../shared/requests.ts";
 const NdJsonSerialization = RpcSerialization.layerNdjson;
 
 // Choose which protocol to use
-const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide([NdJsonSerialization]));
+const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide(NdJsonSerialization));
 
 // Pick a device and a session/program
 const DeviceLive = FridaDevice.layerLocalDevice;
