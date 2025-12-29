@@ -24,10 +24,10 @@ import {
     type BulkDetailsResponse,
     type BuyResponse,
     type DetailsResponse,
-} from "./generated/GooglePlay_pb.js";
-import { makeHttpClient } from "./internal/auth.js";
-import { Device } from "./internal/device.js";
-import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.js";
+} from "./generated/GooglePlay_pb.ts";
+import { makeHttpClient } from "./internal/auth.ts";
+import { Device } from "./internal/device.ts";
+import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
 export {
     /**
@@ -43,7 +43,7 @@ export {
      * @category Device
      */
     Device,
-} from "./internal/device.js";
+} from "./internal/device.ts";
 
 /**
  * @since 1.0.0

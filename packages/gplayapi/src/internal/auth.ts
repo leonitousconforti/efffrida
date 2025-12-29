@@ -13,9 +13,9 @@ import {
     AndroidCheckinRequestSchema,
     AndroidCheckinResponseSchema,
     UploadDeviceConfigRequestSchema,
-} from "../generated/GooglePlay_pb.js";
-import { type Device } from "./device.js";
-import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.js";
+} from "../generated/GooglePlay_pb.ts";
+import { type Device } from "./device.ts";
+import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.ts";
 
 /** @internal */
 export const makeHttpClient: (

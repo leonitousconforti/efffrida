@@ -6,7 +6,7 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Predicate from "effect/Predicate";
 
-import { type PayloadSchema, ResponseWrapperSchema } from "../generated/GooglePlay_pb.js";
+import { type PayloadSchema, ResponseWrapperSchema } from "../generated/GooglePlay_pb.ts";
 
 /** @internal */
 export const encodeRequest = Function.dual<
