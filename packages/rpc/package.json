@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/rpc",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "description": "effect rpc-frida",
     "keywords": [
         "frida.re",
@@ -42,6 +42,7 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:^",
+        "@efffrida/platform": "workspace:*",
         "@efffrida/polyfills": "workspace:*"
     },
     "devDependencies": {
@@ -53,7 +54,6 @@
         "@effect/sql": "0.49.0",
         "@effect/vitest": "0.27.0",
         "@effect/workflow": "0.16.0",
-        "@efffrida/platform": "workspace:*",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
         "@types/node": "25.0.3",
