@@ -1,6 +1,6 @@
 ---
 title: FridaIl2cppBridge.ts
-nav_order: 1
+nav_order: 3
 parent: Modules
 ---
 

@@ -3,6 +3,18 @@
  */
 
 /**
+ * @since 1.0.0
+ * @category Assembly
+ */
+export * as Assembly from "./Assembly.ts"
+
+/**
+ * @since 1.0.0
+ * @category Class
+ */
+export * as Class from "./Class.ts"
+
+/**
  * FridaIl2cppBridge.ts
  *
  * @since 1.0.0
