@@ -94,7 +94,7 @@ declare const download: (
       | { file: string; name: string; size: bigint; url: string; integrity: { sha1: string } }
     )[]
   ],
-  HttpClientError.HttpClientError | Error | PlatformError,
+  HttpClientError.HttpClientError | PlatformError,
   HttpClient.HttpClient | FileSystem.FileSystem | Scope
 >
 ```
