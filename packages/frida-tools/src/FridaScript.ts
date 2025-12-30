@@ -10,7 +10,6 @@ import type * as Context from "effect/Context";
 import type * as Deferred from "effect/Deferred";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
-import type * as Either from "effect/Either";
 import type * as Exit from "effect/Exit";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
@@ -165,7 +164,7 @@ export const watch: {
         entrypoint: URL,
         options?: LoadOptions | undefined
     ): Stream.Stream<
-        Either.Either<Exit.Exit<A, E>, unknown>,
+        Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
@@ -175,8 +174,16 @@ export const watch: {
     ): <A, E, R>(
         effect: Effect.Effect<A, E, R>
     ) => Stream.Stream<
-        Either.Either<Exit.Exit<A, E>, unknown>,
+        Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
 } = internal.watch;
+
+/**
+ * @since 1.0.0
+ * @category Frida
+ */
+export const logWatchErrors: <A, E1, E2, R>(
+    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>
+) => Stream.Stream<Exit.Exit<A, E1>, E2, R> = internal.logWatchErrors;

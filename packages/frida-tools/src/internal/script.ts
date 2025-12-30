@@ -8,7 +8,6 @@ import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
-import * as Either from "effect/Either";
 import * as Exit from "effect/Exit";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -387,7 +386,7 @@ export const watch = Function.dual<
     ) => <A, E, R>(
         effect: Effect.Effect<A, E, R>
     ) => Stream.Stream<
-        Either.Either<Exit.Exit<A, E>, unknown>,
+        Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >,
@@ -396,7 +395,7 @@ export const watch = Function.dual<
         entrypoint: URL,
         options?: FridaScript.LoadOptions | undefined
     ) => Stream.Stream<
-        Either.Either<Exit.Exit<A, E>, unknown>,
+        Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >
@@ -409,7 +408,7 @@ export const watch = Function.dual<
             options?: FridaScript.LoadOptions | undefined
         ): Effect.fn.Return<
             Stream.Stream<
-                Either.Either<Exit.Exit<A, E>, unknown>,
+                Exit.Exit<A, E>,
                 FridaSessionError.FridaSessionError,
                 Path.Path | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
             >,
@@ -443,9 +442,8 @@ export const watch = Function.dual<
                 Stream.mapEffect(() =>
                     effect.pipe(
                         Effect.exit,
-                        Effect.map(Either.right),
                         Effect.provideServiceEffect(Tag, load(entrypoint, options)),
-                        Effect.catchAllDefect(Function.compose(Either.left, Effect.succeed)),
+                        Effect.interruptible,
                         Effect.scoped
                     )
                 ),
@@ -456,3 +454,30 @@ export const watch = Function.dual<
         Stream.provideSomeLayer(Path.layer)
     )
 );
+
+/** @internal */
+export const logWatchErrors = <A, E1, E2, R>(
+    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>
+): Stream.Stream<Exit.Exit<A, E1>, E2, R> =>
+    Stream.tap(watchStream, (exit) => {
+        // Success
+        if (Exit.isSuccess(exit)) {
+            return Effect.logInfo(exit.value);
+        }
+
+        // Non-success
+        const cause = exit.cause;
+
+        // Interruption only
+        if (Cause.isInterruptedOnly(cause)) {
+            return Effect.logDebug("Script interrupted with no errors");
+        }
+
+        // Defect
+        if (Cause.isDie(cause)) {
+            return Effect.logError(cause);
+        }
+
+        // Error
+        return Effect.logWarning(cause);
+    });
