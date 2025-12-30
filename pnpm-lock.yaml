@@ -279,6 +279,9 @@ importers:
       '@efffrida/frida-tools':
         specifier: workspace:^
         version: link:../frida-tools
+      '@efffrida/platform':
+        specifier: workspace:*
+        version: link:../platform
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -307,9 +310,6 @@ importers:
       '@effect/workflow':
         specifier: 0.16.0
         version: 0.16.0(@effect/experimental@0.58.0(@effect/platform@0.94.0(effect@3.19.13))(effect@3.19.13))(@effect/platform@0.94.0(effect@3.19.13))(@effect/rpc@0.73.0(@effect/platform@0.94.0(effect@3.19.13))(effect@3.19.13))(effect@3.19.13)
-      '@efffrida/platform':
-        specifier: workspace:*
-        version: link:../platform
       '@efffrida/vitest-pool':
         specifier: workspace:*
         version: link:../vitest-pool

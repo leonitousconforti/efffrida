@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import type * as FileSystem from "@effect/platform/FileSystem";
 import type * as Path from "@effect/platform/Path";
 import type * as Context from "effect/Context";
 import type * as Deferred from "effect/Deferred";
@@ -151,3 +152,29 @@ export const layer: {
         options?: LoadOptions | undefined
     ): (entrypoint: URL) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>;
 } = internal.layer;
+
+/**
+ * @since 1.0.0
+ * @category Frida
+ */
+export const watch: {
+    <A, E, R>(
+        effect: Effect.Effect<A, E, R>,
+        entrypoint: URL,
+        options?: LoadOptions | undefined
+    ): Effect.Effect<
+        void,
+        E | FridaSessionError.FridaSessionError,
+        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
+    >;
+    (
+        entrypoint: URL,
+        options?: LoadOptions | undefined
+    ): <A, E, R>(
+        effect: Effect.Effect<A, E, R>
+    ) => Effect.Effect<
+        void,
+        E | FridaSessionError.FridaSessionError,
+        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
+    >;
+} = internal.watch;

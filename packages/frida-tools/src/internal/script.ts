@@ -1,6 +1,7 @@
 import type * as Scope from "effect/Scope";
 import type * as FridaScript from "../FridaScript.ts";
 
+import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
@@ -374,4 +375,66 @@ export const layer = Function.dual<
     (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
     (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) =>
         Layer.scoped(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer))
+);
+
+/** @internal */
+export const watch = Function.dual<
+    (
+        entrypoint: URL,
+        options?: FridaScript.LoadOptions | undefined
+    ) => <A, E, R>(
+        effect: Effect.Effect<A, E, R>
+    ) => Effect.Effect<
+        void,
+        E | FridaSessionError.FridaSessionError,
+        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
+    >,
+    <A, E, R>(
+        effect: Effect.Effect<A, E, R>,
+        entrypoint: URL,
+        options?: FridaScript.LoadOptions | undefined
+    ) => Effect.Effect<
+        void,
+        E | FridaSessionError.FridaSessionError,
+        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
+    >
+>(
+    (arguments_) => Effect.isEffect(arguments_[0]),
+    <A, E, R>(
+        effect: Effect.Effect<A, E, R>,
+        entrypoint: URL,
+        options?: FridaScript.LoadOptions | undefined
+    ): Effect.Effect<
+        void,
+        E | FridaSessionError.FridaSessionError,
+        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
+    > =>
+        Effect.gen(function* () {
+            const path = yield* Path.Path;
+            const fileSystem = yield* FileSystem.FileSystem;
+
+            const pathString = yield* Effect.mapError(
+                path.fromFileUrl(entrypoint),
+                (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "watch",
+                        cause,
+                    })
+            );
+
+            const provideFridaScript = Effect.provideServiceEffect(Tag, load(entrypoint, options));
+            const sink = Sink.forEach((_: void) => provideFridaScript(effect).pipe(Effect.scoped));
+            const stream = fileSystem.watch(pathString).pipe(
+                Stream.filter((event) => event._tag === "Update"),
+                Stream.mapError(
+                    (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "watch",
+                            cause,
+                        })
+                )
+            );
+
+            return yield* Stream.run(stream, sink);
+        }).pipe(Effect.provide(Path.layer))
 );
