@@ -164,7 +164,7 @@ export const watch: {
         options?: LoadOptions | undefined
     ): Effect.Effect<
         void,
-        E | FridaSessionError.FridaSessionError,
+        FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
     (
@@ -174,7 +174,7 @@ export const watch: {
         effect: Effect.Effect<A, E, R>
     ) => Effect.Effect<
         void,
-        E | FridaSessionError.FridaSessionError,
+        FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
 } = internal.watch;

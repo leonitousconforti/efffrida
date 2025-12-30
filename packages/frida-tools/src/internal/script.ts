@@ -4,6 +4,7 @@ import type * as FridaScript from "../FridaScript.ts";
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
 import * as Cause from "effect/Cause";
+import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -386,7 +387,7 @@ export const watch = Function.dual<
         effect: Effect.Effect<A, E, R>
     ) => Effect.Effect<
         void,
-        E | FridaSessionError.FridaSessionError,
+        FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >,
     <A, E, R>(
@@ -395,7 +396,7 @@ export const watch = Function.dual<
         options?: FridaScript.LoadOptions | undefined
     ) => Effect.Effect<
         void,
-        E | FridaSessionError.FridaSessionError,
+        FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >
 >(
@@ -406,7 +407,7 @@ export const watch = Function.dual<
         options?: FridaScript.LoadOptions | undefined
     ): Effect.Effect<
         void,
-        E | FridaSessionError.FridaSessionError,
+        FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     > =>
         Effect.gen(function* () {
@@ -422,10 +423,21 @@ export const watch = Function.dual<
                     })
             );
 
-            const provideFridaScript = Effect.provideServiceEffect(Tag, load(entrypoint, options));
-            const sink = Sink.forEach((_: void) => provideFridaScript(effect).pipe(Effect.scoped));
+            const sink = Sink.forEach((event: FileSystem.WatchEvent.Update) =>
+                Function.pipe(
+                    Effect.logDebug(`reloading ${event.path}`),
+                    Effect.andThen(effect),
+                    Effect.andThen(Effect.logDebug(`script completed`)),
+                    Effect.provideServiceEffect(Tag, load(entrypoint, options)),
+                    Effect.scoped,
+                    Effect.catchAll(Effect.logError),
+                    Effect.catchAllDefect(Effect.logError)
+                )
+            );
+
             const stream = fileSystem.watch(pathString).pipe(
                 Stream.filter((event) => event._tag === "Update"),
+                Stream.prepend(Chunk.of(FileSystem.WatchEventUpdate({ path: pathString }))),
                 Stream.mapError(
                     (cause) =>
                         new FridaSessionError.FridaSessionError({
