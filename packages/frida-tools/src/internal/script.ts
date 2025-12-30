@@ -8,6 +8,7 @@ import * as Chunk from "effect/Chunk";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
+import * as Either from "effect/Either";
 import * as Exit from "effect/Exit";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -385,8 +386,8 @@ export const watch = Function.dual<
         options?: FridaScript.LoadOptions | undefined
     ) => <A, E, R>(
         effect: Effect.Effect<A, E, R>
-    ) => Effect.Effect<
-        void,
+    ) => Stream.Stream<
+        Either.Either<Exit.Exit<A, E>, unknown>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >,
@@ -394,23 +395,27 @@ export const watch = Function.dual<
         effect: Effect.Effect<A, E, R>,
         entrypoint: URL,
         options?: FridaScript.LoadOptions | undefined
-    ) => Effect.Effect<
-        void,
+    ) => Stream.Stream<
+        Either.Either<Exit.Exit<A, E>, unknown>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >
 >(
     (arguments_) => Effect.isEffect(arguments_[0]),
-    <A, E, R>(
-        effect: Effect.Effect<A, E, R>,
-        entrypoint: URL,
-        options?: FridaScript.LoadOptions | undefined
-    ): Effect.Effect<
-        void,
-        FridaSessionError.FridaSessionError,
-        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
-    > =>
-        Effect.gen(function* () {
+    Effect.fnUntraced(
+        function* <A, E, R>(
+            effect: Effect.Effect<A, E, R>,
+            entrypoint: URL,
+            options?: FridaScript.LoadOptions | undefined
+        ): Effect.fn.Return<
+            Stream.Stream<
+                Either.Either<Exit.Exit<A, E>, unknown>,
+                FridaSessionError.FridaSessionError,
+                Path.Path | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
+            >,
+            FridaSessionError.FridaSessionError,
+            Path.Path | FileSystem.FileSystem
+        > {
             const path = yield* Path.Path;
             const fileSystem = yield* FileSystem.FileSystem;
 
@@ -423,30 +428,31 @@ export const watch = Function.dual<
                     })
             );
 
-            const sink = Sink.forEach((event: FileSystem.WatchEvent.Update) =>
-                Function.pipe(
-                    Effect.logDebug(`reloading ${event.path}`),
-                    Effect.andThen(effect),
-                    Effect.andThen(Effect.logDebug(`script completed`)),
-                    Effect.provideServiceEffect(Tag, load(entrypoint, options)),
-                    Effect.scoped,
-                    Effect.catchAll(Effect.logError),
-                    Effect.catchAllDefect(Effect.logError)
-                )
-            );
-
-            const stream = fileSystem.watch(pathString).pipe(
+            return fileSystem.watch(pathString).pipe(
                 Stream.filter((event) => event._tag === "Update"),
                 Stream.prepend(Chunk.of(FileSystem.WatchEventUpdate({ path: pathString }))),
+                Stream.debounce("2 second"),
                 Stream.mapError(
                     (cause) =>
                         new FridaSessionError.FridaSessionError({
                             when: "watch",
                             cause,
                         })
-                )
+                ),
+                Stream.tap((event) => Effect.logDebug(`reloading ${event.path}`)),
+                Stream.mapEffect(() =>
+                    effect.pipe(
+                        Effect.exit,
+                        Effect.map(Either.right),
+                        Effect.provideServiceEffect(Tag, load(entrypoint, options)),
+                        Effect.catchAllDefect(Function.compose(Either.left, Effect.succeed)),
+                        Effect.scoped
+                    )
+                ),
+                Stream.tap((_exit) => Effect.logDebug(`script reloaded`))
             );
-
-            return yield* Stream.run(stream, sink);
-        }).pipe(Effect.provide(Path.layer))
+        },
+        Stream.unwrap,
+        Stream.provideSomeLayer(Path.layer)
+    )
 );
