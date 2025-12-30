@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/rpc",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "description": "effect rpc-frida",
     "keywords": [
         "frida.re",
