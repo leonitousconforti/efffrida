@@ -60,8 +60,19 @@ export const makeProtocolFrida = (
             };
             const write = (response: RpcMessage.FromServerEncoded): void => {
                 try {
-                    const encoded = parser.encode(response);
-                    if (Predicate.isNotUndefined(encoded)) return writeRaw(encoded);
+                    const encoded = parser.encode(
+                        // TODO: handle defects on the node client better
+                        response._tag === "Defect" && response.defect instanceof Error
+                            ? RpcMessage.ResponseDefectEncoded({
+                                  stack: response.defect.stack,
+                                  cause: response.defect.cause,
+                                  ...response.defect,
+                              })
+                            : response
+                    );
+                    if (Predicate.isNotUndefined(encoded)) {
+                        return writeRaw(encoded);
+                    }
                 } catch (cause) {
                     const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause))!;
                     return writeRaw(encoded);

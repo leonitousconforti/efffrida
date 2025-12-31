@@ -89,6 +89,9 @@ Since v1.0.0
 
 ## logWatchErrors
 
+Successes will be logged with info, failures with warning, defects with
+error, and interruptions with debug.
+
 **Signature**
 
 ```ts
@@ -97,7 +100,7 @@ declare const logWatchErrors: <A, E1, E2, R>(
 ) => Stream.Stream<Exit.Exit<A, E1>, E2, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L187)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L190)
 
 Since v1.0.0
 

@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/vitest-pool",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "effect frida vitest-pool",
     "keywords": [
         "frida.re",

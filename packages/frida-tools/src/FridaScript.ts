@@ -181,6 +181,9 @@ export const watch: {
 } = internal.watch;
 
 /**
+ * Successes will be logged with info, failures with warning, defects with
+ * error, and interruptions with debug.
+ *
  * @since 1.0.0
  * @category Frida
  */
