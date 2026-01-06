@@ -139,7 +139,11 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                   extraEmulatorArgs?: Array<string> | undefined;
               }
             | undefined
-    ) {
+    ): Effect.fn.Return<
+        FridaDevice.FridaDevice,
+        ParseResult.ParseError | PlatformError.PlatformError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+        CommandExecutor.CommandExecutor | Scope.Scope
+    > {
         const hidden = options?.hidden ?? false;
         const adbExecutable = options?.adbExecutable ?? "adb";
         const emulatorExecutable = options?.emulatorExecutable ?? "emulator";
