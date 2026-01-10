@@ -5,7 +5,7 @@
 
 import "frida-il2cpp-bridge";
 
-import { Array, Option, Record } from "effect";
+import { Array, Option, Record, pipe } from "effect";
 
 /**
  * @since 1.0.0
@@ -93,13 +93,18 @@ export class Dictionary<
     }
 
     public toRecord(keys?: Array<K> | undefined): Record<string, V> {
-        return Record.fromEntries(
-            Array.filterMap(keys ?? this.keys, (key) =>
-                Option.product(
-                    key instanceof Il2Cpp.String ? Option.fromNullable(key.content) : Option.some(key.toString()),
-                    this.containsKey(key) ? Option.some(this.get(key)) : Option.none()
-                )
-            )
+        const readKeyOptionString = (key: K): Option.Option<string> =>
+            key instanceof Il2Cpp.String
+                ? Option.fromNullable(key.isNull() ? null : key.content)
+                : Option.some(key.toString());
+
+        const readValueOption = (key: K): Option.Option<V> =>
+            this.containsKey(key) ? Option.some(this.get(key)) : Option.none();
+
+        return pipe(
+            keys ?? this.keys,
+            Array.filterMap((key) => Option.product(readKeyOptionString(key), readValueOption(key))),
+            Record.fromEntries
         );
     }
 

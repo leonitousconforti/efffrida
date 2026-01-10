@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/il2cpp-bridge",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "description": "effect-ts frida-il2cpp-bridge",
     "keywords": [
         "frida.re",
