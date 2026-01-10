@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 5
+nav_order: 6
 parent: Modules
 ---
 
@@ -16,6 +16,8 @@ Since v1.0.0
   - [Class (namespace export)](#class-namespace-export)
 - [Equivalence](#equivalence)
   - [Equivalence (namespace export)](#equivalence-namespace-export)
+- [Extensions](#extensions)
+  - [Extensions (namespace export)](#extensions-namespace-export)
 - [FridaIl2cppBridge](#fridail2cppbridge)
   - [FridaIl2cppBridge (namespace export)](#fridail2cppbridge-namespace-export)
 - [utils](#utils)
@@ -55,6 +57,22 @@ export * as Equivalence from "./Equivalence.ts"
 
 Since v1.0.0
 
+# Extensions
+
+## Extensions (namespace export)
+
+Re-exports all named exports from the "./Extensions.ts" module as `Extensions`.
+
+**Signature**
+
+```ts
+export * as Extensions from "./Extensions.ts"
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L27)
+
+Since v1.0.0
+
 # FridaIl2cppBridge
 
 ## FridaIl2cppBridge (namespace export)
@@ -67,7 +85,7 @@ Re-exports all named exports from the "./FridaIl2cppBridge.ts" module as `FridaI
 export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L27)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L33)
 
 Since v1.0.0
 

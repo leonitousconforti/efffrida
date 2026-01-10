@@ -22,6 +22,12 @@ export * as Equivalence from "./Equivalence.ts"
 
 /**
  * @since 1.0.0
+ * @category Extensions
+ */
+export * as Extensions from "./Extensions.ts"
+
+/**
+ * @since 1.0.0
  * @category FridaIl2cppBridge
  */
 export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
