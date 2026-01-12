@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/rpc",
-    "version": "0.0.23",
+    "version": "0.0.24",
     "description": "effect rpc-frida",
     "keywords": [
         "frida.re",
@@ -46,9 +46,9 @@
         "@efffrida/polyfills": "workspace:*"
     },
     "devDependencies": {
-        "@effect/cluster": "0.56.0",
+        "@effect/cluster": "0.56.1",
         "@effect/experimental": "0.58.0",
-        "@effect/platform": "0.94.0",
+        "@effect/platform": "0.94.1",
         "@effect/platform-node": "0.104.0",
         "@effect/rpc": "0.73.0",
         "@effect/sql": "0.49.0",
@@ -56,15 +56,15 @@
         "@effect/workflow": "0.16.0",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "25.0.3",
-        "effect": "3.19.13",
-        "frida": "17.5.1",
-        "vitest": "4.0.16"
+        "@types/node": "25.0.6",
+        "effect": "3.19.14",
+        "frida": "17.5.2",
+        "vitest": "4.0.17"
     },
     "peerDependencies": {
-        "@effect/platform": "0.94.0",
+        "@effect/platform": "0.94.1",
         "@effect/rpc": "0.73.0",
-        "effect": "3.19.13"
+        "effect": "3.19.14"
     },
     "publishConfig": {
         "access": "public",

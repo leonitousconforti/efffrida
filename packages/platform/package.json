@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/platform",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "description": "effect platform-frida",
     "keywords": [
         "frida.re",
@@ -38,18 +38,18 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@effect/platform": "0.94.0",
+        "@effect/platform": "0.94.1",
         "@effect/vitest": "0.27.0",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.0.1",
-        "@types/node": "25.0.3",
-        "effect": "3.19.13",
-        "frida": "17.5.1",
-        "vitest": "4.0.16"
+        "@types/node": "25.0.6",
+        "effect": "3.19.14",
+        "frida": "17.5.2",
+        "vitest": "4.0.17"
     },
     "peerDependencies": {
-        "@effect/platform": "0.94.0",
-        "effect": "3.19.13"
+        "@effect/platform": "0.94.1",
+        "effect": "3.19.14"
     },
     "publishConfig": {
         "access": "public",

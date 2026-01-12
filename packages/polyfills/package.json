@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/polyfills",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "polyfills for using effect in frida's GumJS environment",
     "keywords": [
         "frida.re",
@@ -42,7 +42,7 @@
     },
     "devDependencies": {
         "@types/frida-gum": "19.0.1",
-        "@types/node": "25.0.3"
+        "@types/node": "25.0.6"
     },
     "publishConfig": {
         "access": "public",
