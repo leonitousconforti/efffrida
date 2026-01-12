@@ -57,7 +57,7 @@
         "@types/frida-gum": "19.0.1",
         "@types/node": "25.0.6",
         "effect": "3.19.14",
-        "frida": "17.5.2",
+        "frida": "17.5.1",
         "vitest": "4.0.17"
     },
     "peerDependencies": {
