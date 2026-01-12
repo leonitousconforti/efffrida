@@ -10,7 +10,7 @@
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@efffrida/sql": "workspace:*",
-        "frida": "17.5.1"
+        "frida": "17.5.2"
     },
     "devDependencies": {
         "@effect/cluster": "0.56.1",
