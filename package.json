@@ -28,7 +28,7 @@
         "@changesets/changelog-github": "0.5.2",
         "@changesets/cli": "2.29.8",
         "@effect/build-utils": "0.8.9",
-        "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@49e99a2",
+        "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5",
         "@effect/language-service": "0.64.1",
         "@eslint/js": "9.39.2",
         "@typescript-eslint/eslint-plugin": "8.53.0",
