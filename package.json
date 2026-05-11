@@ -29,7 +29,7 @@
         "@changesets/cli": "2.29.8",
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5",
-        "@effect/language-service": "0.64.1",
+        "@effect/language-service": "0.85.1",
         "@eslint/js": "9.39.2",
         "@typescript-eslint/eslint-plugin": "8.53.0",
         "@typescript-eslint/parser": "8.53.0",
