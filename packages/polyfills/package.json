@@ -41,8 +41,8 @@
         "fast-text-encoding": "1.0.6"
     },
     "devDependencies": {
-        "@types/frida-gum": "19.0.1",
-        "@types/node": "25.0.6"
+        "@types/frida-gum": "19.1.0",
+        "@types/node": "25.7.0"
     },
     "publishConfig": {
         "access": "public",
