@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.25
+
+### Patch Changes
+
+- fe03a5c: Bumped dependencies
+
 ## 0.0.14
 
 ### Patch Changes
