@@ -130,6 +130,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
+        console.log("starting frida pool worker with options", this.customOptions);
         const tempAgentUrl = await compileTestFiles(this.agentTemplatePath, this.poolOptions)
             .pipe(Scope.extend(this.modifiedAgentScope))
             .pipe(Effect.provide(NodeContext.layer))
