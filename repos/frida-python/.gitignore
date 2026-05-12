@@ -1,0 +1,6 @@
+*.pyc
+/*.egg-info/
+/build/
+/deps/
+/dist/
+/subprojects/*
