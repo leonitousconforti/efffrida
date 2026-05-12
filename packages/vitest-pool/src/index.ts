@@ -268,7 +268,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             case "error":
                 cancelable = this.managedRuntime!.runCallback(
                     Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.scriptError)),
-                    { onExit: (exit) => (Exit.isSuccess(exit) ? callback(exit.value) : callback(exit.cause)) }
+                    { onExit: (exit) => (Exit.isSuccess(exit) ? callback(exit.value) : !Cause.isInterruptedOnly(exit.cause) ? callback(exit.cause) : {}) }
                 );
                 break;
 
