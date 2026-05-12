@@ -1,0 +1,28 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "ignorePatterns": ["**/dist", "**/build", "**/docs", "**/.tsbuildinfo", ".agents/**/*", "**/index.ts"],
+    "sortPackageJson": true,
+    "sortImports": {
+        "newlinesBetween": true,
+        "internalPattern": ["./", "~/", "@/"],
+        "groups": [
+            "type-import",
+            ["value-builtin", "value-external"],
+            "effect",
+            ["type-internal", "value-internal"],
+            ["type-parent", "type-sibling", "type-index"],
+            ["value-parent", "value-sibling", "value-index"],
+            "unknown"
+        ],
+        "customGroups": [
+            {
+                "groupName": "value-external",
+                "elementNamePattern": ["effect/unstable", "@effect/"]
+            },
+            {
+                "groupName": "effect",
+                "elementNamePattern": ["effect"]
+            }
+        ]
+    }
+}

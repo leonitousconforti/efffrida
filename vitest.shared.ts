@@ -1,9 +1,9 @@
-import * as path from "node:path";
-import viteTsconfigPaths from "vite-tsconfig-paths";
+import path from "node:path";
+import aliases from "vite-tsconfig-paths";
 import type { ViteUserConfig } from "vitest/config";
 
 const config: ViteUserConfig = {
-    plugins: [viteTsconfigPaths()],
+    plugins: [aliases()],
     esbuild: {
         target: "es2020",
     },
@@ -18,7 +18,6 @@ const config: ViteUserConfig = {
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
         coverage: {
-            all: true,
             provider: "v8",
             include: ["src/**/*.ts"],
             reporter: ["cobertura", "text"],

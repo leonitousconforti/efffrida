@@ -1,47 +1,10 @@
 {
-    "direnv.restart.automatic": true,
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "js/ts.tsdk.path": "node_modules/typescript/lib",
     "editor.defaultFormatter": "EditorConfig.EditorConfig",
     "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "oxc.oxc-vscode"
     },
-
-    "cSpell.enabled": true,
-    "cSpell.words": [
-        "Birpc",
-        "bufbuild",
-        "BUILDKIT",
-        "cancelables",
-        "checkin",
-        "codegen",
-        "Conforti",
-        "corlib",
-        "crosspath",
-        "DBSYSTEMVALUES",
-        "dedupe",
-        "devcontainers",
-        "dind",
-        "effectful",
-        "efffrida",
-        "fdfe",
-        "frida",
-        "frontmost",
-        "gplayapi",
-        "interruptible",
-        "klass",
-        "leoconforti",
-        "leonitousconforti",
-        "Millis",
-        "msgpackr",
-        "nixpkgs",
-        "pkgs",
-        "rechunk",
-        "SEMATTRS",
-        "Transferables",
-        "tupled",
-        "untupled",
-        "vitest",
-        "xxhdpi"
-    ]
+    "[nix]": {
+        "editor.defaultFormatter": "jnoortheen.nix-ide"
+    }
 }

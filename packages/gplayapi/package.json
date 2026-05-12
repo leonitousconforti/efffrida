@@ -43,8 +43,8 @@
         "properties-file": "3.6.3"
     },
     "devDependencies": {
-        "@bufbuild/buf": "1.63.0",
-        "@bufbuild/protobuf": "2.10.2",
+        "@bufbuild/buf": "1.69.0",
+        "@bufbuild/protobuf": "2.12.0",
         "@effect/cluster": "0.58.2",
         "@effect/experimental": "0.60.0",
         "@effect/platform": "0.96.1",
@@ -56,7 +56,7 @@
         "effect": "3.21.2"
     },
     "peerDependencies": {
-        "@bufbuild/protobuf": "2.10.2",
+        "@bufbuild/protobuf": "2.12.0",
         "@effect/platform": "0.96.1",
         "effect": "3.21.2"
     },
