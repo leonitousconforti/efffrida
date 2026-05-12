@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.12
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+- Updated dependencies [0aed69e]
+  - @efffrida/frida-tools@0.0.27
+  - @efffrida/polyfills@0.0.6
+
 ## 0.0.11
 
 ### Patch Changes

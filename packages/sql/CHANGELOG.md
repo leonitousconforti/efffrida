@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.19
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+
 ## 0.0.18
 
 ### Patch Changes

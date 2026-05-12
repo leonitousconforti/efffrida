@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.6
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+
 ## 0.0.5
 
 ### Patch Changes
