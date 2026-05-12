@@ -8,14 +8,13 @@
         "editor.defaultFormatter": "jnoortheen.nix-ide"
     },
 
-    "js/ts.preferences.autoImportFileExcludePatterns": ["repos/**"],
-    "files.exclude": {
-        "repos/**": true
-    },
+    "js/ts.preferences.autoImportFileExcludePatterns": [".direnv/**", "repos/**"],
     "files.watcherExclude": {
+        ".direnv/**": true,
         "repos/**": true
     },
     "search.exclude": {
+        ".direnv/**": true,
         "repos/**": true
     }
 }
