@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.9
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+
 ## 0.0.8
 
 ### Patch Changes

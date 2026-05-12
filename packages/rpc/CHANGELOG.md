@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.27
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+- Updated dependencies [0aed69e]
+  - @efffrida/frida-tools@0.0.27
+  - @efffrida/platform@0.0.19
+  - @efffrida/polyfills@0.0.6
+
 ## 0.0.26
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.26
+
+### Patch Changes
+
+- 0aed69e: Test new publishing workflow
+
 ## 0.0.25
 
 ### Patch Changes
