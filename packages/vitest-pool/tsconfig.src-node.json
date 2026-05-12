@@ -5,8 +5,7 @@
     "include": ["src"],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/src-node.tsbuildinfo",
-        // "outDir": ".tsbuildinfo/src",
-        "outDir": "dist/src",
+        "outDir": ".tsbuildinfo/src-node",
         "types": ["node"],
         "rootDir": "src"
     }

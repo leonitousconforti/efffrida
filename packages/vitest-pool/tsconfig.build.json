@@ -3,8 +3,8 @@
     "extends": "../../tsconfig.base.jsonc",
     "references": [
         { "path": "../frida-tools/tsconfig.build.json" },
-        { "path": "./tsconfig.src-frida.json" },
-        { "path": "./tsconfig.src-node.json" }
+        { "path": "./tsconfig.build-frida.json" },
+        { "path": "./tsconfig.build-node.json" }
     ],
     "include": [],
     "compilerOptions": {

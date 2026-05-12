@@ -4,8 +4,7 @@
     "include": ["src/shared"],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/src-shared.tsbuildinfo",
-        // "outDir": ".tsbuildinfo/src",
-        "outDir": "dist",
+        "outDir": ".tsbuildinfo/src",
         "types": [],
         "rootDir": "src"
     }

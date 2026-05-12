@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.src-frida.json",
+    "references": [
+        { "path": "tsconfig.build-shared.json" },
+        { "path": "../platform/tsconfig.build.json" },
+        { "path": "../polyfills/tsconfig.build.json" }
+    ],
+    "compilerOptions": {
+        "tsBuildInfoFile": ".tsbuildinfo/build-frida.tsbuildinfo",
+        "outDir": "dist",
+        "stripInternal": true
+    }
+}

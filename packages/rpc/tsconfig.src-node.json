@@ -5,8 +5,7 @@
     "references": [{ "path": "tsconfig.src-shared.json" }, { "path": "../frida-tools/tsconfig.src.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/src-node.tsbuildinfo",
-        // "outDir": ".tsbuildinfo/src",
-        "outDir": "dist",
+        "outDir": ".tsbuildinfo/src",
         "types": ["node"],
         "rootDir": "src"
     }

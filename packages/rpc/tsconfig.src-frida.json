@@ -9,8 +9,7 @@
     ],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/src-frida.tsbuildinfo",
-        // "outDir": ".tsbuildinfo/src",
-        "outDir": "dist",
+        "outDir": ".tsbuildinfo/src",
         "types": ["frida-gum"],
         "rootDir": "src"
     }
