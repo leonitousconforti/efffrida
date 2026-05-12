@@ -6,6 +6,8 @@ parent: "@efffrida/platform"
 
 ## index.ts overview
 
+Effect `Channel` utilities for Frida.
+
 Since v1.0.0
 
 ---

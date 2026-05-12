@@ -6,6 +6,8 @@ parent: Modules
 
 ## index.ts overview
 
+Frida sql client for effect-ts.
+
 Since v1.0.0
 
 ---

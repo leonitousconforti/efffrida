@@ -6,6 +6,9 @@ parent: "@efffrida/gplayapi"
 
 ## index.ts overview
 
+Unofficial Google Play Store API for downloading APKs directly from Google
+Play Store.
+
 Since v1.0.0
 
 ---

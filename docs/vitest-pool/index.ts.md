@@ -69,7 +69,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L220)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L222)
 
 ### on (method)
 
@@ -79,7 +79,7 @@ declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L235)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L237)
 
 ### off (method)
 
@@ -89,7 +89,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (_event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L285)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L287)
 
 ### deserialize (method)
 
@@ -99,7 +99,7 @@ declare const off: (_event: string, callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L293)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L295)
 
 ### serialize (method)
 
@@ -109,7 +109,7 @@ declare const deserialize: (data: unknown) => any
 declare const serialize: (data: unknown) => unknown
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L298)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L300)
 
 ### name (property)
 
@@ -139,6 +139,6 @@ readonly agentTemplatePath: URL
 declare const createFridaPool: (customOptions: Schema.Schema.Encoded<ConfigSchema>) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L307)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L309)
 
 Since v1.0.0

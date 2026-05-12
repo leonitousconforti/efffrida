@@ -6,6 +6,9 @@ parent: Modules
 
 ## index.ts overview
 
+Implements a Frida RPC client protocol for effect using the frida script
+exports.
+
 Since v1.0.0
 
 ---

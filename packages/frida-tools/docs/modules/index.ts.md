@@ -6,6 +6,8 @@ parent: Modules
 
 ## index.ts overview
 
+Frida devices
+
 Since v1.0.0
 
 ---

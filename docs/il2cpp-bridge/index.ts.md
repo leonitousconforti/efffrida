@@ -12,6 +12,8 @@ Since v1.0.0
 
 ## Exports Grouped by Category
 
+- [Assembly](#assembly)
+  - [Assembly (namespace export)](#assembly-namespace-export)
 - [Class](#class)
   - [Class (namespace export)](#class-namespace-export)
 - [Equivalence](#equivalence)
@@ -20,10 +22,24 @@ Since v1.0.0
   - [Extensions (namespace export)](#extensions-namespace-export)
 - [FridaIl2cppBridge](#fridail2cppbridge)
   - [FridaIl2cppBridge (namespace export)](#fridail2cppbridge-namespace-export)
-- [utils](#utils)
-  - [Assembly (namespace export)](#assembly-namespace-export)
 
 ---
+
+# Assembly
+
+## Assembly (namespace export)
+
+Re-exports all named exports from the "./Assembly.ts" module as `Assembly`.
+
+**Signature**
+
+```ts
+export * as Assembly from "./Assembly.ts"
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L9)
+
+Since v1.0.0
 
 # Class
 
@@ -86,21 +102,5 @@ export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L33)
-
-Since v1.0.0
-
-# utils
-
-## Assembly (namespace export)
-
-Re-exports all named exports from the "./Assembly.ts" module as `Assembly`.
-
-**Signature**
-
-```ts
-export * as Assembly from "./Assembly.ts"
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L9)
 
 Since v1.0.0
