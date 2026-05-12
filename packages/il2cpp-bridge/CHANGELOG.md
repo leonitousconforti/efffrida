@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.25
+
+### Patch Changes
+
+- 0009f3f: Bump dependencies
+
 ## 0.0.24
 
 ### Patch Changes
