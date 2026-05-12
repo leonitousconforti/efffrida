@@ -43,7 +43,8 @@
             "./shared/*": null,
             "./*/index": null
         },
-        "access": "public"
+        "access": "public",
+        "provenance": true
     },
     "scripts": {
         "codegen": "build-utils prepare-v4",
