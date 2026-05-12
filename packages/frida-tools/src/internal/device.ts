@@ -1,7 +1,6 @@
 import type * as CommandExecutor from "@effect/platform/CommandExecutor";
 import type * as ConfigError from "effect/ConfigError";
 import type * as Scope from "effect/Scope";
-import type * as FridaDevice from "../FridaDevice.ts";
 
 import * as Command from "@effect/platform/Command";
 import * as PlatformError from "@effect/platform/Error";
@@ -20,11 +19,13 @@ import * as Frida from "frida";
 import * as net from "node:net";
 import * as path from "node:path";
 
+import type * as FridaDevice from "../FridaDevice.ts";
+
 import * as FridaDeviceAcquisitionError from "../FridaDeviceAcquisitionError.ts";
 
 /** @internal */
 export const FridaDeviceTypeId: FridaDevice.FridaDeviceTypeId = Symbol.for(
-    "@efffrida/frida-tools/FridaDevice"
+    "@efffrida/frida-tools/FridaDevice",
 ) as FridaDevice.FridaDeviceTypeId;
 
 /** @internal */
@@ -48,9 +49,9 @@ export const acquireLocalDevice = (): Effect.Effect<
             },
             catch: (cause) =>
                 new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                    cause,
-                    attempts: 1,
                     acquisitionMethod: "local",
+                    attempts: 1,
+                    cause,
                 }),
         }),
         (device) =>
@@ -58,12 +59,12 @@ export const acquireLocalDevice = (): Effect.Effect<
                 device,
                 host: "local://",
                 [FridaDeviceTypeId]: FridaDeviceTypeId,
-            }) as const
+            }) as const,
     );
 
 /** @internal */
 export const acquireUsbDevice = (
-    options?: Frida.GetDeviceOptions | undefined
+    options?: Frida.GetDeviceOptions | undefined,
 ): Effect.Effect<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =>
     Effect.map(
         Effect.tryPromise({
@@ -74,9 +75,9 @@ export const acquireUsbDevice = (
             },
             catch: (cause) =>
                 new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                    cause,
-                    attempts: 1,
                     acquisitionMethod: "usb",
+                    attempts: 1,
+                    cause,
                 }),
         }),
         (device) =>
@@ -84,13 +85,13 @@ export const acquireUsbDevice = (
                 device,
                 host: "usb://",
                 [FridaDeviceTypeId]: FridaDeviceTypeId,
-            }) as const
+            }) as const,
     );
 
 /** @internal */
 export const acquireRemoteDevice = (
     address: string,
-    options?: Frida.RemoteDeviceOptions | undefined
+    options?: Frida.RemoteDeviceOptions | undefined,
 ): Effect.Effect<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, Scope.Scope> => {
     const acquire = Effect.tryPromise({
         try: (signal) => {
@@ -100,9 +101,9 @@ export const acquireRemoteDevice = (
         },
         catch: (cause) =>
             new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                cause,
-                attempts: 1,
                 acquisitionMethod: "remote",
+                attempts: 1,
+                cause,
             }),
     });
 
@@ -122,7 +123,7 @@ export const acquireRemoteDevice = (
                 device,
                 host: `remote://${address}`,
                 [FridaDeviceTypeId]: FridaDeviceTypeId,
-            }) as const
+            }) as const,
     );
 };
 
@@ -138,7 +139,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                   emulatorExecutable?: string | undefined;
                   extraEmulatorArgs?: Array<string> | undefined;
               }
-            | undefined
+            | undefined,
     ): Effect.fn.Return<
         FridaDevice.FridaDevice,
         ParseResult.ParseError | PlatformError.PlatformError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -206,64 +207,66 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
             "-port",
             firstPort.toString(),
             ...(hidden ? ["-no-window"] : []),
-            ...(options?.extraEmulatorArgs ?? [])
+            ...(options?.extraEmulatorArgs ?? []),
         ).pipe(Command.start);
 
         yield* Effect.addFinalizer(() =>
-            Command.make(adbExecutable, "-s", emulator, "emu", "kill")
-                .pipe(Command.exitCode)
-                .pipe(Effect.flatMap(filterExitOk))
-                .pipe(Effect.orDie)
+            Command.make(adbExecutable, "-s", emulator, "emu", "kill").pipe(
+                Command.exitCode,
+                Effect.flatMap(filterExitOk),
+                Effect.orDie,
+            ),
         );
 
         const isBootCompletedPredicate = Predicate.or(
             String.includes("Successfully loaded"),
-            String.includes("Boot completed")
+            String.includes("Boot completed"),
         );
 
         const decoder = new TextDecoder();
-        yield* emulatorProcess.stderr.pipe(Stream.runHead).pipe(Effect.forkScoped);
-        yield* emulatorProcess.stdout
-            .pipe(Stream.mapChunks(Chunk.map((bytes) => decoder.decode(bytes))))
-            .pipe(Stream.splitLines)
-            .pipe(Stream.takeUntil(isBootCompletedPredicate))
-            .pipe(Stream.runDrain);
+        yield* emulatorProcess.stderr.pipe(Stream.runHead, Effect.forkScoped);
+        yield* emulatorProcess.stdout.pipe(
+            Stream.mapChunks(Chunk.map((bytes) => decoder.decode(bytes))),
+            Stream.splitLines,
+            Stream.takeUntil(isBootCompletedPredicate),
+            Stream.runDrain,
+        );
 
-        yield* Command.make(adbExecutable, `-s`, emulator, "wait-for-device")
-            .pipe(Command.exitCode)
-            .pipe(Effect.flatMap(filterExitOk))
-            .pipe(
-                Effect.mapError(
-                    (code) =>
-                        new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                            attempts: 1,
-                            acquisitionMethod: "android-emulator",
-                            cause: `ADB wait-for-device failed with exit code ${code}`,
-                        })
-                )
-            );
+        yield* Command.make(adbExecutable, `-s`, emulator, "wait-for-device").pipe(
+            Command.exitCode,
+            Effect.flatMap(filterExitOk),
+            Effect.mapError(
+                (code) =>
+                    new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
+                        attempts: 1,
+                        acquisitionMethod: "android-emulator",
+                        cause: `ADB wait-for-device failed with exit code ${code}`,
+                    }),
+            ),
+        );
 
-        yield* Command.make(adbExecutable, `-s`, emulator, "root")
-            .pipe(Command.exitCode)
-            .pipe(Effect.flatMap(filterExitOk))
-            .pipe(
-                Effect.mapError(
-                    (code) =>
-                        new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                            attempts: 1,
-                            acquisitionMethod: "android-emulator",
-                            cause: `ADB root failed with exit code ${code}`,
-                        })
-                )
-            );
+        yield* Command.make(adbExecutable, `-s`, emulator, "root").pipe(
+            Command.exitCode,
+            Effect.flatMap(filterExitOk),
+            Effect.mapError(
+                (code) =>
+                    new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
+                        attempts: 1,
+                        acquisitionMethod: "android-emulator",
+                        cause: `ADB root failed with exit code ${code}`,
+                    }),
+            ),
+        );
 
-        yield* Command.make(adbExecutable, "-s", emulator, "shell", `"${fridaExecutable}"`)
-            .pipe(Command.start)
-            .pipe(Effect.andThen(Effect.sleep("3 seconds")));
+        yield* Command.make(adbExecutable, "-s", emulator, "shell", `"${fridaExecutable}"`).pipe(
+            Command.start,
+            Effect.andThen(Effect.sleep("3 seconds")),
+        );
 
-        const fridaPort = yield* Command.make(adbExecutable, "-s", emulator, "forward", "tcp:0", "tcp:27042")
-            .pipe(Command.string)
-            .pipe(Effect.flatMap(Schema.decode(Schema.NumberFromString)));
+        const fridaPort = yield* Command.make(adbExecutable, "-s", emulator, "forward", "tcp:0", "tcp:27042").pipe(
+            Command.string,
+            Effect.flatMap(Schema.decode(Schema.NumberFromString)),
+        );
 
         const { host: _host, ...remoteDevice } = yield* acquireRemoteDevice(`localhost:${fridaPort}`);
 
@@ -276,20 +279,20 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
         duration: "1 minute",
         onTimeout: () =>
             new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                attempts: 1,
-                acquisitionMethod: "android-emulator",
                 cause: "Timeout while acquiring Android emulator device",
+                acquisitionMethod: "android-emulator",
+                attempts: 1,
             }),
     }),
     Effect.catchIf(
         Predicate.or(PlatformError.isPlatformError, ParseResult.isParseError),
         (cause) =>
             new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                cause,
-                attempts: 1,
                 acquisitionMethod: "android-emulator",
-            })
-    )
+                attempts: 1,
+                cause,
+            }),
+    ),
 );
 
 /** @internal */
@@ -301,7 +304,7 @@ export const acquireAndroidEmulatorDeviceConfig = (
               fridaExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined
+        | undefined,
 ) =>
     Config.string("ANDROID_SDK").pipe(
         Config.map((androidSdk) => ({
@@ -317,8 +320,8 @@ export const acquireAndroidEmulatorDeviceConfig = (
             acquireAndroidEmulatorDevice(name, {
                 ...androidSdk,
                 ...options,
-            })
-        )
+            }),
+        ),
     );
 
 /** @internal */
@@ -331,13 +334,13 @@ export const layerLocalDevice: Layer.Layer<
 /** @internal */
 export const layerRemoteDevice = (
     address: string,
-    options?: Frida.RemoteDeviceOptions | undefined
+    options?: Frida.RemoteDeviceOptions | undefined,
 ): Layer.Layer<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =>
     Layer.scoped(Tag, acquireRemoteDevice(address, options));
 
 /** @internal */
 export const layerUsbDevice = (
-    options?: Frida.GetDeviceOptions | undefined
+    options?: Frida.GetDeviceOptions | undefined,
 ): Layer.Layer<FridaDevice.FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =>
     Layer.effect(Tag, acquireUsbDevice(options));
 
@@ -352,7 +355,7 @@ export const layerAndroidEmulatorDevice = (
               emulatorExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined
+        | undefined,
 ): Layer.Layer<
     FridaDevice.FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -368,7 +371,7 @@ export const layerAndroidEmulatorDeviceConfig = (
               fridaExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined
+        | undefined,
 ): Layer.Layer<
     FridaDevice.FridaDevice,
     ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,

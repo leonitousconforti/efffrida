@@ -1,5 +1,4 @@
 import type * as Scope from "effect/Scope";
-import type * as FridaScript from "../FridaScript.ts";
 
 import * as FileSystem from "@effect/platform/FileSystem";
 import * as Path from "@effect/platform/Path";
@@ -19,12 +18,14 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as Frida from "frida";
 
+import type * as FridaScript from "../FridaScript.ts";
+
 import * as FridaSession from "../FridaSession.ts";
 import * as FridaSessionError from "../FridaSessionError.ts";
 
 /** @internal */
 export const FridaScriptTypeId: FridaScript.FridaScriptTypeId = Symbol.for(
-    "@efffrida/frida-tools/FridaScript"
+    "@efffrida/frida-tools/FridaScript",
 ) as FridaScript.FridaScriptTypeId;
 
 /** @internal */
@@ -36,11 +37,11 @@ export const isFridaScript = (u: unknown): u is FridaScript.FridaScript => Predi
 /** @internal */
 export const compile = Function.dual<
     (
-        options?: Frida.CompilerOptions | undefined
+        options?: Frida.CompilerOptions | undefined,
     ) => (path: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>,
     (
         path: string,
-        options?: Frida.CompilerOptions | undefined
+        options?: Frida.CompilerOptions | undefined,
     ) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
 >(
     (arguments_) => Predicate.isString(arguments_[0]),
@@ -95,7 +96,7 @@ export const compile = Function.dual<
                                     cause = Cause.parallel(cause, Cause.fail(formatDiagnostic(diag)));
                                 }
                                 return cause;
-                            })
+                            }),
                         );
                     }
                 };
@@ -116,7 +117,7 @@ export const compile = Function.dual<
                             bundleFormat: options?.bundleFormat ?? Frida.BundleFormat.Esm,
                             outputFormat: options?.outputFormat ?? Frida.OutputFormat.Unescaped,
                         },
-                        cancellable
+                        cancellable,
                     )
                     .catch((error) =>
                         resume(
@@ -124,22 +125,22 @@ export const compile = Function.dual<
                                 new FridaSessionError.FridaSessionError({
                                     cause: error,
                                     when: "compile",
-                                })
-                            )
-                        )
+                                }),
+                            ),
+                        ),
                     );
 
                 return Effect.sync(() => cancellable.cancel());
-            })
-        )
+            }),
+        ),
 );
 
 /** @internal */
 export const load = Function.dual<
     (
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => (
-        entrypoint: URL
+        entrypoint: URL,
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
@@ -147,7 +148,7 @@ export const load = Function.dual<
     >,
     (
         entrypoint: URL,
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
@@ -160,50 +161,42 @@ export const load = Function.dual<
             const path = yield* Path.Path;
             const { session } = yield* FridaSession.FridaSession;
 
-            const projectRoot = yield* path
-                .fromFileUrl(entrypoint)
-                .pipe(
-                    Effect.mapError(
-                        (cause) =>
-                            new FridaSessionError.FridaSessionError({
-                                when: "compile",
-                                cause,
-                            })
-                    )
-                )
-                .pipe(Effect.map((p) => path.dirname(p)));
+            const projectRoot = yield* path.fromFileUrl(entrypoint).pipe(
+                Effect.mapError(
+                    (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "compile",
+                            cause,
+                        }),
+                ),
+                Effect.map((p) => path.dirname(p)),
+            );
 
-            const source = yield* path
-                .fromFileUrl(entrypoint)
-                .pipe(
-                    Effect.flatMap(
-                        compile({
-                            ...options,
-                            projectRoot: options?.projectRoot ?? projectRoot,
-                        })
-                    )
-                )
-                .pipe(Effect.scoped)
-                .pipe(
-                    Effect.timeoutFail({
-                        duration: "1 minute",
-                        onTimeout: () =>
-                            new FridaSessionError.FridaSessionError({
-                                when: "compile",
-                                cause: "TypeScript compilation timed out",
-                            }),
-                    })
-                )
-                .pipe(
-                    Effect.catchTag(
-                        "BadArgument",
-                        (platformCause) =>
-                            new FridaSessionError.FridaSessionError({
-                                when: "compile",
-                                cause: platformCause,
-                            })
-                    )
-                );
+            const source = yield* path.fromFileUrl(entrypoint).pipe(
+                Effect.flatMap(
+                    compile({
+                        ...options,
+                        projectRoot: options?.projectRoot ?? projectRoot,
+                    }),
+                ),
+                Effect.scoped,
+                Effect.timeoutFail({
+                    duration: "1 minute",
+                    onTimeout: () =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "compile",
+                            cause: "TypeScript compilation timed out",
+                        }),
+                }),
+                Effect.catchTag(
+                    "BadArgument",
+                    (platformCause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "compile",
+                            cause: platformCause,
+                        }),
+                ),
+            );
 
             const script = yield* Effect.tryPromise({
                 try: (signal) => {
@@ -215,7 +208,7 @@ export const load = Function.dual<
                             runtime: Frida.ScriptRuntime.V8,
                             ...options,
                         },
-                        cancellable
+                        cancellable,
                     );
                 },
                 catch: (cause) =>
@@ -238,10 +231,10 @@ export const load = Function.dual<
                 mailbox.unsafeDone(
                     Exit.fail(
                         new FridaSessionError.FridaSessionError({
-                            when: "message",
                             cause: "Script destroyed",
-                        })
-                    )
+                            when: "message",
+                        }),
+                    ),
                 );
             };
             yield* Effect.addFinalizer(() => Effect.sync(() => script.destroyed.disconnect(destroyedHandler)));
@@ -260,8 +253,8 @@ export const load = Function.dual<
                                 new FridaSessionError.FridaSessionError({
                                     when: "message",
                                     cause,
-                                })
-                            )
+                                }),
+                            ),
                         );
                         break;
                     }
@@ -288,7 +281,7 @@ export const load = Function.dual<
                     onTrue: () =>
                         Effect.flatMap(
                             Deferred.await(scriptError),
-                            (cause) => new FridaSessionError.FridaSessionError({ cause, when })
+                            (cause) => new FridaSessionError.FridaSessionError({ cause, when }),
                         ),
                 });
 
@@ -303,7 +296,7 @@ export const load = Function.dual<
                 options?.streamShareOptions ?? {
                     replay: 100,
                     capacity: "unbounded",
-                }
+                },
             );
 
             const sink = Sink.forEach<
@@ -316,7 +309,7 @@ export const load = Function.dual<
                     yield* failIfDestroyed("message");
                     yield* failIfScriptError("message");
                     script.post(message, Option.getOrNull(data));
-                })
+                }),
             );
 
             const callExport = <A, I, R>(exportName: string, schema: Schema.Schema<A, I, R>) =>
@@ -356,35 +349,35 @@ export const load = Function.dual<
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
                 return script.unload(cancellable);
-            })
-        )
-    )
+            }),
+        ),
+    ),
 );
 
 /** @internal */
 export const layer = Function.dual<
     (
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => (
-        entrypoint: URL
+        entrypoint: URL,
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>,
     (
         entrypoint: URL,
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
     (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) =>
-        Layer.scoped(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer))
+        Layer.scoped(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer)),
 );
 
 /** @internal */
 export const watch = Function.dual<
     (
         entrypoint: URL,
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => <A, E, R>(
-        effect: Effect.Effect<A, E, R>
+        effect: Effect.Effect<A, E, R>,
     ) => Stream.Stream<
         Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
@@ -393,7 +386,7 @@ export const watch = Function.dual<
     <A, E, R>(
         effect: Effect.Effect<A, E, R>,
         entrypoint: URL,
-        options?: FridaScript.LoadOptions | undefined
+        options?: FridaScript.LoadOptions | undefined,
     ) => Stream.Stream<
         Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
@@ -405,7 +398,7 @@ export const watch = Function.dual<
         function* <A, E, R>(
             effect: Effect.Effect<A, E, R>,
             entrypoint: URL,
-            options?: FridaScript.LoadOptions | undefined
+            options?: FridaScript.LoadOptions | undefined,
         ): Effect.fn.Return<
             Stream.Stream<
                 Exit.Exit<A, E>,
@@ -424,7 +417,7 @@ export const watch = Function.dual<
                     new FridaSessionError.FridaSessionError({
                         when: "watch",
                         cause,
-                    })
+                    }),
             );
 
             return fileSystem.watch(pathString).pipe(
@@ -436,7 +429,7 @@ export const watch = Function.dual<
                         new FridaSessionError.FridaSessionError({
                             when: "watch",
                             cause,
-                        })
+                        }),
                 ),
                 Stream.tap((event) => Effect.logDebug(`reloading ${event.path}`)),
                 Stream.mapEffect(() =>
@@ -444,20 +437,20 @@ export const watch = Function.dual<
                         Effect.exit,
                         Effect.provideServiceEffect(Tag, load(entrypoint, options)),
                         Effect.interruptible,
-                        Effect.scoped
-                    )
+                        Effect.scoped,
+                    ),
                 ),
-                Stream.tap((_exit) => Effect.logDebug(`script reloaded`))
+                Stream.tap((_exit) => Effect.logDebug(`script reloaded`)),
             );
         },
         Stream.unwrap,
-        Stream.provideSomeLayer(Path.layer)
-    )
+        Stream.provideSomeLayer(Path.layer),
+    ),
 );
 
 /** @internal */
 export const logWatchErrors = <A, E1, E2, R>(
-    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>
+    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>,
 ): Stream.Stream<Exit.Exit<A, E1>, E2, R> =>
     Stream.tap(watchStream, (exit) => {
         // Success

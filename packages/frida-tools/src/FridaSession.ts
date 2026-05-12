@@ -10,6 +10,7 @@ import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Scope from "effect/Scope";
 import type * as Frida from "frida";
+
 import type * as FridaDevice from "./FridaDevice.ts";
 import type * as FridaSessionError from "./FridaSessionError.ts";
 
@@ -40,7 +41,7 @@ export interface FridaSession {
     setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>;
     joinPortal(
         address: string,
-        options?: Frida.PortalOptions | undefined
+        options?: Frida.PortalOptions | undefined,
     ): Effect.Effect<Frida.PortalMembership, Cause.UnknownException>;
 }
 
@@ -61,7 +62,7 @@ export const isFridaSession: (u: unknown) => u is FridaSession = internal.isFrid
  * @category Frida
  */
 export const frontmost: (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
 ) => Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =
     internal.frontmost;
 
@@ -71,7 +72,7 @@ export const frontmost: (
  */
 export const spawn: (
     program: string | ReadonlyArray<string>,
-    options?: Frida.SpawnOptions | undefined
+    options?: Frida.SpawnOptions | undefined,
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> = internal.spawn;
 
 /**
@@ -80,7 +81,7 @@ export const spawn: (
  */
 export const attach: (
     target: Frida.TargetProcess,
-    options?: Frida.SessionOptions | undefined
+    options?: Frida.SessionOptions | undefined,
 ) => Effect.Effect<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> =
     internal.attach;
 
@@ -90,7 +91,7 @@ export const attach: (
  */
 export const layer: (
     target: number | string | ReadonlyArray<string>,
-    options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
+    options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined,
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layer;
 
 /**
@@ -98,5 +99,5 @@ export const layer: (
  * @category Layers
  */
 export const layerFrontmost: (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layerFrontmost;

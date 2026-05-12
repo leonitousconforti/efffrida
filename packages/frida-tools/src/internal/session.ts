@@ -1,5 +1,4 @@
 import type * as Scope from "effect/Scope";
-import type * as FridaSession from "../FridaSession.ts";
 
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -8,12 +7,14 @@ import * as Match from "effect/Match";
 import * as Predicate from "effect/Predicate";
 import * as Frida from "frida";
 
+import type * as FridaSession from "../FridaSession.ts";
+
 import * as FridaDevice from "../FridaDevice.ts";
 import * as FridaSessionError from "../FridaSessionError.ts";
 
 /** @internal */
 export const FridaSessionTypeId: FridaSession.FridaSessionTypeId = Symbol.for(
-    "@efffrida/frida-tools/FridaSession"
+    "@efffrida/frida-tools/FridaSession",
 ) as FridaSession.FridaSessionTypeId;
 
 /** @internal */
@@ -25,22 +26,29 @@ export const isFridaSession = (u: unknown): u is FridaSession.FridaSession =>
 
 /** @internal */
 export const frontmost = (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
 ): Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
     Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise((signal) => {
             const cancellable = new Frida.Cancellable();
             signal.onabort = () => cancellable.cancel();
             return device.getFrontmostApplication(options, cancellable);
-        })
-    )
-        .pipe(Effect.flatMap(Effect.fromNullable))
-        .pipe(Effect.mapError((cause) => new FridaSessionError.FridaSessionError({ cause, when: "attach" })));
+        }),
+    ).pipe(
+        Effect.flatMap(Effect.fromNullable),
+        Effect.mapError(
+            (cause) =>
+                new FridaSessionError.FridaSessionError({
+                    when: "attach",
+                    cause,
+                }),
+        ),
+    );
 
 /** @internal */
 export const spawn = (
     program: string | ReadonlyArray<string>,
-    options?: Frida.SpawnOptions | undefined
+    options?: Frida.SpawnOptions | undefined,
 ): Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> => {
     const spawnEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
@@ -51,10 +59,10 @@ export const spawn = (
             },
             catch: (cause) =>
                 new FridaSessionError.FridaSessionError({
-                    cause,
                     when: "spawn",
+                    cause,
                 }),
-        })
+        }),
     );
 
     const resumeEffect = (pid: number) =>
@@ -67,10 +75,10 @@ export const spawn = (
                 },
                 catch: (cause) =>
                     new FridaSessionError.FridaSessionError({
-                        cause,
                         when: "resume",
+                        cause,
                     }),
-            })
+            }),
         );
 
     const release = (pid: number) =>
@@ -79,7 +87,7 @@ export const spawn = (
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
                 return device.kill(pid, cancellable);
-            })
+            }),
         );
 
     const acquire = Effect.tap(spawnEffect, resumeEffect);
@@ -90,7 +98,7 @@ export const spawn = (
 /** @internal */
 export const attach = (
     target: Frida.TargetProcess,
-    options?: Frida.SessionOptions | undefined
+    options?: Frida.SessionOptions | undefined,
 ): Effect.Effect<
     FridaSession.FridaSession,
     FridaSessionError.FridaSessionError,
@@ -105,10 +113,10 @@ export const attach = (
             },
             catch: (cause) =>
                 new FridaSessionError.FridaSessionError({
-                    cause,
                     when: "attach",
+                    cause,
                 }),
-        })
+        }),
     );
 
     const release = (session: Frida.Session) =>
@@ -152,31 +160,31 @@ export const attach = (
                         return session.joinPortal(address, opts, cancellable);
                     }),
                 [FridaSessionTypeId]: FridaSessionTypeId,
-            }) as const
+            }) as const,
     );
 };
 
 /** @internal */
 export const layer = (
     target: number | string | ReadonlyArray<string>,
-    options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
+    options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined,
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
     Layer.scoped(
         Tag,
         Effect.gen(function* () {
             const pid = yield* Match.value(target).pipe(
-                Match.when(Match.number, (pid) => Effect.succeed(pid)),
+                Match.when(Match.number, (proc) => Effect.succeed(proc)),
                 Match.when(Match.string, (proc) => spawn(proc)),
-                Match.orElse((proc) => spawn(proc))
+                Match.orElse((proc) => spawn(proc)),
             );
 
             const session = yield* attach(pid, options);
             return session;
-        })
+        }),
     );
 
 /** @internal */
 export const layerFrontmost = (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
     Layer.unwrapEffect(Effect.map(frontmost(options), (app) => layer(app.pid)));

@@ -12,7 +12,7 @@ import * as Predicate from "effect/Predicate";
  * @category Errors
  */
 export const FridaDeviceAcquisitionErrorTypeId: unique symbol = Symbol.for(
-    "@efffrida/FridaError/FridaDeviceAcquisitionError"
+    "@efffrida/FridaError/FridaDeviceAcquisitionError",
 ) as FridaDeviceAcquisitionErrorTypeId;
 
 /**
@@ -34,7 +34,7 @@ export const isFridaDeviceAcquisitionError = (u: unknown): u is FridaDeviceAcqui
  */
 export class FridaDeviceAcquisitionError extends PlatformError.TypeIdError(
     FridaDeviceAcquisitionErrorTypeId,
-    "FridaDeviceAcquisitionError"
+    "FridaDeviceAcquisitionError",
 )<{
     cause: unknown;
     attempts: number;

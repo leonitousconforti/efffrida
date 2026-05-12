@@ -12,7 +12,7 @@ import * as Predicate from "effect/Predicate";
  * @category Errors
  */
 export const FridaSessionErrorTypeId: unique symbol = Symbol.for(
-    "@efffrida/FridaError/FridaSessionError"
+    "@efffrida/FridaError/FridaSessionError",
 ) as FridaSessionErrorTypeId;
 
 /**
