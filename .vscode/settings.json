@@ -8,7 +8,9 @@
         "editor.defaultFormatter": "jnoortheen.nix-ide"
     },
 
+    "vitest.runtime": "node",
     "js/ts.preferences.autoImportFileExcludePatterns": [".direnv/**", "repos/**"],
+    "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/repos/**,**/.*/**,**/*.d.ts}",
     "files.watcherExclude": {
         ".direnv/**": true,
         "repos/**": true
