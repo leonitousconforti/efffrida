@@ -15,6 +15,6 @@ export const SessionLive =
                   const proc = yield* executor.start(command);
                   return FridaSession.layer(proc.pid);
               }),
-          );
+          ).pipe(Layer.provide(NodeContext.layer));
 
-export const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeContext.layer));
+export const FridaLive = Layer.fresh(SessionLive).pipe(Layer.provide(DeviceLive));
