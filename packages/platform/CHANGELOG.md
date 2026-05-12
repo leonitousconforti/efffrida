@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.18
+
+### Patch Changes
+
+- 0009f3f: Bump dependencies
+
 ## 0.0.17
 
 ### Patch Changes
