@@ -130,7 +130,6 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
-        console.log("starting frida pool worker with options", this.customOptions);
         const tempAgentUrl = await compileTestFiles(this.agentTemplatePath, this.poolOptions)
             .pipe(Scope.extend(this.modifiedAgentScope))
             .pipe(Effect.provide(NodeContext.layer))
@@ -228,7 +227,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
 
         this.sends.push(sendPromise);
+        console.log(`Sent message to agent: ${JSON.stringify(message)}`);
         const exit = await sendPromise;
+        console.log(`Received response from agent for message ${JSON.stringify(message)}: ${Exit.isSuccess(exit) ? "success" : "failure"}`);
         this.sends = this.sends.filter((p) => p !== sendPromise);
         if (Exit.isSuccess(exit)) return;
         const prettyError = Cause.prettyErrors(exit.cause);
