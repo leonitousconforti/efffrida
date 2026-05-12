@@ -1,10 +1,13 @@
-import { mergeConfig, type ViteUserConfig } from "vitest/config";
-import shared from "../../vitest.shared.ts";
-
 import { createFridaPool } from "@efffrida/vitest-pool";
+import { mergeConfig, type ViteUserConfig } from "vitest/config";
+
+import shared from "../../vitest.shared.ts";
 
 const config: ViteUserConfig = {
     test: {
+        sequence: {
+            groupOrder: 2,
+        },
         pool: process.env.CI
             ? createFridaPool({
                   device: "local",

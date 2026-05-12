@@ -1,16 +1,14 @@
 import * as Frida from "frida";
 import { mergeConfig, type ViteUserConfig } from "vitest/config";
-import shared from "../../vitest.shared.ts";
 
+import shared from "../../vitest.shared.ts";
 import { createFridaPool } from "./src/index.ts";
 
 const config: ViteUserConfig = {
     test: {
-        // maxWorkers: 1,
-        // fileParallelism: false,
-        // sequence: {
-        //     concurrent: false,
-        // },
+        sequence: {
+            groupOrder: 1,
+        },
         pool: process.env.CI
             ? createFridaPool({
                   device: "local",
