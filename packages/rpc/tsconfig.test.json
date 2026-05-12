@@ -8,7 +8,6 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
-        "baseUrl": ".",
         "paths": {
             "@efffrida/rpc/*": ["./src/*/index.ts", "./src/*.ts"]
         },

@@ -12,7 +12,6 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
-        "baseUrl": ".",
         "types": ["frida-gum", "node"],
         "paths": {
             "@efffrida/sql": ["./src/index.ts"],

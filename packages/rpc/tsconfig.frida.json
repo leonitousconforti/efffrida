@@ -6,7 +6,6 @@
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
         "outDir": ".tsbuildinfo/frida",
-        "baseUrl": ".",
         "paths": {
             "@efffrida/rpc/*": ["./src/*/index.ts", "./src/*.ts"]
         },

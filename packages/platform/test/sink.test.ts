@@ -1,5 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Effect, Stream } from "effect";
+import { Data, Effect, Stream } from "effect";
+
+class WriteError extends Data.TaggedError("WriteError")<{ message: string }> {}
 
 import * as FridaSink from "@efffrida/platform/Sink";
 
@@ -29,7 +31,7 @@ describe("sink tests", () => {
 
             const sink = FridaSink.fromOutputStream(
                 () => mockOutputStream,
-                (e) => new Error(`Write error: ${e}`),
+                (e) => new WriteError({ message: `Write error: ${e}` }),
                 { endOnDone: true }
             );
 
@@ -65,7 +67,7 @@ describe("sink tests", () => {
 
             const sink = FridaSink.fromOutputStream(
                 () => mockOutputStream,
-                (e) => new Error(`Write error: ${e}`),
+                (e) => new WriteError({ message: `Write error: ${e}` }),
                 { endOnDone: true }
             );
 
@@ -102,7 +104,7 @@ describe("sink tests", () => {
 
             const sink = FridaSink.fromOutputStream(
                 () => mockOutputStream,
-                (e) => new Error(`Write error: ${e}`),
+                (e) => new WriteError({ message: `Write error: ${e}` }),
                 { endOnDone: true }
             );
 

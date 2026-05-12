@@ -1,5 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Chunk, Effect, Stream } from "effect";
+import { Chunk, Data, Effect, Stream } from "effect";
+
+class ReadError extends Data.TaggedError("ReadError")<{ message: string }> {}
 
 import * as FridaStream from "@efffrida/platform/Stream";
 
@@ -12,7 +14,7 @@ describe("stream tests", () => {
 
             const reconstructedStream = FridaStream.fromInputStream(
                 () => inputStream,
-                (e) => new Error(`Read error: ${e}`),
+                (e) => new ReadError({ message: `Read error: ${e}` }),
                 { chunkSize: 1 }
             );
 

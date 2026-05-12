@@ -76,8 +76,7 @@ class ConfigSchema extends Schema.Struct({
     runtime: Schema.optionalWith(Schema.Literal("default", "qjs", "v8"), { nullable: true }),
     platform: Schema.optionalWith(Schema.Literal("gum", "browser", "neutral"), { nullable: true }),
 })
-    .pipe(Schema.extend(DeviceSchema))
-    .pipe(Schema.extend(AttachSchema)) {}
+    .pipe(Schema.extend(DeviceSchema), Schema.extend(AttachSchema)) {}
 
 /**
  * @since 1.0.0
@@ -130,10 +129,11 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
-        const tempAgentUrl = await compileTestFiles(this.agentTemplatePath, this.poolOptions)
-            .pipe(Scope.extend(this.modifiedAgentScope))
-            .pipe(Effect.provide(NodeContext.layer))
-            .pipe(Effect.runPromise);
+        const tempAgentUrl = await compileTestFiles(this.agentTemplatePath, this.poolOptions).pipe(
+            Scope.extend(this.modifiedAgentScope),
+            Effect.provide(NodeContext.layer),
+            Effect.runPromise
+        );
 
         const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
@@ -465,7 +465,7 @@ const compileTestFiles = Effect.fnUntraced(function* (
     const fs = yield* FileSystem.FileSystem;
     const url = yield* path.fromFileUrl(agentTemplatePath);
 
-    const testFiles = poolOptions.project.testFilesList ?? [];
+    const testFiles: Array<string> = (poolOptions.project as any).testFilesList ?? [];
     const testFilesMap: Record<string, string> = {};
 
     const esbuildPlatform = Match.value(customOptions?.platform).pipe(

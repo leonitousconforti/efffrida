@@ -8,7 +8,6 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
-        "baseUrl": ".",
         "types": ["node"],
         "paths": {
             "@efffrida/frida-tools": ["./src/index.ts"],

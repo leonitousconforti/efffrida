@@ -10,8 +10,7 @@ const TestLayer = Effect.gen(function* () {
     yield* Effect.addFinalizer(() => Effect.sync(() => unlinkSync(tempDb)));
     return FridaSqlClient.layer({ filename: tempDb });
 })
-    .pipe(Layer.unwrapScoped)
-    .pipe(Layer.fresh);
+    .pipe(Layer.unwrapScoped, Layer.fresh);
 
 describe("sql tests", () => {
     layer(TestLayer)((it) => {

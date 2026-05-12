@@ -13,7 +13,6 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
-        "baseUrl": ".",
         "types": ["frida-gum"],
         "paths": {
             "@efffrida/il2cpp-bridge": ["./src/index.ts"],

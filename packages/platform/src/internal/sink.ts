@@ -31,20 +31,17 @@ export const fromOutputStream = <E>(
 
         const close = options?.endOnDone ? Effect.promise(() => writable.close()) : Effect.void;
 
-        return Channel.fromEffect(deferred)
-            .pipe(Channel.mapOut(Chunk.empty))
-            .pipe(Channel.mapError(onError))
-            .pipe(
-                Channel.embedInput({
-                    emit: write,
-                    awaitRead: () => Effect.void,
-                    error: (cause) => Effect.zipRight(close, Deferred.failCause(deferred, cause)),
-                    done: (_) => Effect.zipRight(close, Deferred.complete(deferred, Effect.void)),
-                } as SingleProducerAsyncInput.AsyncInputProducer<E, Chunk.Chunk<Uint8Array>, unknown>)
-            );
-    })
-        .pipe(Channel.unwrap)
-        .pipe(Sink.fromChannel);
+        return Channel.fromEffect(deferred).pipe(
+            Channel.mapOut(Chunk.empty),
+            Channel.mapError(onError),
+            Channel.embedInput({
+                emit: write,
+                awaitRead: () => Effect.void,
+                error: (cause) => Effect.zipRight(close, Deferred.failCause(deferred, cause)),
+                done: (_) => Effect.zipRight(close, Deferred.complete(deferred, Effect.void)),
+            } as SingleProducerAsyncInput.AsyncInputProducer<E, Chunk.Chunk<Uint8Array>, unknown>)
+        );
+    }).pipe(Channel.unwrap, Sink.fromChannel);
 
 /** @internal */
 export const makeUnixOutputStream = <E>(
