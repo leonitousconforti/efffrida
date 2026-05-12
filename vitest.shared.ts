@@ -1,12 +1,10 @@
 import type { ViteUserConfig } from "vitest/config";
 
 import path from "node:path";
-import aliases from "vite-tsconfig-paths";
 
 const config: ViteUserConfig = {
-    plugins: [aliases()],
-    esbuild: {
-        target: "es2020",
+    resolve: {
+        tsconfigPaths: true,
     },
     test: {
         setupFiles: [path.join(__dirname, "vitest.setup.ts")],

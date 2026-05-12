@@ -50,8 +50,8 @@
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
         "@efffrida/polyfills": "workspace:*",
-        "@vitest/runner": "4.0.17",
-        "@vitest/utils": "4.0.17",
+        "@vitest/runner": "4.1.6",
+        "@vitest/utils": "4.1.6",
         "birpc": "4.0.0",
         "esbuild": "0.28.0",
         "flatted": "3.4.2"
@@ -68,14 +68,14 @@
         "@types/node": "25.7.0",
         "effect": "3.21.2",
         "frida": "17.9.8",
-        "vitest": "4.0.17"
+        "vitest": "4.1.6"
     },
     "peerDependencies": {
         "@effect/platform": "0.96.1",
-        "@vitest/runner": "4.0.17",
-        "@vitest/utils": "4.0.17",
+        "@vitest/runner": "4.1.6",
+        "@vitest/utils": "4.1.6",
         "effect": "3.21.2",
-        "vitest": "4.0.17"
+        "vitest": "4.1.6"
     },
     "tags": [
         "frida.re",

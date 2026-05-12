@@ -55,7 +55,7 @@
         "@types/node": "25.7.0",
         "effect": "3.21.2",
         "frida": "17.9.8",
-        "vitest": "4.0.17"
+        "vitest": "4.1.6"
     },
     "peerDependencies": {
         "@effect/platform": "0.96.1",
