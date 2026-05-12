@@ -1,5 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
+
 import { Effect } from "effect";
+
 import { A } from "./shared.ts";
 
 describe("vitest-pool effect", () => {

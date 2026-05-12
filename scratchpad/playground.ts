@@ -2,6 +2,7 @@ import { Command } from "@effect/platform";
 import { NodeContext, NodeRuntime } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { GooglePlayApi } from "@efffrida/gplayapi";
+
 import { Cause, Context, Effect, Layer, Logger, LogLevel, pipe, Stream, String, Tuple } from "effect";
 
 const DeviceLive = pipe(

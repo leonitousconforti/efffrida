@@ -4,7 +4,6 @@
  */
 
 import "frida-il2cpp-bridge";
-
 import * as Effect from "effect/Effect";
 import * as Runtime from "effect/Runtime";
 

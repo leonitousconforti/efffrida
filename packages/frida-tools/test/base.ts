@@ -14,7 +14,7 @@ export const SessionLive =
                   const command = Command.make("sleep", "infinity");
                   const proc = yield* executor.start(command);
                   return FridaSession.layer(proc.pid);
-              }),
+              })
           ).pipe(Layer.provide(NodeContext.layer));
 
 export const FridaLive = Layer.fresh(SessionLive).pipe(Layer.provide(DeviceLive));

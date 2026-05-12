@@ -60,7 +60,7 @@ export interface FridaScript {
     >;
     readonly callExport: <A, I, R>(
         exportName: string,
-        schema: Schema.Schema<A, I, R>,
+        schema: Schema.Schema<A, I, R>
     ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | ParseResult.ParseError, R>;
 }
 
@@ -110,10 +110,10 @@ export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions 
 export const compile: {
     (
         entrypoint: string,
-        options?: Frida.CompilerOptions | undefined,
+        options?: Frida.CompilerOptions | undefined
     ): Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
     (
-        options?: Frida.CompilerOptions | undefined,
+        options?: Frida.CompilerOptions | undefined
     ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
 } = internal.compile;
 
@@ -124,16 +124,16 @@ export const compile: {
 export const load: {
     (
         entrypoint: URL,
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): Effect.Effect<
         FridaScript,
         FridaSessionError.FridaSessionError,
         Path.Path | FridaSession.FridaSession | Scope.Scope
     >;
     (
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): (
-        entrypoint: URL,
+        entrypoint: URL
     ) => Effect.Effect<
         FridaScript,
         FridaSessionError.FridaSessionError,
@@ -148,10 +148,10 @@ export const load: {
 export const layer: {
     (
         entrypoint: URL,
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>;
     (
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): (entrypoint: URL) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>;
 } = internal.layer;
 
@@ -163,7 +163,7 @@ export const watch: {
     <A, E, R>(
         effect: Effect.Effect<A, E, R>,
         entrypoint: URL,
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): Stream.Stream<
         Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
@@ -171,9 +171,9 @@ export const watch: {
     >;
     (
         entrypoint: URL,
-        options?: LoadOptions | undefined,
+        options?: LoadOptions | undefined
     ): <A, E, R>(
-        effect: Effect.Effect<A, E, R>,
+        effect: Effect.Effect<A, E, R>
     ) => Stream.Stream<
         Exit.Exit<A, E>,
         FridaSessionError.FridaSessionError,
@@ -189,5 +189,5 @@ export const watch: {
  * @category Frida
  */
 export const logWatchErrors: <A, E1, E2, R>(
-    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>,
+    watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>
 ) => Stream.Stream<Exit.Exit<A, E1>, E2, R> = internal.logWatchErrors;

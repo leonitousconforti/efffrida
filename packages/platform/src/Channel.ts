@@ -6,6 +6,7 @@
 
 import type * as Channel from "effect/Channel";
 import type * as Chunk from "effect/Chunk";
+
 import type * as FridaSink from "./Sink.ts";
 import type * as FridaStream from "./Stream.ts";
 

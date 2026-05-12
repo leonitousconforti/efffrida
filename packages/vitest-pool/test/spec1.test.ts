@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { A } from "./shared.ts";
 
 describe("vitest-pool spec1", () => {

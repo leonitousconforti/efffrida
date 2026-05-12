@@ -1,12 +1,13 @@
 import type * as Function from "effect/Function";
 import type * as SingleProducerAsyncInput from "effect/SingleProducerAsyncInput";
-import type { FromWritableOptions } from "../Sink.ts";
 
 import * as Channel from "effect/Channel";
 import * as Chunk from "effect/Chunk";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Sink from "effect/Sink";
+
+import type { FromWritableOptions } from "../Sink.ts";
 
 /** @internal */
 export const sendSink = (): Sink.Sink<void, string, never, never, never> =>

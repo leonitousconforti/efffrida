@@ -9,12 +9,13 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
 
+import type { Device } from "./device.ts";
+
 import {
     AndroidCheckinRequestSchema,
     AndroidCheckinResponseSchema,
     UploadDeviceConfigRequestSchema,
 } from "../generated/GooglePlay_pb.ts";
-import { type Device } from "./device.ts";
 import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.ts";
 
 /** @internal */

@@ -4,7 +4,6 @@
  */
 
 import "frida-il2cpp-bridge";
-
 import { Array, Option, Record, pipe } from "effect";
 
 /**

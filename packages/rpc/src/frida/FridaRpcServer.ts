@@ -6,7 +6,6 @@
  */
 
 import "@efffrida/polyfills";
-
 import * as RpcMessage from "@effect/rpc/RpcMessage";
 import * as RpcSerialization from "@effect/rpc/RpcSerialization";
 import * as RpcServer from "@effect/rpc/RpcServer";

@@ -1,16 +1,15 @@
-import { assert, describe, layer } from "@effect/vitest";
-
 import { SqlClient } from "@effect/sql";
+import { assert, describe, layer } from "@effect/vitest";
 import { FridaSqlClient } from "@efffrida/sql";
-import { Effect, Layer } from "effect";
 import { unlinkSync } from "node:fs";
+
+import { Effect, Layer } from "effect";
 
 const TestLayer = Effect.gen(function* () {
     const tempDb = `${Process.getTmpDir()}/${Math.random() * 1000000}-efffrida-sql-test.db`;
     yield* Effect.addFinalizer(() => Effect.sync(() => unlinkSync(tempDb)));
     return FridaSqlClient.layer({ filename: tempDb });
-})
-    .pipe(Layer.unwrapScoped, Layer.fresh);
+}).pipe(Layer.unwrapScoped, Layer.fresh);
 
 describe("sql tests", () => {
     layer(TestLayer)((it) => {

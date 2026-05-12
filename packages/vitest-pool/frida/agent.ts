@@ -1,5 +1,4 @@
 import "@efffrida/polyfills";
-
 import type { CancelReason, VitestRunner } from "@vitest/runner";
 import type { ContextRPC, RunnerRPC, RuntimeRPC, WorkerGlobalState } from "vitest";
 import type { WorkerRequest, WorkerResponse } from "vitest/node";

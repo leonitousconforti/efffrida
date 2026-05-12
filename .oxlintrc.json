@@ -1,6 +1,15 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "ignorePatterns": ["**/dist", "**/build", "**/docs", "**/.tsbuildinfo", "!scratchpad/**/*", ".agents/**/*"],
+    "ignorePatterns": [
+        "**/dist",
+        "**/build",
+        "**/docs",
+        "**/.tsbuildinfo",
+        "**/generated/**",
+        "!scratchpad/**/*",
+        ".agents/**/*",
+        "repos/**"
+    ],
     "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node"],
     "categories": {
         "correctness": "error",
@@ -80,6 +89,8 @@
                 "argsIgnorePattern": "^_",
                 "varsIgnorePattern": "^_"
             }
-        ]
+        ],
+        "import/no-unassigned-import": "off",
+        "eslint/no-underscore-dangle": "off"
     }
 }

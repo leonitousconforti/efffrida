@@ -1,5 +1,6 @@
 import { expect, layer } from "@effect/vitest";
 import { FridaScript } from "@efffrida/frida-tools";
+
 import { Effect, Option, Stream } from "effect";
 
 import { FridaLive } from "../base.ts";

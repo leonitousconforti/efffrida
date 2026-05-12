@@ -1,4 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
+
 import { Chunk, Data, Effect, Stream } from "effect";
 
 class ReadError extends Data.TaggedError("ReadError")<{ message: string }> {}

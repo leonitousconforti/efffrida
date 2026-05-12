@@ -1,8 +1,8 @@
 import "@efffrida/polyfills";
-
 import { RpcSerialization, RpcServer } from "@effect/rpc";
 import { FridaRuntime } from "@efffrida/platform";
 import { FridaRpcServer } from "@efffrida/rpc/frida";
+
 import { Layer } from "effect";
 
 import { UsersLive } from "../../shared/handlers.ts";

@@ -6,7 +6,6 @@
  */
 
 import "@efffrida/polyfills";
-
 import type * as RpcMessage from "@effect/rpc/RpcMessage";
 import type * as Duration from "effect/Duration";
 import type * as Scope from "effect/Scope";

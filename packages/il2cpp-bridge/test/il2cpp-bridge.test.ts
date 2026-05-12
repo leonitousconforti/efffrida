@@ -1,7 +1,7 @@
 import "@efffrida/polyfills";
-
 import { describe, it } from "@effect/vitest";
 import { FridaIl2cppBridge } from "@efffrida/il2cpp-bridge";
+
 import { Effect } from "effect";
 
 describe("il2cpp-bridge", () => {

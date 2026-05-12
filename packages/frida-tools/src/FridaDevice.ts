@@ -65,7 +65,7 @@ export const acquireLocalDevice: () => Effect.Effect<
  * @category Device acquisition
  */
 export const acquireUsbDevice: (
-    options?: Frida.GetDeviceOptions | undefined,
+    options?: Frida.GetDeviceOptions | undefined
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =
     internal.acquireUsbDevice;
 
@@ -75,7 +75,7 @@ export const acquireUsbDevice: (
  */
 export const acquireRemoteDevice: (
     address: string,
-    options?: Frida.RemoteDeviceOptions | undefined,
+    options?: Frida.RemoteDeviceOptions | undefined
 ) => Effect.Effect<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, Scope.Scope> =
     internal.acquireRemoteDevice;
 
@@ -93,7 +93,7 @@ export const acquireAndroidEmulatorDevice: (
               emulatorExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined,
+        | undefined
 ) => Effect.Effect<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -112,7 +112,7 @@ export const acquireAndroidEmulatorDeviceConfig: (
               fridaExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined,
+        | undefined
 ) => Effect.Effect<
     FridaDevice,
     ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -135,7 +135,7 @@ export const layerLocalDevice: Layer.Layer<
  */
 export const layerRemoteDevice: (
     address: string,
-    options?: Frida.RemoteDeviceOptions | undefined,
+    options?: Frida.RemoteDeviceOptions | undefined
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> =
     internal.layerRemoteDevice;
 
@@ -144,7 +144,7 @@ export const layerRemoteDevice: (
  * @category Layers
  */
 export const layerUsbDevice: (
-    options?: Frida.GetDeviceOptions | undefined,
+    options?: Frida.GetDeviceOptions | undefined
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> = internal.layerUsbDevice;
 
 /**
@@ -161,7 +161,7 @@ export const layerAndroidEmulatorDevice: (
               emulatorExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined,
+        | undefined
 ) => Layer.Layer<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
@@ -180,7 +180,7 @@ export const layerAndroidEmulatorDeviceConfig: (
               fridaExecutable?: string | undefined;
               extraEmulatorArgs?: Array<string> | undefined;
           }
-        | undefined,
+        | undefined
 ) => Layer.Layer<
     FridaDevice,
     ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,

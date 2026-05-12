@@ -4,7 +4,6 @@
  */
 
 import "frida-il2cpp-bridge";
-
 import type * as Scope from "effect/Scope";
 
 import * as Cause from "effect/Cause";

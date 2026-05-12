@@ -1,12 +1,13 @@
-import { expect, layer } from "@effect/vitest";
-
 import { Command, CommandExecutor } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { RpcClient, RpcSerialization } from "@effect/rpc";
+import { expect, layer } from "@effect/vitest";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { FridaRpcClient } from "@efffrida/rpc/node";
-import { Chunk, Effect, Layer, Option, Stream } from "effect";
 import { JsPlatform } from "frida";
+
+import { Chunk, Effect, Layer, Option, Stream } from "effect";
+
 import { UserRpcs } from "../../shared/requests.ts";
 
 // Choose which serialization to use

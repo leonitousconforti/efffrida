@@ -1,5 +1,4 @@
 import type * as Duration from "effect/Duration";
-import type { FromInputStreamOptions } from "../Stream.ts";
 
 import * as Cause from "effect/Cause";
 import * as Chunk from "effect/Chunk";
@@ -13,6 +12,8 @@ import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as Buffer from "node:buffer";
 import * as util from "node:util";
+
+import type { FromInputStreamOptions } from "../Stream.ts";
 
 /** @internal */
 export const receiveStream = (

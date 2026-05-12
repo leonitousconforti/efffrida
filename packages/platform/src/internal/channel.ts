@@ -1,10 +1,12 @@
 import type * as Chunk from "effect/Chunk";
-import type * as FridaSink from "../Sink.ts";
-import type * as FridaStream from "../Stream.ts";
 
 import * as Channel from "effect/Channel";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+
+import type * as FridaSink from "../Sink.ts";
+import type * as FridaStream from "../Stream.ts";
+
 import * as internalSink from "./sink.ts";
 import * as internalStream from "./stream.ts";
 
