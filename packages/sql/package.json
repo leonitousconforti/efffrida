@@ -48,7 +48,7 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "@opentelemetry/semantic-conventions": "1.40.0"
+        "@opentelemetry/semantic-conventions": "1.41.1"
     },
     "devDependencies": {
         "@effect/cluster": "0.58.2",
