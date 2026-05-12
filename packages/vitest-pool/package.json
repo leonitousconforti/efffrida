@@ -52,8 +52,8 @@
         "@vitest/runner": "4.0.17",
         "@vitest/utils": "4.0.17",
         "birpc": "4.0.0",
-        "esbuild": "0.27.2",
-        "flatted": "3.3.3"
+        "esbuild": "0.28.0",
+        "flatted": "3.4.2"
     },
     "devDependencies": {
         "@effect/cluster": "0.58.2",

@@ -50,7 +50,7 @@
         "protobuf": "buf generate"
     },
     "dependencies": {
-        "properties-file": "3.6.3"
+        "properties-file": "5.0.4"
     },
     "devDependencies": {
         "@bufbuild/buf": "1.69.0",
