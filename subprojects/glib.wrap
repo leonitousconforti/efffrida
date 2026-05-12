@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/frida/glib.git
+revision = 81b631758fe5c665ade9d869554148f6160fe681
+depth = 1
+
+[provide]
+dependency_names = glib-2.0, gobject-2.0, gthread-2.0, gmodule-2.0, gio-2.0, gio-unix-2.0, gio-win32-2.0
+

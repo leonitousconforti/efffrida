@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/frida/tinycc.git
+revision = 86c2ba69e97af8f311dff04fcf517b760b3e4491
+depth = 1
+
+[provide]
+dependency_names = libtcc
+
