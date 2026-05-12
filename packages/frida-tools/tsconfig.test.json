@@ -8,6 +8,8 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
+        "rewriteRelativeImportExtensions": false,
+        "allowImportingTsExtensions": true,
         "types": ["node"],
         "paths": {
             "@efffrida/frida-tools": ["./src/index.ts"],

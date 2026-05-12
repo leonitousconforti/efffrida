@@ -6,6 +6,9 @@
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/frida.tsbuildinfo",
         "outDir": ".tsbuildinfo/frida",
+        "noEmit": true,
+        "rewriteRelativeImportExtensions": false,
+        "allowImportingTsExtensions": true,
         "paths": {
             "@efffrida/rpc/*": ["./src/*/index.ts", "./src/*.ts"]
         },

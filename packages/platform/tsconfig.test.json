@@ -12,6 +12,8 @@
         "outDir": ".tsbuildinfo/test",
         "noEmit": true,
         "erasableSyntaxOnly": false,
+        "rewriteRelativeImportExtensions": false,
+        "allowImportingTsExtensions": true,
         "types": ["frida-gum"],
         "paths": {
             "@efffrida/platform": ["./src/index.ts"],
