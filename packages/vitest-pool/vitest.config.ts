@@ -7,7 +7,7 @@ import { createFridaPool } from "./src/index.ts";
 const config: ViteUserConfig = {
     test: {
         sequence: {
-            groupOrder: 1,
+            groupOrder: 2,
         },
         pool: process.env.CI
             ? createFridaPool({

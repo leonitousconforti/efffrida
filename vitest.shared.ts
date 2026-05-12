@@ -1,6 +1,7 @@
+import type { ViteUserConfig } from "vitest/config";
+
 import path from "node:path";
 import aliases from "vite-tsconfig-paths";
-import type { ViteUserConfig } from "vitest/config";
 
 const config: ViteUserConfig = {
     plugins: [aliases()],
@@ -15,6 +16,7 @@ const config: ViteUserConfig = {
         sequence: {
             concurrent: true,
         },
+        fileParallelism: false,
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
         coverage: {

@@ -6,7 +6,7 @@ import shared from "../../vitest.shared.ts";
 const config: ViteUserConfig = {
     test: {
         sequence: {
-            groupOrder: 2,
+            groupOrder: 3,
         },
         pool: process.env.CI
             ? createFridaPool({

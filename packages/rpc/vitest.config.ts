@@ -5,7 +5,7 @@ import shared from "../../vitest.shared.ts";
 const config: ViteUserConfig = {
     test: {
         sequence: {
-            groupOrder: 2,
+            groupOrder: 3,
         },
     },
 };
