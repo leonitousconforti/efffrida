@@ -215,7 +215,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     async stop(): Promise<void> {
         for (const cancelable of this.cancelables.values()) cancelable();
         this.cancelables.clear();
-        await Promise.allSettled(this.sends);
+        // await Promise.allSettled(this.sends);
         await this.managedRuntime!.dispose();
         await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
     }
