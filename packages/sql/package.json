@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/sql",
-    "version": "0.0.19",
+    "version": "0.0.20",
     "description": "effect-ts sql-frida",
     "keywords": [
         "effect-ts",

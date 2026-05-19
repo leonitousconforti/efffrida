@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.7
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+
 ## 0.0.6
 
 ### Patch Changes

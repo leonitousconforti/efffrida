@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.13
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+- Updated dependencies [325d6fd]
+  - @efffrida/frida-tools@0.0.28
+  - @efffrida/polyfills@0.0.7
+
 ## 0.0.12
 
 ### Patch Changes
