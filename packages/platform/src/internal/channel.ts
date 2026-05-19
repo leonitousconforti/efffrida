@@ -1,5 +1,3 @@
-import type * as Chunk from "effect/Chunk";
-
 import * as Channel from "effect/Channel";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
@@ -16,7 +14,7 @@ export const fromIOStream = <E1, E2>(
     onWriteError: (error: unknown) => E1,
     onReadError: (error: unknown) => E2,
     options?: (FridaStream.FromInputStreamOptions & FridaSink.FromWritableOptions) | undefined
-): Channel.Channel<Chunk.Chunk<Uint8Array>, Chunk.Chunk<Uint8Array>, E1 | E2, never, void, unknown, never> => {
+) => {
     const readChannel = internalSink
         .fromOutputStream(() => iostream.output, onWriteError, { endOnDone: options?.endOnDone })
         .pipe(Sink.toChannel);
@@ -25,5 +23,5 @@ export const fromIOStream = <E1, E2>(
         .fromInputStream(() => iostream.input, onReadError, { chunkSize: options?.chunkSize })
         .pipe(Stream.toChannel);
 
-    return Channel.zip(writeChannel, readChannel, { concurrent: true });
+    return Channel.merge(writeChannel, readChannel);
 };

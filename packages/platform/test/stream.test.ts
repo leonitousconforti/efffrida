@@ -1,6 +1,6 @@
-import { describe, expect, it } from "@effect/vitest";
+import { Data, Effect, Stream } from "effect";
 
-import { Chunk, Data, Effect, Stream } from "effect";
+import { describe, expect, it } from "@effect/vitest";
 
 class ReadError extends Data.TaggedError("ReadError")<{ message: string }> {}
 
@@ -20,7 +20,7 @@ describe("stream tests", () => {
             );
 
             const result = yield* Stream.runCollect(reconstructedStream);
-            const allBytes = Chunk.toArray(result).flatMap((arr) => Array.from(arr));
+            const allBytes = result.flatMap((arr) => Array.from(arr));
             expect(allBytes).toEqual([1, 2, 3, 4, 5]);
         })
     );
