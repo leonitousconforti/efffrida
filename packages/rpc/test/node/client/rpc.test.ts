@@ -18,15 +18,12 @@ const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide(NdJs
 
 // Pick a device and a session/program
 const DeviceLive = FridaDevice.layerLocalDevice;
-const SessionLive =
-    process.env.CI !== undefined
-        ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
-        : Layer.unwrap(
-              Effect.gen(function* () {
-                  const handle = yield* ChildProcess.make("sleep", ["infinity"]);
-                  return FridaSession.layer(handle.pid);
-              })
-          ).pipe(Layer.provide(NodeServices.layer));
+const SessionLive = Layer.unwrap(
+    Effect.gen(function* () {
+        const handle = yield* ChildProcess.make("sleep", ["infinity"]);
+        return FridaSession.layer(handle.pid);
+    })
+).pipe(Layer.provide(NodeServices.layer));
 
 const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeServices.layer));
 
