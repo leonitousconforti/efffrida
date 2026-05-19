@@ -6,9 +6,6 @@ import { createFridaPool } from "./src/index.ts";
 
 const config: ViteUserConfig = {
     test: {
-        sequence: {
-            groupOrder: 2,
-        },
         pool: process.env.CI
             ? createFridaPool({
                   platform: Frida.JsPlatform.Gum,
