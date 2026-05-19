@@ -6,8 +6,10 @@
 
 import type * as Cause from "effect/Cause";
 import type * as Context from "effect/Context";
+import type * as Deferred from "effect/Deferred";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
+import type * as Option from "effect/Option";
 import type * as Scope from "effect/Scope";
 
 import type * as FridaDevice from "./FridaDevice.ts";
@@ -33,16 +35,32 @@ export type FridaSessionTypeId = typeof FridaSessionTypeId;
  * @category Models
  */
 export interface FridaSession {
+    readonly pid: number;
     readonly session: Frida.Session;
+
     readonly [FridaSessionTypeId]: typeof FridaSessionTypeId;
-    readonly resume: Effect.Effect<void, Cause.UnknownError>;
-    readonly enableChildGating: Effect.Effect<void, Cause.UnknownError>;
-    readonly disableChildGating: Effect.Effect<void, Cause.UnknownError>;
-    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError>;
+    readonly detached: Deferred.Deferred<
+        {
+            reason: Frida.SessionDetachReason;
+            crash: Option.Option<{
+                pid: number;
+                processName: string;
+                summary: string;
+                report: string;
+                parameters: unknown;
+            }>;
+        },
+        FridaSessionError.FridaSessionError
+    >;
+    readonly resume: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
+    readonly detach: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
+    readonly enableChildGating: Effect.Effect<void, Cause.UnknownError, never>;
+    readonly disableChildGating: Effect.Effect<void, Cause.UnknownError, never>;
+    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError, never>;
     joinPortal(
         address: string,
         options?: Frida.PortalOptions | undefined
-    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError>;
+    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError, never>;
 }
 
 /**

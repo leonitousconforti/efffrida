@@ -1,9 +1,11 @@
 import type * as Scope from "effect/Scope";
 
 import * as Context from "effect/Context";
+import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
+import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 
 import type * as FridaSession from "../FridaSession.ts";
@@ -24,6 +26,36 @@ export const Tag = Context.Service<FridaSession.FridaSession>("@efffrida/frida-t
 /** @internal */
 export const isFridaSession = (u: unknown): u is FridaSession.FridaSession =>
     Predicate.hasProperty(u, FridaSessionTypeId);
+
+/** @internal */
+export const resume = (session: Frida.Session): Effect.Effect<void, FridaSessionError.FridaSessionError, never> =>
+    Effect.tryPromise({
+        try: (signal) => {
+            const cancellable = new Frida.Cancellable();
+            signal.onabort = () => cancellable.cancel();
+            return session.resume(cancellable);
+        },
+        catch: (cause) =>
+            new FridaSessionError.FridaSessionError({
+                when: "resume",
+                cause,
+            }),
+    });
+
+/** @internal */
+export const detach = (session: Frida.Session): Effect.Effect<void, FridaSessionError.FridaSessionError, never> =>
+    Effect.tryPromise({
+        try: (signal) => {
+            const cancellable = new Frida.Cancellable();
+            signal.onabort = () => cancellable.cancel();
+            return session.detach(cancellable);
+        },
+        catch: (cause) =>
+            new FridaSessionError.FridaSessionError({
+                when: "detach",
+                cause,
+            }),
+    });
 
 /** @internal */
 export const frontmost = (
@@ -51,7 +83,7 @@ export const spawn = (
     program: string | ReadonlyArray<string>,
     options?: Frida.SpawnOptions | undefined
 ): Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope> => {
-    const spawnEffect = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+    const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
             try: (signal) => {
                 const cancellable = new Frida.Cancellable();
@@ -66,22 +98,6 @@ export const spawn = (
         })
     );
 
-    const resumeEffect = (pid: number) =>
-        Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-            Effect.tryPromise({
-                try: (signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return device.resume(pid, cancellable);
-                },
-                catch: (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "resume",
-                        cause,
-                    }),
-            })
-        );
-
     const release = (pid: number) =>
         Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
             Effect.promise((signal) => {
@@ -91,7 +107,6 @@ export const spawn = (
             })
         );
 
-    const acquire = Effect.tap(spawnEffect, resumeEffect);
     const resource = Effect.acquireRelease(acquire, release);
     return resource;
 };
@@ -105,6 +120,38 @@ export const attach = (
     FridaSessionError.FridaSessionError,
     FridaDevice.FridaDevice | Scope.Scope
 > => {
+    const detached = Deferred.makeUnsafe<
+        {
+            reason: Frida.SessionDetachReason;
+            crash: Option.Option<{
+                pid: number;
+                processName: string;
+                summary: string;
+                report: string;
+                parameters: unknown;
+            }>;
+        },
+        FridaSessionError.FridaSessionError
+    >();
+
+    const onDetached = (reason: Frida.SessionDetachReason, crash: Frida.Crash | null): void => {
+        Deferred.doneUnsafe(
+            detached,
+            Effect.succeed({
+                reason,
+                crash: Option.fromNullOr(crash).pipe(
+                    Option.map((c) => ({
+                        pid: c.pid,
+                        processName: c.processName,
+                        summary: c.summary,
+                        report: c.report,
+                        parameters: c.parameters,
+                    }))
+                ),
+            })
+        );
+    };
+
     const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
         Effect.tryPromise({
             try: (signal) => {
@@ -118,51 +165,52 @@ export const attach = (
                     cause,
                 }),
         })
+    ).pipe(
+        Effect.tap((session) => Effect.sync(() => session.detached.connect(onDetached))),
+        Effect.tap(resume)
     );
 
     const release = (session: Frida.Session) =>
         Effect.promise((signal) => {
             const cancellable = new Frida.Cancellable();
             signal.onabort = () => cancellable.cancel();
+            session.detached.disconnect(onDetached);
             return session.detach(cancellable);
         });
 
     const resource = Effect.acquireRelease(acquire, release);
-    return Effect.map(
-        resource,
-        (session) =>
-            ({
-                session,
-                resume: Effect.tryPromise((signal) => {
+    return Effect.map(resource, (session) => {
+        return {
+            session,
+            pid: session.pid,
+            detached: detached,
+            resume: resume(session),
+            detach: detach(session),
+            enableChildGating: Effect.tryPromise((signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return session.enableChildGating(cancellable);
+            }),
+            disableChildGating: Effect.tryPromise((signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return session.disableChildGating(cancellable);
+            }),
+            setupPeerConnection: (opts?: Frida.PeerOptions | undefined) =>
+                Effect.tryPromise((signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return session.resume(cancellable);
+                    return session.setupPeerConnection(opts, cancellable);
                 }),
-                enableChildGating: Effect.tryPromise((signal) => {
+            joinPortal: (address: string, opts?: Frida.PortalOptions | undefined) =>
+                Effect.tryPromise((signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return session.enableChildGating(cancellable);
+                    return session.joinPortal(address, opts, cancellable);
                 }),
-                disableChildGating: Effect.tryPromise((signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return session.disableChildGating(cancellable);
-                }),
-                setupPeerConnection: (opts?: Frida.PeerOptions | undefined) =>
-                    Effect.tryPromise((signal) => {
-                        const cancellable = new Frida.Cancellable();
-                        signal.onabort = () => cancellable.cancel();
-                        return session.setupPeerConnection(opts, cancellable);
-                    }),
-                joinPortal: (address: string, opts?: Frida.PortalOptions | undefined) =>
-                    Effect.tryPromise((signal) => {
-                        const cancellable = new Frida.Cancellable();
-                        signal.onabort = () => cancellable.cancel();
-                        return session.joinPortal(address, opts, cancellable);
-                    }),
-                [FridaSessionTypeId]: FridaSessionTypeId,
-            }) as const
-    );
+            [FridaSessionTypeId]: FridaSessionTypeId,
+        } as const;
+    });
 };
 
 /** @internal */
