@@ -42,7 +42,7 @@ declare const make: (
 ) => Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L95)
+[Source](/blob/main/src/FridaSqlClient.ts#L102)
 
 Since v1.0.0
 
@@ -56,7 +56,7 @@ Since v1.0.0
 declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L254)
+[Source](/blob/main/src/FridaSqlClient.ts#L270)
 
 Since v1.0.0
 
@@ -70,7 +70,7 @@ declare const layerConfig: (
 ) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L240)
+[Source](/blob/main/src/FridaSqlClient.ts#L256)
 
 Since v1.0.0
 
@@ -99,7 +99,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L43)
+[Source](/blob/main/src/FridaSqlClient.ts#L49)
 
 Since v1.0.0
 
@@ -116,12 +116,13 @@ type SqliteClientConfig = (
   readonly prepareCacheSize?: number | undefined
   readonly prepareCacheTTL?: Duration.Input | undefined
   readonly spanAttributes?: Record<string, unknown> | undefined
+
   readonly transformQueryNames?: ((str: string) => string) | undefined
   readonly transformResultNames?: ((str: string) => string) | undefined
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L70)
+[Source](/blob/main/src/FridaSqlClient.ts#L76)
 
 Since v1.0.0
 
@@ -135,7 +136,7 @@ Since v1.0.0
 declare const SqliteClient: Context.Service<SqliteClient, SqliteClient>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L64)
+[Source](/blob/main/src/FridaSqlClient.ts#L70)
 
 Since v1.0.0
 
@@ -149,7 +150,7 @@ Since v1.0.0
 declare const TypeId: unique symbol
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L31)
+[Source](/blob/main/src/FridaSqlClient.ts#L37)
 
 Since v1.0.0
 
@@ -161,6 +162,6 @@ Since v1.0.0
 type TypeId = typeof TypeId
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L37)
+[Source](/blob/main/src/FridaSqlClient.ts#L43)
 
 Since v1.0.0
