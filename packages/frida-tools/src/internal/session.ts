@@ -165,9 +165,6 @@ export const attach = (
                     cause,
                 }),
         })
-    ).pipe(
-        Effect.tap((session) => Effect.sync(() => session.detached.connect(onDetached))),
-        Effect.tap(resume)
     );
 
     const release = (session: Frida.Session) =>
@@ -180,6 +177,8 @@ export const attach = (
 
     const resource = Effect.acquireRelease(acquire, release);
     return Effect.map(resource, (session) => {
+        session.detached.connect(onDetached);
+
         return {
             session,
             pid: session.pid,
@@ -221,6 +220,8 @@ export const layer = (
     Layer.effect(
         Tag,
         Effect.gen(function* () {
+            const { device } = yield* FridaDevice.FridaDevice;
+
             const pid = yield* Match.value(target).pipe(
                 Match.when(Match.number, (proc) => Effect.succeed(proc)),
                 Match.when(Match.string, (proc) => spawn(proc)),
@@ -228,6 +229,20 @@ export const layer = (
             );
 
             const session = yield* attach(pid, options);
+
+            yield* Effect.tryPromise({
+                try: (signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return device.resume(pid, cancellable);
+                },
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "resume",
+                        cause,
+                    }),
+            });
+
             return session;
         })
     );
