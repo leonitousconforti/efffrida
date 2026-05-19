@@ -234,7 +234,7 @@ export const layer = (
                 try: (signal) => {
                     const cancellable = new Frida.Cancellable();
                     signal.onabort = () => cancellable.cancel();
-                    return device.resume(pid, cancellable);
+                    return device.resume(session.pid, cancellable);
                 },
                 catch: (cause) =>
                     new FridaSessionError.FridaSessionError({
