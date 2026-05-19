@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.10
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+
 ## 0.0.9
 
 ### Patch Changes

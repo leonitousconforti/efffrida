@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.27
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+
 ## 0.0.26
 
 ### Patch Changes

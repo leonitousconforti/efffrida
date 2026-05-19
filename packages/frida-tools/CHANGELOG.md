@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.28
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+
 ## 0.0.27
 
 ### Patch Changes

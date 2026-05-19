@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.20
+
+### Patch Changes
+
+- 325d6fd: Migrate to effect-smol
+
 ## 0.0.19
 
 ### Patch Changes
