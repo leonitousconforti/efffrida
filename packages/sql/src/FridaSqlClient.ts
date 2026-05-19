@@ -4,14 +4,8 @@
  * @since 1.0.0
  */
 
-import type { Connection } from "@effect/sql/SqlConnection";
-import type { ConfigError } from "effect/ConfigError";
+import type * as SqlConnection from "effect/unstable/sql/SqlConnection";
 
-import * as Reactivity from "@effect/experimental/Reactivity";
-import * as SqlClient from "@effect/sql/SqlClient";
-import * as SqlError from "@effect/sql/SqlError";
-import * as Statement from "@effect/sql/Statement";
-import * as Otel from "@opentelemetry/semantic-conventions";
 import * as Cache from "effect/Cache";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
@@ -22,6 +16,19 @@ import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
 import * as Predicate from "effect/Predicate";
 import * as Scope from "effect/Scope";
+import * as Semaphore from "effect/Semaphore";
+import * as Stream from "effect/Stream";
+import * as Reactivity from "effect/unstable/reactivity/Reactivity";
+import * as SqlClient from "effect/unstable/sql/SqlClient";
+import * as SqlError from "effect/unstable/sql/SqlError";
+import * as Statement from "effect/unstable/sql/Statement";
+
+/** @internal */
+const ATTR_DB_SYSTEM_NAME = "db.system.name";
+
+/** @internal */
+const classifyError = (cause: unknown, message: string, operation: string) =>
+    SqlError.classifySqliteError(cause, { message, operation });
 
 /**
  * @since 1.0.0
@@ -60,7 +67,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
  * @since 1.0.0
  * @category Tags
  */
-export const SqliteClient = Context.GenericTag<SqliteClient>("@efffrida/effect-sql-frida/SqliteClient");
+export const SqliteClient = Context.Service<SqliteClient>("@efffrida/effect-sql-frida/SqliteClient");
 
 /**
  * @since 1.0.0
@@ -72,13 +79,14 @@ export type SqliteClientConfig = (
 ) & {
     readonly disableWAL?: boolean | undefined;
     readonly prepareCacheSize?: number | undefined;
-    readonly prepareCacheTTL?: Duration.DurationInput | undefined;
+    readonly prepareCacheTTL?: Duration.Input | undefined;
     readonly spanAttributes?: Record<string, unknown> | undefined;
+
     readonly transformQueryNames?: ((str: string) => string) | undefined;
     readonly transformResultNames?: ((str: string) => string) | undefined;
 };
 
-interface SqliteConnection extends Connection {
+interface SqliteConnection extends SqlConnection.Connection {
     /**
      * Dump the database to a gzip-compressed blob encoded as Base64, where the
      * result is returned as a string. This is useful for inlining a cache in
@@ -122,7 +130,10 @@ export const make = (
                 lookup: (sql: string) =>
                     Effect.try({
                         try: () => db.prepare(sql),
-                        catch: (cause) => new SqlError.SqlError({ cause, message: "Failed to prepare statement" }),
+                        catch: (cause) =>
+                            new SqlError.SqlError({
+                                reason: classifyError(cause, "Failed to prepare statement", "prepare"),
+                            }),
                     }),
             });
 
@@ -163,21 +174,24 @@ export const make = (
                         statement.reset();
                         return result;
                     },
-                    catch: (cause) => new SqlError.SqlError({ cause, message: "Failed to execute statement" }),
+                    catch: (cause) =>
+                        new SqlError.SqlError({
+                            reason: classifyError(cause, "Failed to execute statement", "execute"),
+                        }),
                 });
 
             const run = (
                 sql: string,
                 params: ReadonlyArray<unknown>
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
-                Effect.flatMap(prepareCache.get(sql), (s) => runStatement(s, params));
+                Effect.flatMap(Cache.get(prepareCache, sql), (s) => runStatement(s, params));
 
             return Function.identity<SqliteConnection>({
                 execute(sql, params, transformRows) {
                     return transformRows ? Effect.map(run(sql, params), transformRows) : run(sql, params);
                 },
                 executeRaw(sql, params) {
-                    return Effect.asVoid(run(sql, params));
+                    return run(sql, params);
                 },
                 executeValues(sql, params) {
                     return run(sql, params);
@@ -186,23 +200,29 @@ export const make = (
                     const effect = runStatement(db.prepare(sql), params ?? []);
                     return transformRows ? Effect.map(effect, transformRows) : effect;
                 },
-                executeStream(_sql, _params) {
-                    return Effect.dieMessage("executeStream not implemented");
+                executeStream(_sql, _params, _transformRows) {
+                    return Stream.die("executeStream not implemented");
                 },
                 dump: Effect.try({
                     try: () => db.dump(),
-                    catch: (cause) => new SqlError.SqlError({ cause, message: "Failed to dump database" }),
+                    catch: (cause) =>
+                        new SqlError.SqlError({
+                            reason: new SqlError.UnknownError({
+                                message: "Failed to dump database",
+                                cause,
+                            }),
+                        }),
                 }),
             });
         });
 
-        const semaphore = yield* Effect.makeSemaphore(1);
+        const semaphore = yield* Semaphore.make(1);
         const connection = yield* makeConnection;
 
         const acquirer = semaphore.withPermits(1)(Effect.succeed(connection));
         const transactionAcquirer = Effect.uninterruptibleMask((restore) =>
             Effect.as(
-                Effect.zipRight(
+                Effect.andThen(
                     restore(semaphore.take(1)),
                     Effect.tap(Effect.scope, (scope) => Scope.addFinalizer(scope, semaphore.release(1)))
                 ),
@@ -217,7 +237,7 @@ export const make = (
                 transactionAcquirer,
                 spanAttributes: [
                     ...(options.spanAttributes ? Object.entries(options.spanAttributes) : []),
-                    [Otel.SEMATTRS_DB_SYSTEM, Otel.DBSYSTEMVALUES_SQLITE],
+                    [ATTR_DB_SYSTEM_NAME, "sqlite"],
                 ],
                 transformRows,
             })) as SqliteClient,
@@ -234,9 +254,9 @@ export const make = (
  * @category Layers
  */
 export const layerConfig = (
-    config: Config.Config.Wrap<SqliteClientConfig>
-): Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError> =>
-    Layer.scopedContext(
+    config: Config.Wrap<SqliteClientConfig>
+): Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError> =>
+    Layer.effectContext(
         Config.unwrap(config).pipe(
             Effect.flatMap(make),
             Effect.map((client) => Context.make(SqliteClient, client).pipe(Context.add(SqlClient.SqlClient, client)))
@@ -247,8 +267,10 @@ export const layerConfig = (
  * @since 1.0.0
  * @category Layers
  */
-export const layer = (config: SqliteClientConfig): Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError> =>
-    Layer.scopedContext(
+export const layer = (
+    config: SqliteClientConfig
+): Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError> =>
+    Layer.effectContext(
         Effect.map(make(config), (client) =>
             Context.make(SqliteClient, client).pipe(Context.add(SqlClient.SqlClient, client))
         )

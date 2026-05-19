@@ -1,10 +1,7 @@
 import type * as Function from "effect/Function";
-import type * as SingleProducerAsyncInput from "effect/SingleProducerAsyncInput";
 
-import * as Channel from "effect/Channel";
-import * as Chunk from "effect/Chunk";
-import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
+import * as Pull from "effect/Pull";
 import * as Sink from "effect/Sink";
 
 import type { FromWritableOptions } from "../Sink.ts";
@@ -19,30 +16,22 @@ export const fromOutputStream = <E>(
     onError: (error: unknown) => E,
     options?: FromWritableOptions | undefined
 ): Sink.Sink<void, Uint8Array, never, E, never> =>
-    Effect.gen(function* () {
+    Sink.fromTransform((upstream) => {
         const writable = evaluate();
-        const deferred = yield* Deferred.make<void, E>();
-
-        const write = (chunk: Chunk.Chunk<Uint8Array>) =>
-            Effect.gen(function* () {
-                for (const c of chunk) {
-                    yield* Effect.promise(() => writable.writeAll(Array.from(c)));
-                }
-            });
-
         const close = options?.endOnDone ? Effect.promise(() => writable.close()) : Effect.void;
 
-        return Channel.fromEffect(deferred).pipe(
-            Channel.mapOut(Chunk.empty),
-            Channel.mapError(onError),
-            Channel.embedInput({
-                emit: write,
-                awaitRead: () => Effect.void,
-                error: (cause) => Effect.zipRight(close, Deferred.failCause(deferred, cause)),
-                done: (_) => Effect.zipRight(close, Deferred.complete(deferred, Effect.void)),
-            } as SingleProducerAsyncInput.AsyncInputProducer<E, Chunk.Chunk<Uint8Array>, unknown>)
+        return Effect.gen(function* () {
+            while (true) {
+                const chunks = yield* upstream;
+                for (const c of chunks) {
+                    yield* Effect.tryPromise({ try: () => writable.writeAll(Array.from(c)), catch: onError });
+                }
+            }
+        }).pipe(
+            Effect.ensuring(close),
+            Pull.catchDone(() => Effect.succeed([void 0] as const))
         );
-    }).pipe(Channel.unwrap, Sink.fromChannel);
+    });
 
 /** @internal */
 export const makeUnixOutputStream = <E>(

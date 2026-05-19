@@ -5,14 +5,10 @@
  */
 
 import type * as Exit from "effect/Exit";
-import type * as FiberId from "effect/FiberId";
 
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
-import * as FiberRef from "effect/FiberRef";
-import * as FiberRefs from "effect/FiberRefs";
 import * as Function from "effect/Function";
-import * as HashSet from "effect/HashSet";
 import * as Logger from "effect/Logger";
 import * as Predicate from "effect/Predicate";
 
@@ -35,8 +31,8 @@ export const runMain = <A, E>(
         }, throwable);
 
     const throwFromTapErrorCause: <A1, E1, R1>(self: Effect.Effect<A1, E1, R1>) => Effect.Effect<A1, E1, R1> =
-        Effect.tapErrorCause((cause): Effect.Effect<void, never, never> => {
-            if (!Cause.isInterruptedOnly(cause)) {
+        Effect.tapCause((cause): Effect.Effect<void, never, never> => {
+            if (!Cause.hasInterruptsOnly(cause)) {
                 throwNextTick(cause);
                 return Function.absurd(void undefined as never);
             } else {
@@ -44,21 +40,12 @@ export const runMain = <A, E>(
             }
         });
 
-    const addPrettyLogger = (refs: FiberRefs.FiberRefs, fiberId: FiberId.Runtime): FiberRefs.FiberRefs => {
-        const loggers = FiberRefs.getOrDefault(refs, FiberRef.currentLoggers);
-        if (!HashSet.has(loggers, Logger.defaultLogger)) {
-            return refs;
-        }
-        return FiberRefs.updateAs(refs, {
-            fiberId,
-            fiberRef: FiberRef.currentLoggers,
-            value: loggers.pipe(HashSet.remove(Logger.defaultLogger), HashSet.add(Logger.prettyLoggerDefault)),
-        });
-    };
+    const withLogger =
+        options?.disablePrettyLogger === true
+            ? Function.identity<Effect.Effect<A, E, never>>
+            : Effect.provide(Logger.layer([Logger.consolePretty()]));
 
-    const fiber = Effect.runFork(throwFromTapErrorCause(effect), {
-        updateRefs: options?.disablePrettyLogger === true ? undefined : addPrettyLogger,
-    } as const);
+    const fiber = Effect.runFork(withLogger(throwFromTapErrorCause(effect)));
 
     fiber.addObserver((exit: Exit.Exit<A, E>): void =>
         Predicate.isNotUndefined(options?.teardown) ? options.teardown(exit) : void 0

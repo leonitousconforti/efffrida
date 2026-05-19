@@ -1,19 +1,20 @@
-import { SqlClient } from "@effect/sql";
-import { assert, describe, layer } from "@effect/vitest";
-import { FridaSqlClient } from "@efffrida/sql";
+import { Effect, Layer } from "effect";
+import { SqlClient } from "effect/unstable/sql";
+
 import { unlinkSync } from "node:fs";
 
-import { Effect, Layer } from "effect";
+import { assert, describe, layer } from "@effect/vitest";
+import { FridaSqlClient } from "@efffrida/sql";
 
 const TestLayer = Effect.gen(function* () {
     const tempDb = `${Process.getTmpDir()}/${Math.random() * 1000000}-efffrida-sql-test.db`;
     yield* Effect.addFinalizer(() => Effect.sync(() => unlinkSync(tempDb)));
     return FridaSqlClient.layer({ filename: tempDb });
-}).pipe(Layer.unwrapScoped, Layer.fresh);
+}).pipe(Layer.unwrap, Layer.fresh);
 
 describe("sql tests", () => {
     layer(TestLayer)((it) => {
-        it.scoped("should work", () =>
+        it.effect("should work", () =>
             Effect.gen(function* () {
                 const sql = yield* SqlClient.SqlClient;
                 let response: ReadonlyArray<unknown>;
@@ -35,7 +36,7 @@ describe("sql tests", () => {
     });
 
     layer(TestLayer)((it) => {
-        it.scoped("withTransaction", () =>
+        it.effect("withTransaction", () =>
             Effect.gen(function* () {
                 const sql = yield* SqlClient.SqlClient;
                 yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
@@ -47,7 +48,7 @@ describe("sql tests", () => {
     });
 
     layer(TestLayer)((it) => {
-        it.scoped("withTransaction rollback", () =>
+        it.effect("withTransaction rollback", () =>
             Effect.gen(function* () {
                 const sql = yield* SqlClient.SqlClient;
                 yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;

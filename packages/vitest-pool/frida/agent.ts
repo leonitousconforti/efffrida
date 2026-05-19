@@ -1,4 +1,5 @@
 import "@efffrida/polyfills";
+
 import type { CancelReason, VitestRunner } from "@vitest/runner";
 import type { ContextRPC, RunnerRPC, RuntimeRPC, WorkerGlobalState } from "vitest";
 import type { WorkerRequest, WorkerResponse } from "vitest/node";
@@ -18,8 +19,9 @@ const testFiles: Record<string, string> = {};
 let runPromise: Promise<unknown> | undefined;
 let setupContext!: Omit<ContextRPC, "files" | "providedContext" | "invalidates" | "workerId">;
 
-// How to post messages to the parent process - use flatted to handle circular references
-const postMessage = (message: unknown): void =>
+// How to post messages to the parent process - use flatted to handle circular
+// references
+const postMessage = (message: unknown): void => {
     send(
         flattedStringify(message, (_key: string, value: unknown): unknown => {
             /** @see https://github.com/vitest-dev/vitest/blob/372e86fdef381038a2c4999fc9007dd7292a0628/packages/vitest/src/node/ast-collect.ts#L216-L236 */
@@ -40,13 +42,14 @@ const postMessage = (message: unknown): void =>
             }
         })
     );
-const postWorkerResponse = (response: Omit<WorkerResponse, "__vitest_worker_response__">): void =>
-    postMessage({ ...response, __vitest_worker_response__: true });
+};
 
 // Collections of listeners
 const cleanupListeners = new Set<() => unknown>();
 const cancelListeners = new Set<(reason: CancelReason) => unknown>();
 const messageListeners = new Set<(data: any, ...extras: Array<any>) => void>();
+
+// Bidirectional rpc
 const birpc = createBirpc<RuntimeRPC, RunnerRPC>(
     {
         async onCancel(reason: CancelReason) {
@@ -59,9 +62,9 @@ const birpc = createBirpc<RuntimeRPC, RunnerRPC>(
         deserialize: (data) => data,
 
         // How to send and receive messages.
-        post: postMessage,
-        on: (rpcListener) => messageListeners.add(rpcListener),
         off: (rpcListener) => messageListeners.delete(rpcListener),
+        on: (rpcListener) => messageListeners.add(rpcListener),
+        post: postMessage,
 
         // Names of remote functions that do not need response.
         // These are fire-and-forget messages to the vitest pool coordinator.
@@ -108,7 +111,7 @@ function patchTestRunner(testRunner: VitestRunner): VitestRunner {
 }
 
 /** @see https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/workers/init.ts#L20-L235 */
-rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
+rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | void> => {
     // Predicate to check if a message is a worker request
     const isWorkerRequest = (u: unknown): u is WorkerRequest =>
         typeof u === "object" && u !== null && "__vitest_worker_request__" in u && u.__vitest_worker_request__ === true;
@@ -127,7 +130,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
             process.env.VITEST_WORKER_ID = String(message.workerId);
             const { config, environment, pool } = message.context;
             setupContext = { environment, config, pool, rpc: birpc, projectName: config.name ?? "" };
-            return postWorkerResponse({ type: "started" });
+            return { type: "started", __vitest_worker_response__: true };
         }
 
         case "stop": {
@@ -137,19 +140,25 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
                     reject(`Closing rpc while ${method} was pending`);
                 })
             );
+
             await Promise.allSettled([...cleanupListeners.values()].map((listener) => listener()));
             cancelListeners.clear();
             cleanupListeners.clear();
-            return postWorkerResponse({ type: "stopped" });
+
+            return {
+                type: "stopped",
+                __vitest_worker_response__: true,
+            };
         }
 
         case "run":
         case "collect": {
             if (runPromise !== undefined) {
-                return postWorkerResponse({
+                return {
                     type: "testfileFinished",
+                    __vitest_worker_response__: true,
                     error: serializeError("Worker is already running tests"),
-                });
+                };
             }
 
             /** @see https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/worker.ts#L28-L49 */
@@ -214,13 +223,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
                     (globalThis as any).__vitest = vitestModule;
                     (globalThis as any).__vitest_runner = vitestRunnerModule;
 
-                    // TODO: warning if file not found
-                    const source64 = testFiles[file];
-                    if (source64 === undefined) {
-                        return;
-                    }
-
-                    const source = Buffer.from(source64, "base64").toString("utf-8");
+                    const source = Buffer.from(testFiles[file], "base64").toString("utf-8");
                     await Script.load(file, source);
                 },
             };
@@ -230,9 +233,17 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<void> => {
                     runPromise = entrypoint([file], patchTestRunner(testRunner));
                     await runPromise;
                 }
-                postWorkerResponse({ type: "testfileFinished" });
+
+                return {
+                    type: "testfileFinished",
+                    __vitest_worker_response__: true,
+                };
             } catch (error: unknown) {
-                postWorkerResponse({ type: "testfileFinished", error: serializeError(error) });
+                return {
+                    type: "testfileFinished",
+                    __vitest_worker_response__: true,
+                    error: serializeError(error),
+                };
             } finally {
                 runPromise = undefined;
             }

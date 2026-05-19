@@ -46,13 +46,12 @@
     },
     "dependencies": {
         "abort-controller": "3.0.0",
-        "core-js": "3.49.0",
         "event-target-polyfill": "0.0.4",
         "fast-text-encoding": "1.0.6"
     },
     "devDependencies": {
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.7.0"
+        "@types/node": "25.9.0"
     },
     "tags": [
         "frida.re",

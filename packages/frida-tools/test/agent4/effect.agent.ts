@@ -1,4 +1,3 @@
-import "@efffrida/polyfills";
 import { Effect } from "effect";
 
 const program = Effect.void;

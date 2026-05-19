@@ -1,15 +1,13 @@
-import type * as HttpClientError from "@effect/platform/HttpClientError";
-import type * as ParseResult from "effect/ParseResult";
+import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
-import * as HttpClient from "@effect/platform/HttpClient";
-import * as HttpClientRequest from "@effect/platform/HttpClientRequest";
-import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
+import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
-import type { Device } from "./device.ts";
+import type { AndroidDevice } from "./device.ts";
 
 import {
     AndroidCheckinRequestSchema,
@@ -19,13 +17,13 @@ import {
 import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.ts";
 
 /** @internal */
-export const makeHttpClient: (
-    device: Device
-) => Layer.Layer<
-    HttpClient.HttpClient,
-    HttpClientError.HttpClientError | ParseResult.ParseError,
+export const authHeaders = Effect.fn(function* (
+    device: AndroidDevice
+): Effect.fn.Return<
+    Record<string, string>,
+    HttpClientError.HttpClientError | Schema.SchemaError,
     HttpClient.HttpClient
-> = Effect.fnUntraced(function* (device: Device) {
+> {
     //  curl \
     //      --request GET \
     //      --header "Accept: application/json" \
@@ -185,37 +183,23 @@ export const makeHttpClient: (
     //     Effect.flatMap((response) => response.text)
     // );
 
-    return Layer.function(
-        HttpClient.HttpClient,
-        HttpClient.HttpClient,
-        Function.flow(
-            HttpClient.filterStatusOk,
-            HttpClient.mapRequest(
-                HttpClientRequest.updateUrl((url) =>
-                    url.startsWith("/fdfe/") ? `https://android.clients.google.com${url}` : url
-                )
-            ),
-            HttpClient.mapRequest(
-                HttpClientRequest.setHeaders({
-                    Authorization: "Bearer " + account.auth,
-                    "User-Agent": device.userAgent,
-                    "X-DFE-Device-Id": checkinResponse.androidId.toString(16),
-                    "Accept-Language": "en",
-                    "X-DFE-Encoded-Targets":
-                        "CAESN/qigQYC2AMBFfUbyA7SM5Ij/CvfBoIDgxHqGP8R3xzIBvoQtBKFDZ4HAY4FrwSVMasHBO0O2Q8akgYRAQECAQO7AQEpKZ0CnwECAwRrAQYBr9PPAoK7sQMBAQMCBAkIDAgBAwEDBAICBAUZEgMEBAMLAQEBBQEBAcYBARYED+cBfS8CHQEKkAEMMxcBIQoUDwYHIjd3DQ4MFk0JWGYZEREYAQOLAYEBFDMIEYMBAgICAgICOxkCD18LGQKEAcgDBIQBAgGLARkYCy8oBTJlBCUocxQn0QUBDkkGxgNZQq0BZSbeAmIDgAEBOgGtAaMCDAOQAZ4BBIEBKUtQUYYBQscDDxPSARA1oAEHAWmnAsMB2wFyywGLAxol+wImlwOOA80CtwN26A0WjwJVbQEJPAH+BRDeAfkHK/ABASEBCSAaHQemAzkaRiu2Ad8BdXeiAwEBGBUBBN4LEIABK4gB2AFLfwECAdoENq0CkQGMBsIBiQEtiwGgA1zyAUQ4uwS8AwhsvgPyAcEDF27vApsBHaICGhl3GSKxAR8MC6cBAgItmQYG9QIeywLvAeYBDArLAh8HASI4ELICDVmVBgsY/gHWARtcAsMBpALiAdsBA7QBpAJmIArpByn0AyAKBwHTARIHAX8D+AMBcRIBBbEDmwUBMacCHAciNp0BAQF0OgQLJDuSAh54kwFSP0eeAQQ4M5EBQgMEmwFXywFo0gFyWwMcapQBBugBPUW2AVgBKmy3AR6PAbMBGQxrUJECvQR+8gFoWDsYgQNwRSczBRXQAgtRswEW0ALMAREYAUEBIG6yATYCRE8OxgER8gMBvQEDRkwLc8MBTwHZAUOnAXiiBakDIbYBNNcCIUmuArIBSakBrgFHKs0EgwV/G3AD0wE6LgECtQJ4xQFwFbUCjQPkBS6vAQqEAUZF3QIM9wEhCoYCQhXsBCyZArQDugIziALWAdIBlQHwBdUErQE6qQaSA4EEIvYBHir9AQVLmgMCApsCKAwHuwgrENsBAjNYswEVmgIt7QJnN4wDEnta+wGfAcUBxgEtEFXQAQWdAUAeBcwBAQM7rAEJATJ0LENrdh73A6UBhAE+qwEeASxLZUMhDREuH0CGARbd7K0GlQo",
-                    "X-DFE-Phenotype":
-                        "H4sIAAAAAAAAAB3OO3KjMAAA0KRNuWXukBkBQkAJ2MhgAZb5u2GCwQZbCH_EJ77QHmgvtDtbv-Z9_H63zXXU0NVPB1odlyGy7751Q3CitlPDvFd8lxhz3tpNmz7P92CFw73zdHU2Ie0Ad2kmR8lxhiErTFLt3RPGfJQHSDy7Clw10bg8kqf2owLokN4SecJTLoSwBnzQSd652_MOf2d1vKBNVedzg4ciPoLz2mQ8efGAgYeLou-l-PXn_7Sna1MfhHuySxt-4esulEDp8Sbq54CPPKjpANW-lkU2IZ0F92LBI-ukCKSptqeq1eXU96LD9nZfhKHdtjSWwJqUm_2r6pMHOxk01saVanmNopjX3YxQafC4iC6T55aRbC8nTI98AF_kItIQAJb5EQxnKTO7TZDWnr01HVPxelb9A2OWX6poidMWl16K54kcu_jhXw-JSBQkVcD_fPsLSZu6joIBAAA",
-                    "X-DFE-Client-Id": "am-android-google",
-                    "X-DFE-Network-Type": "4",
-                    "X-DFE-Content-Filters": "",
-                    "X-Limit-Ad-Tracking-Enabled": "false",
-                    "X-Ad-Id": "",
-                    "X-DFE-UserLanguages": "en",
-                    "X-DFE-Request-Params": "timeoutMs=4000",
-                    "X-DFE-Device-Checkin-Consistency-Token": checkinResponse.deviceCheckinConsistencyToken,
-                    "X-DFE-Device-Config-Token": uploadDeviceConfigResponse.uploadDeviceConfigToken,
-                })
-            )
-        )
-    );
-}, Layer.unwrapEffect);
+    return {
+        Authorization: "Bearer " + account.auth,
+        "User-Agent": device.userAgent,
+        "X-DFE-Device-Id": checkinResponse.androidId.toString(16),
+        "Accept-Language": "en",
+        "X-DFE-Encoded-Targets":
+            "CAESN/qigQYC2AMBFfUbyA7SM5Ij/CvfBoIDgxHqGP8R3xzIBvoQtBKFDZ4HAY4FrwSVMasHBO0O2Q8akgYRAQECAQO7AQEpKZ0CnwECAwRrAQYBr9PPAoK7sQMBAQMCBAkIDAgBAwEDBAICBAUZEgMEBAMLAQEBBQEBAcYBARYED+cBfS8CHQEKkAEMMxcBIQoUDwYHIjd3DQ4MFk0JWGYZEREYAQOLAYEBFDMIEYMBAgICAgICOxkCD18LGQKEAcgDBIQBAgGLARkYCy8oBTJlBCUocxQn0QUBDkkGxgNZQq0BZSbeAmIDgAEBOgGtAaMCDAOQAZ4BBIEBKUtQUYYBQscDDxPSARA1oAEHAWmnAsMB2wFyywGLAxol+wImlwOOA80CtwN26A0WjwJVbQEJPAH+BRDeAfkHK/ABASEBCSAaHQemAzkaRiu2Ad8BdXeiAwEBGBUBBN4LEIABK4gB2AFLfwECAdoENq0CkQGMBsIBiQEtiwGgA1zyAUQ4uwS8AwhsvgPyAcEDF27vApsBHaICGhl3GSKxAR8MC6cBAgItmQYG9QIeywLvAeYBDArLAh8HASI4ELICDVmVBgsY/gHWARtcAsMBpALiAdsBA7QBpAJmIArpByn0AyAKBwHTARIHAX8D+AMBcRIBBbEDmwUBMacCHAciNp0BAQF0OgQLJDuSAh54kwFSP0eeAQQ4M5EBQgMEmwFXywFo0gFyWwMcapQBBugBPUW2AVgBKmy3AR6PAbMBGQxrUJECvQR+8gFoWDsYgQNwRSczBRXQAgtRswEW0ALMAREYAUEBIG6yATYCRE8OxgER8gMBvQEDRkwLc8MBTwHZAUOnAXiiBakDIbYBNNcCIUmuArIBSakBrgFHKs0EgwV/G3AD0wE6LgECtQJ4xQFwFbUCjQPkBS6vAQqEAUZF3QIM9wEhCoYCQhXsBCyZArQDugIziALWAdIBlQHwBdUErQE6qQaSA4EEIvYBHir9AQVLmgMCApsCKAwHuwgrENsBAjNYswEVmgIt7QJnN4wDEnta+wGfAcUBxgEtEFXQAQWdAUAeBcwBAQM7rAEJATJ0LENrdh73A6UBhAE+qwEeASxLZUMhDREuH0CGARbd7K0GlQo",
+        "X-DFE-Phenotype":
+            "H4sIAAAAAAAAAB3OO3KjMAAA0KRNuWXukBkBQkAJ2MhgAZb5u2GCwQZbCH_EJ77QHmgvtDtbv-Z9_H63zXXU0NVPB1odlyGy7751Q3CitlPDvFd8lxhz3tpNmz7P92CFw73zdHU2Ie0Ad2kmR8lxhiErTFLt3RPGfJQHSDy7Clw10bg8kqf2owLokN4SecJTLoSwBnzQSd652_MOf2d1vKBNVedzg4ciPoLz2mQ8efGAgYeLou-l-PXn_7Sna1MfhHuySxt-4esulEDp8Sbq54CPPKjpANW-lkU2IZ0F92LBI-ukCKSptqeq1eXU96LD9nZfhKHdtjSWwJqUm_2r6pMHOxk01saVanmNopjX3YxQafC4iC6T55aRbC8nTI98AF_kItIQAJb5EQxnKTO7TZDWnr01HVPxelb9A2OWX6poidMWl16K54kcu_jhXw-JSBQkVcD_fPsLSZu6joIBAAA",
+        "X-DFE-Client-Id": "am-android-google",
+        "X-DFE-Network-Type": "4",
+        "X-DFE-Content-Filters": "",
+        "X-Limit-Ad-Tracking-Enabled": "false",
+        "X-Ad-Id": "",
+        "X-DFE-UserLanguages": "en",
+        "X-DFE-Request-Params": "timeoutMs=4000",
+        "X-DFE-Device-Checkin-Consistency-Token": checkinResponse.deviceCheckinConsistencyToken,
+        "X-DFE-Device-Config-Token": uploadDeviceConfigResponse.uploadDeviceConfigToken,
+    };
+});

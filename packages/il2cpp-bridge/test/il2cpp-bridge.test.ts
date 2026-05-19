@@ -1,8 +1,9 @@
 import "@efffrida/polyfills";
-import { describe, it } from "@effect/vitest";
-import { FridaIl2cppBridge } from "@efffrida/il2cpp-bridge";
 
 import { Effect } from "effect";
+
+import { describe, it } from "@effect/vitest";
+import { FridaIl2cppBridge } from "@efffrida/il2cpp-bridge";
 
 describe("il2cpp-bridge", () => {
     it.effect("should run il2cpp bridge program", () =>

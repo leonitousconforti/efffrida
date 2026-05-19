@@ -4,13 +4,41 @@
  */
 
 import "frida-il2cpp-bridge";
-import * as Cause from "effect/Cause";
-import * as Effect from "effect/Effect";
-import * as Equivalence from "effect/Equivalence";
-import * as Function from "effect/Function";
-import * as Tuple from "effect/Tuple";
 
-import * as Il2CppEquivalence from "./Equivalence.ts";
+import * as Cache from "effect/Cache";
+import * as Cause from "effect/Cause";
+import * as Data from "effect/Data";
+import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
+
+import { CacheCapacity } from "./Assembly.ts";
+
+export {
+    /**
+     * @since 1.0.0
+     * @category Cache
+     */
+    CacheCapacity,
+} from "./Assembly.ts";
+
+/** @internal */
+class ImageNameKey extends Data.Class<{
+    readonly image: Il2Cpp.Image;
+    readonly name: string;
+}> {}
+
+/** @internal */
+class ClassNameKey extends Data.Class<{
+    readonly klass: Il2Cpp.Class;
+    readonly name: string;
+}> {}
+
+/** @internal */
+class MethodKey extends Data.Class<{
+    readonly klass: Il2Cpp.Class;
+    readonly name: string;
+    readonly parameterCount: number | undefined;
+}> {}
 
 /**
  * @since 1.0.0
@@ -34,13 +62,13 @@ export {
  * @category Class
  */
 export const tryClass = Function.dual<
-    (name: string) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
-    (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>
+    (name: string) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
+    (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>
 >(2, (image: Il2Cpp.Image, name: string) =>
     Effect.try({
         try: () => image.tryClass(name),
-        catch: () => new Cause.NoSuchElementException(`No class with name ${name}`),
-    }).pipe(Effect.flatMap(Effect.fromNullable))
+        catch: () => new Cause.NoSuchElementError(`No class with name ${name}`),
+    }).pipe(Effect.flatMap(Effect.fromNullishOr))
 );
 
 /**
@@ -51,9 +79,9 @@ export const classCached: Effect.Effect<
     (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, never, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(class_), Equivalence.tuple(Il2CppEquivalence.image, Equivalence.string)),
-    Function.untupled
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) => Cache.make({ capacity, lookup: (key: ImageNameKey) => class_(key.image, key.name) })),
+    Effect.map((cache) => (image: Il2Cpp.Image, name: string) => Cache.get(cache, new ImageNameKey({ image, name })))
 );
 
 /**
@@ -61,12 +89,26 @@ export const classCached: Effect.Effect<
  * @category Class
  */
 export const tryClassCached: Effect.Effect<
-    (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
+    (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(tryClass), Equivalence.tuple(Il2CppEquivalence.image, Equivalence.string)),
-    Function.untupled
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: ImageNameKey) => tryClass(key.image, key.name),
+            capacity,
+        })
+    ),
+    Effect.map(
+        (cache) => (image: Il2Cpp.Image, name: string) =>
+            Cache.get(
+                cache,
+                new ImageNameKey({
+                    image,
+                    name,
+                })
+            )
+    )
 );
 
 /**
@@ -107,21 +149,21 @@ export const tryField = Function.dual<
         name: string
     ) => <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
         klass: Il2Cpp.Class
-    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>,
+    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>,
     <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
         klass: Il2Cpp.Class,
         name: string
-    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>
+    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>
 >(
     2,
     <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
         klass: Il2Cpp.Class,
         name: string
-    ): Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never> =>
+    ): Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never> =>
         Effect.try({
             try: () => klass.field<T>(name),
-            catch: () => new Cause.NoSuchElementException(`No field with name ${name}`),
-        }).pipe(Effect.flatMap(Effect.fromNullable))
+            catch: () => new Cause.NoSuchElementError(`No field with name ${name}`),
+        }).pipe(Effect.flatMap(Effect.fromNullishOr))
 );
 
 /**
@@ -135,13 +177,27 @@ export const fieldCached: Effect.Effect<
     ) => Effect.Effect<Il2Cpp.Field<T>, never, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(field), Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string)),
-    (tupled) =>
-        Function.untupled(tupled) as <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
-            klass: Il2Cpp.Class,
-            name: string
-        ) => Effect.Effect<Il2Cpp.Field<T>, never, never>
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: ClassNameKey) => field(key.klass, key.name),
+            capacity,
+        })
+    ),
+    Effect.map(
+        (cache) =>
+            ((klass: Il2Cpp.Class, name: string) =>
+                Cache.get(
+                    cache,
+                    new ClassNameKey({
+                        klass,
+                        name,
+                    })
+                )) as <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+                klass: Il2Cpp.Class,
+                name: string
+            ) => Effect.Effect<Il2Cpp.Field<T>, never, never>
+    )
 );
 
 /**
@@ -152,16 +208,30 @@ export const tryFieldCached: Effect.Effect<
     <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
         klass: Il2Cpp.Class,
         name: string
-    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>,
+    ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(tryField), Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string)),
-    (tupled) =>
-        Function.untupled(tupled) as <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
-            klass: Il2Cpp.Class,
-            name: string
-        ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: ClassNameKey) => tryField(key.klass, key.name),
+            capacity,
+        })
+    ),
+    Effect.map(
+        (cache) =>
+            ((klass: Il2Cpp.Class, name: string) =>
+                Cache.get(
+                    cache,
+                    new ClassNameKey({
+                        klass,
+                        name,
+                    })
+                )) as <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+                klass: Il2Cpp.Class,
+                name: string
+            ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>
+    )
 );
 
 /**
@@ -206,23 +276,23 @@ export const tryMethod = Function.dual<
         parameterCount?: number | undefined
     ) => <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
         klass: Il2Cpp.Class
-    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>,
+    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>,
     <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
         klass: Il2Cpp.Class,
         name: string,
         parameterCount?: number | undefined
-    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>
+    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>
 >(
     (_arguments) => typeof _arguments[1] === "string",
     <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
         klass: Il2Cpp.Class,
         name: string,
         parameterCount?: number | undefined
-    ): Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never> =>
+    ): Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never> =>
         Effect.try({
             try: () => klass.tryMethod<T>(name, parameterCount),
-            catch: () => new Cause.NoSuchElementException(`No method with name ${name}`),
-        }).pipe(Effect.flatMap(Effect.fromNullable))
+            catch: () => new Cause.NoSuchElementError(`No method with name ${name}`),
+        }).pipe(Effect.flatMap(Effect.fromNullishOr))
 );
 
 /**
@@ -237,20 +307,24 @@ export const methodCached: Effect.Effect<
     ) => Effect.Effect<Il2Cpp.Method<T>, never, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(
-        Function.tupled(method),
-        Equivalence.mapInput(
-            Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string, Equivalence.strict<number | undefined>()),
-            (tuple) => Tuple.make(tuple[0], tuple[1], tuple[2] ?? undefined)
-        )
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: MethodKey) => method(key.klass, key.name, key.parameterCount),
+            capacity,
+        })
     ),
-    (tupled) =>
-        Function.untupled(tupled) as <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
-            klass: Il2Cpp.Class,
-            name: string,
-            parameterCount?: number | undefined
-        ) => Effect.Effect<Il2Cpp.Method<T>, never, never>
+    Effect.map(
+        (cache) =>
+            ((klass: Il2Cpp.Class, name: string, parameterCount?: number) =>
+                Cache.get(cache, new MethodKey({ klass, name, parameterCount }))) as <
+                T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType,
+            >(
+                klass: Il2Cpp.Class,
+                name: string,
+                parameterCount?: number | undefined
+            ) => Effect.Effect<Il2Cpp.Method<T>, never, never>
+    )
 );
 
 /**
@@ -262,23 +336,27 @@ export const tryMethodCached: Effect.Effect<
         klass: Il2Cpp.Class,
         name: string,
         parameterCount?: number | undefined
-    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>,
+    ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(
-        Function.tupled(tryMethod),
-        Equivalence.mapInput(
-            Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string, Equivalence.strict<number | undefined>()),
-            (tuple) => Tuple.make(tuple[0], tuple[1], tuple[2] ?? undefined)
-        )
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: MethodKey) => tryMethod(key.klass, key.name, key.parameterCount),
+            capacity,
+        })
     ),
-    (tupled) =>
-        Function.untupled(tupled) as <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
-            klass: Il2Cpp.Class,
-            name: string,
-            parameterCount?: number | undefined
-        ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>
+    Effect.map(
+        (cache) =>
+            ((klass: Il2Cpp.Class, name: string, parameterCount?: number) =>
+                Cache.get(cache, new MethodKey({ klass, name, parameterCount }))) as <
+                T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType,
+            >(
+                klass: Il2Cpp.Class,
+                name: string,
+                parameterCount?: number | undefined
+            ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>
+    )
 );
 
 /**
@@ -295,13 +373,13 @@ export const nested = Function.dual<
  * @category Class
  */
 export const tryNested = Function.dual<
-    (name: string) => (klass: Il2Cpp.Class) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
-    (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>
+    (name: string) => (klass: Il2Cpp.Class) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
+    (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>
 >(2, (klass: Il2Cpp.Class, name: string) =>
     Effect.try({
         try: () => klass.tryNested(name),
-        catch: () => new Cause.NoSuchElementException(`No nested class with name ${name}`),
-    }).pipe(Effect.flatMap(Effect.fromNullable))
+        catch: () => new Cause.NoSuchElementError(`No nested class with name ${name}`),
+    }).pipe(Effect.flatMap(Effect.fromNullishOr))
 );
 
 /**
@@ -312,9 +390,9 @@ export const nestedCached: Effect.Effect<
     (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, never, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(nested), Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string)),
-    Function.untupled
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) => Cache.make({ capacity, lookup: (key: ClassNameKey) => nested(key.klass, key.name) })),
+    Effect.map((cache) => (klass: Il2Cpp.Class, name: string) => Cache.get(cache, new ClassNameKey({ klass, name })))
 );
 
 /**
@@ -322,10 +400,24 @@ export const nestedCached: Effect.Effect<
  * @category Class
  */
 export const tryNestedCached: Effect.Effect<
-    (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
+    (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
     never,
     never
-> = Effect.map(
-    Effect.cachedFunction(Function.tupled(tryNested), Equivalence.tuple(Il2CppEquivalence.class, Equivalence.string)),
-    Function.untupled
+> = CacheCapacity.pipe(
+    Effect.flatMap((capacity) =>
+        Cache.make({
+            lookup: (key: ClassNameKey) => tryNested(key.klass, key.name),
+            capacity,
+        })
+    ),
+    Effect.map(
+        (cache) => (klass: Il2Cpp.Class, name: string) =>
+            Cache.get(
+                cache,
+                new ClassNameKey({
+                    klass,
+                    name,
+                })
+            )
+    )
 );

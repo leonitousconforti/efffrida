@@ -42,7 +42,7 @@ declare const make: (
 ) => Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L94)
+[Source](/blob/main/src/FridaSqlClient.ts#L102)
 
 Since v1.0.0
 
@@ -53,10 +53,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError>
+declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L250)
+[Source](/blob/main/src/FridaSqlClient.ts#L270)
 
 Since v1.0.0
 
@@ -66,11 +66,11 @@ Since v1.0.0
 
 ```ts
 declare const layerConfig: (
-  config: Config.Config.Wrap<SqliteClientConfig>
-) => Layer.Layer<SqliteClient | SqlClient.SqlClient, ConfigError>
+  config: Config.Wrap<SqliteClientConfig>
+) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L236)
+[Source](/blob/main/src/FridaSqlClient.ts#L256)
 
 Since v1.0.0
 
@@ -99,7 +99,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L42)
+[Source](/blob/main/src/FridaSqlClient.ts#L49)
 
 Since v1.0.0
 
@@ -114,14 +114,15 @@ type SqliteClientConfig = (
 ) & {
   readonly disableWAL?: boolean | undefined
   readonly prepareCacheSize?: number | undefined
-  readonly prepareCacheTTL?: Duration.DurationInput | undefined
+  readonly prepareCacheTTL?: Duration.Input | undefined
   readonly spanAttributes?: Record<string, unknown> | undefined
+
   readonly transformQueryNames?: ((str: string) => string) | undefined
   readonly transformResultNames?: ((str: string) => string) | undefined
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L69)
+[Source](/blob/main/src/FridaSqlClient.ts#L76)
 
 Since v1.0.0
 
@@ -132,10 +133,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const SqliteClient: Context.Tag<SqliteClient, SqliteClient>
+declare const SqliteClient: Context.Service<SqliteClient, SqliteClient>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L63)
+[Source](/blob/main/src/FridaSqlClient.ts#L70)
 
 Since v1.0.0
 
@@ -149,7 +150,7 @@ Since v1.0.0
 declare const TypeId: unique symbol
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L30)
+[Source](/blob/main/src/FridaSqlClient.ts#L37)
 
 Since v1.0.0
 
@@ -161,6 +162,6 @@ Since v1.0.0
 type TypeId = typeof TypeId
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L36)
+[Source](/blob/main/src/FridaSqlClient.ts#L43)
 
 Since v1.0.0

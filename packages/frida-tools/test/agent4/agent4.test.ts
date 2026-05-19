@@ -1,7 +1,7 @@
+import { Effect, Option, Stream } from "effect";
+
 import { expect, layer } from "@effect/vitest";
 import { FridaScript } from "@efffrida/frida-tools";
-
-import { Effect, Option, Stream } from "effect";
 
 import { FridaLive } from "../base.ts";
 
@@ -9,7 +9,7 @@ const ScriptLive = FridaScript.layer(new URL("effect.agent.ts", import.meta.url)
 
 layer(FridaLive, { excludeTestServices: true })("local device tests", (it) => {
     it.layer(ScriptLive)((it) => {
-        it.scoped("agent4 on local device", () =>
+        it.effect("agent4 on local device", () =>
             Effect.gen(function* () {
                 const script = yield* FridaScript.FridaScript;
                 const firstMessage = yield* Stream.runHead(script.stream);

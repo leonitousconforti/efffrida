@@ -16,9 +16,6 @@ Since v1.0.0
 
 - [Errors](#errors)
   - [FridaSessionError (class)](#fridasessionerror-class)
-  - [FridaSessionErrorTypeId](#fridasessionerrortypeid)
-  - [FridaSessionErrorTypeId (type alias)](#fridasessionerrortypeid-type-alias)
-  - [isFridaSessionError](#isfridasessionerror)
 
 ---
 
@@ -32,42 +29,6 @@ Since v1.0.0
 declare class FridaSessionError
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L35)
-
-Since v1.0.0
-
-## FridaSessionErrorTypeId
-
-**Signature**
-
-```ts
-declare const FridaSessionErrorTypeId: unique symbol
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L14)
-
-Since v1.0.0
-
-## FridaSessionErrorTypeId (type alias)
-
-**Signature**
-
-```ts
-type FridaSessionErrorTypeId = typeof FridaSessionErrorTypeId
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L22)
-
-Since v1.0.0
-
-## isFridaSessionError
-
-**Signature**
-
-```ts
-declare const isFridaSessionError: (u: unknown) => u is FridaSessionError
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L13)
 
 Since v1.0.0

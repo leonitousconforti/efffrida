@@ -4,7 +4,8 @@
  */
 
 import "frida-il2cpp-bridge";
-import { Array, Option, Record, pipe } from "effect";
+
+import { Array, Option, Record, pipe, Result } from "effect";
 
 /**
  * @since 1.0.0
@@ -94,7 +95,7 @@ export class Dictionary<
     public toRecord(keys?: Array<K> | undefined): Record<string, V> {
         const readKeyOptionString = (key: K): Option.Option<string> =>
             key instanceof Il2Cpp.String
-                ? Option.fromNullable(key.isNull() ? null : key.content)
+                ? Option.fromNullOr(key.isNull() ? null : key.content)
                 : Option.some(key.toString());
 
         const readValueOption = (key: K): Option.Option<V> =>
@@ -102,7 +103,12 @@ export class Dictionary<
 
         return pipe(
             keys ?? this.keys,
-            Array.filterMap((key) => Option.product(readKeyOptionString(key), readValueOption(key))),
+            Array.filterMap((key) => {
+                const maybeKey = readKeyOptionString(key);
+                const maybeValue = readValueOption(key);
+                const product = Option.product(maybeKey, maybeValue);
+                return Result.fromOption(product, () => void 0);
+            }),
             Record.fromEntries
         );
     }

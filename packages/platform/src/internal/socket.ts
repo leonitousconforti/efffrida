@@ -1,6 +1,6 @@
-import * as EffectSocket from "@effect/platform/Socket";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
+import * as EffectSocket from "effect/unstable/socket/Socket";
 
 import * as internalStream from "./stream.ts";
 
@@ -27,7 +27,13 @@ export const connect = (options: SocketConnectOptions): Effect.Effect<EffectSock
         Effect.map(
             Effect.tryPromise({
                 try: () => Socket.connect(options),
-                catch: (error) => new EffectSocket.SocketGenericError({ reason: "Open" as const, cause: error }),
+                catch: (error) =>
+                    new EffectSocket.SocketError({
+                        reason: new EffectSocket.SocketOpenError({
+                            kind: "Unknown",
+                            cause: error,
+                        }),
+                    }),
             }),
             toTransformStream
         )
@@ -37,8 +43,15 @@ export const connect = (options: SocketConnectOptions): Effect.Effect<EffectSock
 export const listen = (
     options?: (SocketListenOptions & { readonly closeCodeIsError?: (code: number) => boolean }) | undefined
 ): Effect.Effect<EffectSocket.Socket, never, never> => {
+    const error = (error: unknown) =>
+        new EffectSocket.SocketError({
+            reason: new EffectSocket.SocketOpenError({
+                kind: "Unknown",
+                cause: error,
+            }),
+        });
+
     // Acquire a socket listener
-    const error = (error: unknown) => new EffectSocket.SocketGenericError({ reason: "Open" as const, cause: error });
     const acquireSocketListener = Effect.tryPromise({ try: () => Socket.listen(options), catch: error });
     const releaseSocketListener = (socketListener: SocketListener) => Effect.promise(() => socketListener.close());
 

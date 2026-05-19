@@ -1,11 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.base.jsonc",
-    "references": [
-        { "path": "../frida-tools/tsconfig.build.json" },
-        { "path": "./tsconfig.build-frida.json" },
-        { "path": "./tsconfig.build-node.json" }
-    ],
+    "references": [{ "path": "./tsconfig.build-frida.json" }, { "path": "./tsconfig.build-node.json" }],
     "include": [],
     "compilerOptions": {
         "tsBuildInfoFile": ".tsbuildinfo/build.tsbuildinfo",

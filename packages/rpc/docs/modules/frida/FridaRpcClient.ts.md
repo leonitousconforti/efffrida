@@ -29,29 +29,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const layerProtocolFrida: (
-  options?:
-    | {
-        readonly generateExportName?: (() => string) | undefined
-        readonly receivingStreamShareOptions?:
-          | {
-              readonly capacity: "unbounded"
-              readonly replay?: number | undefined
-              readonly idleTimeToLive?: Duration.DurationInput | undefined
-            }
-          | {
-              readonly capacity: number
-              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined
-              readonly replay?: number | undefined
-              readonly idleTimeToLive?: Duration.DurationInput | undefined
-            }
-          | undefined
-      }
-    | undefined
-) => Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization>
+declare const layerProtocolFrida: Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L162)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L100)
 
 Since v1.0.0
 
@@ -62,28 +43,13 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeProtocolFrida: (
-  options?:
-    | {
-        readonly generateExportName?: (() => string) | undefined
-        readonly receivingStreamShareOptions?:
-          | {
-              readonly capacity: "unbounded"
-              readonly replay?: number | undefined
-              readonly idleTimeToLive?: Duration.DurationInput | undefined
-            }
-          | {
-              readonly capacity: number
-              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined
-              readonly replay?: number | undefined
-              readonly idleTimeToLive?: Duration.DurationInput | undefined
-            }
-          | undefined
-      }
-    | undefined
-) => Effect.Effect<RpcClient.Protocol["Type"], never, RpcSerialization.RpcSerialization | Scope.Scope>
+declare const makeProtocolFrida: () => Effect.Effect<
+  RpcClient.Protocol["Service"],
+  never,
+  RpcSerialization.RpcSerialization | Scope.Scope
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L27)
 
 Since v1.0.0

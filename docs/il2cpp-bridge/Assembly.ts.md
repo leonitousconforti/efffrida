@@ -18,6 +18,8 @@ Since v1.0.0
   - [attach](#attach)
   - [tryAssembly](#tryassembly)
   - [tryAssemblyCached](#tryassemblycached)
+- [Cache](#cache)
+  - [CacheCapacity](#cachecapacity)
 
 ---
 
@@ -31,7 +33,7 @@ Since v1.0.0
 declare const assembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L18)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L28)
 
 Since v1.0.0
 
@@ -47,7 +49,7 @@ declare const assemblyCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L45)
 
 Since v1.0.0
 
@@ -59,7 +61,7 @@ Since v1.0.0
 declare const attach: Effect.Effect<Il2Cpp.Thread, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L53)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L63)
 
 Since v1.0.0
 
@@ -68,10 +70,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const tryAssembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementException, never>
+declare const tryAssembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L25)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L35)
 
 Since v1.0.0
 
@@ -81,12 +83,26 @@ Since v1.0.0
 
 ```ts
 declare const tryAssemblyCached: Effect.Effect<
-  (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementException, never>,
+  (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementError, never>,
   never,
   never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L44)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L54)
+
+Since v1.0.0
+
+# Cache
+
+## CacheCapacity
+
+**Signature**
+
+```ts
+declare const CacheCapacity: Context.Reference<number>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L19)
 
 Since v1.0.0

@@ -1,139 +1,112 @@
-import type * as PlatformError from "@effect/platform/Error";
-import type * as FridaDeviceAcquisitionError from "@efffrida/frida-tools/FridaDeviceAcquisitionError";
-import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 import type * as Option from "effect/Option";
-import type * as ParseResult from "effect/ParseResult";
-import type * as Runtime from "effect/Runtime";
-import type * as VitestNode from "vitest/node";
 
-import * as NodeContext from "@effect/platform-node/NodeContext";
-import * as Command from "@effect/platform/Command";
-import * as CommandExecutor from "@effect/platform/CommandExecutor";
-import * as FileSystem from "@effect/platform/FileSystem";
-import * as Path from "@effect/platform/Path";
-import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
-import * as FridaScript from "@efffrida/frida-tools/FridaScript";
-import * as FridaSession from "@efffrida/frida-tools/FridaSession";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
+import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Match from "effect/Match";
+import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
+import * as ChildProcess from "effect/unstable/process/ChildProcess";
+
+import type * as VitestNode from "vitest/node";
+
+import * as NodeServices from "@effect/platform-node/NodeServices";
+import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
+import * as FridaScript from "@efffrida/frida-tools/FridaScript";
+import * as FridaSession from "@efffrida/frida-tools/FridaSession";
 import * as Esbuild from "esbuild";
 import * as Flatted from "flatted";
 import * as Frida from "frida";
 
 // First, pick your device
-class DeviceSchema extends Schema.Union(
+const DeviceSchema = Schema.Union([
     Schema.Struct({
-        device: Schema.Literal("local"),
+        connection: Schema.Literal("local"),
     }),
     Schema.Struct({
-        device: Schema.Literal("usb"),
-        timeout: Schema.optionalWith(Schema.DurationFromMillis, { nullable: true }),
+        connection: Schema.Literal("usb"),
+        timeout: Schema.optional(Schema.DurationFromMillis),
     }),
     Schema.Struct({
         address: Schema.String,
-        device: Schema.Literal("remote"),
-        token: Schema.optionalWith(Schema.String, { nullable: true }),
-        origin: Schema.optionalWith(Schema.String, { nullable: true }),
-        keepaliveInterval: Schema.optionalWith(Schema.DurationFromMillis, { nullable: true }),
+        connection: Schema.Literal("remote"),
+        token: Schema.optional(Schema.String),
+        origin: Schema.optional(Schema.String),
+        keepaliveInterval: Schema.optional(Schema.DurationFromMillis),
     }),
     Schema.Struct({
         emulatorName: Schema.String,
-        device: Schema.Literal("android-emulator"),
-        hidden: Schema.optionalWith(Schema.Boolean, { nullable: true }),
-        adbExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
-        fridaExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
-        emulatorExecutable: Schema.optionalWith(Schema.String, { nullable: true }),
-    })
-) {}
+        hidden: Schema.optional(Schema.Boolean),
+        adbExecutable: Schema.optional(Schema.String),
+        connection: Schema.Literal("android-emulator"),
+        fridaExecutable: Schema.optional(Schema.String),
+        emulatorExecutable: Schema.optional(Schema.String),
+    }),
+]);
 
 // Second, pick your session
-class AttachSchema extends Schema.Union(
+const AttachSchema = Schema.Union([
     Schema.Struct({
-        attach: Schema.Number.pipe(Schema.brand("pid")),
+        pid: Schema.Number,
     }),
     Schema.Struct({
-        spawn: Schema.NonEmptyArrayEnsure(Schema.String),
-        preSpawn: Schema.optionalWith(Schema.Boolean, { nullable: true }),
+        spawn: Schema.NonEmptyArray(Schema.String),
+        preSpawn: Schema.optional(Schema.Boolean),
     }),
     Schema.Struct({
         attachFrontmost: Schema.Literal(true),
-        frontmostScope: Schema.optionalWith(Schema.Literal("minimal", "metadata", "full"), { nullable: true }),
-    })
-) {}
+        frontmostScope: Schema.optional(Schema.Literals(["minimal", "metadata", "full"])),
+    }),
+]);
 
 // Third, pick your runtime and platform
-class ConfigSchema extends Schema.Struct({
-    runtime: Schema.optionalWith(Schema.Literal("default", "qjs", "v8"), { nullable: true }),
-    platform: Schema.optionalWith(Schema.Literal("gum", "browser", "neutral"), { nullable: true }),
-})
-    .pipe(Schema.extend(DeviceSchema), Schema.extend(AttachSchema)) {}
+const ConfigSchema = Schema.Struct({
+    device: DeviceSchema,
+    attach: AttachSchema,
+    runtime: Schema.optional(Schema.Literals(["default", "qjs", "v8"])),
+    platform: Schema.optional(Schema.Literals(["gum", "browser", "neutral"])),
+});
 
 /**
  * @since 1.0.0
  * @category Tests
  */
 export class FridaPoolWorker implements VitestNode.PoolWorker {
-    readonly name = "frida-pool";
     readonly agentTemplatePath = new URL("../frida/agent.ts", import.meta.url);
+    readonly name = "frida-pool";
 
-    private readonly poolOptions: VitestNode.PoolOptions;
-    private readonly customOptions: Schema.Schema.Type<ConfigSchema>;
+    private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
 
-    private readonly cancelables: Map<
-        (arg: any) => void,
-        Runtime.Cancel<
-            unknown,
-            | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
-            | PlatformError.PlatformError
-            | FridaSessionError.FridaSessionError
-        >
-    >;
+    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void>;
 
-    private modifiedAgentScope: Scope.CloseableScope;
-    private managedRuntime:
-        | ManagedRuntime.ManagedRuntime<
-              FridaScript.FridaScript,
-              | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
-              | PlatformError.PlatformError
-              | FridaSessionError.FridaSessionError
-          >
-        | undefined;
-    private sends: Array<
-        Promise<
-            Exit.Exit<
-                void,
-                | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
-                | PlatformError.PlatformError
-                | FridaSessionError.FridaSessionError
-                | ParseResult.ParseError
-            >
-        >
-    > = [];
+    private modifiedAgentScope: Scope.Closeable;
+    private managedRuntime: ManagedRuntime.ManagedRuntime<FridaScript.FridaScript, unknown> | undefined;
+    private sends: Array<Promise<Exit.Exit<unknown, unknown>>> = [];
+    private compiledAgentUrlPromise: Promise<URL>;
+    private messageCallback: ((arg: any) => void) | undefined;
 
-    constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<ConfigSchema>) {
-        this.poolOptions = poolOptions;
+    constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
         this.customOptions = customOptions;
         this.cancelables = new Map();
         this.managedRuntime = undefined;
         this.modifiedAgentScope = Effect.runSync(Scope.make());
+        this.compiledAgentUrlPromise = compileTestFiles(this.agentTemplatePath, poolOptions).pipe(
+            Scope.provide(this.modifiedAgentScope),
+            Effect.provide(NodeServices.layer),
+            Effect.runPromise
+        );
     }
 
     async start(): Promise<void> {
-        const tempAgentUrl = await compileTestFiles(this.agentTemplatePath, this.poolOptions).pipe(
-            Scope.extend(this.modifiedAgentScope),
-            Effect.provide(NodeContext.layer),
-            Effect.runPromise
-        );
+        const tempAgentUrl = await this.compiledAgentUrlPromise;
 
         const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
@@ -151,14 +124,14 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const DeviceLive = Match.value(this.customOptions).pipe(
-            Match.when({ device: "local" }, () => FridaDevice.layerLocalDevice),
-            Match.when({ device: "usb" }, ({ timeout }) =>
+        const DeviceLive = Match.value(this.customOptions.device).pipe(
+            Match.when({ connection: "local" }, () => FridaDevice.layerLocalDevice),
+            Match.when({ connection: "usb" }, ({ timeout }) =>
                 FridaDevice.layerUsbDevice({
                     timeout: timeout ? Duration.toMillis(timeout) : undefined,
                 } as Frida.GetDeviceOptions)
             ),
-            Match.when({ device: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
+            Match.when({ connection: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
                 FridaDevice.layerRemoteDevice(address, {
                     token,
                     origin,
@@ -166,37 +139,36 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
                 } as Frida.RemoteDeviceOptions)
             ),
             Match.when(
-                { device: "android-emulator" },
+                { connection: "android-emulator" },
                 ({ adbExecutable, emulatorExecutable, emulatorName, fridaExecutable, hidden }) =>
                     FridaDevice.layerAndroidEmulatorDevice(emulatorName, {
-                        hidden,
-                        adbExecutable,
-                        fridaExecutable,
-                        emulatorExecutable,
+                        hidden: hidden ?? undefined,
+                        adbExecutable: adbExecutable ?? undefined,
+                        fridaExecutable: fridaExecutable ?? undefined,
+                        emulatorExecutable: emulatorExecutable ?? undefined,
                     })
             ),
             Match.exhaustive
         );
 
-        const SessionLive = Match.value(this.customOptions).pipe(
-            Match.when({ attach: Match.number }, ({ attach }) => FridaSession.layer(attach)),
+        const SessionLive = Match.value(this.customOptions.attach).pipe(
+            Match.when({ pid: Match.number }, ({ pid }) => FridaSession.layer(pid)),
             Match.when({ attachFrontmost: true }, ({ frontmostScope }) =>
                 FridaSession.layerFrontmost({ scope: frontmostScope } as Frida.FrontmostQueryOptions)
             ),
             Match.when({ preSpawn: true }, ({ spawn }) =>
-                Layer.unwrapScoped(
+                Layer.unwrap(
                     Effect.gen(function* () {
-                        const executor = yield* CommandExecutor.CommandExecutor;
-                        const command = Command.make(...spawn);
-                        const process = yield* executor.start(command);
-                        return FridaSession.layer(process.pid);
+                        const [command, ...args] = spawn;
+                        const handle = yield* ChildProcess.make(command, args);
+                        return FridaSession.layer(handle.pid);
                     })
                 )
             ),
             Match.orElse(({ spawn }) => FridaSession.layer(spawn))
         );
 
-        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeContext.layer));
+        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeServices.layer));
         const ScriptLive = FridaScript.layer(tempAgentUrl, {
             externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
             ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
@@ -214,59 +186,65 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     async stop(): Promise<void> {
         for (const cancelable of this.cancelables.values()) cancelable();
         this.cancelables.clear();
-        // await Promise.allSettled(this.sends);
+        await Promise.allSettled(this.sends);
         await this.managedRuntime!.dispose();
         await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
         const sendPromise = this.managedRuntime!.runPromiseExit(
-            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                fridaScript.callExport("onMessage", Schema.Void)(message)
-            )
+            Effect.flatMap(FridaScript.FridaScript, (fridaScript) => fridaScript.callExport("onMessage")(message))
         );
 
         this.sends.push(sendPromise);
         const exit = await sendPromise;
         this.sends = this.sends.filter((p) => p !== sendPromise);
-        if (Exit.isSuccess(exit)) return;
+        if (Exit.isSuccess(exit)) {
+            if (exit.value !== null && exit.value !== undefined) {
+                this.messageCallback?.(exit.value);
+            }
+            return;
+        }
         const prettyError = Cause.prettyErrors(exit.cause);
         throw prettyError[0];
     }
 
     on(event: string, callback: (arg: any) => void): void {
-        let cancelable!: Runtime.Cancel<
-            unknown,
-            | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
-            | PlatformError.PlatformError
-            | FridaSessionError.FridaSessionError
-        >;
-
-        const sink = Sink.forEach<
-            {
-                message: unknown;
-                data: Option.Option<Buffer<ArrayBufferLike>>;
-            },
-            void,
-            never,
-            never
-        >((input) =>
-            Effect.sync(() => {
-                callback(input.message);
-            })
-        );
+        let cancelable!: (interrupter?: number) => void;
 
         switch (event) {
-            case "message":
+            case "message": {
+                this.messageCallback = callback;
+                const sink = Sink.forEach<
+                    {
+                        message: unknown;
+                        data: Option.Option<Buffer<ArrayBufferLike>>;
+                    },
+                    void,
+                    never,
+                    never
+                >((input) =>
+                    Effect.sync(() => {
+                        callback(input.message);
+                    })
+                );
                 cancelable = this.managedRuntime!.runCallback(
                     Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Stream.run(fridaScript.stream, sink))
                 );
                 break;
+            }
 
             case "error":
                 cancelable = this.managedRuntime!.runCallback(
                     Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.scriptError)),
-                    { onExit: (exit) => (Exit.isSuccess(exit) ? callback(exit.value) : !Cause.isInterruptedOnly(exit.cause) ? callback(exit.cause) : {}) }
+                    {
+                        onExit: (exit) =>
+                            Exit.isSuccess(exit)
+                                ? callback(exit.value)
+                                : !Cause.hasInterruptsOnly(exit.cause)
+                                  ? callback(exit.cause)
+                                  : {},
+                    }
                 );
                 break;
 
@@ -290,6 +268,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             this.cancelables.delete(callback);
             cancelable();
         }
+        if (this.messageCallback === callback) {
+            this.messageCallback = undefined;
+        }
     }
 
     deserialize(data: unknown) {
@@ -307,7 +288,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
  * @category Tests
  */
 export const createFridaPool = (
-    customOptions: Schema.Schema.Encoded<ConfigSchema>
+    customOptions: Schema.Codec.Encoded<typeof ConfigSchema>
 ): VitestNode.PoolRunnerInitializer => {
     const decoded = Schema.decodeUnknownSync(ConfigSchema)(customOptions);
     return {
@@ -459,13 +440,15 @@ const vitestGlobalsPlugin: Esbuild.Plugin = {
 const compileTestFiles = Effect.fnUntraced(function* (
     agentTemplatePath: URL,
     poolOptions: VitestNode.PoolOptions,
-    customOptions?: Schema.Schema.Type<ConfigSchema> | undefined
-): Effect.fn.Return<URL, PlatformError.PlatformError, Path.Path | FileSystem.FileSystem | Scope.Scope> {
+    customOptions?: Schema.Schema.Type<typeof ConfigSchema> | undefined
+) {
     const path = yield* Path.Path;
     const fs = yield* FileSystem.FileSystem;
     const url = yield* path.fromFileUrl(agentTemplatePath);
 
-    const testFiles: Array<string> = (poolOptions.project as any).testFilesList ?? [];
+    const testFilesList: Array<string> = (poolOptions.project as any).testFilesList ?? [];
+    const setupFiles: Array<string> = poolOptions.project.config.setupFiles ?? [];
+    const allFiles = [...new Set([...setupFiles, ...testFilesList])];
     const testFilesMap: Record<string, string> = {};
 
     const esbuildPlatform = Match.value(customOptions?.platform).pipe(
@@ -475,7 +458,7 @@ const compileTestFiles = Effect.fnUntraced(function* (
         Match.orElseAbsurd
     );
 
-    for (const testFile of testFiles) {
+    for (const testFile of allFiles) {
         const result = yield* Effect.promise(() =>
             Esbuild.build({
                 bundle: true,
@@ -489,7 +472,7 @@ const compileTestFiles = Effect.fnUntraced(function* (
         );
 
         if (!result.outputFiles || result.outputFiles.length === 0) {
-            return yield* Effect.dieMessage(`esbuild produced no output for ${testFile}`);
+            return yield* Effect.die(new Error(`esbuild produced no output for ${testFile}`));
         } else {
             testFilesMap[testFile] = Buffer.from(result.outputFiles[0].text).toString("base64");
         }

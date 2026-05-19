@@ -4,9 +4,6 @@
  * @since 1.0.0
  */
 
-import type * as Channel from "effect/Channel";
-import type * as Chunk from "effect/Chunk";
-
 import type * as FridaSink from "./Sink.ts";
 import type * as FridaStream from "./Stream.ts";
 
@@ -22,5 +19,4 @@ export const fromIOStream: <E1, E2>(
     onWriteError: (error: unknown) => E1,
     onReadError: (error: unknown) => E2,
     options?: (FridaStream.FromInputStreamOptions & FridaSink.FromWritableOptions) | undefined
-) => Channel.Channel<Chunk.Chunk<Uint8Array>, Chunk.Chunk<Uint8Array>, E1 | E2, never, void, unknown, never> =
-    internal.fromIOStream;
+) => ReturnType<typeof internal.fromIOStream<E1, E2>> = internal.fromIOStream;

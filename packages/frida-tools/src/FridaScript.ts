@@ -4,32 +4,32 @@
  * @since 1.0.0
  */
 
-import type * as FileSystem from "@effect/platform/FileSystem";
-import type * as Path from "@effect/platform/Path";
 import type * as Context from "effect/Context";
 import type * as Deferred from "effect/Deferred";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
 import type * as Exit from "effect/Exit";
+import type * as FileSystem from "effect/FileSystem";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
-import type * as ParseResult from "effect/ParseResult";
+import type * as Path from "effect/Path";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 import type * as Sink from "effect/Sink";
 import type * as Stream from "effect/Stream";
-import type * as Frida from "frida";
 
 import type * as FridaSession from "./FridaSession.ts";
 import type * as FridaSessionError from "./FridaSessionError.ts";
+import type * as Frida from "frida";
 
-import * as internal from "./internal/script.ts";
+import * as internalCompiler from "./internal/compiler.ts";
+import * as internalScript from "./internal/script.ts";
 
 /**
  * @since 1.0.0
  * @category Type ids
  */
-export const FridaScriptTypeId: unique symbol = internal.FridaScriptTypeId;
+export const FridaScriptTypeId: unique symbol = internalScript.FridaScriptTypeId;
 
 /**
  * @since 1.0.0
@@ -58,23 +58,23 @@ export interface FridaScript {
         FridaSessionError.FridaSessionError,
         never
     >;
-    readonly callExport: <A, I, R>(
+    readonly callExport: <A = unknown, R = never>(
         exportName: string,
-        schema: Schema.Schema<A, I, R>
-    ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | ParseResult.ParseError, R>;
+        schema?: Schema.Decoder<A, R> | undefined
+    ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | Schema.SchemaError, R>;
 }
 
 /**
  * @since 1.0.0
  * @category Tags
  */
-export const FridaScript: Context.Tag<FridaScript, FridaScript> = internal.Tag;
+export const FridaScript: Context.Service<FridaScript, FridaScript> = internalScript.Tag;
 
 /**
  * @since 1.0.0
  * @category Predicates
  */
-export const isFridaScript: (u: unknown) => u is FridaScript = internal.isFridaScript;
+export const isFridaScript: (u: unknown) => u is FridaScript = internalScript.isFridaScript;
 
 /**
  * @since 1.0.0
@@ -82,23 +82,22 @@ export const isFridaScript: (u: unknown) => u is FridaScript = internal.isFridaS
  */
 export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions {
     readonly messageMailboxCapacity?:
-        | number
         | {
-              readonly capacity?: number;
-              readonly strategy?: "suspend" | "dropping" | "sliding";
+              readonly capacity?: number | undefined;
+              readonly strategy?: "suspend" | "dropping" | "sliding" | undefined;
           }
         | undefined;
     readonly streamShareOptions?:
         | {
               readonly capacity: "unbounded";
               readonly replay?: number | undefined;
-              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+              readonly idleTimeToLive?: Duration.Input | undefined;
           }
         | {
               readonly capacity: number;
               readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
               readonly replay?: number | undefined;
-              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+              readonly idleTimeToLive?: Duration.Input | undefined;
           }
         | undefined;
 }
@@ -111,11 +110,11 @@ export const compile: {
     (
         entrypoint: string,
         options?: Frida.CompilerOptions | undefined
-    ): Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
+    ): Effect.Effect<string, FridaSessionError.FridaSessionError>;
     (
         options?: Frida.CompilerOptions | undefined
-    ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>;
-} = internal.compile;
+    ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError>;
+} = internalCompiler.compile;
 
 /**
  * @since 1.0.0
@@ -139,7 +138,7 @@ export const load: {
         FridaSessionError.FridaSessionError,
         Path.Path | FridaSession.FridaSession | Scope.Scope
     >;
-} = internal.load;
+} = internalScript.load;
 
 /**
  * @since 1.0.0
@@ -153,7 +152,7 @@ export const layer: {
     (
         options?: LoadOptions | undefined
     ): (entrypoint: URL) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>;
-} = internal.layer;
+} = internalScript.layer;
 
 /**
  * @since 1.0.0
@@ -179,7 +178,7 @@ export const watch: {
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
-} = internal.watch;
+} = internalScript.watch;
 
 /**
  * Successes will be logged with info, failures with warning, defects with
@@ -190,4 +189,4 @@ export const watch: {
  */
 export const logWatchErrors: <A, E1, E2, R>(
     watchStream: Stream.Stream<Exit.Exit<A, E1>, E2, R>
-) => Stream.Stream<Exit.Exit<A, E1>, E2, R> = internal.logWatchErrors;
+) => Stream.Stream<Exit.Exit<A, E1>, E2, R> = internalScript.logWatchErrors;

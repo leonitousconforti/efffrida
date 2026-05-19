@@ -33,8 +33,7 @@ is interrupted or the stream is finished.
 declare const MemoryAccessMonitorStream: (
   ranges: MemoryAccessRange | Array<MemoryAccessRange>,
   options?:
-    | { readonly bufferSize: "unbounded" }
-    | { readonly bufferSize?: number | undefined; readonly strategy?: "dropping" | "sliding" | undefined }
+    | { readonly bufferSize?: number | undefined; readonly strategy?: "sliding" | "dropping" | "suspend" | undefined }
     | undefined
 ) => Stream.Stream<MemoryAccessDetails, never, never>
 ```

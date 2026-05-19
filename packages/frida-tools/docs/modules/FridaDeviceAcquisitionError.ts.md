@@ -16,9 +16,6 @@ Since v1.0.0
 
 - [Errors](#errors)
   - [FridaDeviceAcquisitionError (class)](#fridadeviceacquisitionerror-class)
-  - [FridaDeviceAcquisitionErrorTypeId](#fridadeviceacquisitionerrortypeid)
-  - [FridaDeviceAcquisitionErrorTypeId (type alias)](#fridadeviceacquisitionerrortypeid-type-alias)
-  - [isFridaDeviceAcquisitionError](#isfridadeviceacquisitionerror)
 
 ---
 
@@ -32,42 +29,6 @@ Since v1.0.0
 declare class FridaDeviceAcquisitionError
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L35)
-
-Since v1.0.0
-
-## FridaDeviceAcquisitionErrorTypeId
-
-**Signature**
-
-```ts
-declare const FridaDeviceAcquisitionErrorTypeId: unique symbol
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L14)
-
-Since v1.0.0
-
-## FridaDeviceAcquisitionErrorTypeId (type alias)
-
-**Signature**
-
-```ts
-type FridaDeviceAcquisitionErrorTypeId = typeof FridaDeviceAcquisitionErrorTypeId
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L22)
-
-Since v1.0.0
-
-## isFridaDeviceAcquisitionError
-
-**Signature**
-
-```ts
-declare const isFridaDeviceAcquisitionError: (u: unknown) => u is FridaDeviceAcquisitionError
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaDeviceAcquisitionError.ts#L13)
 
 Since v1.0.0

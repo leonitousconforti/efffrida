@@ -19,10 +19,9 @@ import * as internal from "./internal/memoryAccessMonitor.ts";
 export const MemoryAccessMonitorStream: (
     ranges: MemoryAccessRange | Array<MemoryAccessRange>,
     options?:
-        | { readonly bufferSize: "unbounded" }
         | {
               readonly bufferSize?: number | undefined;
-              readonly strategy?: "dropping" | "sliding" | undefined;
+              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
           }
         | undefined
 ) => Stream.Stream<MemoryAccessDetails, never, never> = internal.memoryAccessMonitorStream;
