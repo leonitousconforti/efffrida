@@ -19,7 +19,7 @@ Since v1.0.0
   - [layerProtocolFrida](#layerprotocolfrida)
 - [Protocol](#protocol)
   - [makeProtocolFrida](#makeprotocolfrida)
-  - [makeProtocolFridaWithExport](#makeprotocolfridawithexport)
+  - [makeProtocolFridaNoSendRecv](#makeprotocolfridanosendrecv)
 
 ---
 
@@ -40,7 +40,7 @@ declare const layerProtocolFrida: (
 ) => Layer.Layer<RpcServer.Protocol, never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L169)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L161)
 
 Since v1.0.0
 
@@ -52,33 +52,33 @@ Since v1.0.0
 
 ```ts
 declare const makeProtocolFrida: (
-  options?: { readonly generateExportName?: ((clientId: number) => string) | undefined } | undefined
-) => Effect.Effect<
-  { readonly protocol: RpcServer.Protocol["Type"]; readonly rpcExport: () => Promise<number> },
-  never,
-  RpcSerialization.RpcSerialization
->
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L25)
-
-Since v1.0.0
-
-## makeProtocolFridaWithExport
-
-**Signature**
-
-```ts
-declare const makeProtocolFridaWithExport: (
   options?:
     | {
         readonly exportName?: string | undefined
         readonly generateExportName?: ((clientId: number) => string) | undefined
       }
     | undefined
-) => Effect.Effect<RpcServer.Protocol["Type"], never, RpcSerialization.RpcSerialization>
+) => Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L145)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L136)
+
+Since v1.0.0
+
+## makeProtocolFridaNoSendRecv
+
+**Signature**
+
+```ts
+declare const makeProtocolFridaNoSendRecv: (
+  options?: { readonly generateExportName?: ((clientId: number) => string) | undefined } | undefined
+) => Effect.Effect<
+  { readonly protocol: RpcServer.Protocol["Service"]; readonly rpcExport: () => Promise<string> },
+  never,
+  RpcSerialization.RpcSerialization
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L24)
 
 Since v1.0.0

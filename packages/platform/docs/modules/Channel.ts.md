@@ -35,9 +35,9 @@ declare const fromIOStream: <E1, E2>(
   onWriteError: (error: unknown) => E1,
   onReadError: (error: unknown) => E2,
   options?: (FridaStream.FromInputStreamOptions & FridaSink.FromWritableOptions) | undefined
-) => Channel.Channel<Chunk.Chunk<Uint8Array>, Chunk.Chunk<Uint8Array>, E1 | E2, never, void, unknown, never>
+) => ReturnType<typeof internal.fromIOStream<E1, E2>>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Channel.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Channel.ts#L17)
 
 Since v1.0.0

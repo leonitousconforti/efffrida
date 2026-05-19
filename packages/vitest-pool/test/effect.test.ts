@@ -1,6 +1,6 @@
-import { describe, expect, it } from "@effect/vitest";
-
 import { Effect } from "effect";
+
+import { describe, expect, it } from "@effect/vitest";
 
 import { A } from "./shared.ts";
 
@@ -14,6 +14,6 @@ describe("vitest-pool effect", () => {
 
     it("can access Frida APIs", () =>
         Effect.gen(function* () {
-            expect(Frida.version).toBe("17.9.8");
+            expect(Frida.version).toBe("17.9.10");
         }));
 });

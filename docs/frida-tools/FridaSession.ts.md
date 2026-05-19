@@ -120,14 +120,14 @@ Since v1.0.0
 export interface FridaSession {
   readonly session: Frida.Session
   readonly [FridaSessionTypeId]: typeof FridaSessionTypeId
-  readonly resume: Effect.Effect<void, Cause.UnknownException>
-  readonly enableChildGating: Effect.Effect<void, Cause.UnknownException>
-  readonly disableChildGating: Effect.Effect<void, Cause.UnknownException>
-  setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>
+  readonly resume: Effect.Effect<void, Cause.UnknownError>
+  readonly enableChildGating: Effect.Effect<void, Cause.UnknownError>
+  readonly disableChildGating: Effect.Effect<void, Cause.UnknownError>
+  setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError>
   joinPortal(
     address: string,
     options?: Frida.PortalOptions | undefined
-  ): Effect.Effect<Frida.PortalMembership, Cause.UnknownException>
+  ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError>
 }
 ```
 
@@ -156,7 +156,7 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const FridaSession: Context.Tag<FridaSession, FridaSession>
+declare const FridaSession: Context.Service<FridaSession, FridaSession>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L52)

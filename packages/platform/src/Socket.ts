@@ -4,8 +4,8 @@
  * @since 1.0.0
  */
 
-import type * as EffectSocket from "@effect/platform/Socket";
 import type * as Effect from "effect/Effect";
+import type * as EffectSocket from "effect/unstable/socket/Socket";
 
 import * as internal from "./internal/socket.ts";
 

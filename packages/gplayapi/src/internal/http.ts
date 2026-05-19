@@ -1,10 +1,11 @@
-import * as Protobuf from "@bufbuild/protobuf";
-import * as HttpClientError from "@effect/platform/HttpClientError";
-import * as HttpClientRequest from "@effect/platform/HttpClientRequest";
-import * as HttpClientResponse from "@effect/platform/HttpClientResponse";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Predicate from "effect/Predicate";
+import * as HttpClientError from "effect/unstable/http/HttpClientError";
+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
+
+import * as Protobuf from "@bufbuild/protobuf";
 
 import { type PayloadSchema, ResponseWrapperSchema } from "../generated/GooglePlay_pb.ts";
 
@@ -27,7 +28,7 @@ export const encodeRequest = Function.dual<
     ) => Effect.Effect<HttpClientRequest.HttpClientRequest, HttpClientError.HttpClientError, never>
 >(
     // Data first if the first argument is an http request
-    (arguments_) => Predicate.hasProperty(arguments_[0], HttpClientRequest.TypeId),
+    (arguments_: IArguments) => HttpClientRequest.isHttpClientRequest(arguments_[0]),
 
     // Body implementation
     Effect.fn("encodeRequest")(function* <Description extends Protobuf.DescMessage>(
@@ -47,11 +48,12 @@ export const encodeRequest = Function.dual<
                     options ?? { writeUnknownFields: true }
                 ),
             catch: (cause) =>
-                new HttpClientError.RequestError({
-                    cause,
-                    request,
-                    reason: "Encode",
-                    description: `Could not encode message of type ${messageType}`,
+                new HttpClientError.HttpClientError({
+                    reason: new HttpClientError.EncodeError({
+                        description: `Could not encode message of type ${messageType}`,
+                        request,
+                        cause,
+                    }),
                 }),
         });
 
@@ -77,7 +79,7 @@ export const decodeResponse = Function.dual<
     ) => Effect.Effect<Exclude<Protobuf.MessageShape<Desc>, undefined>, HttpClientError.HttpClientError, never>
 >(
     // Data first if the first argument is an http response
-    (arguments_) => Predicate.hasProperty(arguments_[0], HttpClientResponse.TypeId),
+    (arguments_: IArguments) => Predicate.hasProperty(arguments_[0], HttpClientResponse.TypeId),
 
     // Body implementation
     Effect.fn("decodeResponse")(function* <Desc extends Protobuf.DescMessage>(
@@ -97,21 +99,23 @@ export const decodeResponse = Function.dual<
                     options ?? { readUnknownFields: true }
                 ),
             catch: (cause) =>
-                new HttpClientError.ResponseError({
-                    cause,
-                    response,
-                    reason: "Decode",
-                    request: response.request,
-                    description: `Could not decode message of type ${messageType}`,
+                new HttpClientError.HttpClientError({
+                    reason: new HttpClientError.DecodeError({
+                        description: `Could not decode message of type ${messageType}`,
+                        request: response.request,
+                        response,
+                        cause,
+                    }),
                 }),
         });
 
         if (Predicate.isUndefined(message)) {
-            return yield* new HttpClientError.ResponseError({
-                response,
-                reason: "Decode",
-                request: response.request,
-                description: `Message of type ${messageType} is missing`,
+            return yield* new HttpClientError.HttpClientError({
+                reason: new HttpClientError.DecodeError({
+                    description: `Message of type ${messageType} is missing`,
+                    request: response.request,
+                    response,
+                }),
             });
         }
 
@@ -154,7 +158,7 @@ export const decodeResponseFromResponseWrapper = Function.dual<
     >
 >(
     // Data first if the first argument is an http response
-    (arguments_) => Predicate.hasProperty(arguments_[0], HttpClientResponse.TypeId),
+    (arguments_: IArguments) => Predicate.hasProperty(arguments_[0], HttpClientResponse.TypeId),
 
     // Body implementation
     Effect.fn("decodeResponse")(function* <
@@ -171,21 +175,23 @@ export const decodeResponseFromResponseWrapper = Function.dual<
         const responseWrapper = yield* decodeResponse(response, ResponseWrapperSchema, options);
 
         if (Predicate.isNotUndefined(responseWrapper.commands?.displayErrorMessage)) {
-            return yield* new HttpClientError.ResponseError({
-                response,
-                reason: "Decode",
-                request: response.request,
-                description: responseWrapper.commands.displayErrorMessage,
+            return yield* new HttpClientError.HttpClientError({
+                reason: new HttpClientError.DecodeError({
+                    description: responseWrapper.commands.displayErrorMessage,
+                    request: response.request,
+                    response,
+                }),
             });
         }
 
         const extracted = responseWrapper.payload?.[extractPayload];
         if (Predicate.isUndefined(extracted)) {
-            return yield* new HttpClientError.ResponseError({
-                response,
-                reason: "Decode",
-                request: response.request,
-                description: `ResponseWrapper has no payload of type ${extractPayload}`,
+            return yield* new HttpClientError.HttpClientError({
+                reason: new HttpClientError.DecodeError({
+                    description: `ResponseWrapper has no payload of type ${extractPayload}`,
+                    request: response.request,
+                    response,
+                }),
             });
         }
 

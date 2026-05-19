@@ -37,6 +37,6 @@ declare const runMain: <A, E>(
 ) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/FridaRuntime.ts#L23)
+[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/FridaRuntime.ts#L19)
 
 Since v1.0.0

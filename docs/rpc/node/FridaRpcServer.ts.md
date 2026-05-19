@@ -15,10 +15,30 @@ Since v1.0.0
 
 ## Exports Grouped by Category
 
+- [Layer](#layer)
+  - [layerProtocolFrida](#layerprotocolfrida)
 - [Protocol](#protocol)
   - [makeProtocolFrida](#makeprotocolfrida)
 
 ---
+
+# Layer
+
+## layerProtocolFrida
+
+**Signature**
+
+```ts
+declare const layerProtocolFrida: Layer.Layer<
+  RpcServer.Protocol,
+  never,
+  FridaScript.FridaScript | RpcSerialization.RpcSerialization
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L142)
+
+Since v1.0.0
 
 # Protocol
 
@@ -28,12 +48,12 @@ Since v1.0.0
 
 ```ts
 declare const makeProtocolFrida: () => Effect.Effect<
-  unknown,
+  RpcServer.Protocol["Service"],
   never,
   FridaScript.FridaScript | RpcSerialization.RpcSerialization | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L32)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L30)
 
 Since v1.0.0

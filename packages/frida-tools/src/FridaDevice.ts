@@ -4,15 +4,16 @@
  * @since 1.0.0
  */
 
-import type * as CommandExecutor from "@effect/platform/CommandExecutor";
-import type * as ConfigError from "effect/ConfigError";
+import type * as Config from "effect/Config";
 import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
+import type * as Path from "effect/Path";
 import type * as Scope from "effect/Scope";
-import type * as Frida from "frida";
+import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts";
+import type * as Frida from "frida";
 
 import * as internal from "./internal/device.ts";
 
@@ -42,7 +43,7 @@ export interface FridaDevice {
  * @since 1.0.0
  * @category Tags
  */
-export const FridaDevice: Context.Tag<FridaDevice, FridaDevice> = internal.Tag;
+export const FridaDevice: Context.Service<FridaDevice, FridaDevice> = internal.Tag;
 
 /**
  * @since 1.0.0
@@ -97,7 +98,7 @@ export const acquireAndroidEmulatorDevice: (
 ) => Effect.Effect<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-    CommandExecutor.CommandExecutor | Scope.Scope
+    ChildProcessSpawner.ChildProcessSpawner | Scope.Scope
 > = internal.acquireAndroidEmulatorDevice;
 
 /**
@@ -115,8 +116,8 @@ export const acquireAndroidEmulatorDeviceConfig: (
         | undefined
 ) => Effect.Effect<
     FridaDevice,
-    ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-    CommandExecutor.CommandExecutor | Scope.Scope
+    Config.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    ChildProcessSpawner.ChildProcessSpawner | Path.Path | Scope.Scope
 > = internal.acquireAndroidEmulatorDeviceConfig;
 
 /**
@@ -165,7 +166,7 @@ export const layerAndroidEmulatorDevice: (
 ) => Layer.Layer<
     FridaDevice,
     FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-    CommandExecutor.CommandExecutor
+    ChildProcessSpawner.ChildProcessSpawner
 > = internal.layerAndroidEmulatorDevice;
 
 /**
@@ -183,6 +184,6 @@ export const layerAndroidEmulatorDeviceConfig: (
         | undefined
 ) => Layer.Layer<
     FridaDevice,
-    ConfigError.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
-    CommandExecutor.CommandExecutor
+    Config.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    ChildProcessSpawner.ChildProcessSpawner | Path.Path
 > = internal.layerAndroidEmulatorDeviceConfig;

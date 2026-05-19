@@ -1,6 +1,6 @@
-import { describe, expect, it } from "@effect/vitest";
-
 import { Data, Effect, Stream } from "effect";
+
+import { describe, expect, it } from "@effect/vitest";
 
 class WriteError extends Data.TaggedError("WriteError")<{ message: string }> {}
 

@@ -1,9 +1,9 @@
-import { Command } from "@effect/platform";
-import { NodeContext, NodeRuntime } from "@effect/platform-node";
+import { Context, Effect, Layer, pipe, Stream, String, Tuple, References } from "effect";
+import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
+
+import { NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { GooglePlayApi } from "@efffrida/gplayapi";
-
-import { Cause, Context, Effect, Layer, Logger, LogLevel, pipe, Stream, String, Tuple } from "effect";
 
 const DeviceLive = pipe(
     FridaDevice.layerAndroidEmulatorDeviceConfig("Small_Phone", {
@@ -15,18 +15,17 @@ const DeviceLive = pipe(
             function* (deviceCtx: Context.Context<FridaDevice.FridaDevice>) {
                 const device = Context.get(deviceCtx, FridaDevice.FridaDevice);
                 const emulatorName = String.replace("android-emulator://", "")(device.host);
-                const apks = yield* Effect.provide(
-                    GooglePlayApi.download("com.nimblebit.tinytower"),
-                    GooglePlayApi.defaultHttpClient
-                );
+                const childProcessSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+
+                const androidDevice = yield* GooglePlayApi.AndroidDevice.EmbeddedPixel7a;
+                const apks = yield* GooglePlayApi.download(androidDevice, "com.nimblebit.tinytower");
 
                 yield* Effect.annotateCurrentSpan({
                     "apk.path": apks,
                     "emulator.name": emulatorName,
                 });
 
-                const installCommand = Command.make(
-                    "/Users/leo.conforti/Library/Android/sdk/platform-tools/adb",
+                const installCommand = ChildProcess.make("/Users/leo.conforti/Library/Android/sdk/platform-tools/adb", [
                     "-s",
                     emulatorName,
                     "install-multiple",
@@ -34,26 +33,27 @@ const DeviceLive = pipe(
                     "-t", // Allow test packages
                     "-g", // Grant all runtime permissions
                     "-d", // Allow downgrade
-                    ...apks.map((apk) => apk.file)
-                );
+                    ...apks.map((apk) => apk.file),
+                ]);
 
-                const exitCode = yield* Command.exitCode(installCommand);
+                const exitCode = yield* childProcessSpawner.exitCode(installCommand);
                 if (exitCode !== 0) {
                     return yield* new FridaDeviceAcquisitionError.FridaDeviceAcquisitionError({
-                        attempts: 1,
+                        cause: `Failed to install APK. Exit code: ${exitCode}`,
                         acquisitionMethod: "android-emulator",
-                        cause: new Cause.RuntimeException(`Failed to install APK. Exit code: ${exitCode}`),
+                        attempts: 1,
                     });
                 }
             },
             Effect.scoped,
             Effect.timed,
-            Effect.map(Tuple.getFirst),
+            Effect.map(Tuple.get(1)),
             Effect.flatMap((time) => Effect.logDebug(`APK downloading and installing took ${time}`)),
             Effect.asVoid
         )
     ),
-    Layer.provide(NodeContext.layer)
+    Layer.provide(NodeServices.layer),
+    Layer.provide(NodeHttpClient.layerFetch)
 );
 
 const SessionLive = Layer.provide(FridaSession.layer("com.nimblebit.tinytower"), DeviceLive);
@@ -66,5 +66,5 @@ Effect.gen(function* () {
     yield* Effect.sleep("30 seconds");
 })
     .pipe(Effect.provide(ScriptLive))
-    .pipe(Effect.provide(Logger.minimumLogLevel(LogLevel.Debug)))
+    .pipe(Effect.provideService(References.MinimumLogLevel, "Debug"))
     .pipe(NodeRuntime.runMain);

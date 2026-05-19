@@ -4,9 +4,9 @@
  * @since 1.0.0
  */
 
-import type * as FileSystem from "@effect/platform/FileSystem";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
+import type * as FileSystem from "effect/FileSystem";
 import type * as Function from "effect/Function";
 import type * as Scope from "effect/Scope";
 import type * as Stream from "effect/Stream";
@@ -30,13 +30,13 @@ export const receiveStream: (
         | {
               readonly capacity: "unbounded";
               readonly replay?: number | undefined;
-              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+              readonly idleTimeToLive?: Duration.Input | undefined;
           }
         | {
               readonly capacity: number;
               readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
               readonly replay?: number | undefined;
-              readonly idleTimeToLive?: Duration.DurationInput | undefined;
+              readonly idleTimeToLive?: Duration.Input | undefined;
           }
 ) => Effect.Effect<
     Stream.Stream<

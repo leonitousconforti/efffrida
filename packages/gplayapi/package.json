@@ -51,26 +51,17 @@
         "check": "tsc -b tsconfig.json",
         "protobuf": "buf generate"
     },
-    "dependencies": {
-        "properties-file": "5.0.4"
-    },
     "devDependencies": {
         "@bufbuild/buf": "1.69.0",
         "@bufbuild/protobuf": "2.12.0",
-        "@effect/cluster": "0.58.2",
-        "@effect/experimental": "0.60.0",
-        "@effect/platform": "0.96.1",
-        "@effect/platform-node": "0.106.0",
-        "@effect/rpc": "0.75.1",
-        "@effect/sql": "0.51.1",
-        "@effect/workflow": "0.18.1",
-        "@types/node": "25.7.0",
-        "effect": "3.21.2"
+        "@effect/platform-node": "4.0.0-beta.66",
+        "@types/node": "25.9.0",
+        "effect": "4.0.0-beta.66",
+        "ioredis": "5.10.1"
     },
     "peerDependencies": {
         "@bufbuild/protobuf": "2.12.0",
-        "@effect/platform": "0.96.1",
-        "effect": "3.21.2"
+        "effect": "4.0.0-beta.66"
     },
     "tags": [
         "frida.re",

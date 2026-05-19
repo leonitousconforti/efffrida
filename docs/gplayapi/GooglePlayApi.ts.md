@@ -21,11 +21,8 @@ Since v1.0.0
   - [details](#details)
   - [download](#download)
   - [purchase](#purchase)
-- [Auth](#auth)
-  - [defaultHttpClient](#defaulthttpclient)
-  - [makeHttpClient](#makehttpclient)
 - [Device](#device)
-  - [Device](#device-1)
+  - [AndroidDevice](#androiddevice)
 
 ---
 
@@ -36,12 +33,18 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const bulkDetails: (
+declare const bulkDetails: ((
+  device: AndroidDevice
+) => (
   bundleIdentifier: string
-) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
+) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
+  ((
+    bundleIdentifier: string,
+    device: AndroidDevice
+  ) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L78)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L77)
 
 Since v1.0.0
 
@@ -50,7 +53,9 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const delivery: (
+declare const delivery: ((
+  device: AndroidDevice
+) => (
   bundleIdentifier: string,
   options: {
     offerType: number
@@ -58,10 +63,20 @@ declare const delivery: (
     versionCode: number | bigint
     certificateHash?: string | undefined
   }
-) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
+) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
+  ((
+    bundleIdentifier: string,
+    options: {
+      offerType: number
+      deliveryToken: string
+      versionCode: number | bigint
+      certificateHash?: string | undefined
+    },
+    device: AndroidDevice
+  ) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L120)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L156)
 
 Since v1.0.0
 
@@ -70,12 +85,18 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const details: (
+declare const details: ((
+  device: AndroidDevice
+) => (
   bundleIdentifier: string
-) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
+) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
+  ((
+    bundleIdentifier: string,
+    device: AndroidDevice
+  ) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L66)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L48)
 
 Since v1.0.0
 
@@ -85,30 +106,19 @@ Since v1.0.0
 
 ```ts
 declare const download: (
+  device: AndroidDevice,
   bundleIdentifier: string
 ) => Effect.Effect<
   readonly [
-    {
-      url: string
-      name: string
-      file: string
-      size: number | bigint
-      integrity: { sha1: string } | { sha256: string }
-    },
-    ...{
-      url: string
-      name: string
-      file: string
-      size: number | bigint
-      integrity: { sha1: string } | { sha256: string }
-    }[]
+    { url: string; name: string; file: string; size: bigint; integrity: { sha1: string } | { sha256: string } },
+    ...{ url: string; name: string; file: string; size: bigint; integrity: { sha1: string } | { sha256: string } }[]
   ],
-  HttpClientError.HttpClientError | PlatformError.PlatformError,
+  HttpClientError.HttpClientError | Schema.SchemaError | PlatformError.PlatformError,
   HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L146)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L210)
 
 Since v1.0.0
 
@@ -117,58 +127,33 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const purchase: (
+declare const purchase: ((
+  device: AndroidDevice
+) => (
   bundleIdentifier: string,
-  options: { offerType: number; versionCode: number | bigint; certificateHash?: string | undefined }
-) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError, HttpClient.HttpClient>
+  options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
+) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
+  ((
+    bundleIdentifier: string,
+    options: { offerType: number; versionCode: number | bigint; certificateHash?: string },
+    device: AndroidDevice
+  ) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L96)
-
-Since v1.0.0
-
-# Auth
-
-## defaultHttpClient
-
-**Signature**
-
-```ts
-declare const defaultHttpClient: Layer.Layer<
-  HttpClient.HttpClient,
-  HttpClientError.HttpClientError | PlatformError.PlatformError | ParseError,
-  FileSystem.FileSystem
->
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L55)
-
-Since v1.0.0
-
-## makeHttpClient
-
-**Signature**
-
-```ts
-declare const makeHttpClient: (
-  device: Device
-) => Layer.Layer<HttpClient.HttpClient, HttpClientError.HttpClientError | ParseError, HttpClient.HttpClient>
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L40)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L116)
 
 Since v1.0.0
 
 # Device
 
-## Device
+## AndroidDevice
 
 **Signature**
 
 ```ts
-declare const Device: typeof Device
+declare const AndroidDevice: typeof AndroidDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L48)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L41)
 
 Since v1.0.0

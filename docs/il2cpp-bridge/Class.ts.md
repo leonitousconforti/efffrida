@@ -12,6 +12,8 @@ Since v1.0.0
 
 ## Exports Grouped by Category
 
+- [Cache](#cache)
+  - [CacheCapacity](#cachecapacity)
 - [Class](#class)
   - [class](#class-1)
   - [classCached](#classcached)
@@ -34,6 +36,20 @@ Since v1.0.0
 
 ---
 
+# Cache
+
+## CacheCapacity
+
+**Signature**
+
+```ts
+declare const CacheCapacity: Reference<number>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L21)
+
+Since v1.0.0
+
 # Class
 
 ## class
@@ -44,7 +60,7 @@ Since v1.0.0
 declare const class: ((name: string) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, never, never>) & ((image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, never, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L30)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L57)
 
 Since v1.0.0
 
@@ -60,7 +76,7 @@ declare const classCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L51)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L78)
 
 Since v1.0.0
 
@@ -80,7 +96,7 @@ declare const field: ((
   ) => Effect.Effect<Il2Cpp.Field<T>, never, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L84)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L125)
 
 Since v1.0.0
 
@@ -99,7 +115,7 @@ declare const fieldCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L132)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L173)
 
 Since v1.0.0
 
@@ -111,7 +127,7 @@ Since v1.0.0
 declare const fields: (klass: Il2Cpp.Class) => Effect.Effect<ReadonlyArray<Il2Cpp.Field>, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L77)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L118)
 
 Since v1.0.0
 
@@ -133,7 +149,7 @@ declare const method: ((
   ) => Effect.Effect<Il2Cpp.Method<T>, never, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L179)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L248)
 
 Since v1.0.0
 
@@ -153,7 +169,7 @@ declare const methodCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L233)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L302)
 
 Since v1.0.0
 
@@ -165,7 +181,7 @@ Since v1.0.0
 declare const methods: (klass: Il2Cpp.Class) => Effect.Effect<ReadonlyArray<Il2Cpp.Method>, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L172)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L241)
 
 Since v1.0.0
 
@@ -178,7 +194,7 @@ declare const nested: ((name: string) => (klass: Il2Cpp.Class) => Effect.Effect<
   ((klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, never, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L289)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L366)
 
 Since v1.0.0
 
@@ -194,7 +210,7 @@ declare const nestedCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L312)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L389)
 
 Since v1.0.0
 
@@ -205,11 +221,11 @@ Since v1.0.0
 ```ts
 declare const tryClass: ((
   name: string
-) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>) &
-  ((image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>)
+) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>) &
+  ((image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L37)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L64)
 
 Since v1.0.0
 
@@ -219,13 +235,13 @@ Since v1.0.0
 
 ```ts
 declare const tryClassCached: Effect.Effect<
-  (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
+  (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
   never,
   never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L64)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L91)
 
 Since v1.0.0
 
@@ -238,14 +254,14 @@ declare const tryField: ((
   name: string
 ) => <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
   klass: Il2Cpp.Class
-) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>) &
+) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>) &
   (<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
     klass: Il2Cpp.Class,
     name: string
-  ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>)
+  ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L106)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L147)
 
 Since v1.0.0
 
@@ -258,13 +274,13 @@ declare const tryFieldCached: Effect.Effect<
   <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
     klass: Il2Cpp.Class,
     name: string
-  ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementException, never>,
+  ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>,
   never,
   never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L152)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L207)
 
 Since v1.0.0
 
@@ -278,15 +294,15 @@ declare const tryMethod: ((
   parameterCount?: number | undefined
 ) => <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
   klass: Il2Cpp.Class
-) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>) &
+) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>) &
   (<T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined
-  ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>)
+  ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L204)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L273)
 
 Since v1.0.0
 
@@ -300,13 +316,13 @@ declare const tryMethodCached: Effect.Effect<
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined
-  ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementException, never>,
+  ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>,
   never,
   never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L261)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L334)
 
 Since v1.0.0
 
@@ -317,11 +333,11 @@ Since v1.0.0
 ```ts
 declare const tryNested: ((
   name: string
-) => (klass: Il2Cpp.Class) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>) &
-  ((klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>)
+) => (klass: Il2Cpp.Class) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>) &
+  ((klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L298)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L375)
 
 Since v1.0.0
 
@@ -331,12 +347,12 @@ Since v1.0.0
 
 ```ts
 declare const tryNestedCached: Effect.Effect<
-  (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementException, never>,
+  (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
   never,
   never
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L325)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Class.ts#L402)
 
 Since v1.0.0

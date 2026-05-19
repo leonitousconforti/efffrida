@@ -1,11 +1,13 @@
+/**
+ * Constants for working with RPC servers and clients.
+ *
+ * @since 1.0.0
+ */
+
 export const defaultServerMainExportName = "rpc";
 export const generateServerExportNameForClient = (clientId: number): string =>
     `@efffrida/rpc/FridaServerRpcListenerForClient/${clientId}`;
 
-let exportIdForClientCallback: number = 0;
-export const generateClientCallbackExportNameForServer = (): string =>
-    `@efffrida/rpc/FridaClientRpcCallback/${exportIdForClientCallback++}`;
-
-export const nodeRpcClientConnectionRequestMessagePrefix = "client id request message";
+export const nodeRpcClientConnectionRequestMessagePrefix = "@efffrida/rpc/NodeRpcClientConnectionRequest/";
 export const nodeRpcClientMakeConnectionRequestForServer = (exportName: string) =>
-    `${nodeRpcClientConnectionRequestMessagePrefix}:${exportName}`;
+    `${nodeRpcClientConnectionRequestMessagePrefix}${exportName}`;

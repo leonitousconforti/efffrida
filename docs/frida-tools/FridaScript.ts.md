@@ -46,14 +46,14 @@ declare const compile: {
   (
     entrypoint: string,
     options?: Frida.CompilerOptions | undefined
-  ): Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
+  ): Effect.Effect<string, FridaSessionError.FridaSessionError>
   (
     options?: Frida.CompilerOptions | undefined
-  ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError, Scope.Scope>
+  ): (entrypoint: string) => Effect.Effect<string, FridaSessionError.FridaSessionError>
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L110)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L109)
 
 Since v1.0.0
 
@@ -83,7 +83,7 @@ declare const load: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L124)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L123)
 
 Since v1.0.0
 
@@ -100,7 +100,7 @@ declare const logWatchErrors: <A, E1, E2, R>(
 ) => Stream.Stream<Exit.Exit<A, E1>, E2, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L191)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L190)
 
 Since v1.0.0
 
@@ -132,7 +132,7 @@ declare const watch: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L162)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L161)
 
 Since v1.0.0
 
@@ -154,7 +154,7 @@ declare const layer: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L148)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L147)
 
 Since v1.0.0
 
@@ -182,10 +182,10 @@ export interface FridaScript {
     FridaSessionError.FridaSessionError,
     never
   >
-  readonly callExport: <A, I, R>(
+  readonly callExport: <A = unknown, R = never>(
     exportName: string,
-    schema: Schema.Schema<A, I, R>
-  ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | ParseResult.ParseError, R>
+    schema?: Schema.Decoder<A, R> | undefined
+  ) => (...args: Array<any>) => Effect.Effect<A, FridaSessionError.FridaSessionError | Schema.SchemaError, R>
 }
 ```
 
@@ -202,23 +202,22 @@ Since v1.0.0
 ```ts
 export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions {
   readonly messageMailboxCapacity?:
-    | number
     | {
-        readonly capacity?: number
-        readonly strategy?: "suspend" | "dropping" | "sliding"
+        readonly capacity?: number | undefined
+        readonly strategy?: "suspend" | "dropping" | "sliding" | undefined
       }
     | undefined
   readonly streamShareOptions?:
     | {
         readonly capacity: "unbounded"
         readonly replay?: number | undefined
-        readonly idleTimeToLive?: Duration.DurationInput | undefined
+        readonly idleTimeToLive?: Duration.Input | undefined
       }
     | {
         readonly capacity: number
         readonly strategy?: "sliding" | "dropping" | "suspend" | undefined
         readonly replay?: number | undefined
-        readonly idleTimeToLive?: Duration.DurationInput | undefined
+        readonly idleTimeToLive?: Duration.Input | undefined
       }
     | undefined
 }
@@ -249,7 +248,7 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const FridaScript: Context.Tag<FridaScript, FridaScript>
+declare const FridaScript: Context.Service<FridaScript, FridaScript>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L71)

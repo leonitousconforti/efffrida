@@ -5,9 +5,10 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
 import * as Predicate from "effect/Predicate";
-import * as Frida from "frida";
 
 import type * as FridaSession from "../FridaSession.ts";
+
+import * as Frida from "frida";
 
 import * as FridaDevice from "../FridaDevice.ts";
 import * as FridaSessionError from "../FridaSessionError.ts";
@@ -18,7 +19,7 @@ export const FridaSessionTypeId: FridaSession.FridaSessionTypeId = Symbol.for(
 ) as FridaSession.FridaSessionTypeId;
 
 /** @internal */
-export const Tag = Context.GenericTag<FridaSession.FridaSession>("@efffrida/frida-tools/FridaSession");
+export const Tag = Context.Service<FridaSession.FridaSession>("@efffrida/frida-tools/FridaSession");
 
 /** @internal */
 export const isFridaSession = (u: unknown): u is FridaSession.FridaSession =>
@@ -35,7 +36,7 @@ export const frontmost = (
             return device.getFrontmostApplication(options, cancellable);
         })
     ).pipe(
-        Effect.flatMap(Effect.fromNullable),
+        Effect.flatMap(Effect.fromNullishOr),
         Effect.mapError(
             (cause) =>
                 new FridaSessionError.FridaSessionError({
@@ -169,7 +170,7 @@ export const layer = (
     target: number | string | ReadonlyArray<string>,
     options?: (Frida.SpawnOptions & Frida.SessionOptions) | undefined
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
-    Layer.scoped(
+    Layer.effect(
         Tag,
         Effect.gen(function* () {
             const pid = yield* Match.value(target).pipe(
@@ -187,4 +188,4 @@ export const layer = (
 export const layerFrontmost = (
     options?: Frida.FrontmostQueryOptions | undefined
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
-    Layer.unwrapEffect(Effect.map(frontmost(options), (app) => layer(app.pid)));
+    Layer.unwrap(Effect.map(frontmost(options), (app) => layer(app.pid)));

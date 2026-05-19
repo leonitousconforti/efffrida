@@ -48,29 +48,16 @@
         "test": "vitest",
         "coverage": "vitest --coverage"
     },
-    "dependencies": {
-        "@opentelemetry/semantic-conventions": "1.41.1"
-    },
     "devDependencies": {
-        "@effect/cluster": "0.58.2",
-        "@effect/experimental": "0.60.0",
-        "@effect/platform": "0.96.1",
-        "@effect/platform-node": "0.106.0",
-        "@effect/rpc": "0.75.1",
-        "@effect/sql": "0.51.1",
-        "@effect/vitest": "0.29.0",
-        "@effect/workflow": "0.18.1",
+        "@effect/vitest": "4.0.0-beta.66",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.7.0",
-        "effect": "3.21.2",
+        "@types/node": "25.9.0",
+        "effect": "4.0.0-beta.66",
         "vitest": "4.1.6"
     },
     "peerDependencies": {
-        "@effect/experimental": "0.60.0",
-        "@effect/platform": "0.96.1",
-        "@effect/sql": "0.51.1",
-        "effect": "3.21.2"
+        "effect": "4.0.0-beta.66"
     },
     "tags": [
         "frida.re",

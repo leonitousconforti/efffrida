@@ -1,6 +1,5 @@
-import * as Rpc from "@effect/rpc/Rpc";
-import * as RpcGroup from "@effect/rpc/RpcGroup";
-import * as Schema from "effect/Schema";
+import { Schema } from "effect";
+import { Rpc, RpcGroup } from "effect/unstable/rpc";
 
 // Define a user with an ID and name
 export class User extends Schema.Class<User>("User")({

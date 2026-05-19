@@ -55,27 +55,22 @@
         "@vitest/utils": "4.1.6",
         "birpc": "4.0.0",
         "esbuild": "0.28.0",
-        "flatted": "3.4.2"
+        "flatted": "3.4.2",
+        "ioredis": "5.10.1"
     },
     "devDependencies": {
-        "@effect/cluster": "0.58.2",
-        "@effect/experimental": "0.60.0",
-        "@effect/platform": "0.96.1",
-        "@effect/platform-node": "0.106.0",
-        "@effect/rpc": "0.75.1",
-        "@effect/sql": "0.51.1",
-        "@effect/workflow": "0.18.1",
+        "@effect/platform-node": "4.0.0-beta.66",
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.7.0",
-        "effect": "3.21.2",
-        "frida": "17.9.8",
+        "@types/node": "25.9.0",
+        "effect": "4.0.0-beta.66",
+        "frida": "17.9.10",
         "vitest": "4.1.6"
     },
     "peerDependencies": {
-        "@effect/platform": "0.96.1",
+        "@effect/platform-node": "4.0.0-beta.66",
         "@vitest/runner": "4.1.6",
         "@vitest/utils": "4.1.6",
-        "effect": "3.21.2",
+        "effect": "4.0.0-beta.66",
         "vitest": "4.1.6"
     },
     "tags": [

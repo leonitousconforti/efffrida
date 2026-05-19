@@ -134,13 +134,13 @@ declare const receiveStream: (
     | {
         readonly capacity: "unbounded"
         readonly replay?: number | undefined
-        readonly idleTimeToLive?: Duration.DurationInput | undefined
+        readonly idleTimeToLive?: Duration.Input | undefined
       }
     | {
         readonly capacity: number
         readonly strategy?: "sliding" | "dropping" | "suspend" | undefined
         readonly replay?: number | undefined
-        readonly idleTimeToLive?: Duration.DurationInput | undefined
+        readonly idleTimeToLive?: Duration.Input | undefined
       }
 ) => Effect.Effect<Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never>, never, Scope.Scope>
 ```

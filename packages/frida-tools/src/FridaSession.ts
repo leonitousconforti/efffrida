@@ -9,10 +9,10 @@ import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Scope from "effect/Scope";
-import type * as Frida from "frida";
 
 import type * as FridaDevice from "./FridaDevice.ts";
 import type * as FridaSessionError from "./FridaSessionError.ts";
+import type * as Frida from "frida";
 
 import * as internal from "./internal/session.ts";
 
@@ -35,21 +35,21 @@ export type FridaSessionTypeId = typeof FridaSessionTypeId;
 export interface FridaSession {
     readonly session: Frida.Session;
     readonly [FridaSessionTypeId]: typeof FridaSessionTypeId;
-    readonly resume: Effect.Effect<void, Cause.UnknownException>;
-    readonly enableChildGating: Effect.Effect<void, Cause.UnknownException>;
-    readonly disableChildGating: Effect.Effect<void, Cause.UnknownException>;
-    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownException>;
+    readonly resume: Effect.Effect<void, Cause.UnknownError>;
+    readonly enableChildGating: Effect.Effect<void, Cause.UnknownError>;
+    readonly disableChildGating: Effect.Effect<void, Cause.UnknownError>;
+    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError>;
     joinPortal(
         address: string,
         options?: Frida.PortalOptions | undefined
-    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownException>;
+    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError>;
 }
 
 /**
  * @since 1.0.0
  * @category Tags
  */
-export const FridaSession: Context.Tag<FridaSession, FridaSession> = internal.Tag;
+export const FridaSession: Context.Service<FridaSession, FridaSession> = internal.Tag;
 
 /**
  * @since 1.0.0

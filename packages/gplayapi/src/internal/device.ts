@@ -1,13 +1,37 @@
-import type * as PlatformError from "@effect/platform/Error";
-import type * as ParseResult from "effect/ParseResult";
+import type * as PlatformError from "effect/PlatformError";
+import type * as HttpClient from "effect/unstable/http/HttpClient";
+import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
-import * as FileSystem from "@effect/platform/FileSystem";
 import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
-import * as PropertiesFile from "properties-file";
+import * as SchemaGetter from "effect/SchemaGetter";
+import * as SchemaTransformation from "effect/SchemaTransformation";
+
+import * as internalAuth from "./auth.ts";
 
 /** @internal */
-export class Device extends Schema.Class<Device>("Device")({
+export const StringArrayFromString = Schema.suspend(() => {
+    const splitter = SchemaGetter.split({ separator: "," });
+    const joiner = SchemaGetter.transform((arr: ReadonlyArray<string>) => arr.join(","));
+    const transform = SchemaTransformation.make({ encode: joiner, decode: splitter });
+    return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
+});
+
+/** @internal */
+export const BooleanFromString = Schema.Literals(["true", "false"]).pipe(
+    Schema.decodeTo(
+        Schema.Boolean,
+        SchemaTransformation.transform({
+            decode: (str) => str === "true",
+            encode: (bool) => (bool ? "true" : "false"),
+        })
+    )
+);
+
+/** @internal */
+export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
     UserReadableName: Schema.String,
     "Build.BOOTLOADER": Schema.String,
     "Build.BRAND": Schema.String,
@@ -23,37 +47,22 @@ export class Device extends Schema.Class<Device>("Device")({
     "Build.VERSION.SDK_INT": Schema.NumberFromString,
     CellOperator: Schema.String,
     Client: Schema.String,
-    Features: Schema.transform(Schema.String, Schema.Array(Schema.String), {
-        encode: (features) => features.join(","),
-        decode: (str) => str.split(","),
-    }),
-    "GL.Extensions": Schema.transform(Schema.String, Schema.Array(Schema.String), {
-        encode: (extensions) => extensions.join(","),
-        decode: (str) => str.split(","),
-    }),
+    Features: StringArrayFromString,
+    "GL.Extensions": StringArrayFromString,
     "GL.Version": Schema.NumberFromString,
     "GSF.version": Schema.NumberFromString,
-    HasFiveWayNavigation: Schema.BooleanFromString,
-    HasHardKeyboard: Schema.BooleanFromString,
+    HasFiveWayNavigation: BooleanFromString,
+    HasHardKeyboard: BooleanFromString,
     Keyboard: Schema.NumberFromString,
-    Locales: Schema.transform(Schema.String, Schema.Array(Schema.String), {
-        encode: (locales) => locales.join(","),
-        decode: (str) => str.split(","),
-    }),
+    Locales: StringArrayFromString,
     Navigation: Schema.NumberFromString,
-    Platforms: Schema.transform(Schema.String, Schema.Array(Schema.String), {
-        encode: (libs) => libs.join(","),
-        decode: (str) => str.split(","),
-    }),
+    Platforms: StringArrayFromString,
     Roaming: Schema.String,
     "Screen.Density": Schema.NumberFromString,
     "Screen.Height": Schema.NumberFromString,
     "Screen.Width": Schema.NumberFromString,
     ScreenLayout: Schema.NumberFromString,
-    SharedLibraries: Schema.transform(Schema.String, Schema.Array(Schema.String), {
-        encode: (libs) => libs.join(","),
-        decode: (str) => str.split(","),
-    }),
+    SharedLibraries: StringArrayFromString,
     SimCountry: Schema.String.pipe(Schema.optional),
     SimOperator: Schema.String.pipe(Schema.optional),
     TimeZone: Schema.String,
@@ -61,16 +70,34 @@ export class Device extends Schema.Class<Device>("Device")({
     "Vending.version": Schema.NumberFromString,
     "Vending.versionString": Schema.String,
 }) {
-    public static fromPropertiesFile = (
-        path: string
-    ): Effect.Effect<Device, PlatformError.PlatformError | ParseResult.ParseError, FileSystem.FileSystem> =>
-        Effect.gen(function* () {
-            const fileSystem = yield* FileSystem.FileSystem;
-            const content = yield* fileSystem.readFileString(path);
-            const properties = PropertiesFile.getProperties(content);
-            const device = yield* Schema.decodeUnknown(Device)(properties);
-            return device;
-        });
+    private authHeadersCache?: Record<string, string> | undefined = undefined;
+
+    public static fromPropertiesFile = Effect.fnUntraced(function* (
+        file: string
+    ): Effect.fn.Return<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem> {
+        const decodeDevice = Schema.decodeUnknownEffect(AndroidDevice);
+        const decodePropertiesFile = Schema.decodeEffect(
+            Schema.String.pipe(
+                Schema.decodeTo(
+                    Schema.Record(Schema.String, Schema.String),
+                    SchemaTransformation.splitKeyValue({
+                        keyValueSeparator: "=",
+                        separator: "\n",
+                    })
+                )
+            )
+        );
+
+        const fileSystem = yield* FileSystem.FileSystem;
+        const content = yield* fileSystem.readFileString(file);
+        const properties = yield* decodePropertiesFile(content);
+        return yield* decodeDevice(properties);
+    });
+
+    public static EmbeddedPixel7a = Path.Path.pipe(
+        Effect.flatMap((path) => path.fromFileUrl(new URL("../../devices/arm64_xxhdpi.properties", import.meta.url))),
+        Effect.flatMap(AndroidDevice.fromPropertiesFile)
+    );
 
     public get userAgent(): string {
         const deviceProperties = {
@@ -93,4 +120,18 @@ export class Device extends Schema.Class<Device>("Device")({
 
         return `Android-Finsky/${this["Vending.versionString"]} (${devicePropertiesString})`;
     }
+
+    public readonly authHeaders: Effect.Effect<
+        Record<string, string>,
+        HttpClientError.HttpClientError | Schema.SchemaError,
+        HttpClient.HttpClient
+    > = Effect.gen({ self: this }, function* () {
+        if (this.authHeadersCache) {
+            return this.authHeadersCache;
+        } else {
+            const authHeaders = yield* internalAuth.authHeaders(this);
+            this.authHeadersCache = authHeaders;
+            return this.authHeadersCache;
+        }
+    });
 }
