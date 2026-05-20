@@ -105,6 +105,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
     }
 
+    public canReuse() {
+        return true;
+    }
+
     async start(): Promise<void> {
         const tempAgentUrl = await this.compiledAgentUrlPromise;
 
