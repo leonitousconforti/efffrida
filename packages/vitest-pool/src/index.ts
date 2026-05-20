@@ -1,4 +1,4 @@
-import type * as Option from "effect/Option";
+import type * as Context from "effect/Context";
 
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
@@ -7,12 +7,10 @@ import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
-import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Match from "effect/Match";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
-import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as ChildProcess from "effect/unstable/process/ChildProcess";
 
@@ -80,35 +78,16 @@ const ConfigSchema = Schema.Struct({
  * @category Tests
  */
 export class FridaPoolWorker implements VitestNode.PoolWorker {
-    readonly agentTemplatePath = new URL("../frida/agent.ts", import.meta.url);
-    readonly name = "frida-pool";
+    public readonly name = "frida-pool";
 
-    private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
+    private readonly scope: Scope.Closeable;
+    private readonly scriptContext: Promise<Context.Context<FridaScript.FridaScript>>;
+    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void> = new Map();
 
-    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void>;
-
-    private modifiedAgentScope: Scope.Closeable;
-    private managedRuntime: ManagedRuntime.ManagedRuntime<FridaScript.FridaScript, unknown> | undefined;
-    private sends: Array<Promise<Exit.Exit<unknown, unknown>>> = [];
-    private compiledAgentUrlPromise: Promise<URL>;
-    private messageCallback: ((arg: any) => void) | undefined;
+    private sends: Array<Promise<unknown>> = [];
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
-        this.customOptions = customOptions;
-        this.cancelables = new Map();
-        this.managedRuntime = undefined;
-        this.modifiedAgentScope = Effect.runSync(Scope.make());
-        this.compiledAgentUrlPromise = compileTestFiles(this.agentTemplatePath, poolOptions).pipe(
-            Scope.provide(this.modifiedAgentScope),
-            Effect.provide(NodeServices.layer),
-            Effect.runPromise
-        );
-    }
-
-    async start(): Promise<void> {
-        const tempAgentUrl = await this.compiledAgentUrlPromise;
-
-        const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
+        const FridaRuntime = Match.value(customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
             Match.when("v8", () => Frida.ScriptRuntime.V8),
             Match.when("qjs", () => Frida.ScriptRuntime.QJS),
@@ -116,7 +95,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const FridaPlatform = Match.value(this.customOptions.platform).pipe(
+        const FridaPlatform = Match.value(customOptions.platform).pipe(
             Match.when(undefined, () => undefined),
             Match.when("gum", () => Frida.JsPlatform.Gum),
             Match.when("browser", () => Frida.JsPlatform.Browser),
@@ -124,7 +103,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const DeviceLive = Match.value(this.customOptions.device).pipe(
+        const DeviceLive = Match.value(customOptions.device).pipe(
             Match.when({ connection: "local" }, () => FridaDevice.layerLocalDevice),
             Match.when({ connection: "usb" }, ({ timeout }) =>
                 FridaDevice.layerUsbDevice({
@@ -133,9 +112,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             ),
             Match.when({ connection: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
                 FridaDevice.layerRemoteDevice(address, {
+                    keepaliveInterval: keepaliveInterval ? Duration.toSeconds(keepaliveInterval) : undefined,
                     token,
                     origin,
-                    keepaliveInterval: keepaliveInterval ? Duration.toSeconds(keepaliveInterval) : undefined,
                 } as Frida.RemoteDeviceOptions)
             ),
             Match.when(
@@ -151,7 +130,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const SessionLive = Match.value(this.customOptions.attach).pipe(
+        const SessionLive = Match.value(customOptions.attach).pipe(
             Match.when({ pid: Match.number }, ({ pid }) => FridaSession.layer(pid)),
             Match.when({ attachFrontmost: true }, ({ frontmostScope }) =>
                 FridaSession.layerFrontmost({ scope: frontmostScope } as Frida.FrontmostQueryOptions)
@@ -168,98 +147,112 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.orElse(({ spawn }) => FridaSession.layer(spawn))
         );
 
-        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeServices.layer));
-        const ScriptLive = FridaScript.layer(tempAgentUrl, {
-            externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
-            ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
-            ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
-        }).pipe(Layer.provide(FridaLive));
+        const FridaLive = Layer.provide(SessionLive, DeviceLive);
+        const ScriptLive = Effect.map(
+            compileTestFiles(new URL("../frida/agent.ts", import.meta.url), poolOptions, customOptions),
+            (agentUrl) =>
+                FridaScript.layer(agentUrl, {
+                    ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
+                    ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
+                })
+        ).pipe(
+            Layer.unwrap,
+            Layer.fresh,
+            Layer.provide(FridaLive),
+            Layer.provide(NodeServices.layer),
+            Layer.satisfiesSuccessType<FridaScript.FridaScript>()
+        );
 
-        this.managedRuntime = ManagedRuntime.make(ScriptLive);
+        this.scope = Scope.makeUnsafe();
+        this.scriptContext = ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromise);
+    }
 
-        const exit = await this.managedRuntime.runPromiseExit(Effect.void);
-        if (Exit.isSuccess(exit)) return;
-        const prettyError = Cause.prettyErrors(exit.cause);
-        throw prettyError[0];
+    async start(): Promise<void> {
+        await this.scriptContext;
     }
 
     async stop(): Promise<void> {
-        for (const cancelable of this.cancelables.values()) cancelable();
-        this.cancelables.clear();
         await Promise.allSettled(this.sends);
-        await this.managedRuntime!.dispose();
-        await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
+        for (const cancelable of this.cancelables.values()) cancelable();
+        await Scope.close(this.scope, Exit.void).pipe(Effect.runPromise);
+        this.cancelables.clear();
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
-        const sendPromise = this.managedRuntime!.runPromiseExit(
-            Effect.flatMap(FridaScript.FridaScript, (fridaScript) => fridaScript.callExport("onMessage")(message))
-        );
+        const context = await this.scriptContext;
+        let sendPromise: Promise<unknown> = undefined!;
 
-        this.sends.push(sendPromise);
-        const exit = await sendPromise;
-        this.sends = this.sends.filter((p) => p !== sendPromise);
-        if (Exit.isSuccess(exit)) {
-            if (exit.value !== null && exit.value !== undefined) {
-                this.messageCallback?.(exit.value);
-            }
-            return;
+        try {
+            sendPromise = Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                fridaScript.callExport("onMessage")(message)
+            ).pipe(Effect.runPromiseWith(context));
+            this.sends.push(sendPromise);
+            await sendPromise;
+        } finally {
+            this.sends = this.sends.filter((p) => p !== sendPromise);
         }
-        const prettyError = Cause.prettyErrors(exit.cause);
-        throw prettyError[0];
     }
 
     on(event: string, callback: (arg: any) => void): void {
-        let cancelable!: (interrupter?: number) => void;
-
         switch (event) {
             case "message": {
-                this.messageCallback = callback;
-                const sink = Sink.forEach<
-                    {
-                        message: unknown;
-                        data: Option.Option<Buffer<ArrayBufferLike>>;
-                    },
-                    void,
-                    never,
-                    never
-                >((input) =>
-                    Effect.sync(() => {
-                        callback(input.message);
-                    })
-                );
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Stream.run(fridaScript.stream, sink))
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Stream.runForEach(fridaScript.stream, (input) =>
+                                    Effect.sync(() => callback(input.message))
+                                )
+                            )
+                        )
+                    );
+                });
+
                 break;
             }
 
             case "error":
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.scriptError)),
-                    {
-                        onExit: (exit) =>
-                            Exit.isSuccess(exit)
-                                ? callback(exit.value)
-                                : !Cause.hasInterruptsOnly(exit.cause)
-                                  ? callback(exit.cause)
-                                  : {},
-                    }
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Deferred.await(fridaScript.scriptError)
+                            ),
+                            {
+                                onExit: (exit) => {
+                                    if (Exit.isSuccess(exit)) {
+                                        callback(exit.value);
+                                    } else if (!Cause.hasInterruptsOnly(exit.cause)) {
+                                        callback(exit.cause);
+                                    }
+                                },
+                            }
+                        )
+                    );
+                });
+
                 break;
 
             case "exit":
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
-                    { onExit: () => callback(void 0) }
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Deferred.await(fridaScript.destroyed)
+                            ),
+                            { onExit: () => callback(void 0) }
+                        )
+                    );
+                });
+
                 break;
 
             default:
                 throw new Error(`Event ${event} not supported in FridaPoolWorker`);
         }
-
-        this.cancelables.set(callback, cancelable);
     }
 
     off(_event: string, callback: (arg: any) => void): void {
@@ -267,9 +260,6 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         if (cancelable !== undefined) {
             this.cancelables.delete(callback);
             cancelable();
-        }
-        if (this.messageCallback === callback) {
-            this.messageCallback = undefined;
         }
     }
 
@@ -280,6 +270,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
     serialize(data: unknown) {
         return data;
+    }
+
+    canReuse() {
+        return true;
     }
 }
 
@@ -440,7 +434,7 @@ const vitestGlobalsPlugin: Esbuild.Plugin = {
 const compileTestFiles = Effect.fnUntraced(function* (
     agentTemplatePath: URL,
     poolOptions: VitestNode.PoolOptions,
-    customOptions?: Schema.Schema.Type<typeof ConfigSchema> | undefined
+    customOptions: Schema.Schema.Type<typeof ConfigSchema>
 ) {
     const path = yield* Path.Path;
     const fs = yield* FileSystem.FileSystem;
@@ -451,7 +445,7 @@ const compileTestFiles = Effect.fnUntraced(function* (
     const allFiles = [...new Set([...setupFiles, ...testFilesList])];
     const testFilesMap: Record<string, string> = {};
 
-    const esbuildPlatform = Match.value(customOptions?.platform).pipe(
+    const esbuildPlatform = Match.value(customOptions.platform).pipe(
         Match.when("browser", () => "browser" as const),
         Match.when("neutral", () => "neutral" as const),
         Match.whenOr("gum", undefined, () => "node" as const),

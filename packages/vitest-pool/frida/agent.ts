@@ -130,7 +130,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             process.env.VITEST_WORKER_ID = String(message.workerId);
             const { config, environment, pool } = message.context;
             setupContext = { environment, config, pool, rpc: birpc, projectName: config.name ?? "" };
-            return { type: "started", __vitest_worker_response__: true };
+            return send({ type: "started", __vitest_worker_response__: true });
         }
 
         case "stop": {
@@ -145,20 +145,20 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             cancelListeners.clear();
             cleanupListeners.clear();
 
-            return {
+            return send({
                 type: "stopped",
                 __vitest_worker_response__: true,
-            };
+            });
         }
 
         case "run":
         case "collect": {
             if (runPromise !== undefined) {
-                return {
+                return send({
                     type: "testfileFinished",
                     __vitest_worker_response__: true,
                     error: serializeError("Worker is already running tests"),
-                };
+                });
             }
 
             /** @see https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/worker.ts#L28-L49 */
@@ -234,16 +234,16 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
                     await runPromise;
                 }
 
-                return {
+                return send({
                     type: "testfileFinished",
                     __vitest_worker_response__: true,
-                };
+                });
             } catch (error: unknown) {
-                return {
+                return send({
                     type: "testfileFinished",
                     __vitest_worker_response__: true,
                     error: serializeError(error),
-                };
+                });
             } finally {
                 runPromise = undefined;
             }

@@ -1,4 +1,3 @@
-import * as Frida from "frida";
 import { mergeConfig, type ViteUserConfig } from "vitest/config";
 
 import shared from "../../vitest.shared.ts";
@@ -8,14 +7,10 @@ const config: ViteUserConfig = {
     test: {
         pool: process.env.CI
             ? createFridaPool({
-                  platform: Frida.JsPlatform.Gum,
-                  runtime: Frida.ScriptRuntime.Default,
                   device: { connection: "local" },
                   attach: { spawn: ["/usr/bin/sleep", "infinity"] },
               })
             : createFridaPool({
-                  platform: Frida.JsPlatform.Gum,
-                  runtime: Frida.ScriptRuntime.Default,
                   device: { connection: "local" },
                   attach: {
                       preSpawn: true,
