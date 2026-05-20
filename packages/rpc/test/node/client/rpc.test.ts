@@ -6,20 +6,14 @@ import { NodeServices } from "@effect/platform-node";
 import { expect, layer } from "@effect/vitest";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { FridaRpcClient } from "@efffrida/rpc/node";
-import * as Frida from "frida";
-import { afterAll } from "vitest";
+import { JsPlatform } from "frida";
 
 import { UserRpcs } from "../../shared/requests.ts";
-
 // Choose which serialization to use
 const NdJsonSerialization = RpcSerialization.layerNdjson;
 
 // Choose which protocol to use
 const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide(NdJsonSerialization));
-
-// Close the DeviceManager after the layer tears down so this fork worker can exit.
-// The GLib main loop bound to the DeviceManager keeps the process alive otherwise.
-afterAll(() => Frida.getDeviceManager().close());
 
 // Pick a device and a session/program
 const DeviceLive = FridaDevice.layerLocalDevice;
@@ -36,7 +30,7 @@ const SessionLive =
 const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeServices.layer));
 
 const ScriptLive = FridaScript.layer(new URL("../../frida/server/agent.ts", import.meta.url), {
-    platform: Frida.JsPlatform.Browser,
+    platform: JsPlatform.Browser,
 }).pipe(Layer.provide(FridaLive));
 
 const Live = ProtocolLive.pipe(Layer.provide(ScriptLive));
