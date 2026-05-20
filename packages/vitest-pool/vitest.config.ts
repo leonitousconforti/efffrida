@@ -11,7 +11,7 @@ const config: ViteUserConfig = {
                   platform: Frida.JsPlatform.Gum,
                   runtime: Frida.ScriptRuntime.Default,
                   device: { connection: "local" },
-                  attach: { spawn: ["/usr/bin/sleep", "50"] },
+                  attach: { spawn: ["/usr/bin/sleep", "infinity"] },
               })
             : createFridaPool({
                   platform: Frida.JsPlatform.Gum,

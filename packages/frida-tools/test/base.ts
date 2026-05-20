@@ -7,7 +7,7 @@ import { FridaDevice, FridaSession } from "@efffrida/frida-tools";
 export const DeviceLive = FridaDevice.layerLocalDevice;
 export const SessionLive =
     process.env.CI !== undefined
-        ? FridaSession.layer(["/usr/bin/sleep", "10"])
+        ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
         : ChildProcess.make`sleep infinity`.pipe(
               Effect.map((handle) => FridaSession.layer(handle.pid)),
               Layer.unwrap

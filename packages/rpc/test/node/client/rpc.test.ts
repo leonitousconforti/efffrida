@@ -20,7 +20,7 @@ const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide(NdJs
 const DeviceLive = FridaDevice.layerLocalDevice;
 const SessionLive =
     process.env.CI !== undefined
-        ? FridaSession.layer(["/usr/bin/sleep", "30"])
+        ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
         : Layer.unwrap(
               Effect.gen(function* () {
                   const handle = yield* ChildProcess.make("sleep", ["infinity"]);

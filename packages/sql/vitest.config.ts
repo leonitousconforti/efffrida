@@ -8,7 +8,7 @@ const config: ViteUserConfig = {
         pool: process.env.CI
             ? createFridaPool({
                   device: { connection: "local" },
-                  attach: { spawn: ["/usr/bin/sleep", "40"] },
+                  attach: { spawn: ["/usr/bin/sleep", "infinity"] },
               })
             : createFridaPool({
                   device: { connection: "local" },
