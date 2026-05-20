@@ -5,10 +5,8 @@ import * as Deferred from "effect/Deferred";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
-import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
-import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
@@ -20,7 +18,6 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 import * as FridaSession from "@efffrida/frida-tools/FridaSession";
-import * as Esbuild from "esbuild";
 import * as Flatted from "flatted";
 import * as Frida from "frida";
 
@@ -86,7 +83,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
     private sends: Array<Promise<unknown>> = [];
 
-    constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
+    constructor(_poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
         const FridaRuntime = Match.value(customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
             Match.when("v8", () => Frida.ScriptRuntime.V8),
@@ -148,15 +145,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
 
         const FridaLive = Layer.provide(SessionLive, DeviceLive);
-        const ScriptLive = Effect.map(
-            compileTestFiles(new URL("../frida/agent.ts", import.meta.url), poolOptions, customOptions),
-            (agentUrl) =>
-                FridaScript.layer(agentUrl, {
-                    ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
-                    ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
-                })
-        ).pipe(
-            Layer.unwrap,
+        const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url), {
+            ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
+            ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
+        }).pipe(
             Layer.fresh,
             Layer.provide(FridaLive),
             Layer.provide(NodeServices.layer),
@@ -271,10 +263,6 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     serialize(data: unknown) {
         return data;
     }
-
-    canReuse() {
-        return true;
-    }
 }
 
 /**
@@ -284,206 +272,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 export const createFridaPool = (
     customOptions: Schema.Codec.Encoded<typeof ConfigSchema>
 ): VitestNode.PoolRunnerInitializer => {
-    const decoded = Schema.decodeUnknownSync(ConfigSchema)(customOptions);
     return {
         name: "frida-pool",
-        createPoolWorker: (options: VitestNode.PoolOptions) => new FridaPoolWorker(options, decoded),
+        createPoolWorker: (options: VitestNode.PoolOptions) =>
+            new FridaPoolWorker(options, Schema.decodeUnknownSync(ConfigSchema)(customOptions)),
     };
 };
-
-/** @internal */
-const vitestGlobalsPlugin: Esbuild.Plugin = {
-    name: "vitest-globals",
-    setup(build) {
-        // Handle vitest and @vitest/* imports
-        build.onResolve({ filter: /^(vitest|@vitest\/.*)$/ }, (args) => ({
-            path: args.path,
-            namespace: "vitest-globals",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "vitest-globals" }, (args) => {
-            if (args.path === "vitest") {
-                return {
-                    loader: "js",
-                    contents: "export * from 'VITEST_GLOBAL';\nexport { default } from 'VITEST_GLOBAL';",
-                };
-            }
-            if (args.path === "@vitest/runner") {
-                return {
-                    loader: "js",
-                    contents: "export * from 'VITEST_RUNNER_GLOBAL';\nexport { default } from 'VITEST_RUNNER_GLOBAL';",
-                };
-            }
-            return {
-                loader: "js",
-                contents: "export * from 'VITEST_GLOBAL';\nexport { default } from 'VITEST_GLOBAL';",
-            };
-        });
-
-        build.onResolve({ filter: /^VITEST_(GLOBAL|RUNNER_GLOBAL)$/ }, (args) => ({
-            path: args.path,
-            namespace: "vitest-synthetic",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "vitest-synthetic" }, (args) => {
-            const globalName = args.path === "VITEST_GLOBAL" ? "__vitest" : "__vitest_runner";
-            return {
-                loader: "js",
-                contents: `
-                    const g = globalThis.${globalName};
-                    export default g;
-                    export const {
-                        describe, it, test, expect, vi, beforeAll, afterAll,
-                        beforeEach, afterEach, suite, bench, assert
-                    } = g;
-                `,
-            };
-        });
-
-        // Handle Node.js built-in modules - redirect to globals set up by the agent
-        // The agent imports these from frida-compile's shims and exposes them as globals
-        const nodeModuleMap: Record<string, string> = {
-            "node:assert": "__node_assert",
-            "node:buffer": "__node_buffer",
-            "node:crypto": "__node_crypto",
-            "node:diagnostics_channel": "__node_diagnosticsChannel",
-            "node:events": "__node_events",
-            "node:fs": "__node_fs",
-            "node:net": "__node_net",
-            "node:os": "__node_os",
-            "node:path": "__node_path",
-            "node:process": "__node_process",
-            "node:stream": "__node_stream",
-            "node:timers": "__node_timers",
-            "node:tty": "__node_tty",
-            "node:url": "__node_url",
-            "node:util": "__node_util",
-            "node:vm": "__node_vm",
-            assert: "__node_assert",
-            buffer: "__node_buffer",
-            crypto: "__node_crypto",
-            diagnostics_channel: "__node_diagnosticsChannel",
-            events: "__node_events",
-            fs: "__node_fs",
-            net: "__node_net",
-            os: "__node_os",
-            path: "__node_path",
-            process: "__node_process",
-            stream: "__node_stream",
-            timers: "__node_timers",
-            tty: "__node_tty",
-            url: "__node_url",
-            util: "__node_util",
-            vm: "__node_vm",
-        };
-
-        build.onResolve(
-            {
-                filter: /^(node:)?(assert|buffer|crypto|diagnostics_channel|events|fs|net|os|path|process|stream|timers|tty|url|util|vm)$/,
-            },
-            (args) => ({
-                path: args.path,
-                namespace: "node-globals",
-            })
-        );
-
-        build.onLoad({ filter: /.*/, namespace: "node-globals" }, (args) => {
-            const globalName = nodeModuleMap[args.path];
-            if (!globalName) {
-                return { loader: "js", contents: "export default {};" };
-            }
-            return {
-                loader: "js",
-                contents: `
-                    const m = globalThis.${globalName};
-                    export default m;
-                    export const { Buffer } = m.Buffer ? m : { Buffer: m.default?.Buffer };
-                    export * from 'NODE_MODULE_REEXPORT_${globalName}';
-                `,
-            };
-        });
-
-        // Handle re-exports from node modules
-        build.onResolve({ filter: /^NODE_MODULE_REEXPORT_/ }, (args) => ({
-            path: args.path,
-            namespace: "node-reexport",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "node-reexport" }, (args) => {
-            const globalName = args.path.replace("NODE_MODULE_REEXPORT_", "");
-            return {
-                loader: "js",
-                contents: `
-                    const m = globalThis.${globalName};
-                    const mod = m.default || m;
-                    for (const key in mod) {
-                        if (key !== 'default') {
-                            Object.defineProperty(exports, key, {
-                                enumerable: true,
-                                get: () => mod[key]
-                            });
-                        }
-                    }
-                `,
-            };
-        });
-    },
-};
-
-/** @internal */
-const compileTestFiles = Effect.fnUntraced(function* (
-    agentTemplatePath: URL,
-    poolOptions: VitestNode.PoolOptions,
-    customOptions: Schema.Schema.Type<typeof ConfigSchema>
-) {
-    const path = yield* Path.Path;
-    const fs = yield* FileSystem.FileSystem;
-    const url = yield* path.fromFileUrl(agentTemplatePath);
-
-    const testFilesList: Array<string> = (poolOptions.project as any).testFilesList ?? [];
-    const setupFiles: Array<string> = poolOptions.project.config.setupFiles ?? [];
-    const allFiles = [...new Set([...setupFiles, ...testFilesList])];
-    const testFilesMap: Record<string, string> = {};
-
-    const esbuildPlatform = Match.value(customOptions.platform).pipe(
-        Match.when("browser", () => "browser" as const),
-        Match.when("neutral", () => "neutral" as const),
-        Match.whenOr("gum", undefined, () => "node" as const),
-        Match.orElseAbsurd
-    );
-
-    for (const testFile of allFiles) {
-        const result = yield* Effect.promise(() =>
-            Esbuild.build({
-                bundle: true,
-                write: false,
-                format: "esm",
-                platform: esbuildPlatform,
-                target: "es2020",
-                entryPoints: [testFile],
-                plugins: [vitestGlobalsPlugin],
-            })
-        );
-
-        if (!result.outputFiles || result.outputFiles.length === 0) {
-            return yield* Effect.die(new Error(`esbuild produced no output for ${testFile}`));
-        } else {
-            testFilesMap[testFile] = Buffer.from(result.outputFiles[0].text).toString("base64");
-        }
-    }
-
-    const agentTemplateContents = yield* fs.readFileString(url);
-    const modifiedAgentContents = agentTemplateContents.replace(
-        /^const testFiles: Record<string, string> = \{\};$/m,
-        `const testFiles: Record<string, string> = ${JSON.stringify(testFilesMap, null, 4)};`
-    );
-
-    const tempAgentPath = yield* fs.makeTempFileScoped({
-        suffix: ".ts",
-        prefix: ".agent-",
-        directory: path.dirname(url),
-    });
-
-    yield* fs.writeFileString(tempAgentPath, modifiedAgentContents);
-    return yield* path.toFileUrl(tempAgentPath);
-});

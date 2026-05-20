@@ -54,7 +54,6 @@
         "@vitest/runner": "4.1.6",
         "@vitest/utils": "4.1.6",
         "birpc": "4.0.0",
-        "esbuild": "0.28.0",
         "flatted": "3.4.2",
         "ioredis": "5.10.1"
     },
