@@ -1,6 +1,6 @@
-import type { ViteUserConfig } from "vitest/config";
-
 import path from "node:path";
+
+import type { ViteUserConfig } from "vitest/config";
 
 const config: ViteUserConfig = {
     resolve: {
