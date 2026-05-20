@@ -81,7 +81,7 @@ const ConfigSchema = Schema.Struct({
  */
 export class FridaPoolWorker implements VitestNode.PoolWorker {
     readonly agentTemplatePath = new URL("../frida/agent.ts", import.meta.url);
-    readonly name = `frida-pool${Math.floor(Math.random() * 10000)}`;
+    readonly name = "frida-pool";
 
     private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
 
