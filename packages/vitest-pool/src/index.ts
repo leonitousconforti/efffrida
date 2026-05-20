@@ -110,7 +110,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
-        console.error(`[${this.workerId}] start: compiling agent`);
+        process.stderr.write(`[${this.workerId}] start: compiling agent\n`);
         const tempAgentUrl = await this.compiledAgentUrlPromise;
 
         const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
@@ -182,10 +182,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
         this.managedRuntime = ManagedRuntime.make(ScriptLive);
 
-        console.error(`[${this.workerId}] start: initializing runtime`);
+        process.stderr.write(`[${this.workerId}] start: initializing runtime\n`);
         const exit = await this.managedRuntime.runPromiseExit(Effect.void);
         if (Exit.isSuccess(exit)) {
-            console.error(`[${this.workerId}] start: done`);
+            process.stderr.write(`[${this.workerId}] start: done\n`);
             return;
         }
         const prettyError = Cause.prettyErrors(exit.cause);
@@ -193,16 +193,16 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async stop(): Promise<void> {
-        console.error(`[${this.workerId}] stop: cancelling callbacks (${this.cancelables.size})`);
+        process.stderr.write(`[${this.workerId}] stop: cancelling callbacks (${this.cancelables.size})\n`);
         for (const cancelable of this.cancelables.values()) cancelable();
         this.cancelables.clear();
-        console.error(`[${this.workerId}] stop: awaiting in-flight sends (${this.sends.length})`);
+        process.stderr.write(`[${this.workerId}] stop: awaiting in-flight sends (${this.sends.length})\n`);
         await Promise.allSettled(this.sends);
-        console.error(`[${this.workerId}] stop: disposing managed runtime`);
+        process.stderr.write(`[${this.workerId}] stop: disposing managed runtime\n`);
         await this.managedRuntime!.dispose();
-        console.error(`[${this.workerId}] stop: closing agent scope`);
+        process.stderr.write(`[${this.workerId}] stop: closing agent scope\n`);
         await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
-        console.error(`[${this.workerId}] stop: done`);
+        process.stderr.write(`[${this.workerId}] stop: done\n`);
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
