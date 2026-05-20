@@ -1,4 +1,5 @@
 import * as Cause from "effect/Cause";
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Predicate from "effect/Predicate";
@@ -7,11 +8,11 @@ import * as Frida from "frida";
 
 import * as FridaSessionError from "../FridaSessionError.ts";
 
-// /** @internal */
-// export const Compiler: Context.Reference<Frida.Compiler> = Context.Reference<Frida.Compiler>(
-//     "@efffrida/frida-tools/compiler/default",
-//     { defaultValue: () => new Frida.Compiler() }
-// );
+/** @internal */
+export const Compiler: Context.Reference<Frida.Compiler> = Context.Reference<Frida.Compiler>(
+    "@efffrida/frida-tools/compiler/default",
+    { defaultValue: () => new Frida.Compiler() }
+);
 
 /** @internal */
 export const compile = Function.dual<
@@ -26,8 +27,9 @@ export const compile = Function.dual<
     (arguments_) => Predicate.isString(arguments_[0]),
     (path: string, options?: Frida.CompilerOptions | undefined) =>
         Effect.gen(function* () {
-            const deviceManager = Frida.getDeviceManager();
-            const compiler = new Frida.Compiler(deviceManager);
+            // const deviceManager = Frida.getDeviceManager();
+            // const compiler = new Frida.Compiler(deviceManager);
+            const compiler = yield* Compiler;
 
             // https://github.com/frida/frida-compile/blob/e81ae27369466c69868fc6ee36c0f227bbfe340c/src/cli.ts#L173-L182
             interface Diagnostic {
