@@ -83,6 +83,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     readonly agentTemplatePath = new URL("../frida/agent.ts", import.meta.url);
     readonly name = "frida-pool";
 
+    private static workerCount = 0;
+    private readonly workerId: string;
+
     private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
 
     private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void>;
@@ -94,6 +97,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     private messageCallback: ((arg: any) => void) | undefined;
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
+        this.workerId = `frida-pool#${++FridaPoolWorker.workerCount}[${(poolOptions.project as any).config?.name ?? "unknown"}]`;
         this.customOptions = customOptions;
         this.cancelables = new Map();
         this.managedRuntime = undefined;
@@ -106,6 +110,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
+        console.error(`[${this.workerId}] start: compiling agent`);
         const tempAgentUrl = await this.compiledAgentUrlPromise;
 
         const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
@@ -177,18 +182,27 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
         this.managedRuntime = ManagedRuntime.make(ScriptLive);
 
+        console.error(`[${this.workerId}] start: initializing runtime`);
         const exit = await this.managedRuntime.runPromiseExit(Effect.void);
-        if (Exit.isSuccess(exit)) return;
+        if (Exit.isSuccess(exit)) {
+            console.error(`[${this.workerId}] start: done`);
+            return;
+        }
         const prettyError = Cause.prettyErrors(exit.cause);
         throw prettyError[0];
     }
 
     async stop(): Promise<void> {
+        console.error(`[${this.workerId}] stop: cancelling callbacks (${this.cancelables.size})`);
         for (const cancelable of this.cancelables.values()) cancelable();
         this.cancelables.clear();
+        console.error(`[${this.workerId}] stop: awaiting in-flight sends (${this.sends.length})`);
         await Promise.allSettled(this.sends);
+        console.error(`[${this.workerId}] stop: disposing managed runtime`);
         await this.managedRuntime!.dispose();
+        console.error(`[${this.workerId}] stop: closing agent scope`);
         await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
+        console.error(`[${this.workerId}] stop: done`);
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
