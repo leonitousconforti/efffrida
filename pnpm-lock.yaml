@@ -73,7 +73,7 @@ importers:
         version: 8.0.13(tsx@4.22.3)
       vitest:
         specifier: 4.1.6
-        version: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
+        version: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
 
   packages/frida-tools:
     dependencies:
@@ -82,11 +82,11 @@ importers:
         version: 17.9.10
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)
       '@effect/vitest':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -94,8 +94,8 @@ importers:
         specifier: 25.9.0
         version: 25.9.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       ioredis:
         specifier: 5.10.1
         version: 5.10.1
@@ -112,14 +112,14 @@ importers:
         specifier: 2.12.0
         version: 2.12.0
       '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)
       '@types/node':
         specifier: 25.9.0
         version: 25.9.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       ioredis:
         specifier: 5.10.1
         version: 5.10.1
@@ -131,8 +131,8 @@ importers:
         version: 0.13.1
     devDependencies:
       '@effect/vitest':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -146,8 +146,8 @@ importers:
         specifier: 25.9.0
         version: 25.9.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       vitest:
         specifier: 4.1.6
         version: 4.1.6(@types/node@25.9.0)
@@ -155,8 +155,8 @@ importers:
   packages/platform:
     devDependencies:
       '@effect/vitest':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -173,8 +173,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       flatted:
         specifier: 3.4.2
         version: 3.4.2
@@ -217,11 +217,11 @@ importers:
         version: link:../polyfills
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)
       '@effect/vitest':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -229,8 +229,8 @@ importers:
         specifier: 25.9.0
         version: 25.9.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       frida:
         specifier: 17.9.10
         version: 17.9.10
@@ -244,8 +244,8 @@ importers:
   packages/sql:
     devDependencies:
       '@effect/vitest':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -262,8 +262,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       flatted:
         specifier: 3.4.2
         version: 3.4.2
@@ -297,8 +297,8 @@ importers:
         version: 3.4.2
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -306,8 +306,8 @@ importers:
         specifier: 25.9.0
         version: 25.9.0
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       frida:
         specifier: 17.9.10
         version: 17.9.10
@@ -340,11 +340,11 @@ importers:
         version: 17.9.10
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)
       effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       ioredis:
         specifier: 5.10.1
         version: 5.10.1
@@ -697,23 +697,23 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  '@effect/platform-node-shared@4.0.0-beta.66':
-    resolution: {integrity: sha512-+ymrhBnESv/hmn5SKTe2//IY9Ox/hGPeoogEWhW47ZGyhFI5eMYFxdEUBa+3IAV05rrBzrxON9lynu68n0DM7w==}
+  '@effect/platform-node-shared@4.0.0-beta.70':
+    resolution: {integrity: sha512-3VXuL63IDmq13We+ApRKn2JW3Rb9g5gj1YEmfb8u2b73norur1VsIJ/pRE4qjShevg19dQYi2JsLawSZ6gApug==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.66
+      effect: ^4.0.0-beta.70
 
-  '@effect/platform-node@4.0.0-beta.66':
-    resolution: {integrity: sha512-s/0RgaQFuszzdorRnX1PwEQNnSOi+JgMJo3zEe9O2NR3sosMhTr0Uk+1AF6bUOI9uJ2CPT3KpTIIU7q5/TpOkg==}
+  '@effect/platform-node@4.0.0-beta.69':
+    resolution: {integrity: sha512-CkyueiY7/tJjCvyoRUOO8cXy7K5YtKxF6MGeuDyDw2IJRNy5Vf1WewXz15H6CO6Gyz/3Bl7HVs3dqEQYiMMAYA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.66
+      effect: ^4.0.0-beta.69
       ioredis: ^5.7.0
 
-  '@effect/vitest@4.0.0-beta.66':
-    resolution: {integrity: sha512-UHPNtU0xXkKtNgyRQEh2c8jh4nIIm8Mzp3xc4j2ZdFU4nq5ZSySnpovjPMdoWbVClg1ki8UbpNGEZUfxEJo+6Q==}
+  '@effect/vitest@4.0.0-beta.69':
+    resolution: {integrity: sha512-tlsyoKJfNbyiSMwTkHMBGCGy0eq1dWucrX0eNmTkqlDZt+nU5xnMt18U+1KhCKq1cgzIE/CrBNlCyoOYILTlmA==}
     peerDependencies:
-      effect: ^4.0.0-beta.66
+      effect: ^4.0.0-beta.69
       vitest: ^3.0.0 || ^4.0.0
 
   '@emnapi/core@1.10.0':
@@ -1788,8 +1788,8 @@ packages:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
 
-  effect@4.0.0-beta.66:
-    resolution: {integrity: sha512-4arEr62cziFa8BBVDUwJCJJmaVepXf/kRg7KtC0h8+bufngscrHbwWFhr9c+HonwOF+31U3iD3xUJmw9KzX7Dw==}
+  effect@4.0.0-beta.69:
+    resolution: {integrity: sha512-o6og4Dkh0/esTnCJq7UwQ5PZhuQQYCxNCrEYPVk5Z2Fo7oPTHj0/AAVi5kF2Dln53+jEVxA7quXMC/+jPnATuw==}
 
   electron-to-chromium@1.5.360:
     resolution: {integrity: sha512-GkcBt6YYAw9SxFWn+xVar4cLVGlXVuswwtRLBozi2zp0GjXs4ZnOrqV4zbXzg35n7w81hCkyJNYicgXlVHAmBA==}
@@ -2118,9 +2118,9 @@ packages:
   ini@1.3.8:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
 
-  ini@6.0.0:
-    resolution: {integrity: sha512-IBTdIkzZNOpqm7q3dRqJvMaldXjDHWkEDfrwGEQTs5eaQMWV+djAhR+wahyNNMAa+qpbDUhBMVt4ZKNwpPm7xQ==}
-    engines: {node: ^20.17.0 || >=22.9.0}
+  ini@7.0.0:
+    resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   ioredis@5.10.1:
     resolution: {integrity: sha512-HuEDBTI70aYdx1v6U97SbNx9F1+svQKBDo30o0b9fw055LMepzpOOd0Ccg9Q6tbqmBSJaMuY0fB7yw9/vjBYCA==}
@@ -2585,8 +2585,8 @@ packages:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
     hasBin: true
 
-  msgpackr@1.11.12:
-    resolution: {integrity: sha512-RBdJ1Un7yGlXWajrkxcSa93nvQ0w4zBf60c0yYv7YtBelP8H2FA7XsfBbMHtXKXUMUxH7zV3Zuozh+kUQWhHvg==}
+  msgpackr@2.0.1:
+    resolution: {integrity: sha512-9J+tqTEsbHqY8YohazYgty7LgerFIWxvMLpUjqETSmjHojtJm2WnX2kK/2a1fLI7CO7ERP1YSEUXMucz4j+yBA==}
 
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
@@ -2964,6 +2964,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.1:
+    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   serialize-error@7.0.1:
     resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
     engines: {node: '>=10'}
@@ -3243,8 +3248,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@13.0.2:
-    resolution: {integrity: sha512-vzi9uRZ926x4XV73S/4qQaTwPXM2JBj6/6lI/byHH1jOpCzb0zDbfytgA9LcN/hzb2l7WQSQnxITOVx5un/wGw==}
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   vfile-message@4.0.3:
@@ -3312,6 +3317,7 @@ packages:
       '@vitest/ui': 4.1.6
       happy-dom: '*'
       jsdom: '*'
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -3724,7 +3730,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.8.0
+      semver: 7.8.1
 
   '@changesets/assemble-release-plan@6.0.10':
     dependencies:
@@ -3733,7 +3739,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.8.0
+      semver: 7.8.1
 
   '@changesets/changelog-git@0.2.1':
     dependencies:
@@ -3764,7 +3770,7 @@ snapshots:
       package-manager-detector: 0.2.11
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.8.0
+      semver: 7.8.1
       spawndamnit: 3.0.1
       term-size: 2.2.1
     transitivePeerDependencies:
@@ -3790,7 +3796,7 @@ snapshots:
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.8.0
+      semver: 7.8.1
 
   '@changesets/get-release-plan@4.0.16':
     dependencies:
@@ -3892,19 +3898,19 @@ snapshots:
       repeat-string: 1.6.1
       strip-color: 0.1.0
 
-  '@effect/platform-node-shared@4.0.0-beta.66(effect@4.0.0-beta.66)':
+  '@effect/platform-node-shared@4.0.0-beta.70(effect@4.0.0-beta.69)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-beta.66
+      effect: 4.0.0-beta.69
       ws: 8.20.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)':
+  '@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.10.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.66(effect@4.0.0-beta.66)
-      effect: 4.0.0-beta.66
+      '@effect/platform-node-shared': 4.0.0-beta.70(effect@4.0.0-beta.69)
+      effect: 4.0.0-beta.69
       ioredis: 5.10.1
       mime: 4.1.0
       undici: 8.2.0
@@ -3912,9 +3918,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/vitest@4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))':
+  '@effect/vitest@4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6(@types/node@25.9.0))':
     dependencies:
-      effect: 4.0.0-beta.66
+      effect: 4.0.0-beta.69
       vitest: 4.1.6(@types/node@25.9.0)
 
   '@emnapi/core@1.10.0':
@@ -4360,7 +4366,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.59.4
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.0
+      semver: 7.8.1
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -4384,7 +4390,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
+      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
 
   '@vitest/expect@4.1.6':
     dependencies:
@@ -4620,7 +4626,7 @@ snapshots:
       remark-parse: 11.0.0
       remark-stringify: 11.0.0
       resolve-from: 5.0.0
-      semver: 7.8.0
+      semver: 7.8.1
       unified: 11.0.5
       yaml: 2.9.0
     transitivePeerDependencies:
@@ -4828,17 +4834,17 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  effect@4.0.0-beta.66:
+  effect@4.0.0-beta.69:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.8.0
       find-my-way-ts: 0.1.6
-      ini: 6.0.0
+      ini: 7.0.0
       kubernetes-types: 1.30.0
-      msgpackr: 1.11.12
+      msgpackr: 2.0.1
       multipasta: 0.2.7
       toml: 4.1.1
-      uuid: 13.0.2
+      uuid: 14.0.0
       yaml: 2.9.0
 
   electron-to-chromium@1.5.360: {}
@@ -5118,7 +5124,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.8.0
+      semver: 7.8.1
       serialize-error: 7.0.1
 
   globalthis@1.0.4:
@@ -5191,7 +5197,7 @@ snapshots:
 
   ini@1.3.8: {}
 
-  ini@6.0.0: {}
+  ini@7.0.0: {}
 
   ioredis@5.10.1:
     dependencies:
@@ -5478,7 +5484,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.0
+      semver: 7.8.1
 
   markdown-link@0.1.1: {}
 
@@ -5722,7 +5728,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.3
     optional: true
 
-  msgpackr@1.11.12:
+  msgpackr@2.0.1:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
@@ -6140,6 +6146,8 @@ snapshots:
 
   semver@7.8.0: {}
 
+  semver@7.8.1: {}
+
   serialize-error@7.0.1:
     dependencies:
       type-fest: 0.13.1
@@ -6407,7 +6415,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@13.0.2: {}
+  uuid@14.0.0: {}
 
   vfile-message@4.0.3:
     dependencies:
@@ -6479,7 +6487,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3):
+  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3)):
     dependencies:
       '@vitest/expect': 4.1.6
       '@vitest/mocker': 4.1.6(vite@8.0.13(tsx@4.22.3))
@@ -6504,18 +6512,7 @@ snapshots:
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.6(vitest@4.1.6)
     transitivePeerDependencies:
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
       - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
 
   walkdir@0.4.1: {}
 

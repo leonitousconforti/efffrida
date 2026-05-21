@@ -10,10 +10,10 @@ import "@efffrida/polyfills";
 import type * as Scope from "effect/Scope";
 import type * as RpcMessage from "effect/unstable/rpc/RpcMessage";
 
+import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as Random from "effect/Random";
 import * as RpcClient from "effect/unstable/rpc/RpcClient";
 import * as RpcClientError from "effect/unstable/rpc/RpcClientError";
 import * as RpcSerialization from "effect/unstable/rpc/RpcSerialization";
@@ -27,17 +27,18 @@ import * as constants from "../shared/Constants.ts";
 export const makeProtocolFrida = (): Effect.Effect<
     RpcClient.Protocol["Service"],
     never,
-    RpcSerialization.RpcSerialization | Scope.Scope
+    Crypto.Crypto | RpcSerialization.RpcSerialization | Scope.Scope
 > =>
     RpcClient.Protocol.make(
         Effect.fnUntraced(function* (writeResponse, clientIds) {
             const serialization = yield* RpcSerialization.RpcSerialization;
+            const crypto = yield* Crypto.Crypto;
 
             const encoder = new TextEncoder();
             const parser = serialization.makeUnsafe();
             const requestClientMap = new Map<string, number>();
 
-            const exportName = yield* Random.nextUUIDv4;
+            const exportName = yield* crypto.randomUUIDv4.pipe(Effect.orDie);
             const connectionRequest = constants.nodeRpcClientMakeConnectionRequestForServer(exportName);
 
             const broadcast = (response: RpcMessage.FromServerEncoded) =>
@@ -97,5 +98,8 @@ export const makeProtocolFrida = (): Effect.Effect<
  * @since 1.0.0
  * @category Layers
  */
-export const layerProtocolFrida: Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization> =
-    Layer.effect(RpcClient.Protocol, makeProtocolFrida());
+export const layerProtocolFrida: Layer.Layer<
+    RpcClient.Protocol,
+    never,
+    Crypto.Crypto | RpcSerialization.RpcSerialization
+> = Layer.effect(RpcClient.Protocol, makeProtocolFrida());
