@@ -35,4 +35,5 @@ jobs:
       - run: pnpm circular
       - run: pnpm lint
       - run: pnpm build
+      - run: sudo sysctl kernel.yama.ptrace_scope=0
       - run: pnpm test
