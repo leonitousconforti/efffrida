@@ -80,6 +80,7 @@ const ConfigSchema = Schema.Struct({
  */
 export class FridaPoolWorker implements VitestNode.PoolWorker {
     public readonly name = "frida-pool";
+    private static initQueue: Promise<void> = Promise.resolve();
 
     private readonly scope: Scope.Closeable;
     private readonly scriptContext: Promise<Context.Context<FridaScript.FridaScript>>;
@@ -214,7 +215,13 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
 
         this.scope = Scope.makeUnsafe();
-        this.scriptContext = ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromise);
+        const prev = FridaPoolWorker.initQueue;
+        const runInit = () => ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromise);
+        this.scriptContext = prev.then(runInit, runInit);
+        FridaPoolWorker.initQueue = this.scriptContext.then(
+            () => undefined,
+            () => undefined
+        );
     }
 
     async start(): Promise<void> {
