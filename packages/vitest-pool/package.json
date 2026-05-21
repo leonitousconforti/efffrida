@@ -53,21 +53,21 @@
         "ioredis": "5.10.1"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.66",
+        "@effect/platform-node": "4.0.0-beta.69",
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.1.0",
         "@types/node": "25.9.0",
         "@vitest/runner": "4.1.6",
         "@vitest/utils": "4.1.6",
         "birpc": "4.0.0",
-        "effect": "4.0.0-beta.66",
+        "effect": "4.0.0-beta.69",
         "flatted": "3.4.2",
         "frida": "17.9.10",
         "vitest": "4.1.6"
     },
     "peerDependencies": {
-        "@effect/platform-node": "4.0.0-beta.66",
-        "effect": "4.0.0-beta.66",
+        "@effect/platform-node": "4.0.0-beta.69",
+        "effect": "4.0.0-beta.69",
         "vitest": "4.1.6"
     },
     "optionalDependencies": {
