@@ -153,10 +153,10 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             const entrypoint = message.type === "run" ? startTests : collectTests;
             const testRunner: VitestRunner = {
                 config: setupContext.config as VitestRunner["config"],
-                importFile: async (file: string): Promise<void> => {
+                importFile: async (_file: string): Promise<void> => {
                     // @efffrida/vitest-pool/agent/file-map
 
-                    return Promise.reject(file);
+                    return Promise.reject("importFile is not supported in the frida pool agent");
                 },
             };
 

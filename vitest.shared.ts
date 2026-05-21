@@ -14,7 +14,6 @@ const config: ViteUserConfig = {
         sequence: {
             concurrent: true,
         },
-        fileParallelism: false,
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
         coverage: {
