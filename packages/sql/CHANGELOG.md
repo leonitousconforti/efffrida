@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.21
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+
 ## 0.0.20
 
 ### Patch Changes

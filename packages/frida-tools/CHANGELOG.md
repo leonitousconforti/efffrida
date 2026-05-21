@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.29
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+
 ## 0.0.28
 
 ### Patch Changes
