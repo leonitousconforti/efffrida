@@ -25,10 +25,6 @@ import * as FridaSession from "@efffrida/frida-tools/FridaSession";
 import * as Flatted from "flatted";
 import * as Frida from "frida";
 
-process.once("beforeExit", async () => {
-    await Frida.getDeviceManager().close();
-});
-
 // First, pick your device
 const DeviceSchema = Schema.Union([
     Schema.Struct({
