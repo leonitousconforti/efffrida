@@ -187,7 +187,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
                 allFiles,
                 Array.map(
                     (file) => `
-                        if (_file === "${file}") {
+                        if (file === "${file}") {
                             // @ts-ignore
                             return await import("${file}")
                         }`
@@ -215,7 +215,12 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
-        await this.scriptContext;
+        try {
+            await this.scriptContext;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     async stop(): Promise<void> {
