@@ -48,7 +48,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L220)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L227)
 
 ### stop (method)
 
@@ -58,7 +58,7 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L224)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L231)
 
 ### send (method)
 
@@ -68,7 +68,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L231)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L238)
 
 ### on (method)
 
@@ -78,7 +78,7 @@ declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L246)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L253)
 
 ### off (method)
 
@@ -88,7 +88,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (_event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L308)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L315)
 
 ### deserialize (method)
 
@@ -98,7 +98,7 @@ declare const off: (_event: string, callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L316)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L323)
 
 ### serialize (method)
 
@@ -108,7 +108,7 @@ declare const deserialize: (data: unknown) => any
 declare const serialize: (data: unknown) => unknown
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L321)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L328)
 
 ### name (property)
 
@@ -130,6 +130,6 @@ declare const createFridaPool: (
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L330)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L337)
 
 Since v1.0.0
