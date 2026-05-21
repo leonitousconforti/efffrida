@@ -1,18 +1,18 @@
-import type * as Option from "effect/Option";
+import type * as Context from "effect/Context";
 
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as FileSystem from "effect/FileSystem";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Match from "effect/Match";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
-import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import * as ChildProcess from "effect/unstable/process/ChildProcess";
 
@@ -22,7 +22,6 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 import * as FridaSession from "@efffrida/frida-tools/FridaSession";
-import * as Esbuild from "esbuild";
 import * as Flatted from "flatted";
 import * as Frida from "frida";
 
@@ -80,35 +79,16 @@ const ConfigSchema = Schema.Struct({
  * @category Tests
  */
 export class FridaPoolWorker implements VitestNode.PoolWorker {
-    readonly agentTemplatePath = new URL("../frida/agent.ts", import.meta.url);
-    readonly name = "frida-pool";
+    public readonly name = "frida-pool";
 
-    private readonly customOptions: Schema.Schema.Type<typeof ConfigSchema>;
+    private readonly scope: Scope.Closeable;
+    private readonly scriptContext: Promise<Context.Context<FridaScript.FridaScript>>;
+    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void> = new Map();
 
-    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void>;
-
-    private modifiedAgentScope: Scope.Closeable;
-    private managedRuntime: ManagedRuntime.ManagedRuntime<FridaScript.FridaScript, unknown> | undefined;
-    private sends: Array<Promise<Exit.Exit<unknown, unknown>>> = [];
-    private compiledAgentUrlPromise: Promise<URL>;
-    private messageCallback: ((arg: any) => void) | undefined;
+    private sends: Array<Promise<unknown>> = [];
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
-        this.customOptions = customOptions;
-        this.cancelables = new Map();
-        this.managedRuntime = undefined;
-        this.modifiedAgentScope = Effect.runSync(Scope.make());
-        this.compiledAgentUrlPromise = compileTestFiles(this.agentTemplatePath, poolOptions).pipe(
-            Scope.provide(this.modifiedAgentScope),
-            Effect.provide(NodeServices.layer),
-            Effect.runPromise
-        );
-    }
-
-    async start(): Promise<void> {
-        const tempAgentUrl = await this.compiledAgentUrlPromise;
-
-        const FridaRuntime = Match.value(this.customOptions.runtime).pipe(
+        const FridaRuntime = Match.value(customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
             Match.when("v8", () => Frida.ScriptRuntime.V8),
             Match.when("qjs", () => Frida.ScriptRuntime.QJS),
@@ -116,7 +96,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const FridaPlatform = Match.value(this.customOptions.platform).pipe(
+        const FridaPlatform = Match.value(customOptions.platform).pipe(
             Match.when(undefined, () => undefined),
             Match.when("gum", () => Frida.JsPlatform.Gum),
             Match.when("browser", () => Frida.JsPlatform.Browser),
@@ -124,19 +104,19 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const DeviceLive = Match.value(this.customOptions.device).pipe(
+        const DeviceLive = Match.value(customOptions.device).pipe(
             Match.when({ connection: "local" }, () => FridaDevice.layerLocalDevice),
             Match.when({ connection: "usb" }, ({ timeout }) =>
-                FridaDevice.layerUsbDevice({
-                    timeout: timeout ? Duration.toMillis(timeout) : undefined,
-                } as Frida.GetDeviceOptions)
+                FridaDevice.layerUsbDevice(timeout !== undefined ? { timeout: Duration.toMillis(timeout) } : {})
             ),
             Match.when({ connection: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
                 FridaDevice.layerRemoteDevice(address, {
-                    token,
-                    origin,
-                    keepaliveInterval: keepaliveInterval ? Duration.toSeconds(keepaliveInterval) : undefined,
-                } as Frida.RemoteDeviceOptions)
+                    ...(token !== undefined ? { token } : {}),
+                    ...(origin !== undefined ? { origin } : {}),
+                    ...(keepaliveInterval !== undefined
+                        ? { keepaliveInterval: Duration.toMillis(keepaliveInterval) }
+                        : {}),
+                })
             ),
             Match.when(
                 { connection: "android-emulator" },
@@ -151,11 +131,22 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.exhaustive
         );
 
-        const SessionLive = Match.value(this.customOptions.attach).pipe(
+        const SessionLive = Match.value(customOptions.attach).pipe(
             Match.when({ pid: Match.number }, ({ pid }) => FridaSession.layer(pid)),
-            Match.when({ attachFrontmost: true }, ({ frontmostScope }) =>
-                FridaSession.layerFrontmost({ scope: frontmostScope } as Frida.FrontmostQueryOptions)
-            ),
+            Match.when({ attachFrontmost: true }, ({ frontmostScope }) => {
+                return FridaSession.layerFrontmost(
+                    frontmostScope !== undefined
+                        ? {
+                              scope: Match.value(frontmostScope).pipe(
+                                  Match.when("minimal", () => Frida.Scope.Minimal),
+                                  Match.when("metadata", () => Frida.Scope.Metadata),
+                                  Match.when("full", () => Frida.Scope.Full),
+                                  Match.exhaustive
+                              ),
+                          }
+                        : {}
+                );
+            }),
             Match.when({ preSpawn: true }, ({ spawn }) =>
                 Layer.unwrap(
                     Effect.gen(function* () {
@@ -168,98 +159,150 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             Match.orElse(({ spawn }) => FridaSession.layer(spawn))
         );
 
-        const FridaLive = Layer.provide(SessionLive, DeviceLive).pipe(Layer.provide(NodeServices.layer));
-        const ScriptLive = FridaScript.layer(tempAgentUrl, {
-            externals: ["jsdom", "happy-dom", "@edge-runtime/vm"],
-            ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
-            ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
-        }).pipe(Layer.provide(FridaLive));
+        const FridaLive = Layer.provide(SessionLive, DeviceLive);
+        const ScriptLive = Effect.gen(function* () {
+            const path = yield* Path.Path;
+            const fs = yield* FileSystem.FileSystem;
 
-        this.managedRuntime = ManagedRuntime.make(ScriptLive);
+            const tempDir = path.join(poolOptions.project.config.root, "temp");
+            yield* fs.makeDirectory(tempDir, { recursive: true });
 
-        const exit = await this.managedRuntime.runPromiseExit(Effect.void);
-        if (Exit.isSuccess(exit)) return;
-        const prettyError = Cause.prettyErrors(exit.cause);
-        throw prettyError[0];
+            const agentUrl = yield* path.fromFileUrl(new URL("../frida/agent.ts", import.meta.url));
+            const baseAgent = yield* fs.readFileString(agentUrl);
+            const tempFile = yield* fs.makeTempFileScoped({
+                directory: tempDir,
+                prefix: ".vitest-frida-pool-agent-",
+                suffix: ".ts",
+            });
+
+            const setupFiles = poolOptions.project.config.setupFiles;
+            const testFiles = yield* Effect.map(
+                Effect.promise(() => poolOptions.project.globTestFiles()),
+                ({ testFiles }) => testFiles
+            );
+            const globalSetupFiles = Array.isArray(poolOptions.project.config.globalSetup)
+                ? poolOptions.project.config.globalSetup
+                : Array.make(poolOptions.project.config.globalSetup);
+
+            const marker = "// @efffrida/vitest-pool/agent/file-map";
+            const allFiles = Array.flatten([setupFiles, testFiles, globalSetupFiles]);
+            const newContent = Function.pipe(
+                allFiles,
+                Array.map(
+                    (file) => `
+                        if (_file === "${file}") {
+                            // @ts-ignore
+                            return await import("${file}")
+                        }`
+                ),
+                Array.join("\n")
+            );
+
+            yield* fs.writeFileString(tempFile, baseAgent.replace(marker, newContent));
+            return yield* path.toFileUrl(tempFile);
+        }).pipe(
+            Effect.map(
+                FridaScript.layer({
+                    ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
+                    ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
+                })
+            ),
+            Layer.unwrap,
+            Layer.provide(FridaLive),
+            Layer.provide(NodeServices.layer),
+            Layer.satisfiesSuccessType<FridaScript.FridaScript>()
+        );
+
+        this.scope = Scope.makeUnsafe();
+        this.scriptContext = ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromise);
+    }
+
+    async start(): Promise<void> {
+        await this.scriptContext;
     }
 
     async stop(): Promise<void> {
-        for (const cancelable of this.cancelables.values()) cancelable();
-        this.cancelables.clear();
         await Promise.allSettled(this.sends);
-        await this.managedRuntime!.dispose();
-        await Effect.runPromise(Scope.close(this.modifiedAgentScope, Exit.void));
+        for (const cancelable of this.cancelables.values()) cancelable();
+        await Scope.close(this.scope, Exit.void).pipe(Effect.runPromise);
+        this.cancelables.clear();
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
-        const sendPromise = this.managedRuntime!.runPromiseExit(
-            Effect.flatMap(FridaScript.FridaScript, (fridaScript) => fridaScript.callExport("onMessage")(message))
-        );
+        const context = await this.scriptContext;
+        let sendPromise: Promise<unknown> = undefined!;
 
-        this.sends.push(sendPromise);
-        const exit = await sendPromise;
-        this.sends = this.sends.filter((p) => p !== sendPromise);
-        if (Exit.isSuccess(exit)) {
-            if (exit.value !== null && exit.value !== undefined) {
-                this.messageCallback?.(exit.value);
-            }
-            return;
+        try {
+            sendPromise = Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                fridaScript.callExport("onMessage")(message)
+            ).pipe(Effect.runPromiseWith(context));
+            this.sends.push(sendPromise);
+            await sendPromise;
+        } finally {
+            this.sends = this.sends.filter((p) => p !== sendPromise);
         }
-        const prettyError = Cause.prettyErrors(exit.cause);
-        throw prettyError[0];
     }
 
     on(event: string, callback: (arg: any) => void): void {
-        let cancelable!: (interrupter?: number) => void;
-
         switch (event) {
             case "message": {
-                this.messageCallback = callback;
-                const sink = Sink.forEach<
-                    {
-                        message: unknown;
-                        data: Option.Option<Buffer<ArrayBufferLike>>;
-                    },
-                    void,
-                    never,
-                    never
-                >((input) =>
-                    Effect.sync(() => {
-                        callback(input.message);
-                    })
-                );
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Stream.run(fridaScript.stream, sink))
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Stream.runForEach(fridaScript.stream, (input) =>
+                                    Effect.sync(() => callback(input.message))
+                                )
+                            )
+                        )
+                    );
+                });
+
                 break;
             }
 
             case "error":
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.scriptError)),
-                    {
-                        onExit: (exit) =>
-                            Exit.isSuccess(exit)
-                                ? callback(exit.value)
-                                : !Cause.hasInterruptsOnly(exit.cause)
-                                  ? callback(exit.cause)
-                                  : {},
-                    }
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Deferred.await(fridaScript.scriptError)
+                            ),
+                            {
+                                onExit: (exit) => {
+                                    if (Exit.isSuccess(exit)) {
+                                        callback(exit.value);
+                                    } else if (!Cause.hasInterruptsOnly(exit.cause)) {
+                                        callback(exit.cause);
+                                    }
+                                },
+                            }
+                        )
+                    );
+                });
+
                 break;
 
             case "exit":
-                cancelable = this.managedRuntime!.runCallback(
-                    Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
-                    { onExit: () => callback(void 0) }
-                );
+                this.scriptContext.then((ctx) => {
+                    this.cancelables.set(
+                        callback,
+                        Effect.runCallbackWith(ctx)(
+                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                                Deferred.await(fridaScript.destroyed)
+                            ),
+                            { onExit: () => callback(void 0) }
+                        )
+                    );
+                });
+
                 break;
 
             default:
                 throw new Error(`Event ${event} not supported in FridaPoolWorker`);
         }
-
-        this.cancelables.set(callback, cancelable);
     }
 
     off(_event: string, callback: (arg: any) => void): void {
@@ -267,9 +310,6 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         if (cancelable !== undefined) {
             this.cancelables.delete(callback);
             cancelable();
-        }
-        if (this.messageCallback === callback) {
-            this.messageCallback = undefined;
         }
     }
 
@@ -290,206 +330,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 export const createFridaPool = (
     customOptions: Schema.Codec.Encoded<typeof ConfigSchema>
 ): VitestNode.PoolRunnerInitializer => {
-    const decoded = Schema.decodeUnknownSync(ConfigSchema)(customOptions);
     return {
         name: "frida-pool",
-        createPoolWorker: (options: VitestNode.PoolOptions) => new FridaPoolWorker(options, decoded),
+        createPoolWorker: (options: VitestNode.PoolOptions) =>
+            new FridaPoolWorker(options, Schema.decodeUnknownSync(ConfigSchema)(customOptions)),
     };
 };
-
-/** @internal */
-const vitestGlobalsPlugin: Esbuild.Plugin = {
-    name: "vitest-globals",
-    setup(build) {
-        // Handle vitest and @vitest/* imports
-        build.onResolve({ filter: /^(vitest|@vitest\/.*)$/ }, (args) => ({
-            path: args.path,
-            namespace: "vitest-globals",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "vitest-globals" }, (args) => {
-            if (args.path === "vitest") {
-                return {
-                    loader: "js",
-                    contents: "export * from 'VITEST_GLOBAL';\nexport { default } from 'VITEST_GLOBAL';",
-                };
-            }
-            if (args.path === "@vitest/runner") {
-                return {
-                    loader: "js",
-                    contents: "export * from 'VITEST_RUNNER_GLOBAL';\nexport { default } from 'VITEST_RUNNER_GLOBAL';",
-                };
-            }
-            return {
-                loader: "js",
-                contents: "export * from 'VITEST_GLOBAL';\nexport { default } from 'VITEST_GLOBAL';",
-            };
-        });
-
-        build.onResolve({ filter: /^VITEST_(GLOBAL|RUNNER_GLOBAL)$/ }, (args) => ({
-            path: args.path,
-            namespace: "vitest-synthetic",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "vitest-synthetic" }, (args) => {
-            const globalName = args.path === "VITEST_GLOBAL" ? "__vitest" : "__vitest_runner";
-            return {
-                loader: "js",
-                contents: `
-                    const g = globalThis.${globalName};
-                    export default g;
-                    export const {
-                        describe, it, test, expect, vi, beforeAll, afterAll,
-                        beforeEach, afterEach, suite, bench, assert
-                    } = g;
-                `,
-            };
-        });
-
-        // Handle Node.js built-in modules - redirect to globals set up by the agent
-        // The agent imports these from frida-compile's shims and exposes them as globals
-        const nodeModuleMap: Record<string, string> = {
-            "node:assert": "__node_assert",
-            "node:buffer": "__node_buffer",
-            "node:crypto": "__node_crypto",
-            "node:diagnostics_channel": "__node_diagnosticsChannel",
-            "node:events": "__node_events",
-            "node:fs": "__node_fs",
-            "node:net": "__node_net",
-            "node:os": "__node_os",
-            "node:path": "__node_path",
-            "node:process": "__node_process",
-            "node:stream": "__node_stream",
-            "node:timers": "__node_timers",
-            "node:tty": "__node_tty",
-            "node:url": "__node_url",
-            "node:util": "__node_util",
-            "node:vm": "__node_vm",
-            assert: "__node_assert",
-            buffer: "__node_buffer",
-            crypto: "__node_crypto",
-            diagnostics_channel: "__node_diagnosticsChannel",
-            events: "__node_events",
-            fs: "__node_fs",
-            net: "__node_net",
-            os: "__node_os",
-            path: "__node_path",
-            process: "__node_process",
-            stream: "__node_stream",
-            timers: "__node_timers",
-            tty: "__node_tty",
-            url: "__node_url",
-            util: "__node_util",
-            vm: "__node_vm",
-        };
-
-        build.onResolve(
-            {
-                filter: /^(node:)?(assert|buffer|crypto|diagnostics_channel|events|fs|net|os|path|process|stream|timers|tty|url|util|vm)$/,
-            },
-            (args) => ({
-                path: args.path,
-                namespace: "node-globals",
-            })
-        );
-
-        build.onLoad({ filter: /.*/, namespace: "node-globals" }, (args) => {
-            const globalName = nodeModuleMap[args.path];
-            if (!globalName) {
-                return { loader: "js", contents: "export default {};" };
-            }
-            return {
-                loader: "js",
-                contents: `
-                    const m = globalThis.${globalName};
-                    export default m;
-                    export const { Buffer } = m.Buffer ? m : { Buffer: m.default?.Buffer };
-                    export * from 'NODE_MODULE_REEXPORT_${globalName}';
-                `,
-            };
-        });
-
-        // Handle re-exports from node modules
-        build.onResolve({ filter: /^NODE_MODULE_REEXPORT_/ }, (args) => ({
-            path: args.path,
-            namespace: "node-reexport",
-        }));
-
-        build.onLoad({ filter: /.*/, namespace: "node-reexport" }, (args) => {
-            const globalName = args.path.replace("NODE_MODULE_REEXPORT_", "");
-            return {
-                loader: "js",
-                contents: `
-                    const m = globalThis.${globalName};
-                    const mod = m.default || m;
-                    for (const key in mod) {
-                        if (key !== 'default') {
-                            Object.defineProperty(exports, key, {
-                                enumerable: true,
-                                get: () => mod[key]
-                            });
-                        }
-                    }
-                `,
-            };
-        });
-    },
-};
-
-/** @internal */
-const compileTestFiles = Effect.fnUntraced(function* (
-    agentTemplatePath: URL,
-    poolOptions: VitestNode.PoolOptions,
-    customOptions?: Schema.Schema.Type<typeof ConfigSchema> | undefined
-) {
-    const path = yield* Path.Path;
-    const fs = yield* FileSystem.FileSystem;
-    const url = yield* path.fromFileUrl(agentTemplatePath);
-
-    const testFilesList: Array<string> = (poolOptions.project as any).testFilesList ?? [];
-    const setupFiles: Array<string> = poolOptions.project.config.setupFiles ?? [];
-    const allFiles = [...new Set([...setupFiles, ...testFilesList])];
-    const testFilesMap: Record<string, string> = {};
-
-    const esbuildPlatform = Match.value(customOptions?.platform).pipe(
-        Match.when("browser", () => "browser" as const),
-        Match.when("neutral", () => "neutral" as const),
-        Match.whenOr("gum", undefined, () => "node" as const),
-        Match.orElseAbsurd
-    );
-
-    for (const testFile of allFiles) {
-        const result = yield* Effect.promise(() =>
-            Esbuild.build({
-                bundle: true,
-                write: false,
-                format: "esm",
-                platform: esbuildPlatform,
-                target: "es2020",
-                entryPoints: [testFile],
-                plugins: [vitestGlobalsPlugin],
-            })
-        );
-
-        if (!result.outputFiles || result.outputFiles.length === 0) {
-            return yield* Effect.die(new Error(`esbuild produced no output for ${testFile}`));
-        } else {
-            testFilesMap[testFile] = Buffer.from(result.outputFiles[0].text).toString("base64");
-        }
-    }
-
-    const agentTemplateContents = yield* fs.readFileString(url);
-    const modifiedAgentContents = agentTemplateContents.replace(
-        /^const testFiles: Record<string, string> = \{\};$/m,
-        `const testFiles: Record<string, string> = ${JSON.stringify(testFilesMap, null, 4)};`
-    );
-
-    const tempAgentPath = yield* fs.makeTempFileScoped({
-        suffix: ".ts",
-        prefix: ".agent-",
-        directory: path.dirname(url),
-    });
-
-    yield* fs.writeFileString(tempAgentPath, modifiedAgentContents);
-    return yield* path.toFileUrl(tempAgentPath);
-});

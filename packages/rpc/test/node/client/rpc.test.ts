@@ -9,7 +9,6 @@ import { FridaRpcClient } from "@efffrida/rpc/node";
 import { JsPlatform } from "frida";
 
 import { UserRpcs } from "../../shared/requests.ts";
-
 // Choose which serialization to use
 const NdJsonSerialization = RpcSerialization.layerNdjson;
 
@@ -32,33 +31,31 @@ const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeService
 
 const ScriptLive = FridaScript.layer(new URL("../../frida/server/agent.ts", import.meta.url), {
     platform: JsPlatform.Browser,
-});
+}).pipe(Layer.provide(FridaLive));
 
-const Live = Layer.provide(ProtocolLive, ScriptLive);
+const Live = ProtocolLive.pipe(Layer.provide(ScriptLive));
 
 // Use the client
-layer(FridaLive)("local device tests", (it) => {
-    it.layer(Live)("Should be able to perform rpc communication", (it) => {
-        it.effect("demo from rpc readme", () =>
-            Effect.gen(function* () {
-                const client = yield* RpcClient.make(UserRpcs);
-                const user = yield* client.UserById({ id: "1" });
-                expect(user).toEqual({ id: "1", name: "Alice" });
-                let users = yield* client.UserList().pipe(Stream.runCollect);
-                expect(users).toEqual([
-                    { id: "1", name: "Alice" },
-                    { id: "2", name: "Bob" },
-                ]);
-                if (Option.isNone(Option.fromNullishOr(users.find((user) => user.id === "3")))) {
-                    yield* client.UserCreate({ name: "Charlie" });
-                    users = yield* client.UserList().pipe(Stream.runCollect);
-                }
-                expect(users).toEqual([
-                    { id: "1", name: "Alice" },
-                    { id: "2", name: "Bob" },
-                    { id: "3", name: "Charlie" },
-                ]);
-            })
-        );
-    });
+layer(Live)("Should be able to perform rpc communication", (it) => {
+    it.effect("demo from rpc readme", () =>
+        Effect.gen(function* () {
+            const client = yield* RpcClient.make(UserRpcs);
+            const user = yield* client.UserById({ id: "1" });
+            expect(user).toEqual({ id: "1", name: "Alice" });
+            let users = yield* client.UserList().pipe(Stream.runCollect);
+            expect(users).toEqual([
+                { id: "1", name: "Alice" },
+                { id: "2", name: "Bob" },
+            ]);
+            if (Option.isNone(Option.fromNullishOr(users.find((user) => user.id === "3")))) {
+                yield* client.UserCreate({ name: "Charlie" });
+                users = yield* client.UserList().pipe(Stream.runCollect);
+            }
+            expect(users).toEqual([
+                { id: "1", name: "Alice" },
+                { id: "2", name: "Bob" },
+                { id: "3", name: "Charlie" },
+            ]);
+        })
+    );
 });

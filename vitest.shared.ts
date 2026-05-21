@@ -1,6 +1,6 @@
-import type { ViteUserConfig } from "vitest/config";
-
 import path from "node:path";
+
+import type { ViteUserConfig } from "vitest/config";
 
 const config: ViteUserConfig = {
     resolve: {
@@ -14,7 +14,6 @@ const config: ViteUserConfig = {
         sequence: {
             concurrent: true,
         },
-        fileParallelism: false,
         include: ["test/**/*.test.ts"],
         reporters: ["default", "hanging-process", ["junit", { outputFile: "./coverage/junit.xml" }]],
         coverage: {

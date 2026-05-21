@@ -27,7 +27,10 @@ export const compile = Function.dual<
     (arguments_) => Predicate.isString(arguments_[0]),
     (path: string, options?: Frida.CompilerOptions | undefined) =>
         Effect.gen(function* () {
-            const compiler = yield* Compiler;
+            const compiler = new Frida.Compiler();
+
+            // Doesn't work in concurrent situations
+            // const compiler = yield* Compiler;
 
             // https://github.com/frida/frida-compile/blob/e81ae27369466c69868fc6ee36c0f227bbfe340c/src/cli.ts#L173-L182
             interface Diagnostic {

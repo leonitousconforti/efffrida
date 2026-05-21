@@ -14,7 +14,6 @@ export const SessionLive =
           );
 
 export const FridaLive = SessionLive.pipe(
-    Layer.fresh,
     Layer.provide(NodeServices.layer),
     Layer.provide(DeviceLive),
     Layer.satisfiesSuccessType<FridaSession.FridaSession>()

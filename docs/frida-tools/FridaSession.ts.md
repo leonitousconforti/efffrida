@@ -46,7 +46,7 @@ declare const attach: (
 ) => Effect.Effect<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L82)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L100)
 
 Since v1.0.0
 
@@ -60,7 +60,7 @@ declare const frontmost: (
 ) => Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L64)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L82)
 
 Since v1.0.0
 
@@ -75,7 +75,7 @@ declare const spawn: (
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L73)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L91)
 
 Since v1.0.0
 
@@ -92,7 +92,7 @@ declare const layer: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L92)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L110)
 
 Since v1.0.0
 
@@ -106,7 +106,7 @@ declare const layerFrontmost: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L101)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L119)
 
 Since v1.0.0
 
@@ -118,20 +118,36 @@ Since v1.0.0
 
 ```ts
 export interface FridaSession {
+  readonly pid: number
   readonly session: Frida.Session
+
   readonly [FridaSessionTypeId]: typeof FridaSessionTypeId
-  readonly resume: Effect.Effect<void, Cause.UnknownError>
-  readonly enableChildGating: Effect.Effect<void, Cause.UnknownError>
-  readonly disableChildGating: Effect.Effect<void, Cause.UnknownError>
-  setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError>
+  readonly detached: Deferred.Deferred<
+    {
+      reason: Frida.SessionDetachReason
+      crash: Option.Option<{
+        pid: number
+        processName: string
+        summary: string
+        report: string
+        parameters: unknown
+      }>
+    },
+    FridaSessionError.FridaSessionError
+  >
+  readonly resume: Effect.Effect<void, FridaSessionError.FridaSessionError, never>
+  readonly detach: Effect.Effect<void, FridaSessionError.FridaSessionError, never>
+  readonly enableChildGating: Effect.Effect<void, Cause.UnknownError, never>
+  readonly disableChildGating: Effect.Effect<void, Cause.UnknownError, never>
+  setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError, never>
   joinPortal(
     address: string,
     options?: Frida.PortalOptions | undefined
-  ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError>
+  ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError, never>
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L37)
 
 Since v1.0.0
 
@@ -145,7 +161,7 @@ Since v1.0.0
 declare const isFridaSession: (u: unknown) => u is FridaSession
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L58)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L76)
 
 Since v1.0.0
 
@@ -159,7 +175,7 @@ Since v1.0.0
 declare const FridaSession: Context.Service<FridaSession, FridaSession>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L52)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L70)
 
 Since v1.0.0
 
@@ -173,7 +189,7 @@ Since v1.0.0
 declare const FridaSessionTypeId: unique symbol
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L23)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L25)
 
 Since v1.0.0
 
@@ -185,6 +201,6 @@ Since v1.0.0
 type FridaSessionTypeId = typeof FridaSessionTypeId
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L29)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L31)
 
 Since v1.0.0
