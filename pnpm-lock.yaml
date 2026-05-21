@@ -73,7 +73,7 @@ importers:
         version: 8.0.13(tsx@4.22.3)
       vitest:
         specifier: 4.1.6
-        version: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
+        version: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
 
   packages/frida-tools:
     dependencies:
@@ -157,6 +157,9 @@ importers:
       '@effect/vitest':
         specifier: 4.0.0-beta.66
         version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+      '@efffrida/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
       '@efffrida/vitest-pool':
         specifier: workspace:*
         version: link:../vitest-pool
@@ -166,9 +169,15 @@ importers:
       '@types/node':
         specifier: 25.9.0
         version: 25.9.0
+      birpc:
+        specifier: 4.0.0
+        version: 4.0.0
       effect:
         specifier: 4.0.0-beta.66
         version: 4.0.0-beta.66
+      flatted:
+        specifier: 3.4.2
+        version: 3.4.2
       frida:
         specifier: 17.9.10
         version: 17.9.10
@@ -237,6 +246,9 @@ importers:
       '@effect/vitest':
         specifier: 4.0.0-beta.66
         version: 4.0.0-beta.66(effect@4.0.0-beta.66)(vitest@4.1.6(@types/node@25.9.0))
+      '@efffrida/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
       '@efffrida/vitest-pool':
         specifier: workspace:*
         version: link:../vitest-pool
@@ -246,9 +258,15 @@ importers:
       '@types/node':
         specifier: 25.9.0
         version: 25.9.0
+      birpc:
+        specifier: 4.0.0
+        version: 4.0.0
       effect:
         specifier: 4.0.0-beta.66
         version: 4.0.0-beta.66
+      flatted:
+        specifier: 3.4.2
+        version: 3.4.2
       vitest:
         specifier: 4.1.6
         version: 4.1.6(@types/node@25.9.0)
@@ -261,19 +279,10 @@ importers:
       ioredis:
         specifier: 5.10.1
         version: 5.10.1
-    devDependencies:
-      '@effect/platform-node':
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+    optionalDependencies:
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@types/frida-gum':
-        specifier: 19.1.0
-        version: 19.1.0
-      '@types/node':
-        specifier: 25.9.0
-        version: 25.9.0
       '@vitest/runner':
         specifier: 4.1.6
         version: 4.1.6
@@ -283,12 +292,22 @@ importers:
       birpc:
         specifier: 4.0.0
         version: 4.0.0
-      effect:
-        specifier: 4.0.0-beta.66
-        version: 4.0.0-beta.66
       flatted:
         specifier: 3.4.2
         version: 3.4.2
+    devDependencies:
+      '@effect/platform-node':
+        specifier: 4.0.0-beta.66
+        version: 4.0.0-beta.66(effect@4.0.0-beta.66)(ioredis@5.10.1)
+      '@types/frida-gum':
+        specifier: 19.1.0
+        version: 19.1.0
+      '@types/node':
+        specifier: 25.9.0
+        version: 25.9.0
+      effect:
+        specifier: 4.0.0-beta.66
+        version: 4.0.0-beta.66
       frida:
         specifier: 17.9.10
         version: 17.9.10
@@ -3293,7 +3312,6 @@ packages:
       '@vitest/ui': 4.1.6
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -4366,7 +4384,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
+      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
 
   '@vitest/expect@4.1.6':
     dependencies:
@@ -6461,7 +6479,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3)):
+  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3):
     dependencies:
       '@vitest/expect': 4.1.6
       '@vitest/mocker': 4.1.6(vite@8.0.13(tsx@4.22.3))
@@ -6486,7 +6504,18 @@ snapshots:
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.6(vitest@4.1.6)
     transitivePeerDependencies:
+      - '@vitejs/devtools'
+      - esbuild
+      - jiti
+      - less
       - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
 
   walkdir@0.4.1: {}
 
