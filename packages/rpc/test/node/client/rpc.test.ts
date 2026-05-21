@@ -23,6 +23,7 @@ const SessionLive =
         : Layer.unwrap(
               Effect.gen(function* () {
                   const handle = yield* ChildProcess.make("sleep", ["infinity"]);
+                  yield* Effect.sleep("1 seconds");
                   return FridaSession.layer(handle.pid);
               })
           ).pipe(Layer.provide(NodeServices.layer));

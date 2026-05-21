@@ -58,6 +58,7 @@ const AttachSchema = Schema.Union([
     }),
     Schema.Struct({
         spawn: Schema.NonEmptyArray(Schema.String),
+        delay: Schema.optional(Schema.Union([Schema.DurationFromString, Schema.DurationFromMillis])),
         preSpawn: Schema.optional(Schema.Boolean),
     }),
     Schema.Struct({
@@ -147,11 +148,12 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
                         : {}
                 );
             }),
-            Match.when({ preSpawn: true }, ({ spawn }) =>
+            Match.when({ preSpawn: true }, ({ spawn, delay }) =>
                 Layer.unwrap(
                     Effect.gen(function* () {
                         const [command, ...args] = spawn;
                         const handle = yield* ChildProcess.make(command, args);
+                        if (delay !== undefined) yield* Effect.sleep(delay);
                         return FridaSession.layer(handle.pid);
                     })
                 )

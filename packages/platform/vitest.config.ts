@@ -14,6 +14,7 @@ const config: ViteUserConfig = {
                   device: { connection: "local" },
                   attach: {
                       preSpawn: true,
+                      delay: "1 seconds",
                       spawn: ["sleep", "infinity"],
                   },
               }),

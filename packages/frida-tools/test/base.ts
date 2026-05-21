@@ -9,6 +9,7 @@ export const SessionLive =
     process.env.CI !== undefined
         ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
         : ChildProcess.make`sleep infinity`.pipe(
+              Effect.tap(Effect.sleep("1 seconds")),
               Effect.map((handle) => FridaSession.layer(handle.pid)),
               Layer.unwrap
           );
