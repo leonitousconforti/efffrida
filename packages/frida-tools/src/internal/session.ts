@@ -103,7 +103,9 @@ export const spawn = (
             Effect.promise((signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
-                return device.kill(pid, cancellable);
+                console.log(`Killing process with PID ${pid}...`);
+                return Promise.resolve();
+                // return device.kill(pid, cancellable);
             })
         );
 
