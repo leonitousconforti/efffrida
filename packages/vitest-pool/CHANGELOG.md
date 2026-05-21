@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.14
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+- Updated dependencies [76b7c23]
+  - @efffrida/frida-tools@0.0.29
+
 ## 0.0.13
 
 ### Patch Changes

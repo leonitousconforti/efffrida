@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.11
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+
 ## 0.0.10
 
 ### Patch Changes

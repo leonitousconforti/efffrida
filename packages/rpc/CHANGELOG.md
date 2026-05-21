@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.29
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+- Updated dependencies [76b7c23]
+  - @efffrida/frida-tools@0.0.29
+  - @efffrida/platform@0.0.21
+  - @efffrida/polyfills@0.0.8
+
 ## 0.0.28
 
 ### Patch Changes

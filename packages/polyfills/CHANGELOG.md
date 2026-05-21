@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.8
+
+### Patch Changes
+
+- 76b7c23: Bump dependencies
+
 ## 0.0.7
 
 ### Patch Changes
