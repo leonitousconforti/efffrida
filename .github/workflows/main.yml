@@ -35,11 +35,4 @@ jobs:
       - run: pnpm circular
       - run: pnpm lint
       - run: pnpm build
-
-      # - run: sudo sysctl kernel.yama.ptrace_scope=0
-      # - run: pnpm test
-      - run: pnpm test --filter frida-tools
-      - run: pnpm test --filter vitest-pool
-      - run: pnpm test --filter platform
-      - run: pnpm test --filter rpc
-      - run: pnpm test --filter sql
+      - run: pnpm test
