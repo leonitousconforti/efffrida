@@ -99,7 +99,7 @@ export const spawn = (
     );
 
     const release = (pid: number) =>
-        Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+        Effect.flatMap(FridaDevice.FridaDevice, () =>
             Effect.promise((signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
