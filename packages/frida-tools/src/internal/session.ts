@@ -230,18 +230,20 @@ export const layer = (
 
             const session = yield* attach(pid, options);
 
-            yield* Effect.tryPromise({
-                try: (signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return device.resume(session.pid, cancellable);
-                },
-                catch: (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "resume",
-                        cause,
-                    }),
-            });
+            if (typeof target !== "number") {
+                yield* Effect.tryPromise({
+                    try: (signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return device.resume(session.pid, cancellable);
+                    },
+                    catch: (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "resume",
+                            cause,
+                        }),
+                });
+            }
 
             return session;
         })
