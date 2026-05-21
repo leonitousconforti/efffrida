@@ -215,12 +215,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async start(): Promise<void> {
-        try {
-            await this.scriptContext;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
+        await this.scriptContext;
     }
 
     async stop(): Promise<void> {
