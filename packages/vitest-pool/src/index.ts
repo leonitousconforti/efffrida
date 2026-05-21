@@ -164,11 +164,17 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
 
+            const tempDir = path.join(poolOptions.project.config.root, "temp");
+            yield* fs.makeDirectory(tempDir).pipe(
+                Effect.andThen(Effect.addFinalizer(() => Effect.orDie(fs.remove(tempDir, { recursive: true })))),
+                Effect.catchReason("PlatformError", "AlreadyExists", () => Effect.void)
+            );
+
             const agentUrl = yield* path.fromFileUrl(new URL("../frida/agent.ts", import.meta.url));
             const baseAgent = yield* fs.readFileString(agentUrl);
             const tempFile = yield* fs.makeTempFileScoped({
-                directory: path.dirname(agentUrl),
-                prefix: ".agent-",
+                directory: tempDir,
+                prefix: ".vitest-frida-pool-agent-",
                 suffix: ".ts",
             });
 
