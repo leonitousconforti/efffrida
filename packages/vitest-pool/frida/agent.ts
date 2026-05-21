@@ -154,25 +154,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             const testRunner: VitestRunner = {
                 config: setupContext.config as VitestRunner["config"],
                 importFile: async (file: string): Promise<void> => {
-                    if (file === "/Users/leo.conforti/Personal/efffrida/vitest.setup.ts") {
-                        // @ts-expect-error
-                        return await import("/Users/leo.conforti/Personal/efffrida/vitest.setup.ts");
-                    }
-
-                    if (file === "/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/effect.test.ts") {
-                        // @ts-expect-error
-                        return await import("/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/effect.test.ts");
-                    }
-
-                    if (file === "/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/spec1.test.ts") {
-                        // @ts-expect-error
-                        return await import("/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/spec1.test.ts");
-                    }
-
-                    if (file === "/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/spec2.test.ts") {
-                        // @ts-expect-error
-                        return await import("/Users/leo.conforti/Personal/efffrida/packages/vitest-pool/test/spec2.test.ts");
-                    }
+                    // @efffrida/vitest-pool/agent/file-map
 
                     return Promise.reject(file);
                 },

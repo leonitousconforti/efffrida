@@ -1,12 +1,16 @@
 import type * as Context from "effect/Context";
 
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
+import * as FileSystem from "effect/FileSystem";
+import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
+import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
@@ -83,7 +87,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
     private sends: Array<Promise<unknown>> = [];
 
-    constructor(_poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
+    constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
         const FridaRuntime = Match.value(customOptions.runtime).pipe(
             Match.when(undefined, () => undefined),
             Match.when("v8", () => Frida.ScriptRuntime.V8),
@@ -103,16 +107,16 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         const DeviceLive = Match.value(customOptions.device).pipe(
             Match.when({ connection: "local" }, () => FridaDevice.layerLocalDevice),
             Match.when({ connection: "usb" }, ({ timeout }) =>
-                FridaDevice.layerUsbDevice({
-                    timeout: timeout ? Duration.toMillis(timeout) : undefined,
-                } as Frida.GetDeviceOptions)
+                FridaDevice.layerUsbDevice(timeout !== undefined ? { timeout: Duration.toMillis(timeout) } : {})
             ),
             Match.when({ connection: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
                 FridaDevice.layerRemoteDevice(address, {
-                    keepaliveInterval: keepaliveInterval ? Duration.toSeconds(keepaliveInterval) : undefined,
-                    token,
-                    origin,
-                } as Frida.RemoteDeviceOptions)
+                    ...(token !== undefined ? { token } : {}),
+                    ...(origin !== undefined ? { origin } : {}),
+                    ...(keepaliveInterval !== undefined
+                        ? { keepaliveInterval: Duration.toMillis(keepaliveInterval) }
+                        : {}),
+                })
             ),
             Match.when(
                 { connection: "android-emulator" },
@@ -129,9 +133,20 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
         const SessionLive = Match.value(customOptions.attach).pipe(
             Match.when({ pid: Match.number }, ({ pid }) => FridaSession.layer(pid)),
-            Match.when({ attachFrontmost: true }, ({ frontmostScope }) =>
-                FridaSession.layerFrontmost({ scope: frontmostScope } as Frida.FrontmostQueryOptions)
-            ),
+            Match.when({ attachFrontmost: true }, ({ frontmostScope }) => {
+                return FridaSession.layerFrontmost(
+                    frontmostScope !== undefined
+                        ? {
+                              scope: Match.value(frontmostScope).pipe(
+                                  Match.when("minimal", () => Frida.Scope.Minimal),
+                                  Match.when("metadata", () => Frida.Scope.Metadata),
+                                  Match.when("full", () => Frida.Scope.Full),
+                                  Match.exhaustive
+                              ),
+                          }
+                        : {}
+                );
+            }),
             Match.when({ preSpawn: true }, ({ spawn }) =>
                 Layer.unwrap(
                     Effect.gen(function* () {
@@ -145,11 +160,51 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
 
         const FridaLive = Layer.provide(SessionLive, DeviceLive);
-        const ScriptLive = FridaScript.layer(new URL("../frida/agent.ts", import.meta.url), {
-            ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
-            ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
+        const ScriptLive = Effect.gen(function* () {
+            const path = yield* Path.Path;
+            const fs = yield* FileSystem.FileSystem;
+
+            const agentUrl = yield* path.fromFileUrl(new URL("../frida/agent.ts", import.meta.url));
+            const baseAgent = yield* fs.readFileString(agentUrl);
+            const tempFile = yield* fs.makeTempFileScoped({
+                directory: path.dirname(agentUrl),
+                prefix: ".agent-",
+                suffix: ".ts",
+            });
+
+            const setupFiles = poolOptions.project.config.setupFiles;
+            const testFiles = yield* Effect.map(
+                Effect.promise(() => poolOptions.project.globTestFiles()),
+                ({ testFiles }) => testFiles
+            );
+            const globalSetupFiles = Array.isArray(poolOptions.project.config.globalSetup)
+                ? poolOptions.project.config.globalSetup
+                : Array.make(poolOptions.project.config.globalSetup);
+
+            const marker = "// @efffrida/vitest-pool/agent/file-map";
+            const allFiles = Array.flatten([setupFiles, testFiles, globalSetupFiles]);
+            const newContent = Function.pipe(
+                allFiles,
+                Array.map(
+                    (file) => `
+                        if (_file === "${file}") {
+                            // @ts-ignore
+                            return await import("${file}")
+                        }`
+                ),
+                Array.join("\n")
+            );
+
+            yield* fs.writeFileString(tempFile, baseAgent.replace(marker, newContent));
+            return yield* path.toFileUrl(tempFile);
         }).pipe(
-            Layer.fresh,
+            Effect.map(
+                FridaScript.layer({
+                    ...(FridaRuntime !== undefined ? { runtime: FridaRuntime } : {}),
+                    ...(FridaPlatform !== undefined ? { platform: FridaPlatform } : {}),
+                })
+            ),
+            Layer.unwrap,
             Layer.provide(FridaLive),
             Layer.provide(NodeServices.layer),
             Layer.satisfiesSuccessType<FridaScript.FridaScript>()
