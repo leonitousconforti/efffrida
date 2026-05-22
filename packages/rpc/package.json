@@ -55,7 +55,7 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "@efffrida/frida-tools": "workspace:^",
+        "@efffrida/frida-tools": "workspace:*",
         "@efffrida/platform": "workspace:*",
         "@efffrida/polyfills": "workspace:*"
     },

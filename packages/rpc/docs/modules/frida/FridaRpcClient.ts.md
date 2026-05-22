@@ -29,10 +29,14 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const layerProtocolFrida: Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization>
+declare const layerProtocolFrida: Layer.Layer<
+  RpcClient.Protocol,
+  never,
+  RpcSerialization.RpcSerialization | Crypto.Crypto
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L100)
+[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L101)
 
 Since v1.0.0
 
@@ -46,7 +50,7 @@ Since v1.0.0
 declare const makeProtocolFrida: () => Effect.Effect<
   RpcClient.Protocol["Service"],
   never,
-  RpcSerialization.RpcSerialization | Scope.Scope
+  Crypto.Crypto | RpcSerialization.RpcSerialization | Scope.Scope
 >
 ```
 
