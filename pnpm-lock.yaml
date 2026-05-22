@@ -73,7 +73,7 @@ importers:
         version: 8.0.13(tsx@4.22.3)
       vitest:
         specifier: 4.1.6
-        version: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
+        version: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
 
   packages/frida-tools:
     dependencies:
@@ -207,7 +207,7 @@ importers:
   packages/rpc:
     dependencies:
       '@efffrida/frida-tools':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../frida-tools
       '@efffrida/platform':
         specifier: workspace:*
@@ -3317,7 +3317,6 @@ packages:
       '@vitest/ui': 4.1.6
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -4390,7 +4389,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3))
+      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3)
 
   '@vitest/expect@4.1.6':
     dependencies:
@@ -6487,7 +6486,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.13(tsx@4.22.3)):
+  vitest@4.1.6(@vitest/coverage-v8@4.1.6)(tsx@4.22.3):
     dependencies:
       '@vitest/expect': 4.1.6
       '@vitest/mocker': 4.1.6(vite@8.0.13(tsx@4.22.3))
@@ -6512,7 +6511,18 @@ snapshots:
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.6(vitest@4.1.6)
     transitivePeerDependencies:
+      - '@vitejs/devtools'
+      - esbuild
+      - jiti
+      - less
       - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
 
   walkdir@0.4.1: {}
 

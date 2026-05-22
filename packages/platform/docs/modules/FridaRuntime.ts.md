@@ -26,15 +26,19 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const runMain: <A, E>(
-  effect: Effect.Effect<A, E, never>,
-  options?:
-    | {
-        readonly disablePrettyLogger?: boolean | undefined
-        readonly teardown?: ((exit: Exit.Exit<A, E>) => void) | undefined
-      }
-    | undefined
-) => void
+declare const runMain: (<A, E>(options?: {
+  readonly disablePrettyLogger?: boolean | undefined
+  readonly teardown?: ((exit: Exit.Exit<A, E>) => void) | undefined
+}) => (effect: Effect.Effect<A, E, never>) => void) &
+  (<A, E>(
+    effect: Effect.Effect<A, E, never>,
+    options?:
+      | {
+          readonly disablePrettyLogger?: boolean | undefined
+          readonly teardown?: ((exit: Exit.Exit<A, E>) => void) | undefined
+        }
+      | undefined
+  ) => void)
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/FridaRuntime.ts#L19)
