@@ -1,5 +1,11 @@
 # @efffrida/rpc
 
+## 0.0.31
+
+### Patch Changes
+
+- d5689a3: Fix version specifier
+
 ## 0.0.30
 
 ### Patch Changes
