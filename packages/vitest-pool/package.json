@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/vitest-pool",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "description": "effect frida vitest-pool",
     "keywords": [
         "effect-ts",

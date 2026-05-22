@@ -1,5 +1,12 @@
 # @efffrida/rpc
 
+## 0.0.30
+
+### Patch Changes
+
+- Updated dependencies [b7dd6f6]
+  - @efffrida/platform@0.0.22
+
 ## 0.0.29
 
 ### Patch Changes

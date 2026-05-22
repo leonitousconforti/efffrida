@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.22
+
+### Patch Changes
+
+- b7dd6f6: Make `FridaRuntime.runMain` dual
+
 ## 0.0.21
 
 ### Patch Changes
