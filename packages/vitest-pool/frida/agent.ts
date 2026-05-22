@@ -31,8 +31,8 @@ const birpc = createBirpc<RuntimeRPC, RunnerRPC>(
     },
     {
         // How to send and receive messages.
-        off: (rpcListener) => messageListeners.delete(rpcListener),
         on: (rpcListener) => messageListeners.add(rpcListener),
+        off: (rpcListener) => messageListeners.delete(rpcListener),
         post: (message) => (typeof message === "string" ? send(message) : send(flattedStringify(message))),
 
         // Names of remote functions that do not need response.
