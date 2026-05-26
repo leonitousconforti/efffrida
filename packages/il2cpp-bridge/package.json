@@ -58,6 +58,7 @@
         "@types/frida-gum": "19.1.0",
         "@types/node": "25.9.0",
         "effect": "4.0.0-beta.69",
+        "vite": "8.0.14",
         "vitest": "4.1.6"
     },
     "peerDependencies": {

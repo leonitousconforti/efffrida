@@ -1,3 +1,21 @@
+hoist: false
+hoistPattern: []
+autoInstallPeers: false
+strictPeerDependencies: true
+publicHoistPattern:
+  - "frida"
+  - "vitest"
+  - "@types/*"
+  - "@vitest/*"
+  - "@effect/vitest"
+
+recursiveInstall: true
+dedupePeerDependents: false
+linkWorkspacePackages: true
+hoistWorkspacePackages: false
+preferWorkspacePackages: true
+resolvePeersFromWorkspaceRoot: false
+
 packages:
   - packages/*
   - scratchpad
