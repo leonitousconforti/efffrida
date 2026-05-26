@@ -3,6 +3,11 @@
     "version": "0.0.1",
     "private": true,
     "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./src/index.ts",
+        "./*": "./src/*.ts"
+    },
     "scripts": {
         "build": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",

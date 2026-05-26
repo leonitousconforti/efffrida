@@ -2,6 +2,9 @@ import { createFridaPool } from "@efffrida/vitest-pool";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+    resolve: {
+        tsconfigPaths: true,
+    },
     test: {
         include: ["test/**/*.test.ts"],
         pool: process.env.CI

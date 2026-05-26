@@ -11,6 +11,10 @@
         "rewriteRelativeImportExtensions": false,
         "allowImportingTsExtensions": true,
         "types": ["frida-gum"],
+        "paths": {
+            "agent-only": ["./src/index.ts"],
+            "agent-only/*": ["./src/*.ts"]
+        },
         "plugins": [
             {
                 "name": "@effect/language-service",
