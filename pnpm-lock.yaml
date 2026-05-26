@@ -388,7 +388,7 @@ importers:
   templates/agent-only:
     dependencies:
       '@efffrida/platform':
-        specifier: ^0.0.22
+        specifier: 0.0.22
         version: link:../../packages/platform
       effect:
         specifier: 4.0.0-beta.69
@@ -404,7 +404,7 @@ importers:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6)
       '@efffrida/vitest-pool':
-        specifier: ^0.0.15
+        specifier: 0.0.15
         version: link:../../packages/vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
@@ -412,9 +412,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.6
         version: 4.1.6(vitest@4.1.6)
-      frida:
-        specifier: 17.9.10
-        version: 17.9.10
       oxfmt:
         specifier: 0.51.0
         version: 0.51.0

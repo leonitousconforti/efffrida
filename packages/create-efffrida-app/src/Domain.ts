@@ -4,8 +4,8 @@ export type TemplateType = (typeof templates)[number];
 export interface ProjectConfig {
     readonly projectName: string;
     readonly template: TemplateType;
-    readonly withVitest: boolean;
-    readonly withVitestPool: boolean;
+    readonly withNodeTests: boolean;
+    readonly withFridaTests: boolean;
     readonly withWorkflows: boolean;
     readonly withNixFlake: boolean;
     readonly withChangesets: boolean;
