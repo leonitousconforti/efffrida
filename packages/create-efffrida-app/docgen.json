@@ -1,0 +1,5 @@
+{
+    "$schema": "../../node_modules/@effect/docgen/schema.json",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/create-efffrida-app",
+    "exclude": ["src/*.ts"]
+}
