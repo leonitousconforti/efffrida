@@ -3,6 +3,7 @@
     "extends": "./tsconfig.base.jsonc",
     "include": [],
     "references": [
+        { "path": "packages/shared/tsconfig.build.json" },
         { "path": "packages/agent/tsconfig.build.json" },
         { "path": "packages/app/tsconfig.build.json" }
     ]

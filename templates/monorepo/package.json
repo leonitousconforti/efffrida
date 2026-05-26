@@ -1,7 +1,9 @@
 {
+    "name": "monorepo",
     "private": true,
-    "name": "<REPO_NAME>",
-    "workspaces": ["packages/*"],
+    "workspaces": [
+        "packages/*"
+    ],
     "type": "module",
     "scripts": {
         "clean": "node scripts/clean.mjs",
