@@ -1,0 +1,33 @@
+{
+    "name": "<PACKAGE_NAME>",
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "build": "tsc -b tsconfig.build.json",
+        "check": "tsc -b tsconfig.json",
+        "lint": "oxlint && oxfmt --check src",
+        "lint-fix": "oxlint --fix && oxfmt --write src",
+        "test": "vitest",
+        "coverage": "vitest --coverage"
+    },
+    "dependencies": {
+        "@efffrida/platform": "^0.0.22",
+        "effect": "4.0.0-beta.69"
+    },
+    "devDependencies": {
+        "@effect/language-service": "0.86.1",
+        "@effect/vitest": "4.0.0-beta.69",
+        "@efffrida/vitest-pool": "^0.0.15",
+        "@types/frida-gum": "19.1.0",
+        "@vitest/coverage-v8": "4.1.6",
+        "frida": "17.9.10",
+        "oxfmt": "0.51.0",
+        "oxlint": "1.66.0",
+        "typescript": "6.0.3",
+        "vite": "8.0.14",
+        "vitest": "4.1.6"
+    },
+    "peerDependencies": {
+        "effect": "4.0.0-beta.69"
+    }
+}
