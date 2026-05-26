@@ -4,6 +4,7 @@ export type TemplateType = (typeof templates)[number];
 export interface ProjectConfig {
     readonly projectName: string;
     readonly template: TemplateType;
+    readonly withOxcTools: boolean;
     readonly withNodeTests: boolean;
     readonly withFridaTests: boolean;
     readonly withWorkflows: boolean;

@@ -9,9 +9,9 @@ import * as NodeHttpClient from "@effect/platform-node/NodeHttpClient";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 
-import { cli } from "./Cli.js";
-import { GitHub } from "./GitHub.js";
-import { PrefixLogger } from "./Logger.js";
+import { cli } from "./Cli.ts";
+import { GitHub } from "./GitHub.ts";
+import { PrefixLogger } from "./Logger.ts";
 
 const MainLive = GitHub.Default.pipe(
     Layer.provideMerge(

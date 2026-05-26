@@ -7,7 +7,7 @@ import * as HttpClient from "effect/unstable/http/HttpClient";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
-import type { ProjectConfig } from "./Domain.js";
+import type { ProjectConfig } from "./Domain.ts";
 
 import * as NodeSink from "@effect/platform-node/NodeSink";
 import * as Tar from "tar";
