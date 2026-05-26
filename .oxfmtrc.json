@@ -10,6 +10,7 @@
         "**/index.ts",
         "repos/**",
         "**/CHANGELOG.md",
+        "!templates/**/src/index.ts",
         "!packages/polyfills/src/index.ts",
         "!packages/vitest-pool/src/index.ts"
     ],

@@ -3,6 +3,7 @@
     "extends": "./tsconfig.base.jsonc",
     "include": [],
     "references": [
+        { "path": "shared/tsconfig.build.json" },
         { "path": "frida/tsconfig.build.json" },
         { "path": "node/tsconfig.build.json" }
     ]

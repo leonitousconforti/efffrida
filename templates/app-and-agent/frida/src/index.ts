@@ -1,15 +1,29 @@
-import * as Effect from "effect/Effect";
+import { Effect, Layer } from "effect";
+import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
 
-import * as FridaRuntime from "@efffrida/platform/FridaRuntime";
+import { FridaRuntime } from "@efffrida/platform";
+import { FridaRpcServer } from "@efffrida/rpc/frida";
 
-const program = Effect.gen(function* () {
-    yield* Effect.log("Agent running inside target process!");
-});
+import { AgentRpcs } from "../../shared/index.ts";
 
-rpc.exports = {
-    async ping(): Promise<string> {
-        return "pong";
-    },
-};
+// Implement the RPC handlers
+const AgentRpcsLive = AgentRpcs.toLayer(
+    Effect.gen(function* () {
+        return {
+            Ping: () => Effect.succeed("pong"),
+            Echo: ({ message }: { message: string }) => Effect.succeed(message),
+        };
+    })
+);
 
-FridaRuntime.runMain(program);
+// Create the RPC server layer
+const RpcLayer = RpcServer.layer(AgentRpcs).pipe(Layer.provide(AgentRpcsLive));
+
+// Choose the protocol and serialization format
+const ProtocolLive = FridaRpcServer.layerProtocolFrida().pipe(Layer.provide(RpcSerialization.layerNdjson));
+
+// Create the main rpc layer
+const Main = RpcLayer.pipe(Layer.provide(ProtocolLive));
+
+// Start the server
+FridaRuntime.runMain(Layer.launch(Main));

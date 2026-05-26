@@ -19,6 +19,8 @@ resolvePeersFromWorkspaceRoot: false
 packages:
   - packages/*
   - scratchpad
+  - templates/agent-only
+  - templates/app-and-agent
 
 allowBuilds:
   frida: true

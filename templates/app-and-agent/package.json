@@ -6,8 +6,8 @@
     "scripts": {
         "build": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",
-        "lint": "oxlint && oxfmt --check frida node",
-        "lint-fix": "oxlint --fix && oxfmt --write frida node",
+        "lint": "oxlint && oxfmt --check frida node shared",
+        "lint-fix": "oxlint --fix && oxfmt --write frida node shared",
         "test": "vitest",
         "coverage": "vitest --coverage"
     },

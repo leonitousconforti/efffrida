@@ -1,8 +1,6 @@
-import * as Context from "effect/Context";
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
+import { Context, Effect, Layer } from "effect";
 
-import * as FridaRuntime from "@efffrida/platform/FridaRuntime";
+import { FridaRuntime } from "@efffrida/platform";
 
 export class FridaVersion extends Context.Service<
     FridaVersion,
