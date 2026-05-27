@@ -1,5 +1,11 @@
 # @efffrida/vitest-pool
 
+## 0.0.21
+
+### Patch Changes
+
+- 3c49b85: Make flatted a dev dependency so that it gets peered correctly
+
 ## 0.0.20
 
 ### Patch Changes
