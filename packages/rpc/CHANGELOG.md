@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.32
+
+### Patch Changes
+
+- 0b4af19: Test publish after modifying changeset config
+- Updated dependencies [0b4af19]
+  - @efffrida/frida-tools@0.0.30
+  - @efffrida/platform@0.0.23
+  - @efffrida/polyfills@0.0.9
+
 ## 0.0.31
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.16
+
+### Patch Changes
+
+- 0b4af19: Test publish after modifying changeset config
+- Updated dependencies [0b4af19]
+  - @efffrida/frida-tools@0.0.30
+
 ## 0.0.15
 
 ### Patch Changes
