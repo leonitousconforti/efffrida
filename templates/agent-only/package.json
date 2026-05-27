@@ -26,13 +26,13 @@
         "@effect/vitest": "4.0.0-beta.69",
         "@efffrida/vitest-pool": "0.0.17",
         "@types/frida-gum": "19.1.0",
-        "@vitest/coverage-v8": "4.1.6",
+        "@vitest/coverage-v8": "4.1.7",
         "ioredis": "5.11.0",
         "oxfmt": "0.52.0",
         "oxlint": "1.67.0",
         "typescript": "6.0.3",
         "vite": "8.0.14",
-        "vitest": "4.1.6"
+        "vitest": "4.1.7"
     },
     "peerDependencies": {
         "effect": "4.0.0-beta.69"
