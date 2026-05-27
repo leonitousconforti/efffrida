@@ -21,6 +21,10 @@
         "dist"
     ],
     "type": "module",
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
     "scripts": {
         "build": "tsup",
         "check": "tsc -b tsconfig.json"
