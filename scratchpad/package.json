@@ -10,11 +10,11 @@
         "@efffrida/platform": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@efffrida/sql": "workspace:*",
-        "frida": "17.9.10"
+        "frida": "17.9.11"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
         "effect": "4.0.0-beta.69",
-        "ioredis": "5.10.1"
+        "ioredis": "5.11.0"
     }
 }

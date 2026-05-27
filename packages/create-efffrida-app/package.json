@@ -31,8 +31,8 @@
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
-        "@types/node": "22.0.0",
-        "@types/tar": "6.1.13",
+        "@types/node": "25.9.1",
+        "@types/tar": "7.0.87",
         "effect": "4.0.0-beta.69",
         "tar": "7.5.15",
         "tsup": "8.5.1",

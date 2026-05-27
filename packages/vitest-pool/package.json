@@ -51,19 +51,19 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "ioredis": "5.10.1"
+        "ioredis": "5.11.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.9.0",
+        "@types/node": "25.9.1",
         "@vitest/runner": "4.1.6",
         "@vitest/utils": "4.1.6",
         "birpc": "4.0.0",
         "effect": "4.0.0-beta.69",
         "flatted": "3.4.2",
-        "frida": "17.9.10",
+        "frida": "17.9.11",
         "vite": "8.0.14",
         "vitest": "4.1.6"
     },
