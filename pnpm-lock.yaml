@@ -73,16 +73,16 @@ importers:
     devDependencies:
       '@effect/platform-node':
         specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
       '@types/node':
         specifier: 25.9.1
         version: 25.9.1
-      '@types/tar':
-        specifier: 7.0.87
-        version: 7.0.87
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
+      ioredis:
+        specifier: 5.11.0
+        version: 5.11.0
       tar:
         specifier: 7.5.15
         version: 7.5.15
@@ -157,9 +157,6 @@ importers:
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@efffrida/vitest-pool':
-        specifier: workspace:*
-        version: link:../vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -385,8 +382,8 @@ importers:
   templates/agent-only:
     dependencies:
       '@efffrida/platform':
-        specifier: 0.0.22
-        version: 0.0.22(effect@4.0.0-beta.69)
+        specifier: 0.0.23
+        version: link:../../packages/platform
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
@@ -397,12 +394,15 @@ importers:
       '@effect/language-service':
         specifier: 0.86.2
         version: 0.86.2
+      '@effect/platform-node':
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6)
       '@efffrida/vitest-pool':
-        specifier: 0.0.15
-        version: 0.0.15(effect@4.0.0-beta.69)(vitest@4.1.6)
+        specifier: 0.0.17
+        version: link:../../packages/vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -428,14 +428,14 @@ importers:
   templates/app-and-agent:
     dependencies:
       '@efffrida/frida-tools':
-        specifier: 0.0.29
-        version: 0.0.29(effect@4.0.0-beta.69)
+        specifier: 0.0.30
+        version: link:../../packages/frida-tools
       '@efffrida/platform':
-        specifier: 0.0.22
-        version: 0.0.22(effect@4.0.0-beta.69)
+        specifier: 0.0.23
+        version: link:../../packages/platform
       '@efffrida/rpc':
-        specifier: 0.0.31
-        version: 0.0.31(effect@4.0.0-beta.69)
+        specifier: 0.0.32
+        version: link:../../packages/rpc
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
@@ -445,13 +445,13 @@ importers:
         version: 0.86.2
       '@effect/platform-node':
         specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)
+        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.6)
       '@efffrida/vitest-pool':
-        specifier: 0.0.15
-        version: 0.0.15(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69))(effect@4.0.0-beta.69)(vitest@4.1.6)
+        specifier: 0.0.17
+        version: link:../../packages/vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -464,6 +464,9 @@ importers:
       frida:
         specifier: 17.9.11
         version: 17.9.11
+      ioredis:
+        specifier: 5.11.0
+        version: 5.11.0
       oxfmt:
         specifier: 0.52.0
         version: 0.52.0
@@ -734,31 +737,6 @@ packages:
     peerDependencies:
       effect: ^4.0.0-beta.69
       vitest: ^3.0.0 || ^4.0.0
-
-  '@efffrida/frida-tools@0.0.29':
-    resolution: {integrity: sha512-AGgDMEwsQrFP/hAFwR2mYNzDRf0sLV3QJrg4GEpOVKND52EVEf0mVSu1XHLluB/Wu+VmsaFrm0FkRVgPLS/L5Q==}
-    peerDependencies:
-      effect: 4.0.0-beta.69
-
-  '@efffrida/platform@0.0.22':
-    resolution: {integrity: sha512-rh9K1NIbI+L/kYavkLK58Gdb2YCc2bDMJqbLYok4zE9MLxD200Nhg/DpcePPlHwD1k+cDvwQirgcSakXRekcZg==}
-    peerDependencies:
-      effect: 4.0.0-beta.69
-
-  '@efffrida/polyfills@0.0.8':
-    resolution: {integrity: sha512-4EgoxYLDpVBUaiVVnB6xSoxInqeO9Fb7FbPR+4B5quORmLmh9urhtEmC0nJqsaepmC+E/kwT/MkEeYCya7UcBA==}
-
-  '@efffrida/rpc@0.0.31':
-    resolution: {integrity: sha512-8xWKUPQVTJ+OkQJZsI7Pnummkoo4s8FihaV8mDVhIcL0/UQPC7f2M4xUb4dwjdMaO9sbMV7Jn3bE6slvufmtng==}
-    peerDependencies:
-      effect: 4.0.0-beta.69
-
-  '@efffrida/vitest-pool@0.0.15':
-    resolution: {integrity: sha512-mDpx1frUSmB35Veg9RsNotE0tOV7pRcvP4vnh69a90yovdSgM8X/XU07hudvvgYTpDZcOMOdtwWYwaYUCablFQ==}
-    peerDependencies:
-      '@effect/platform-node': 4.0.0-beta.69
-      effect: 4.0.0-beta.69
-      vitest: 4.1.6
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -1092,9 +1070,6 @@ packages:
 
   '@ioredis/commands@1.10.0':
     resolution: {integrity: sha512-UmeW7z4LfctwoQ5wkhVzgq8tXkreED2xZGpX+Bg+zA+WJFZCT6c062AfCK/Dfk81xZnnwdhJCUMkitihRaoC2Q==}
-
-  '@ioredis/commands@1.5.1':
-    resolution: {integrity: sha512-JH8ZL/ywcJyR9MmJ5BNqZllXNZQqQbnVZOqpPQqE1vHiFgAw4NHbvE0FOduNU8IX9babitBT46571OnPTT0Zcw==}
 
   '@isaacs/cliui@9.0.0':
     resolution: {integrity: sha512-AokJm4tuBHillT+FpMtxQ60n8ObyXBatq7jD2/JA9dxbDDokKQm8KMht5ibGzLVU9IJDIKK4TPKgMHEYMn3lMg==}
@@ -1801,37 +1776,33 @@ packages:
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
-  '@types/tar@7.0.87':
-    resolution: {integrity: sha512-3IxNBV8LeY5oi2ZFpvAhOtW1+mHswkzM7BuisVrwJgPv67GBO2rkLPQlEKtzfHuLdhDDczhkCZeT+RuizMay4A==}
-    deprecated: This is a stub types definition. tar provides its own type definitions, so you do not need this installed.
-
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@typescript-eslint/project-service@8.59.4':
-    resolution: {integrity: sha512-Ly00Vu4oAacfDeHp2Zg85ioNG6l8HG+tN1D7J+xTHSxu9y0awYKJ2zH1rFBn8ZSfuGK+7FxK3Cgl3uAz0aZZLg==}
+  '@typescript-eslint/project-service@8.60.0':
+    resolution: {integrity: sha512-aZu74NNKJeUWqCjDddzdiKaS82dgYgV/vmf+Ui3ZdZejmgfXR/q+pRumgobnQ2cCJTgGTWp4ypiwsuofFubavg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/tsconfig-utils@8.59.4':
-    resolution: {integrity: sha512-DLCpnKgD4alVxTBSKulK+gU1KCqOgUXfDRDXh2mZgzokQKa/70ax93I2uVO3m/LLvIAtWZIFoiifudmIqAxpMA==}
+  '@typescript-eslint/tsconfig-utils@8.60.0':
+    resolution: {integrity: sha512-BZPR3RGYlAXnly6ymAxfkVn5rCbZzQNou0rxv3GfWZ8cTQp+hhVd73khbGLAd8k1TlAPLISH337M+tAgAnaJDQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/types@8.59.4':
-    resolution: {integrity: sha512-F1o7WJcCq+bc8dwcO/YsSEOudAH8RDtaOhM6wcAQhcUsFhnWQl81JKy48q1hoxAU0qrzM89+31GYh1515Zde3Q==}
+  '@typescript-eslint/types@8.60.0':
+    resolution: {integrity: sha512-AsE7x2XaAK+CVbeih0Fvbn+r1qHxtpLDJ3XUuFcIinT318T90yHMJC+Zgv+jUuDjQQd06HKwxnDu6sz1IcTilA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript-eslint/typescript-estree@8.59.4':
-    resolution: {integrity: sha512-F+RuOmcDXo4+TPdfd/TCLS3m2nw8gE9XXyZLrA3JBfaA5tz9TtdkyD3YJFmPxulyc2cKbEok/CvFE3MgSLWnag==}
+  '@typescript-eslint/typescript-estree@8.60.0':
+    resolution: {integrity: sha512-3AcZNBGMClm6CXDyo8kYvVGT/sx29sS0oBsIb9oZI2gunA4Vm2M3YHzRLPvsUBBsl+yB5FPtltq7gGH0iTlp9g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/visitor-keys@8.59.4':
-    resolution: {integrity: sha512-U3gxVaDVnuZKhSspW/MzMxE1kq7zOdc072FcSNoqA1I9p8HyKbBFfEHoWckBAMgNMph4MamwS5iTVzFmrnt8TQ==}
+  '@typescript-eslint/visitor-keys@8.60.0':
+    resolution: {integrity: sha512-9WI52t8ZGLVGrPMBet25yAftqY/n95+zmoUUtJBBQTKDSKUu7OsPTroT2op7U9JatkoRccL0YkWDNMFfC4Sjxg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@vitest/coverage-v8@4.1.6':
@@ -2055,10 +2026,6 @@ packages:
 
   cluster-key-slot@1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
-    engines: {node: '>=0.10.0'}
-
-  cluster-key-slot@1.1.2:
-    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
   color-convert@2.0.1:
@@ -2366,10 +2333,6 @@ packages:
     resolution: {integrity: sha512-qXjdcdI+KM5wnjCwqZTe/Tas/2pClXpDhcVWjiaQFxzSun+1vaoHEWlnMe4F09Vdz/vGkkjFOPKfvDem2A8UOQ==}
     hasBin: true
 
-  frida@17.9.10:
-    resolution: {integrity: sha512-viGHoIbkpaPEz4jWezX5mnskZhc/o7HknLbL0azDpURVPF4FL73wBurX7OcwtvH+5A1E7RGEhWW7GYuFVGK/sg==}
-    engines: {node: '>=16'}
-
   frida@17.9.11:
     resolution: {integrity: sha512-e/P8hXICa76I/B9qZVIhSIyjWOusyE5GNIKJCmbhdRpSTz2NeTxdQH78HwTre4f0/dXY+rcosMLXIzs7Kx2QQQ==}
     engines: {node: '>=16'}
@@ -2490,10 +2453,6 @@ packages:
   ini@7.0.0:
     resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
-
-  ioredis@5.10.1:
-    resolution: {integrity: sha512-HuEDBTI70aYdx1v6U97SbNx9F1+svQKBDo30o0b9fw055LMepzpOOd0Ccg9Q6tbqmBSJaMuY0fB7yw9/vjBYCA==}
-    engines: {node: '>=12.22.0'}
 
   ioredis@5.11.0:
     resolution: {integrity: sha512-EZBErytyVovD8f6pDfG3Kb37N6Y3lmDA9NNj+4+IP13CzzHGeX+OyeRM2Um13khRzoBSzzL+5lVnCX8V2RLeMg==}
@@ -2745,12 +2704,6 @@ packages:
 
   lodash._reinterpolate@3.0.0:
     resolution: {integrity: sha512-xYHt68QRoYGjeeM/XOE1uJtvXQAgvszfBhjV4yvsQH0u2i9I6cI6c6/eG4Hh3UAOVn0y/xAXwmTzEay49Q//HA==}
-
-  lodash.defaults@4.2.0:
-    resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
-
-  lodash.isarguments@3.1.0:
-    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
 
   lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
@@ -4048,16 +4001,6 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)':
-    dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.70(effect@4.0.0-beta.69)
-      effect: 4.0.0-beta.69
-      mime: 4.1.0
-      undici: 8.3.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
   '@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)':
     dependencies:
       '@effect/platform-node-shared': 4.0.0-beta.70(effect@4.0.0-beta.69)
@@ -4078,59 +4021,6 @@ snapshots:
     dependencies:
       effect: 4.0.0-beta.69
       vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.14)
-
-  '@efffrida/frida-tools@0.0.29(effect@4.0.0-beta.69)':
-    dependencies:
-      effect: 4.0.0-beta.69
-      frida: 17.9.10
-
-  '@efffrida/platform@0.0.22(effect@4.0.0-beta.69)':
-    dependencies:
-      effect: 4.0.0-beta.69
-
-  '@efffrida/polyfills@0.0.8':
-    dependencies:
-      abort-controller: 3.0.0
-      event-target-polyfill: 0.0.4
-      fast-text-encoding: 1.0.6
-
-  '@efffrida/rpc@0.0.31(effect@4.0.0-beta.69)':
-    dependencies:
-      '@efffrida/frida-tools': 0.0.29(effect@4.0.0-beta.69)
-      '@efffrida/platform': 0.0.22(effect@4.0.0-beta.69)
-      '@efffrida/polyfills': 0.0.8
-      effect: 4.0.0-beta.69
-
-  '@efffrida/vitest-pool@0.0.15(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69))(effect@4.0.0-beta.69)(vitest@4.1.6)':
-    dependencies:
-      '@effect/platform-node': 4.0.0-beta.69(effect@4.0.0-beta.69)
-      '@efffrida/frida-tools': 0.0.29(effect@4.0.0-beta.69)
-      effect: 4.0.0-beta.69
-      ioredis: 5.10.1
-      vitest: 4.1.6(@types/node@25.9.1)(@vitest/coverage-v8@4.1.6)(vite@8.0.14(@types/node@25.9.1))
-    optionalDependencies:
-      '@efffrida/polyfills': 0.0.8
-      '@vitest/runner': 4.1.6
-      '@vitest/utils': 4.1.6
-      birpc: 4.0.0
-      flatted: 3.4.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@efffrida/vitest-pool@0.0.15(effect@4.0.0-beta.69)(vitest@4.1.6)':
-    dependencies:
-      '@efffrida/frida-tools': 0.0.29(effect@4.0.0-beta.69)
-      effect: 4.0.0-beta.69
-      ioredis: 5.10.1
-      vitest: 4.1.6(@vitest/coverage-v8@4.1.6)(vite@8.0.14)
-    optionalDependencies:
-      '@efffrida/polyfills': 0.0.8
-      '@vitest/runner': 4.1.6
-      '@vitest/utils': 4.1.6
-      birpc: 4.0.0
-      flatted: 3.4.2
-    transitivePeerDependencies:
-      - supports-color
 
   '@emnapi/core@1.10.0':
     dependencies:
@@ -4310,8 +4200,6 @@ snapshots:
       iconv-lite: 0.7.2
 
   '@ioredis/commands@1.10.0': {}
-
-  '@ioredis/commands@1.5.1': {}
 
   '@isaacs/cliui@9.0.0': {}
 
@@ -4728,35 +4616,31 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/tar@7.0.87':
-    dependencies:
-      tar: 7.5.15
-
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 25.9.1
 
-  '@typescript-eslint/project-service@8.59.4(typescript@5.9.3)':
+  '@typescript-eslint/project-service@8.60.0(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.59.4(typescript@5.9.3)
-      '@typescript-eslint/types': 8.59.4
+      '@typescript-eslint/tsconfig-utils': 8.60.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.60.0
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/tsconfig-utils@8.59.4(typescript@5.9.3)':
+  '@typescript-eslint/tsconfig-utils@8.60.0(typescript@5.9.3)':
     dependencies:
       typescript: 5.9.3
 
-  '@typescript-eslint/types@8.59.4': {}
+  '@typescript-eslint/types@8.60.0': {}
 
-  '@typescript-eslint/typescript-estree@8.59.4(typescript@5.9.3)':
+  '@typescript-eslint/typescript-estree@8.60.0(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/project-service': 8.59.4(typescript@5.9.3)
-      '@typescript-eslint/tsconfig-utils': 8.59.4(typescript@5.9.3)
-      '@typescript-eslint/types': 8.59.4
-      '@typescript-eslint/visitor-keys': 8.59.4
+      '@typescript-eslint/project-service': 8.60.0(typescript@5.9.3)
+      '@typescript-eslint/tsconfig-utils': 8.60.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.60.0
+      '@typescript-eslint/visitor-keys': 8.60.0
       debug: 4.4.3
       minimatch: 10.2.5
       semver: 7.8.1
@@ -4766,9 +4650,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/visitor-keys@8.59.4':
+  '@typescript-eslint/visitor-keys@8.60.0':
     dependencies:
-      '@typescript-eslint/types': 8.59.4
+      '@typescript-eslint/types': 8.60.0
       eslint-visitor-keys: 5.0.1
 
   '@vitest/coverage-v8@4.1.6(vitest@4.1.6)':
@@ -5028,8 +4912,6 @@ snapshots:
 
   cluster-key-slot@1.1.1: {}
 
-  cluster-key-slot@1.1.2: {}
-
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -5139,7 +5021,7 @@ snapshots:
 
   detective-typescript@14.1.2(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/typescript-estree': 8.59.4(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.60.0(typescript@5.9.3)
       ast-module-types: 6.0.2
       node-source-walk: 7.0.2
       typescript: 5.9.3
@@ -5378,12 +5260,6 @@ snapshots:
 
   frida-il2cpp-bridge@0.13.1: {}
 
-  frida@17.9.10:
-    dependencies:
-      bindings: 1.5.0
-      minimatch: 10.2.5
-      prebuild-install: 7.1.3
-
   frida@17.9.11:
     dependencies:
       bindings: 1.5.0
@@ -5508,20 +5384,6 @@ snapshots:
   ini@1.3.8: {}
 
   ini@7.0.0: {}
-
-  ioredis@5.10.1:
-    dependencies:
-      '@ioredis/commands': 1.5.1
-      cluster-key-slot: 1.1.2
-      debug: 4.4.3
-      denque: 2.1.0
-      lodash.defaults: 4.2.0
-      lodash.isarguments: 3.1.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
 
   ioredis@5.11.0:
     dependencies:
@@ -5717,10 +5579,6 @@ snapshots:
       p-locate: 4.1.0
 
   lodash._reinterpolate@3.0.0: {}
-
-  lodash.defaults@4.2.0: {}
-
-  lodash.isarguments@3.1.0: {}
 
   lodash.startcase@4.4.0: {}
 

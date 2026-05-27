@@ -32,8 +32,8 @@
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
         "@types/node": "25.9.1",
-        "@types/tar": "7.0.87",
         "effect": "4.0.0-beta.69",
+        "ioredis": "5.11.0",
         "tar": "7.5.15",
         "tsup": "8.5.1",
         "typescript": "6.0.3"
