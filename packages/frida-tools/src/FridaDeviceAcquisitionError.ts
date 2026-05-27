@@ -11,9 +11,9 @@ import * as Data from "effect/Data";
  * @category Errors
  */
 export class FridaDeviceAcquisitionError extends Data.TaggedError("FridaDeviceAcquisitionError")<{
-    acquisitionMethod: "usb" | "remote" | "local" | "android-emulator";
-    attempts: number;
-    cause: unknown;
+    readonly acquisitionMethod: "usb" | "remote" | "local" | "android-emulator";
+    readonly attempts: number;
+    readonly cause: unknown;
 }> {
     public override get message(): string {
         return `Failed to acquire ${this.acquisitionMethod} Frida device after ${this.attempts} attempt(s)`;

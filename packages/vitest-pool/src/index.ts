@@ -1,4 +1,5 @@
 import type * as Context from "effect/Context";
+import type * as PlatformError from "effect/PlatformError";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
@@ -16,6 +17,8 @@ import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as ChildProcess from "effect/unstable/process/ChildProcess";
 
+import type * as FridaDeviceAcquisitionError from "@efffrida/frida-tools/FridaDeviceAcquisitionError";
+import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 import type * as VitestNode from "vitest/node";
 
 import * as NodeServices from "@effect/platform-node/NodeServices";
@@ -83,9 +86,18 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     private static initQueue: Promise<void> = Promise.resolve();
 
     private readonly scope: Scope.Closeable;
-    private readonly scriptContext: Promise<Context.Context<FridaScript.FridaScript>>;
-    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void> = new Map();
+    private scriptContext: Context.Context<FridaScript.FridaScript> = undefined!;
+    private readonly scriptContextPromise: Promise<
+        Exit.Exit<
+            Context.Context<FridaScript.FridaScript>,
+            | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
+            | FridaSessionError.FridaSessionError
+            | PlatformError.PlatformError
+            | PlatformError.BadArgument
+        >
+    >;
 
+    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void> = new Map();
     private sends: Array<Promise<unknown>> = [];
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>) {
@@ -216,16 +228,18 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
         this.scope = Scope.makeUnsafe();
         const prev = FridaPoolWorker.initQueue;
-        const runInit = () => ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromise);
-        this.scriptContext = prev.then(runInit, runInit);
-        FridaPoolWorker.initQueue = this.scriptContext.then(
+        const runInit = () => ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromiseExit);
+        this.scriptContextPromise = prev.then(runInit, runInit);
+        FridaPoolWorker.initQueue = this.scriptContextPromise.then(
             () => undefined,
             () => undefined
         );
     }
 
     async start(): Promise<void> {
-        await this.scriptContext;
+        const exit = await this.scriptContextPromise;
+        if (Exit.isSuccess(exit)) this.scriptContext = exit.value;
+        else throw Cause.prettyErrors(exit.cause)[0];
     }
 
     async stop(): Promise<void> {
@@ -236,13 +250,12 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
-        const context = await this.scriptContext;
         let sendPromise: Promise<unknown> = undefined!;
 
         try {
             sendPromise = Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                 fridaScript.callExport("onMessage")(message)
-            ).pipe(Effect.runPromiseWith(context));
+            ).pipe(Effect.runPromiseWith(this.scriptContext));
             this.sends.push(sendPromise);
             await sendPromise;
         } finally {
@@ -253,57 +266,47 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     on(event: string, callback: (arg: any) => void): void {
         switch (event) {
             case "message": {
-                this.scriptContext.then((ctx) => {
-                    this.cancelables.set(
-                        callback,
-                        Effect.runCallbackWith(ctx)(
-                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                                Stream.runForEach(fridaScript.stream, (input) =>
-                                    Effect.sync(() => callback(input.message))
-                                )
-                            )
+                this.cancelables.set(
+                    callback,
+                    Effect.runCallbackWith(this.scriptContext)(
+                        Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                            Stream.runForEach(fridaScript.stream, (input) => Effect.sync(() => callback(input.message)))
                         )
-                    );
-                });
+                    )
+                );
 
                 break;
             }
 
             case "error":
-                this.scriptContext.then((ctx) => {
-                    this.cancelables.set(
-                        callback,
-                        Effect.runCallbackWith(ctx)(
-                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                                Deferred.await(fridaScript.scriptError)
-                            ),
-                            {
-                                onExit: (exit) => {
-                                    if (Exit.isSuccess(exit)) {
-                                        callback(exit.value);
-                                    } else if (!Cause.hasInterruptsOnly(exit.cause)) {
-                                        callback(exit.cause);
-                                    }
-                                },
-                            }
-                        )
-                    );
-                });
+                this.cancelables.set(
+                    callback,
+                    Effect.runCallbackWith(this.scriptContext)(
+                        Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                            Deferred.await(fridaScript.scriptError)
+                        ),
+                        {
+                            onExit: (exit) => {
+                                if (Exit.isSuccess(exit)) {
+                                    callback(exit.value);
+                                } else if (!Cause.hasInterruptsOnly(exit.cause)) {
+                                    callback(exit.cause);
+                                }
+                            },
+                        }
+                    )
+                );
 
                 break;
 
             case "exit":
-                this.scriptContext.then((ctx) => {
-                    this.cancelables.set(
-                        callback,
-                        Effect.runCallbackWith(ctx)(
-                            Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                                Deferred.await(fridaScript.destroyed)
-                            ),
-                            { onExit: () => callback(void 0) }
-                        )
-                    );
-                });
+                this.cancelables.set(
+                    callback,
+                    Effect.runCallbackWith(this.scriptContext)(
+                        Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
+                        { onExit: () => callback(void 0) }
+                    )
+                );
 
                 break;
 

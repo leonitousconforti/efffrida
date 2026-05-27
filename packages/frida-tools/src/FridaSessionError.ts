@@ -11,8 +11,8 @@ import * as Data from "effect/Data";
  * @category Errors
  */
 export class FridaSessionError extends Data.TaggedError("FridaSessionError")<{
-    cause: unknown;
-    when:
+    readonly cause: unknown;
+    readonly when:
         | "spawn"
         | "kill"
         | "attach"
@@ -25,7 +25,7 @@ export class FridaSessionError extends Data.TaggedError("FridaSessionError")<{
         | "message"
         | "rpcCall";
 }> {
-    override get message() {
+    public override get message() {
         return `A Frida session error occurred on ${this.when}`;
     }
 }
