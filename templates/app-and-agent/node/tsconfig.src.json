@@ -5,7 +5,7 @@
     "references": [{ "path": "../shared/tsconfig.src.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": "../.tsbuildinfo/node-src.tsbuildinfo",
-        "outDir": "../.tsbuildinfo/node-src",
+        "outDir": "../.tsbuildinfo/node/src",
         "types": ["node"],
         "rootDir": "src"
     }

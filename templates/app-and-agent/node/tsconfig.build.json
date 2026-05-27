@@ -4,7 +4,7 @@
     "references": [{ "path": "../shared/tsconfig.build.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": "../.tsbuildinfo/node-build.tsbuildinfo",
-        "outDir": "../dist/node",
+        "outDir": "../dist/node/src",
         "types": ["node"],
         "stripInternal": true
     }

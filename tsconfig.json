@@ -9,8 +9,8 @@
         { "path": "packages/platform" },
         { "path": "packages/rpc" },
         { "path": "packages/sql" },
-        { "path": "packages/vitest-pool" }
-        // { "path": "templates/agent-only" },
-        // { "path": "templates/app-and-agent" }
+        { "path": "packages/vitest-pool" },
+        { "path": "templates/agent-only" },
+        { "path": "templates/app-and-agent" }
     ]
 }
