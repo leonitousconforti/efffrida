@@ -17,14 +17,14 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "@efffrida/platform": "workspace:*",
+        "@efffrida/platform": "0.0.24",
         "effect": "4.0.0-beta.69"
     },
     "devDependencies": {
         "@effect/language-service": "0.86.2",
         "@effect/platform-node": "4.0.0-beta.69",
         "@effect/vitest": "4.0.0-beta.69",
-        "@efffrida/vitest-pool": "0.0.20",
+        "@efffrida/vitest-pool": "0.0.21",
         "@types/frida-gum": "19.1.0",
         "@vitest/coverage-v8": "4.1.7",
         "ioredis": "5.11.0",
