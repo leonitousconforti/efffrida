@@ -68,7 +68,7 @@
         "frida": "17.9.11",
         "ioredis": "5.11.0",
         "vite": "8.0.14",
-        "vitest": "4.1.6"
+        "vitest": "4.1.7"
     },
     "peerDependencies": {
         "effect": "4.0.0-beta.69"
