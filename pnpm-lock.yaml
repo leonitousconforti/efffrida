@@ -384,9 +384,6 @@ importers:
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
-      ioredis:
-        specifier: 5.11.0
-        version: 5.11.0
     devDependencies:
       '@effect/language-service':
         specifier: 0.86.2
@@ -406,6 +403,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.6
         version: 4.1.6(vitest@4.1.6)
+      ioredis:
+        specifier: 5.11.0
+        version: 5.11.0
       oxfmt:
         specifier: 0.52.0
         version: 0.52.0
