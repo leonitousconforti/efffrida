@@ -52,9 +52,9 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
+        "flatted": "3.4.2",
         "frida": "17.9.11",
-        "ioredis": "5.11.0",
-        "flatted": "3.4.2"
+        "ioredis": "5.11.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
