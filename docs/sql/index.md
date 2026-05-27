@@ -2,5 +2,5 @@
 title: "@efffrida/sql"
 has_children: true
 permalink: /docs/sql
-nav_order: 8
+nav_order: 9
 ---

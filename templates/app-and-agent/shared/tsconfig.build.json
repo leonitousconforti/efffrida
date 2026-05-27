@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.src.json",
+    "compilerOptions": {
+        "tsBuildInfoFile": "../.tsbuildinfo/shared-build.tsbuildinfo",
+        "outDir": "../dist/shared",
+        "types": [],
+        "stripInternal": true
+    }
+}

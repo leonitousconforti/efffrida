@@ -3,11 +3,14 @@
     "extends": "./tsconfig.base.jsonc",
     "include": [],
     "references": [
+        { "path": "packages/create-efffrida-app" },
         { "path": "packages/frida-tools" },
         { "path": "packages/il2cpp-bridge" },
         { "path": "packages/platform" },
         { "path": "packages/rpc" },
         { "path": "packages/sql" },
         { "path": "packages/vitest-pool" }
+        // { "path": "templates/agent-only" },
+        // { "path": "templates/app-and-agent" }
     ]
 }

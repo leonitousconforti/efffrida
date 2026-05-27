@@ -1,0 +1,29 @@
+{
+    "name": "@<SCOPE>/app",
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "build": "tsc -b tsconfig.build.json",
+        "check": "tsc -b tsconfig.json",
+        "test": "vitest",
+        "coverage": "vitest --coverage"
+    },
+    "dependencies": {
+        "@<SCOPE>/shared": "workspace:^",
+        "@efffrida/frida-tools": "^0.0.29",
+        "@efffrida/rpc": "^0.0.31",
+        "effect": "4.0.0-beta.69",
+        "frida": "17.9.10"
+    },
+    "devDependencies": {
+        "@effect/platform-node": "4.0.0-beta.69",
+        "@effect/vitest": "4.0.0-beta.69",
+        "@types/node": "25.9.0",
+        "@vitest/coverage-v8": "4.1.6",
+        "vite": "8.0.14",
+        "vitest": "4.1.6"
+    },
+    "peerDependencies": {
+        "effect": "4.0.0-beta.69"
+    }
+}

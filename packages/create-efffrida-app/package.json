@@ -1,0 +1,37 @@
+{
+    "name": "create-efffrida-app",
+    "version": "0.0.1",
+    "description": "Create efffrida applications with a single command",
+    "keywords": [
+        "effect-ts",
+        "frida.re"
+    ],
+    "homepage": "https://github.com/leonitousconforti/efffrida",
+    "license": "GPL-3.0-only",
+    "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/leonitousconforti/efffrida.git",
+        "directory": "packages/create-efffrida-app"
+    },
+    "bin": {
+        "create-efffrida-app": "./dist/bin.cjs"
+    },
+    "files": [
+        "dist"
+    ],
+    "type": "module",
+    "scripts": {
+        "build": "tsup",
+        "check": "tsc -b tsconfig.json"
+    },
+    "devDependencies": {
+        "@effect/platform-node": "4.0.0-beta.69",
+        "@types/node": "22.0.0",
+        "@types/tar": "6.1.13",
+        "effect": "4.0.0-beta.69",
+        "tar": "7.5.15",
+        "tsup": "8.5.1",
+        "typescript": "6.0.3"
+    }
+}
