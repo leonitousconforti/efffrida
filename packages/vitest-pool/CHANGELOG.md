@@ -1,5 +1,16 @@
 # @efffrida/vitest-pool
 
+## 0.0.18
+
+### Patch Changes
+
+- 6a69bda: Copy agent artifact correctly instead of transpiling it
+- 6a69bda: Bump dependencies
+- 31be93f: Bump Vite and Vitest
+- Updated dependencies [6a69bda]
+- Updated dependencies [31be93f]
+  - @efffrida/frida-tools@0.0.31
+
 ## 0.0.17
 
 ### Patch Changes

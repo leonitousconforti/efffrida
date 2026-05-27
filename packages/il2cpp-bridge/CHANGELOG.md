@@ -1,5 +1,12 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.30
+
+### Patch Changes
+
+- 6a69bda: Bump dependencies
+- 31be93f: Bump Vite and Vitest
+
 ## 0.0.29
 
 ### Patch Changes
