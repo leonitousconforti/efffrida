@@ -1,5 +1,11 @@
 # @efffrida/vitest-pool
 
+## 0.0.20
+
+### Patch Changes
+
+- 814697e: Fix dependencies
+
 ## 0.0.19
 
 ### Patch Changes
