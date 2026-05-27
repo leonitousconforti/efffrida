@@ -393,6 +393,9 @@ importers:
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
+      '@efffrida/polyfills':
+        specifier: latest
+        version: link:../../packages/polyfills
       '@efffrida/vitest-pool':
         specifier: latest
         version: link:../../packages/vitest-pool
@@ -405,6 +408,18 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.7
         version: 4.1.7(vitest@4.1.7)
+      '@vitest/runner':
+        specifier: 4.1.7
+        version: 4.1.7
+      '@vitest/utils':
+        specifier: 4.1.7
+        version: 4.1.7
+      birpc:
+        specifier: 4.0.0
+        version: 4.0.0
+      flatted:
+        specifier: 3.4.2
+        version: 3.4.2
       ioredis:
         specifier: 5.11.0
         version: 5.11.0
@@ -448,6 +463,9 @@ importers:
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
+      '@efffrida/polyfills':
+        specifier: latest
+        version: link:../../packages/polyfills
       '@efffrida/vitest-pool':
         specifier: latest
         version: link:../../packages/vitest-pool
@@ -460,6 +478,18 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.7
         version: 4.1.7(vitest@4.1.7)
+      '@vitest/runner':
+        specifier: 4.1.7
+        version: 4.1.7
+      '@vitest/utils':
+        specifier: 4.1.7
+        version: 4.1.7
+      birpc:
+        specifier: 4.0.0
+        version: 4.0.0
+      flatted:
+        specifier: 3.4.2
+        version: 3.4.2
       frida:
         specifier: 17.9.11
         version: 17.9.11
