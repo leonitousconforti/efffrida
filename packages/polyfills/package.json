@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/polyfills",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "polyfills for using effect in frida's GumJS environment",
     "keywords": [
         "effect-ts",

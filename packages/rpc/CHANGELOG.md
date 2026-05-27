@@ -1,5 +1,17 @@
 # @efffrida/rpc
 
+## 0.0.33
+
+### Patch Changes
+
+- 6a69bda: Bump dependencies
+- 31be93f: Bump Vite and Vitest
+- Updated dependencies [6a69bda]
+- Updated dependencies [31be93f]
+  - @efffrida/frida-tools@0.0.31
+  - @efffrida/polyfills@0.0.10
+  - @efffrida/platform@0.0.24
+
 ## 0.0.32
 
 ### Patch Changes

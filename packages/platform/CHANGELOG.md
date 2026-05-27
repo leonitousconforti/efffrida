@@ -1,5 +1,12 @@
 # @efffrida/platform
 
+## 0.0.24
+
+### Patch Changes
+
+- 6a69bda: Bump dependencies
+- 31be93f: Bump Vite and Vitest
+
 ## 0.0.23
 
 ### Patch Changes
