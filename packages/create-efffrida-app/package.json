@@ -1,6 +1,6 @@
 {
     "name": "create-efffrida-app",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Create efffrida applications with a single command",
     "keywords": [
         "effect-ts",
@@ -21,6 +21,10 @@
         "dist"
     ],
     "type": "module",
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
     "scripts": {
         "build": "tsup",
         "check": "tsc -b tsconfig.json"
