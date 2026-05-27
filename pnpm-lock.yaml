@@ -300,6 +300,12 @@ importers:
       '@efffrida/frida-tools':
         specifier: workspace:*
         version: link:../frida-tools
+      flatted:
+        specifier: 3.4.2
+        version: 3.4.2
+      frida:
+        specifier: 17.9.11
+        version: 17.9.11
       ioredis:
         specifier: 5.11.0
         version: 5.11.0
@@ -307,25 +313,15 @@ importers:
       '@effect/platform-node':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
+      '@efffrida/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
       '@types/node':
         specifier: 25.9.1
         version: 25.9.1
-      effect:
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69
-      frida:
-        specifier: 17.9.11
-        version: 17.9.11
-      vitest:
-        specifier: 4.1.7
-        version: 4.1.7(@types/node@25.9.1)(vite@8.0.14(@types/node@25.9.1))
-    optionalDependencies:
-      '@efffrida/polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
       '@vitest/runner':
         specifier: 4.1.7
         version: 4.1.7
@@ -335,12 +331,15 @@ importers:
       birpc:
         specifier: 4.0.0
         version: 4.0.0
-      flatted:
-        specifier: 3.4.2
-        version: 3.4.2
+      effect:
+        specifier: 4.0.0-beta.69
+        version: 4.0.0-beta.69
       vite:
         specifier: 8.0.14
         version: 8.0.14(@types/node@25.9.1)
+      vitest:
+        specifier: 4.1.7
+        version: 4.1.7(@types/node@25.9.1)(vite@8.0.14(@types/node@25.9.1))
 
   scratchpad:
     dependencies:
@@ -380,7 +379,7 @@ importers:
     dependencies:
       '@efffrida/platform':
         specifier: 0.0.23
-        version: link:../../packages/platform
+        version: 0.0.23(effect@4.0.0-beta.69)
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
@@ -396,7 +395,7 @@ importers:
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@efffrida/vitest-pool':
         specifier: 0.0.17
-        version: link:../../packages/vitest-pool
+        version: 0.0.17(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -426,13 +425,13 @@ importers:
     dependencies:
       '@efffrida/frida-tools':
         specifier: 0.0.30
-        version: link:../../packages/frida-tools
+        version: 0.0.30(effect@4.0.0-beta.69)
       '@efffrida/platform':
         specifier: 0.0.23
-        version: link:../../packages/platform
+        version: 0.0.23(effect@4.0.0-beta.69)
       '@efffrida/rpc':
         specifier: 0.0.32
-        version: link:../../packages/rpc
+        version: 0.0.32(effect@4.0.0-beta.69)
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
@@ -448,7 +447,7 @@ importers:
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@efffrida/vitest-pool':
         specifier: 0.0.17
-        version: link:../../packages/vitest-pool
+        version: 0.0.17(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(@types/node@25.9.1)(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -734,6 +733,31 @@ packages:
     peerDependencies:
       effect: ^4.0.0-beta.69
       vitest: ^3.0.0 || ^4.0.0
+
+  '@efffrida/frida-tools@0.0.30':
+    resolution: {integrity: sha512-9kIyAkKmvj8ewTDnphpL/q+feKhdk7nm/0zvnFV9lgzobjPzZj/ZuaKqMld/tfILRaeB9OOSA4iVA5mNME3XZA==}
+    peerDependencies:
+      effect: 4.0.0-beta.69
+
+  '@efffrida/platform@0.0.23':
+    resolution: {integrity: sha512-086IAY0RLhN+TbCQcME9DoG3j4BYpVIDfB/IDDn/WpsJI90iI9ImMBHOIAVYamEta/anMFcVI5X9cRtXenGgQQ==}
+    peerDependencies:
+      effect: 4.0.0-beta.69
+
+  '@efffrida/polyfills@0.0.9':
+    resolution: {integrity: sha512-LqpjRp9ilWhIKM+eezoJ6yGr3P0lCMFEwZ1D2a8oQnAknfs+gd32jp2pa+zM4bqFyF6qBd/y9iveSu2cTQu8EA==}
+
+  '@efffrida/rpc@0.0.32':
+    resolution: {integrity: sha512-0w8046sCDM3cRGA27S3XJFgMPeHOn4XOwM1pskUIcg1bURx/FtDzL3B3BWHtNQ1CijU72Se5EAkD9F2/3zg8MA==}
+    peerDependencies:
+      effect: 4.0.0-beta.69
+
+  '@efffrida/vitest-pool@0.0.17':
+    resolution: {integrity: sha512-51Q+qofIglKpZKfy5TKwSfDdaMw6D/ha6aJyK10kpcRCGP2Mac3r2xApeyup+ct4zd6KHVQkq0eCEDim6j8yPQ==}
+    peerDependencies:
+      '@effect/platform-node': 4.0.0-beta.69
+      effect: 4.0.0-beta.69
+      vitest: 4.1.6
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -1067,6 +1091,9 @@ packages:
 
   '@ioredis/commands@1.10.0':
     resolution: {integrity: sha512-UmeW7z4LfctwoQ5wkhVzgq8tXkreED2xZGpX+Bg+zA+WJFZCT6c062AfCK/Dfk81xZnnwdhJCUMkitihRaoC2Q==}
+
+  '@ioredis/commands@1.5.1':
+    resolution: {integrity: sha512-JH8ZL/ywcJyR9MmJ5BNqZllXNZQqQbnVZOqpPQqE1vHiFgAw4NHbvE0FOduNU8IX9babitBT46571OnPTT0Zcw==}
 
   '@isaacs/cliui@9.0.0':
     resolution: {integrity: sha512-AokJm4tuBHillT+FpMtxQ60n8ObyXBatq7jD2/JA9dxbDDokKQm8KMht5ibGzLVU9IJDIKK4TPKgMHEYMn3lMg==}
@@ -1727,8 +1754,14 @@ packages:
       vite:
         optional: true
 
+  '@vitest/pretty-format@4.1.6':
+    resolution: {integrity: sha512-h5SxD/IzNhZYnrSZRsUZQIC+vD0GY8cUvq0iwsmkFKixRCKLLWqCXa/FIQ4S1R+sI+PGoojkHsdNrbZiM9Qpgw==}
+
   '@vitest/pretty-format@4.1.7':
     resolution: {integrity: sha512-umgCarTOYQWIaDMvGDRZij+6b9oVeLIyJzfN+AS88e0ZOU3QTgNNSTtjQOpcvWr3np1N0j4WgZj+sb3oYBDscw==}
+
+  '@vitest/runner@4.1.6':
+    resolution: {integrity: sha512-nOPCmn2+yD0ZNmKdsXGv/UxMMWbMuKeD6GyYncNwdkYDxpQvrPSKYj2rWuDjC2Y4b6w6hjip5dBKFzEUuZe3vA==}
 
   '@vitest/runner@4.1.7':
     resolution: {integrity: sha512-BapjmAQ2aI78WdMEfeUWivnfVzB+VPGwWRQcJE0OUq7qEeEcBsCSf+0T5iREBNE5nBb4wA5Ya0W6IA+sghdEFw==}
@@ -1738,6 +1771,9 @@ packages:
 
   '@vitest/spy@4.1.7':
     resolution: {integrity: sha512-kbkI5LMWakyuTIvs6fUJ5qdIVb1XVKsYJAT4OJ938cHMROYMSfmoQdZy0aaAnjbbc8F61vkoTqz/Az+/HiIu5Q==}
+
+  '@vitest/utils@4.1.6':
+    resolution: {integrity: sha512-FxIY+U81R3LGKCxaHHFRQ5+g6/iRgGLmeHWdp2Amj4ljQRrEIWHmZyDfDYBRZlpyqA7qKxtS9DD1dhk8RnRIVQ==}
 
   '@vitest/utils@4.1.7':
     resolution: {integrity: sha512-T532WBu791cBxJlCl6SO+J14l81DQx6uQHm1bQbmCDY7nqlEIgkza/UFnSBNaUtSf41unldDFjdOBYEQC4b5Hw==}
@@ -1925,6 +1961,10 @@ packages:
 
   cluster-key-slot@1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
+    engines: {node: '>=0.10.0'}
+
+  cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
   color-convert@2.0.1:
@@ -2232,6 +2272,10 @@ packages:
     resolution: {integrity: sha512-qXjdcdI+KM5wnjCwqZTe/Tas/2pClXpDhcVWjiaQFxzSun+1vaoHEWlnMe4F09Vdz/vGkkjFOPKfvDem2A8UOQ==}
     hasBin: true
 
+  frida@17.9.10:
+    resolution: {integrity: sha512-viGHoIbkpaPEz4jWezX5mnskZhc/o7HknLbL0azDpURVPF4FL73wBurX7OcwtvH+5A1E7RGEhWW7GYuFVGK/sg==}
+    engines: {node: '>=16'}
+
   frida@17.9.11:
     resolution: {integrity: sha512-e/P8hXICa76I/B9qZVIhSIyjWOusyE5GNIKJCmbhdRpSTz2NeTxdQH78HwTre4f0/dXY+rcosMLXIzs7Kx2QQQ==}
     engines: {node: '>=16'}
@@ -2352,6 +2396,10 @@ packages:
   ini@7.0.0:
     resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  ioredis@5.10.1:
+    resolution: {integrity: sha512-HuEDBTI70aYdx1v6U97SbNx9F1+svQKBDo30o0b9fw055LMepzpOOd0Ccg9Q6tbqmBSJaMuY0fB7yw9/vjBYCA==}
+    engines: {node: '>=12.22.0'}
 
   ioredis@5.11.0:
     resolution: {integrity: sha512-EZBErytyVovD8f6pDfG3Kb37N6Y3lmDA9NNj+4+IP13CzzHGeX+OyeRM2Um13khRzoBSzzL+5lVnCX8V2RLeMg==}
@@ -2603,6 +2651,12 @@ packages:
 
   lodash._reinterpolate@3.0.0:
     resolution: {integrity: sha512-xYHt68QRoYGjeeM/XOE1uJtvXQAgvszfBhjV4yvsQH0u2i9I6cI6c6/eG4Hh3UAOVn0y/xAXwmTzEay49Q//HA==}
+
+  lodash.defaults@4.2.0:
+    resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
+
+  lodash.isarguments@3.1.0:
+    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
 
   lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
@@ -3878,6 +3932,86 @@ snapshots:
       effect: 4.0.0-beta.69
       vitest: 4.1.7(@vitest/coverage-v8@4.1.7)(vite@8.0.14)
 
+  '@efffrida/frida-tools@0.0.30(effect@4.0.0-beta.69)':
+    dependencies:
+      effect: 4.0.0-beta.69
+      frida: 17.9.10
+
+  '@efffrida/platform@0.0.23(effect@4.0.0-beta.69)':
+    dependencies:
+      effect: 4.0.0-beta.69
+
+  '@efffrida/polyfills@0.0.9':
+    dependencies:
+      abort-controller: 3.0.0
+      event-target-polyfill: 0.0.4
+      fast-text-encoding: 1.0.6
+
+  '@efffrida/rpc@0.0.32(effect@4.0.0-beta.69)':
+    dependencies:
+      '@efffrida/frida-tools': 0.0.30(effect@4.0.0-beta.69)
+      '@efffrida/platform': 0.0.23(effect@4.0.0-beta.69)
+      '@efffrida/polyfills': 0.0.9
+      effect: 4.0.0-beta.69
+
+  '@efffrida/vitest-pool@0.0.17(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(@types/node@25.9.1)(effect@4.0.0-beta.69)(vitest@4.1.7)':
+    dependencies:
+      '@effect/platform-node': 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
+      '@efffrida/frida-tools': 0.0.30(effect@4.0.0-beta.69)
+      effect: 4.0.0-beta.69
+      ioredis: 5.10.1
+      vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@8.0.14(@types/node@25.9.1))
+    optionalDependencies:
+      '@efffrida/polyfills': 0.0.9
+      '@vitest/runner': 4.1.6
+      '@vitest/utils': 4.1.6
+      birpc: 4.0.0
+      flatted: 3.4.2
+      vite: 8.0.14(@types/node@25.9.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@vitejs/devtools'
+      - esbuild
+      - jiti
+      - less
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+
+  '@efffrida/vitest-pool@0.0.17(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vitest@4.1.7)':
+    dependencies:
+      '@effect/platform-node': 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
+      '@efffrida/frida-tools': 0.0.30(effect@4.0.0-beta.69)
+      effect: 4.0.0-beta.69
+      ioredis: 5.10.1
+      vitest: 4.1.7(@vitest/coverage-v8@4.1.7)(vite@8.0.14)
+    optionalDependencies:
+      '@efffrida/polyfills': 0.0.9
+      '@vitest/runner': 4.1.6
+      '@vitest/utils': 4.1.6
+      birpc: 4.0.0
+      flatted: 3.4.2
+      vite: 8.0.14
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@vitejs/devtools'
+      - esbuild
+      - jiti
+      - less
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+
   '@emnapi/core@1.10.0':
     dependencies:
       '@emnapi/wasi-threads': 1.2.1
@@ -4056,6 +4190,8 @@ snapshots:
       iconv-lite: 0.7.2
 
   '@ioredis/commands@1.10.0': {}
+
+  '@ioredis/commands@1.5.1': {}
 
   '@isaacs/cliui@9.0.0': {}
 
@@ -4507,9 +4643,20 @@ snapshots:
     optionalDependencies:
       vite: 8.0.14
 
+  '@vitest/pretty-format@4.1.6':
+    dependencies:
+      tinyrainbow: 3.1.0
+    optional: true
+
   '@vitest/pretty-format@4.1.7':
     dependencies:
       tinyrainbow: 3.1.0
+
+  '@vitest/runner@4.1.6':
+    dependencies:
+      '@vitest/utils': 4.1.6
+      pathe: 2.0.3
+    optional: true
 
   '@vitest/runner@4.1.7':
     dependencies:
@@ -4524,6 +4671,13 @@ snapshots:
       pathe: 2.0.3
 
   '@vitest/spy@4.1.7': {}
+
+  '@vitest/utils@4.1.6':
+    dependencies:
+      '@vitest/pretty-format': 4.1.6
+      convert-source-map: 2.0.0
+      tinyrainbow: 3.1.0
+    optional: true
 
   '@vitest/utils@4.1.7':
     dependencies:
@@ -4716,6 +4870,8 @@ snapshots:
   clone@1.0.4: {}
 
   cluster-key-slot@1.1.1: {}
+
+  cluster-key-slot@1.1.2: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -5065,6 +5221,12 @@ snapshots:
 
   frida-il2cpp-bridge@0.13.1: {}
 
+  frida@17.9.10:
+    dependencies:
+      bindings: 1.5.0
+      minimatch: 10.2.5
+      prebuild-install: 7.1.3
+
   frida@17.9.11:
     dependencies:
       bindings: 1.5.0
@@ -5189,6 +5351,20 @@ snapshots:
   ini@1.3.8: {}
 
   ini@7.0.0: {}
+
+  ioredis@5.10.1:
+    dependencies:
+      '@ioredis/commands': 1.5.1
+      cluster-key-slot: 1.1.2
+      debug: 4.4.3
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
 
   ioredis@5.11.0:
     dependencies:
@@ -5384,6 +5560,10 @@ snapshots:
       p-locate: 4.1.0
 
   lodash._reinterpolate@3.0.0: {}
+
+  lodash.defaults@4.2.0: {}
+
+  lodash.isarguments@3.1.0: {}
 
   lodash.startcase@4.4.0: {}
 

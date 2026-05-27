@@ -52,7 +52,9 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "ioredis": "5.11.0"
+        "frida": "17.9.11",
+        "ioredis": "5.11.0",
+        "flatted": "3.4.2"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
@@ -63,23 +65,19 @@
         "@vitest/utils": "4.1.7",
         "birpc": "4.0.0",
         "effect": "4.0.0-beta.69",
-        "flatted": "3.4.2",
-        "frida": "17.9.11",
         "vite": "8.0.14",
         "vitest": "4.1.7"
     },
     "peerDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
-        "effect": "4.0.0-beta.69",
-        "vitest": "4.1.7"
-    },
-    "optionalDependencies": {
         "@efffrida/polyfills": "workspace:*",
         "@vitest/runner": "4.1.7",
         "@vitest/utils": "4.1.7",
         "birpc": "4.0.0",
+        "effect": "4.0.0-beta.69",
         "flatted": "3.4.2",
-        "vite": "8.0.14"
+        "vite": "8.0.14",
+        "vitest": "4.1.7"
     },
     "tags": [
         "frida.re",
