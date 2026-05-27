@@ -1,5 +1,11 @@
 # @efffrida/vitest-pool
 
+## 0.0.17
+
+### Patch Changes
+
+- 0ac4d62: Copy agent artifact correctly instead of transpiling it
+
 ## 0.0.16
 
 ### Patch Changes
