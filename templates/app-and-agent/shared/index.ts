@@ -1,4 +1,4 @@
-import * as Schema from "effect/Schema";
+import { Schema } from "effect";
 import { Rpc, RpcGroup } from "effect/unstable/rpc";
 
 export class AgentRpcs extends RpcGroup.make(

@@ -1,12 +1,8 @@
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
+import { Effect, Layer } from "effect";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 
-import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
-import * as NodeServices from "@effect/platform-node/NodeServices";
-import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
-import * as FridaScript from "@efffrida/frida-tools/FridaScript";
-import * as FridaSession from "@efffrida/frida-tools/FridaSession";
+import { NodeRuntime, NodeServices } from "@effect/platform-node";
+import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { FridaRpcClient } from "@efffrida/rpc/node";
 
 import { AgentRpcs } from "../../shared/index.ts";
