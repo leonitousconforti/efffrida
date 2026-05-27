@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.32
+
+### Patch Changes
+
+- fed76e6: Improve error reporting and simplify vitest pool
+
 ## 0.0.31
 
 ### Patch Changes
