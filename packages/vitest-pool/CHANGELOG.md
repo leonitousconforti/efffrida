@@ -1,5 +1,11 @@
 # @efffrida/vitest-pool
 
+## 0.0.19
+
+### Patch Changes
+
+- dc0dc2c: Include TS files in vitest-pool publish files
+
 ## 0.0.18
 
 ### Patch Changes
