@@ -42,7 +42,8 @@
     },
     "scripts": {
         "codegen": "build-utils prepare-v4",
-        "build": "tsc -b tsconfig.build.json && pnpm babel",
+        "build": "tsc -b tsconfig.build.json && pnpm copy-frida && pnpm babel",
+        "copy-frida": "node -e \"const {cpSync}=require('fs');cpSync('frida','dist/frida',{recursive:true,force:true})\"",
         "babel": "babel dist --plugins annotate-pure-calls --out-dir dist --source-maps",
         "check": "tsc -b tsconfig.json",
         "test": "vitest",
