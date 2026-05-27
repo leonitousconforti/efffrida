@@ -5,8 +5,8 @@
     "references": [{ "path": "../shared/tsconfig.src.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": "../.tsbuildinfo/frida-src.tsbuildinfo",
-        "outDir": "../.tsbuildinfo/frida-src",
-        "types": ["frida-gum"],
+        "outDir": "../.tsbuildinfo/frida/src",
+        "types": ["frida-gum", "node"],
         "rootDir": "src"
     }
 }

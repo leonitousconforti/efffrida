@@ -378,7 +378,7 @@ importers:
   templates/agent-only:
     dependencies:
       '@efffrida/platform':
-        specifier: 0.0.24
+        specifier: latest
         version: link:../../packages/platform
       effect:
         specifier: 4.0.0-beta.69
@@ -394,11 +394,14 @@ importers:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@efffrida/vitest-pool':
-        specifier: 0.0.21
-        version: 0.0.21(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vite@8.0.14)(vitest@4.1.7)
+        specifier: latest
+        version: link:../../packages/vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
+      '@types/node':
+        specifier: 25.9.1
+        version: 25.9.1
       '@vitest/coverage-v8':
         specifier: 4.1.7
         version: 4.1.7(vitest@4.1.7)
@@ -416,21 +419,21 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.14
-        version: 8.0.14
+        version: 8.0.14(@types/node@25.9.1)
       vitest:
         specifier: 4.1.7
-        version: 4.1.7(@vitest/coverage-v8@4.1.7)(vite@8.0.14)
+        version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@8.0.14(@types/node@25.9.1))
 
   templates/app-and-agent:
     dependencies:
       '@efffrida/frida-tools':
-        specifier: 0.0.31
+        specifier: latest
         version: link:../../packages/frida-tools
       '@efffrida/platform':
-        specifier: 0.0.24
+        specifier: latest
         version: link:../../packages/platform
       '@efffrida/rpc':
-        specifier: 0.0.33
+        specifier: latest
         version: link:../../packages/rpc
       effect:
         specifier: 4.0.0-beta.69
@@ -446,8 +449,8 @@ importers:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.7)
       '@efffrida/vitest-pool':
-        specifier: 0.0.21
-        version: 0.0.21(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vite@8.0.14(@types/node@25.9.1))(vitest@4.1.7)
+        specifier: latest
+        version: link:../../packages/vitest-pool
       '@types/frida-gum':
         specifier: 19.1.0
         version: 19.1.0
@@ -733,24 +736,6 @@ packages:
     peerDependencies:
       effect: ^4.0.0-beta.69
       vitest: ^3.0.0 || ^4.0.0
-
-  '@efffrida/frida-tools@0.0.31':
-    resolution: {integrity: sha512-cz4BiO3FMUcIsEsjSfD937TNNh48Y5jJbPFVJjN6d3EEjqhiIr+l9VRD9MFZdRKtjkJj/5uQwIWPofLcuHUnOQ==}
-    peerDependencies:
-      effect: 4.0.0-beta.69
-
-  '@efffrida/vitest-pool@0.0.21':
-    resolution: {integrity: sha512-q6njJYl0Hsvulyzu0y6KY5tWiM6M8xuZXALyDg4rJGHJjK+Klm1KXSMOZRRYMJJyYZMQlhlAD8cpTqkxUfn2wA==}
-    peerDependencies:
-      '@effect/platform-node': 4.0.0-beta.69
-      '@efffrida/polyfills': 0.0.10
-      '@vitest/runner': 4.1.7
-      '@vitest/utils': 4.1.7
-      birpc: 4.0.0
-      effect: 4.0.0-beta.69
-      flatted: 3.4.2
-      vite: 8.0.14
-      vitest: 4.1.7
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -3895,35 +3880,6 @@ snapshots:
       effect: 4.0.0-beta.69
       vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@8.0.14(@types/node@25.9.1))
 
-  '@efffrida/frida-tools@0.0.31(effect@4.0.0-beta.69)':
-    dependencies:
-      effect: 4.0.0-beta.69
-      frida: 17.9.11
-
-  '@efffrida/vitest-pool@0.0.21(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vite@8.0.14(@types/node@25.9.1))(vitest@4.1.7)':
-    dependencies:
-      '@effect/platform-node': 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
-      '@efffrida/frida-tools': 0.0.31(effect@4.0.0-beta.69)
-      effect: 4.0.0-beta.69
-      frida: 17.9.11
-      ioredis: 5.11.0
-      vite: 8.0.14(@types/node@25.9.1)
-      vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@8.0.14(@types/node@25.9.1))
-    transitivePeerDependencies:
-      - supports-color
-
-  '@efffrida/vitest-pool@0.0.21(@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0))(effect@4.0.0-beta.69)(vite@8.0.14)(vitest@4.1.7)':
-    dependencies:
-      '@effect/platform-node': 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.0)
-      '@efffrida/frida-tools': 0.0.31(effect@4.0.0-beta.69)
-      effect: 4.0.0-beta.69
-      frida: 17.9.11
-      ioredis: 5.11.0
-      vite: 8.0.14
-      vitest: 4.1.7(@vitest/coverage-v8@4.1.7)(vite@8.0.14)
-    transitivePeerDependencies:
-      - supports-color
-
   '@emnapi/core@1.10.0':
     dependencies:
       '@emnapi/wasi-threads': 1.2.1
@@ -6327,33 +6283,6 @@ snapshots:
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
       vite: 8.0.14(tsx@4.22.3)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@vitest/coverage-v8': 4.1.7(vitest@4.1.7)
-    transitivePeerDependencies:
-      - msw
-
-  vitest@4.1.7(@vitest/coverage-v8@4.1.7)(vite@8.0.14):
-    dependencies:
-      '@vitest/expect': 4.1.7
-      '@vitest/mocker': 4.1.7(vite@8.0.14)
-      '@vitest/pretty-format': 4.1.7
-      '@vitest/runner': 4.1.7
-      '@vitest/snapshot': 4.1.7
-      '@vitest/spy': 4.1.7
-      '@vitest/utils': 4.1.7
-      es-module-lexer: 2.1.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.4
-      std-env: 4.1.0
-      tinybench: 2.9.0
-      tinyexec: 1.2.2
-      tinyglobby: 0.2.16
-      tinyrainbow: 3.1.0
-      vite: 8.0.14
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.7(vitest@4.1.7)

@@ -4,7 +4,7 @@
     "references": [{ "path": "../shared/tsconfig.build.json" }],
     "compilerOptions": {
         "tsBuildInfoFile": "../.tsbuildinfo/frida-build.tsbuildinfo",
-        "outDir": "../dist/frida",
+        "outDir": "../dist/frida/src",
         "types": ["frida-gum"],
         "stripInternal": true
     }

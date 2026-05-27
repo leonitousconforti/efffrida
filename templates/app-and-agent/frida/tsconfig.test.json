@@ -10,7 +10,7 @@
         "erasableSyntaxOnly": false,
         "rewriteRelativeImportExtensions": false,
         "allowImportingTsExtensions": true,
-        "types": ["frida-gum"],
+        "types": ["frida-gum", "node"],
         "plugins": [
             {
                 "name": "@effect/language-service",
