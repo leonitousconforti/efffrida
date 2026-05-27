@@ -63,10 +63,10 @@
         "@effect/platform-node": "4.0.0-beta.69",
         "@effect/vitest": "4.0.0-beta.69",
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.9.0",
+        "@types/node": "25.9.1",
         "effect": "4.0.0-beta.69",
-        "frida": "17.9.10",
-        "ioredis": "5.10.1",
+        "frida": "17.9.11",
+        "ioredis": "5.11.0",
         "vite": "8.0.14",
         "vitest": "4.1.6"
     },

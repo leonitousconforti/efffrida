@@ -12,22 +12,23 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "@efffrida/frida-tools": "^0.0.29",
-        "@efffrida/platform": "^0.0.22",
-        "@efffrida/rpc": "^0.0.31",
+        "@efffrida/frida-tools": "0.0.30",
+        "@efffrida/platform": "0.0.23",
+        "@efffrida/rpc": "0.0.32",
         "effect": "4.0.0-beta.69"
     },
     "devDependencies": {
-        "@effect/language-service": "0.86.1",
+        "@effect/language-service": "0.86.2",
         "@effect/platform-node": "4.0.0-beta.69",
         "@effect/vitest": "4.0.0-beta.69",
-        "@efffrida/vitest-pool": "^0.0.15",
+        "@efffrida/vitest-pool": "0.0.17",
         "@types/frida-gum": "19.1.0",
-        "@types/node": "25.9.0",
+        "@types/node": "25.9.1",
         "@vitest/coverage-v8": "4.1.6",
-        "frida": "17.9.10",
-        "oxfmt": "0.51.0",
-        "oxlint": "1.66.0",
+        "frida": "17.9.11",
+        "ioredis": "5.11.0",
+        "oxfmt": "0.52.0",
+        "oxlint": "1.67.0",
         "typescript": "6.0.3",
         "vite": "8.0.14",
         "vitest": "4.1.6"

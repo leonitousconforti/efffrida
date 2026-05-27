@@ -12,8 +12,9 @@ describe("vitest-pool effect", () => {
         })
     );
 
-    it("can access Frida APIs", () =>
+    it.effect("can access Frida APIs", () =>
         Effect.gen(function* () {
-            expect(Frida.version).toBe("17.9.10");
-        }));
+            expect(Frida.version).toBe("17.9.11");
+        })
+    );
 });
