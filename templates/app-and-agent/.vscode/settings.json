@@ -1,0 +1,22 @@
+{
+    "js/ts.tsdk.path": "node_modules/typescript/lib",
+    "editor.defaultFormatter": "EditorConfig.EditorConfig",
+    "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[nix]": {
+        "editor.defaultFormatter": "jnoortheen.nix-ide"
+    },
+
+    "vitest.runtime": "node",
+    "js/ts.preferences.autoImportFileExcludePatterns": [".direnv/**", "repos/**"],
+    "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/repos/**,**/.*/**,**/*.d.ts}",
+    "files.watcherExclude": {
+        ".direnv/**": true,
+        "repos/**": true
+    },
+    "search.exclude": {
+        ".direnv/**": true,
+        "repos/**": true
+    }
+}
