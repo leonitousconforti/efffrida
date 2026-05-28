@@ -46,7 +46,7 @@ export const makeProtocolFrida = (): Effect.Effect<
         const clients = new Map<
             number,
             {
-                readonly write: (bytes: RpcMessage.FromServerEncoded) => void;
+                readonly write: (bytes: RpcMessage.FromServerEncoded) => Effect.Effect<void>;
             }
         >();
 
@@ -112,7 +112,7 @@ export const makeProtocolFrida = (): Effect.Effect<
             if (newClientPredicate(message)) return onClientConnect(message);
             if (clientMessagePredicate(message) && Option.isSome(data)) return onMessage(message, data.value);
             return Effect.void;
-        }).pipe(Effect.forkScoped);
+        }).pipe(Effect.tapError(Effect.logError), Effect.forkScoped);
 
         return yield* RpcServer.Protocol.make((_writeRequest) => {
             writeRequest = _writeRequest;
@@ -121,7 +121,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                 send: (clientId, response) => {
                     const client = clients.get(clientId);
                     if (!client) return Effect.void;
-                    return Effect.sync(() => client.write(response));
+                    return client.write(response);
                 },
                 end(_clientId) {
                     return Effect.void;

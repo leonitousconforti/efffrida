@@ -45,9 +45,11 @@ export const makeProtocolFrida = (): Effect.Effect<
                 Effect.forEach(clientIds, (id) => writeResponse(id, response), { discard: true });
 
             yield* Effect.addFinalizer(() => Effect.sync(() => delete rpc.exports[exportName]));
-            rpc.exports[exportName] = (data: string | Uint8Array): Promise<void> => {
+            rpc.exports[exportName] = (data: string | Record<string, number>): Promise<void> => {
                 try {
-                    const responses = parser.decode(data) as Array<RpcMessage.FromServerEncoded>;
+                    const responses = parser.decode(
+                        typeof data === "string" ? data : Uint8Array.from(Object.values(data))
+                    ) as Array<RpcMessage.FromServerEncoded>;
                     if (responses.length === 0) return Promise.resolve();
                     let i = 0;
                     return Effect.whileLoop({
