@@ -9,6 +9,7 @@ import { FridaRpcClient } from "@efffrida/rpc/node";
 import { JsPlatform } from "frida";
 
 import { UserRpcs } from "../../shared/requests.ts";
+
 // Choose which serialization to use
 const NdJsonSerialization = RpcSerialization.layerNdjson;
 
@@ -28,7 +29,6 @@ const SessionLive =
           ).pipe(Layer.provide(NodeServices.layer));
 
 const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeServices.layer));
-
 const ScriptLive = FridaScript.layer(new URL("../../frida/server/agent.ts", import.meta.url), {
     platform: JsPlatform.Browser,
 }).pipe(Layer.provide(FridaLive));

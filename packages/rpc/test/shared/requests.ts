@@ -29,3 +29,10 @@ export class UserRpcs extends RpcGroup.make(
         },
     })
 ) {}
+
+export class CallbackRpcs extends RpcGroup.make(
+    Rpc.make("Callback", {
+        success: Schema.Void,
+        payload: Schema.Union([User, Schema.Array(User)]),
+    })
+) {}
