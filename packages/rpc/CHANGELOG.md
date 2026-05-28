@@ -1,5 +1,11 @@
 # @efffrida/rpc
 
+## 0.0.35
+
+### Patch Changes
+
+- ec6ab94: Fix FridaRpcClient for frida and FridaRpcServer for node and add tests
+
 ## 0.0.34
 
 ### Patch Changes
