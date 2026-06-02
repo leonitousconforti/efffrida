@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.36
+
+### Patch Changes
+
+- 445b216: Upgrade frida to 17.10.1 <https://frida.re/news/2026/06/02/frida-17-10-1-released/>
+- Updated dependencies [445b216]
+  - @efffrida/frida-tools@0.0.33
+  - @efffrida/polyfills@0.0.11
+  - @efffrida/platform@0.0.25
+
 ## 0.0.35
 
 ### Patch Changes
