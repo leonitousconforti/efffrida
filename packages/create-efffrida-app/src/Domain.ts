@@ -1,4 +1,4 @@
-export const templates = ["agent-only", "app-and-agent", "monorepo"] as const;
+export const templates = ["agent-only", "app-and-agent"] as const;
 export type TemplateType = (typeof templates)[number];
 
 export interface ProjectConfig {

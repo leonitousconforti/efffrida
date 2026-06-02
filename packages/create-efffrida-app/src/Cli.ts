@@ -37,11 +37,6 @@ const templateFlag = Flag.choice("template", [...templates]).pipe(
                     value: "app-and-agent",
                     description: "A Node.js host app and a Frida agent with separate tsconfigs",
                 },
-                {
-                    title: "Monorepo",
-                    value: "monorepo",
-                    description: "A pnpm monorepo with agent, app, and shared packages",
-                },
             ],
         })
     )
