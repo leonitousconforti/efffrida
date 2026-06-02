@@ -1,12 +1,51 @@
 /**
- * This module provides a data structure called `Context` that can be used
- * for dependency injection in effectful programs. It is essentially a table
- * mapping `Service`s identifiers to their implementations, and can be used to
- * manage dependencies in a type-safe way. The `Context` data structure is
- * essentially a way of providing access to a set of related services that can
- * be passed around as a single unit. This module provides functions to create,
- * modify, and query the contents of a `Context`, as well as a number of
- * utility types for working with a `Context`.
+ * The `Context` module implements Effect's typed service environment. A
+ * `Context<Services>` is an immutable collection of service implementations,
+ * keyed by `Context.Service` or `Context.Reference` values. The type parameter
+ * records which service identifiers are present so effects can require
+ * dependencies without passing every implementation as an argument.
+ *
+ * **Mental model**
+ *
+ * - A service key is both a runtime identifier and a typed handle for one
+ *   dependency
+ * - `Context.Service` creates keys for dependencies that must be provided by
+ *   the surrounding context
+ * - `Context.Reference` creates keys that have a cached default value when no
+ *   explicit implementation is stored
+ * - A `Context` value stores implementations, while Effect fibers carry the
+ *   active context used to satisfy service requirements
+ * - Context operations such as {@link add}, {@link merge}, {@link pick}, and
+ *   {@link omit} return new contexts instead of mutating the original one
+ *
+ * **Common tasks**
+ *
+ * - Create service keys: {@link Service}, {@link Reference}
+ * - Build contexts: {@link empty}, {@link make}, {@link add}, {@link merge}
+ * - Read services: {@link get}, {@link getOption}, {@link getOrElse}
+ * - Keep or remove selected services: {@link pick}, {@link omit}
+ *
+ * **Example** (Building and reading a context)
+ *
+ * ```ts
+ * import { Context } from "effect"
+ *
+ * const Logger = Context.Service<{ log: (message: string) => void }>("Logger")
+ *
+ * const context = Context.make(Logger, {
+ *   log: (message) => console.log(message)
+ * })
+ *
+ * const logger = Context.get(context, Logger)
+ * logger.log("started")
+ * ```
+ *
+ * **Gotchas**
+ *
+ * - The service key string is the runtime identity; reusing the same string for
+ *   unrelated services makes them occupy the same slot
+ * - `Context.Reference` defaults are used only when no explicit value is stored
+ *   for that key
  *
  * @since 4.0.0
  */
@@ -24,22 +63,43 @@ import { hasProperty } from "./Predicate.ts"
 import type * as Types from "./Types.ts"
 
 /**
+ * String literal type used as the runtime type identifier for `Context`
+ * service keys.
+ *
+ * @category type IDs
  * @since 4.0.0
- * @category Type Identifiers
  */
 export type ServiceTypeId = "~effect/Context/Service"
 
 /**
+ * Runtime type identifier attached to `Context` service keys and used by
+ * `isKey` to recognize them.
+ *
+ * @category type IDs
  * @since 4.0.0
- * @category Type Identifiers
  */
 export const ServiceTypeId: ServiceTypeId = "~effect/Context/Service"
 
 /**
- * The base type used for all Context keys.
+ * Typed identifier for a service stored in a `Context`.
  *
+ * **When to use**
+ *
+ * Use as the typed handle for storing, retrieving, and requiring a specific
+ * service in a `Context`.
+ *
+ * **Details**
+ *
+ * `Identifier` tracks the requirement in Effect types, while `Shape` is the
+ * service implementation retrieved by the key. A key is also an Effect value,
+ * so yielding it inside `Effect.gen` retrieves the service from the current
+ * fiber context.
+ *
+ * @see {@link Service} for creating required service keys
+ * @see {@link Reference} for creating service keys with default values
+ *
+ * @category models
  * @since 4.0.0
- * @category Models
  */
 export interface Key<out Identifier, out Shape> extends Effect<Shape, never, Identifier> {
   readonly [ServiceTypeId]: ServiceTypeId
@@ -50,7 +110,16 @@ export interface Key<out Identifier, out Shape> extends Effect<Shape, never, Ide
 }
 
 /**
- * @example
+ * Context key with helper methods for working with a service.
+ *
+ * **Details**
+ *
+ * `context` creates a one-service `Context`, `use` and `useSync` retrieve the
+ * service from the current Effect context before applying a function, and `of`
+ * is a type-level helper for service values.
+ *
+ * **Example** (Defining a service key)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -63,8 +132,8 @@ export interface Key<out Identifier, out Shape> extends Effect<Shape, never, Ide
  * const context = Context.make(Database, { query: (sql) => `Result: ${sql}` })
  * ```
  *
+ * @category models
  * @since 4.0.0
- * @category Models
  */
 export interface Service<in out Identifier, in out Shape> extends Key<Identifier, Shape> {
   of(this: void, self: Shape): Shape
@@ -74,8 +143,22 @@ export interface Service<in out Identifier, in out Shape> extends Key<Identifier
 }
 
 /**
+ * Class-style service key produced by `Context.Service<Self, Shape>()("Id")`.
+ *
+ * **When to use**
+ *
+ * Use when declaring a service as a class so the class value can serve as the
+ * `Context` key.
+ *
+ * **Details**
+ *
+ * The class itself is the `Context` key, and its string `key` identifies the
+ * service at runtime.
+ *
+ * @see {@link Service} for creating function-style keys or class-style service keys
+ *
+ * @category models
  * @since 4.0.0
- * @category Models
  */
 export interface ServiceClass<in out Self, in out Identifier extends string, in out Shape>
   extends Service<Self, Shape>
@@ -85,13 +168,18 @@ export interface ServiceClass<in out Self, in out Identifier extends string, in 
 }
 
 /**
+ * Namespace containing helper types for class-style `Context.Service`
+ * declarations.
+ *
  * @since 4.0.0
- * @category Models
  */
 export declare namespace ServiceClass {
   /**
+   * Runtime and type-level metadata carried by a class-style service key,
+   * including its service type identifier, string key, and service shape.
+   *
+   * @category models
    * @since 4.0.0
-   * @category Models
    */
   export interface Shape<Identifier extends string, Service> {
     readonly [ServiceTypeId]: typeof ServiceTypeId
@@ -101,7 +189,28 @@ export declare namespace ServiceClass {
 }
 
 /**
- * @example
+ * Creates a `Context` service key.
+ *
+ * **When to use**
+ *
+ * Use when you need to define a context service key for a dependency that must
+ * be provided by the surrounding context.
+ *
+ * **Details**
+ *
+ * Call `Context.Service("Key")` for a function-style key, or use the two-stage
+ * form `Context.Service<Self, Shape>()("Key")` for class-style service
+ * declarations. The returned key can be yielded as an Effect and passed to
+ * `Context.make`, `Context.add`, and the Context getter functions.
+ *
+ * **Gotchas**
+ *
+ * The string key is the runtime identity of the service. Reusing the same key
+ * string for unrelated services makes them occupy the same slot in a
+ * `Context`.
+ *
+ * **Example** (Creating service keys)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -122,8 +231,10 @@ export declare namespace ServiceClass {
  * const config = Context.make(Config, { port: 8080 })
  * ```
  *
+ * @see {@link Reference} for service keys with default values
+ *
+ * @category constructors
  * @since 4.0.0
- * @category Constructors
  */
 export const Service: {
   <Identifier, Shape = Identifier>(key: string): Service<Identifier, Shape>
@@ -227,7 +338,16 @@ const ServiceProto: any = {
 const ReferenceTypeId = "~effect/Context/Reference" as const
 
 /**
- * @example
+ * Service key with a lazily computed default value.
+ *
+ * **Details**
+ *
+ * When a `Reference` is requested from a `Context` that does not contain an
+ * override, Context getters that resolve references return the cached default
+ * value instead of failing.
+ *
+ * **Example** (Defining a reference with a default value)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -242,8 +362,8 @@ const ReferenceTypeId = "~effect/Context/Reference" as const
  * const logger = Context.get(context, LoggerRef) // Uses default value
  * ```
  *
- * @since 4.0.0
- * @category Models
+ * @category models
+ * @since 3.11.0
  */
 export interface Reference<in out Shape> extends Service<never, Shape> {
   readonly [ReferenceTypeId]: typeof ReferenceTypeId
@@ -253,7 +373,10 @@ export interface Reference<in out Shape> extends Service<never, Shape> {
 }
 
 /**
- * @example
+ * Namespace containing utility types for `Context` service keys.
+ *
+ * **Example** (Extracting service types)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -268,12 +391,15 @@ export interface Reference<in out Shape> extends Service<never, Shape> {
  * type DatabaseId = Context.Service.Identifier<typeof Database>
  * ```
  *
- * @since 4.0.0
- * @category Models
+ * @since 2.0.0
  */
 export declare namespace Service {
   /**
-   * @example
+   * Type that matches any `Context` service key regardless of its identifier or
+   * service shape.
+   *
+   * **Example** (Typing any service key)
+   *
    * ```ts
    * import { Context } from "effect"
    *
@@ -284,13 +410,17 @@ export declare namespace Service {
    * ]
    * ```
    *
+   * @category models
    * @since 4.0.0
-   * @category Models
    */
   export type Any = Key<never, any> | Key<any, any>
 
   /**
-   * @example
+   * Extracts the service implementation type stored behind a `Context` service
+   * key.
+   *
+   * **Example** (Extracting a service shape)
+   *
    * ```ts
    * import { Context } from "effect"
    *
@@ -303,13 +433,17 @@ export declare namespace Service {
    * // DatabaseService is { query: (sql: string) => string }
    * ```
    *
+   * @category models
    * @since 4.0.0
-   * @category Models
    */
   export type Shape<T> = T extends Key<infer _I, infer S> ? S : never
 
   /**
-   * @example
+   * Extracts the identifier, or requirement type, associated with a `Context`
+   * service key.
+   *
+   * **Example** (Extracting a service identifier)
+   *
    * ```ts
    * import { Context } from "effect"
    *
@@ -322,8 +456,8 @@ export declare namespace Service {
    * // DatabaseId is the identifier type
    * ```
    *
-   * @since 4.0.0
-   * @category Models
+   * @category models
+   * @since 2.0.0
    */
   export type Identifier<T> = T extends Key<infer I, infer _S> ? I : never
 }
@@ -331,7 +465,16 @@ export declare namespace Service {
 const TypeId = "~effect/Context" as const
 
 /**
- * @example
+ * Immutable collection of service implementations used for dependency
+ * injection in Effect programs.
+ *
+ * **Details**
+ *
+ * The type parameter tracks the service identifiers available in the context.
+ * At runtime, services are stored by each key's string `key`.
+ *
+ * **Example** (Creating a context with multiple services)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -347,8 +490,8 @@ const TypeId = "~effect/Context" as const
  *   .pipe(Context.add(Database, { query: (sql) => `Result: ${sql}` }))
  * ```
  *
- * @since 4.0.0
- * @category Models
+ * @category models
+ * @since 2.0.0
  */
 export interface Context<in Services> extends Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: {
@@ -359,7 +502,21 @@ export interface Context<in Services> extends Equal.Equal, Pipeable, Inspectable
 }
 
 /**
- * @example
+ * Creates a `Context` from an existing service map.
+ *
+ * **When to use**
+ *
+ * Use when constructing a low-level `Context` from a trusted map whose lifecycle
+ * you control.
+ *
+ * **Gotchas**
+ *
+ * This is unsafe because later mutation of the provided map can affect the
+ * created `Context`. Prefer `empty`, `make`, `add`, or `merge` for normal
+ * Context construction.
+ *
+ * **Example** (Creating a context from a map)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -371,8 +528,8 @@ export interface Context<in Services> extends Equal.Equal, Pipeable, Inspectable
  * const context = Context.makeUnsafe(map)
  * ```
  *
+ * @category constructors
  * @since 4.0.0
- * @category Constructors
  */
 export const makeUnsafe = <Services = never>(mapUnsafe: ReadonlyMap<string, any>): Context<Services> => {
   const self = Object.create(Proto)
@@ -413,9 +570,25 @@ const Proto: Omit<Context<never>, "mapUnsafe" | "mutable"> = {
 }
 
 /**
- * Checks if the provided argument is a `Context`.
+ * Checks whether the provided argument is a `Context`.
  *
- * @example
+ * **When to use**
+ *
+ * Use to narrow an unknown value before passing it to APIs that require a
+ * `Context`.
+ *
+ * **Details**
+ *
+ * This checks the runtime `Context` marker and does not inspect which services
+ * the context contains.
+ *
+ * **Gotchas**
+ *
+ * This guard only proves that the value is a `Context`; it does not prove that
+ * any specific service is present.
+ *
+ * **Example** (Checking for contexts)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -423,15 +596,19 @@ const Proto: Omit<Context<never>, "mapUnsafe" | "mutable"> = {
  * assert.strictEqual(Context.isContext(Context.empty()), true)
  * ```
  *
- * @since 4.0.0
- * @category Guards
+ * @see {@link isKey} for checking service keys
+ * @see {@link isReference} for checking references with defaults
+ *
+ * @category guards
+ * @since 2.0.0
  */
 export const isContext = (u: unknown): u is Context<never> => hasProperty(u, TypeId)
 
 /**
- * Checks if the provided argument is a `Key`.
+ * Checks whether the provided argument is a `Key`.
  *
- * @example
+ * **Example** (Checking for keys)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -439,15 +616,16 @@ export const isContext = (u: unknown): u is Context<never> => hasProperty(u, Typ
  * assert.strictEqual(Context.isKey(Context.Service("Service")), true)
  * ```
  *
+ * @category guards
  * @since 4.0.0
- * @category Guards
  */
 export const isKey = (u: unknown): u is Key<any, any> => hasProperty(u, ServiceTypeId)
 
 /**
- * Checks if the provided argument is a `Reference`.
+ * Checks whether the provided argument is a `Reference`.
  *
- * @example
+ * **Example** (Checking for references)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -460,15 +638,16 @@ export const isKey = (u: unknown): u is Key<any, any> => hasProperty(u, ServiceT
  * assert.strictEqual(Context.isReference(Context.Service("Key")), false)
  * ```
  *
- * @since 4.0.0
- * @category Guards
+ * @category guards
+ * @since 3.11.0
  */
 export const isReference = (u: unknown): u is Reference<any> => hasProperty(u, ReferenceTypeId)
 
 /**
  * Returns an empty `Context`.
  *
- * @example
+ * **Example** (Creating an empty context)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -476,8 +655,8 @@ export const isReference = (u: unknown): u is Reference<any> => hasProperty(u, R
  * assert.strictEqual(Context.isContext(Context.empty()), true)
  * ```
  *
- * @since 4.0.0
- * @category Constructors
+ * @category constructors
+ * @since 2.0.0
  */
 export const empty = (): Context<never> => emptyContext
 const emptyContext = makeUnsafe(new Map())
@@ -485,7 +664,8 @@ const emptyContext = makeUnsafe(new Map())
 /**
  * Creates a new `Context` with a single service associated to the key.
  *
- * @example
+ * **Example** (Creating a context with one service)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -497,8 +677,8 @@ const emptyContext = makeUnsafe(new Map())
  * assert.deepStrictEqual(Context.get(context, Port), { PORT: 8080 })
  * ```
  *
- * @since 4.0.0
- * @category Constructors
+ * @category constructors
+ * @since 2.0.0
  */
 export const make = <I, S>(
   key: Key<I, S>,
@@ -508,9 +688,19 @@ export const make = <I, S>(
 /**
  * Adds a service to a given `Context`.
  *
- * @example
+ * **When to use**
+ *
+ * Use when you need to store a known service value in a `Context`.
+ *
+ * **Details**
+ *
+ * If the context already contains the same service key, the new service
+ * replaces the previous one.
+ *
+ * **Example** (Adding a service to a context)
+ *
  * ```ts
- * import { pipe, Context } from "effect"
+ * import { Context, pipe } from "effect"
  * import * as assert from "node:assert"
  *
  * const Port = Context.Service<{ PORT: number }>("Port")
@@ -527,8 +717,10 @@ export const make = <I, S>(
  * assert.deepStrictEqual(Context.get(context, Timeout), { TIMEOUT: 5000 })
  * ```
  *
- * @since 4.0.0
- * @category Adders
+ * @see {@link addOrOmit} for adding or removing a service from an `Option`
+ *
+ * @category adders
+ * @since 2.0.0
  */
 export const add: {
   <I, S>(
@@ -550,8 +742,37 @@ export const add: {
   }))
 
 /**
+ * Adds or removes a service depending on an `Option`.
+ *
+ * **When to use**
+ *
+ * Use when you need to add or omit a `Context` service based on an `Option`.
+ *
+ * **Details**
+ *
+ * When `service` is `Option.some`, the value is stored for the key. When it is
+ * `Option.none`, the key is removed from the returned `Context`.
+ *
+ * **Example** (Adding optional services)
+ *
+ * ```ts
+ * import { Context, Option } from "effect"
+ *
+ * const Port = Context.Service<{ PORT: number }>("Port")
+ *
+ * const withPort = Context.empty().pipe(
+ *   Context.addOrOmit(Port, Option.some({ PORT: 8080 }))
+ * )
+ *
+ * const withoutPort = withPort.pipe(
+ *   Context.addOrOmit(Port, Option.none())
+ * )
+ * ```
+ *
+ * @see {@link add} for always storing a service value
+ *
+ * @category adders
  * @since 4.0.0
- * @category Adders
  */
 export const addOrOmit: {
   <I, S>(
@@ -577,13 +798,28 @@ export const addOrOmit: {
   }))
 
 /**
- * Get a service from the context that corresponds to the given key, or
- * use the fallback value.
+ * Gets the service for a key, or evaluates the fallback when a non-reference
+ * key is absent.
  *
- * @example
+ * **When to use**
+ *
+ * Use when you need a fallback for a missing `Context.Service` key while still
+ * resolving `Context.Reference` defaults.
+ *
+ * **Details**
+ *
+ * If the key is a `Context.Reference` and no override is stored in the
+ * context, its cached default value is returned instead of the fallback.
+ *
+ * **Gotchas**
+ *
+ * The fallback is not evaluated for missing `Context.Reference` keys because
+ * references resolve to their default value.
+ *
+ * **Example** (Falling back for missing services)
+ *
  * ```ts
  * import { Context } from "effect"
- * import * as assert from "node:assert"
  *
  * const Logger = Context.Service<{ log: (msg: string) => void }>("Logger")
  * const Database = Context.Service<{ query: (sql: string) => string }>(
@@ -601,12 +837,14 @@ export const addOrOmit: {
  *   () => ({ query: () => "fallback" })
  * )
  *
- * assert.deepStrictEqual(logger, { log: (msg: string) => console.log(msg) })
- * assert.deepStrictEqual(database, { query: () => "fallback" })
+ * console.log(logger === Context.get(context, Logger)) // true
+ * console.log(database.query("SELECT 1")) // "fallback"
  * ```
  *
- * @since 4.0.0
- * @category Getters
+ * @see {@link getOption} for returning `Option.none` when a non-reference key is missing
+ *
+ * @category getters
+ * @since 3.7.0
  */
 export const getOrElse: {
   <S, I, B>(key: Key<I, S>, orElse: LazyArg<B>): <Services>(self: Context<Services>) => S | B
@@ -619,8 +857,23 @@ export const getOrElse: {
 })
 
 /**
+ * Returns the service currently stored for a key, or `undefined` when the key
+ * is absent.
+ *
+ * **When to use**
+ *
+ * Use when you need to read the service stored for a key without resolving
+ * `Context.Reference` defaults.
+ *
+ * **Gotchas**
+ *
+ * This is a raw lookup and does not resolve default values for
+ * `Context.Reference` keys.
+ *
+ * @see {@link getOption} for a reference-aware optional lookup
+ *
+ * @category getters
  * @since 4.0.0
- * @category Getters
  */
 export const getOrUndefined: {
   <S, I>(key: Key<I, S>): <Services>(self: Context<Services>) => S | undefined
@@ -631,17 +884,22 @@ export const getOrUndefined: {
 )
 
 /**
- * Get a service from the context that corresponds to the given key.
+ * Gets the service for a key, throwing if an absent non-reference key cannot be
+ * resolved.
  *
- * This function is unsafe because if the key is not present in the context, a
- * runtime error will be thrown.
+ * **When to use**
  *
- * For a safer version see {@link getOption}.
+ * Use when you need to read a service from a context whose type does not prove
+ * the service is present.
  *
- * @param self - The `Context` to search for the service.
- * @param service - The `Service` of the service to retrieve.
+ * **Details**
  *
- * @example
+ * If the key is a `Context.Reference` and no override is stored in the
+ * context, its cached default value is returned. For absent non-reference keys,
+ * this function throws a runtime error.
+ *
+ * **Example** (Getting services unsafely)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -655,8 +913,11 @@ export const getOrUndefined: {
  * assert.throws(() => Context.getUnsafe(context, Timeout))
  * ```
  *
- * @since 4.0.0
+ * @see {@link get} for type-checked service access
+ * @see {@link getOption} for optional service access
+ *
  * @category unsafe
+ * @since 4.0.0
  */
 export const getUnsafe: {
   <S, I>(service: Key<I, S>): <Services>(self: Context<Services>) => S
@@ -673,14 +934,17 @@ export const getUnsafe: {
 )
 
 /**
- * Get a service from the context that corresponds to the given key.
+ * Gets a service from the context that corresponds to the given key.
  *
- * @param self - The `Context` to search for the service.
- * @param service - The `Service` of the service to retrieve.
+ * **When to use**
  *
- * @example
+ * Use when you need type-checked access to a service already included in the
+ * context type.
+ *
+ * **Example** (Getting a service from a context)
+ *
  * ```ts
- * import { pipe, Context } from "effect"
+ * import { Context, pipe } from "effect"
  * import * as assert from "node:assert"
  *
  * const Port = Context.Service<{ PORT: number }>("Port")
@@ -694,8 +958,11 @@ export const getUnsafe: {
  * assert.deepStrictEqual(Context.get(context, Timeout), { TIMEOUT: 5000 })
  * ```
  *
- * @since 4.0.0
- * @category Getters
+ * @see {@link getOption} for optional service access
+ * @see {@link getOrElse} for fallback values
+ *
+ * @category getters
+ * @since 2.0.0
  */
 export const get: {
   <Services, I extends Services, S>(service: Key<I, S>): (self: Context<Services>) => S
@@ -703,10 +970,28 @@ export const get: {
 } = getUnsafe
 
 /**
- * @example
+ * Gets the value for a `Context.Reference`, returning its cached default when
+ * the context does not contain an override.
+ *
+ * **When to use**
+ *
+ * Use when you need a `Context.Reference` value resolved from either a stored
+ * override or the reference's default value.
+ *
+ * **Details**
+ *
+ * Stored overrides take precedence. If no override is present, the reference's
+ * default value is computed lazily and cached on the reference itself.
+ *
+ * **Gotchas**
+ *
+ * Mutable default values can be shared across contexts unless an override is
+ * provided, because the default is cached on the `Context.Reference`.
+ *
+ * **Example** (Getting reference defaults unsafely)
+ *
  * ```ts
  * import { Context } from "effect"
- * import * as assert from "node:assert"
  *
  * const LoggerRef = Context.Reference("Logger", {
  *   defaultValue: () => ({ log: (msg: string) => console.log(msg) })
@@ -715,11 +1000,15 @@ export const get: {
  * const context = Context.empty()
  * const logger = Context.getReferenceUnsafe(context, LoggerRef)
  *
- * assert.deepStrictEqual(logger, { log: (msg: string) => console.log(msg) })
+ * console.log(typeof logger.log) // "function"
  * ```
  *
- * @since 4.0.0
+ * @see {@link getUnsafe} for unsafe access with any service key
+ * @see {@link get} for type-checked reference-aware access
+ * @see {@link getOption} for optional access to non-reference keys
+ *
  * @category unsafe
+ * @since 4.0.0
  */
 export const getReferenceUnsafe = <Services, S>(self: Context<Services>, service: Reference<S>): S => {
   if (!self.mapUnsafe.has(service.key)) {
@@ -759,16 +1048,23 @@ const serviceNotFoundError = (service: Key<any, any>) => {
 }
 
 /**
- * Get the value associated with the specified key from the context wrapped in
- * an `Option` object. If the key is not found, the `Option` object will be
- * `None`.
+ * Gets the service for a key safely wrapped in an `Option`.
  *
- * @param self - The `Context` to search for the service.
- * @param service - The `Service` of the service to retrieve.
+ * **When to use**
  *
- * @example
+ * Use when you need to read a `Context` service as an `Option` so absence is
+ * represented as data.
+ *
+ * **Details**
+ *
+ * Returns `Option.some` when the service is stored in the context. If the key
+ * is a `Context.Reference` and no override is stored, returns `Option.some` of
+ * the cached default value. Missing non-reference keys return `Option.none`.
+ *
+ * **Example** (Getting optional services)
+ *
  * ```ts
- * import { Option, Context } from "effect"
+ * import { Context, Option } from "effect"
  * import * as assert from "node:assert"
  *
  * const Port = Context.Service<{ PORT: number }>("Port")
@@ -783,8 +1079,10 @@ const serviceNotFoundError = (service: Key<any, any>) => {
  * assert.deepStrictEqual(Context.getOption(context, Timeout), Option.none())
  * ```
  *
- * @since 4.0.0
- * @category Getters
+ * @see {@link getOrElse} for returning a fallback value directly
+ *
+ * @category getters
+ * @since 2.0.0
  */
 export const getOption: {
   <S, I>(service: Key<I, S>): <Services>(self: Context<Services>) => Option.Option<S>
@@ -797,12 +1095,19 @@ export const getOption: {
 })
 
 /**
- * Merges two `Context`s, returning a new `Context` containing the services of both.
+ * Merges two `Context`s into one.
  *
- * @param self - The first `Context` to merge.
- * @param that - The second `Context` to merge.
+ * **When to use**
  *
- * @example
+ * Use when you need to combine two contexts.
+ *
+ * **Details**
+ *
+ * When both contexts contain the same service key, the service from `that`
+ * overrides the service from `self`.
+ *
+ * **Example** (Merging two contexts)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -819,8 +1124,10 @@ export const getOption: {
  * assert.deepStrictEqual(Context.get(context, Timeout), { TIMEOUT: 5000 })
  * ```
  *
- * @since 4.0.0
- * @category Utils
+ * @see {@link mergeAll} for merging more than two contexts at once
+ *
+ * @category combining
+ * @since 2.0.0
  */
 export const merge: {
   <R1>(that: Context<R1>): <Services>(self: Context<Services>) => Context<R1 | Services>
@@ -834,9 +1141,19 @@ export const merge: {
 })
 
 /**
- * Merges any number of `Context`s, returning a new `Context` containing the services of all.
+ * Merges any number of `Context`s into one.
  *
- * @example
+ * **When to use**
+ *
+ * Use when you need to combine a variadic list of contexts.
+ *
+ * **Details**
+ *
+ * When multiple contexts contain the same service key, the service from the
+ * last context with that key is kept.
+ *
+ * **Example** (Merging multiple contexts)
+ *
  * ```ts
  * import { Context } from "effect"
  * import * as assert from "node:assert"
@@ -860,6 +1177,9 @@ export const merge: {
  * assert.deepStrictEqual(Context.get(context, Host), { HOST: "localhost" })
  * ```
  *
+ * @see {@link merge} for merging two contexts
+ *
+ * @category combining
  * @since 3.12.0
  */
 export const mergeAll = <T extends Array<unknown>>(
@@ -877,12 +1197,14 @@ export const mergeAll = <T extends Array<unknown>>(
 /**
  * Returns a new `Context` that contains only the specified services.
  *
- * @param self - The `Context` to prune services from.
- * @param services - The list of `Service`s to be included in the new `Context`.
+ * **When to use**
  *
- * @example
+ * Use when you want to keep an allowlist of services in a `Context`.
+ *
+ * **Example** (Picking services from a context)
+ *
  * ```ts
- * import { Option, pipe, Context } from "effect"
+ * import { Context, Option, pipe } from "effect"
  * import * as assert from "node:assert"
  *
  * const Port = Context.Service<{ PORT: number }>("Port")
@@ -902,8 +1224,10 @@ export const mergeAll = <T extends Array<unknown>>(
  * assert.deepStrictEqual(Context.getOption(context, Timeout), Option.none())
  * ```
  *
- * @since 4.0.0
- * @category Utils
+ * @see {@link omit} for removing selected services
+ *
+ * @category filtering
+ * @since 2.0.0
  */
 export const pick = <S extends ReadonlyArray<Key<any, any>>>(
   ...services: S
@@ -918,9 +1242,16 @@ export const pick = <S extends ReadonlyArray<Key<any, any>>>(
   })
 
 /**
- * @example
+ * Returns a new `Context` with the specified service keys removed.
+ *
+ * **When to use**
+ *
+ * Use when you want to remove a denylist of services from a `Context`.
+ *
+ * **Example** (Omitting services from a context)
+ *
  * ```ts
- * import { Option, pipe, Context } from "effect"
+ * import { Context, Option, pipe } from "effect"
  * import * as assert from "node:assert"
  *
  * const Port = Context.Service<{ PORT: number }>("Port")
@@ -940,8 +1271,10 @@ export const pick = <S extends ReadonlyArray<Key<any, any>>>(
  * assert.deepStrictEqual(Context.getOption(context, Timeout), Option.none())
  * ```
  *
- * @since 4.0.0
- * @category Utils
+ * @see {@link pick} for keeping selected services
+ *
+ * @category filtering
+ * @since 2.0.0
  */
 export const omit = <S extends ReadonlyArray<Key<any, any>>>(
   ...keys: S
@@ -954,11 +1287,22 @@ export const omit = <S extends ReadonlyArray<Key<any, any>>>(
   })
 
 /**
- * Perform a series of mutations on a `Context`. Prevents unnecessary copying
+ * Performs a series of mutations on a `Context`. Prevents unnecessary copying
  * of the underlying map when multiple mutations are needed.
  *
+ * **When to use**
+ *
+ * Use to apply several `Context` transformations in one callback while copying
+ * the underlying service map only once.
+ *
+ * @see {@link add} for adding or replacing a service
+ * @see {@link addOrOmit} for adding or removing a service from an `Option`
+ * @see {@link merge} for combining two contexts
+ * @see {@link pick} for keeping selected services
+ * @see {@link omit} for removing selected services
+ *
+ * @category mutations
  * @since 4.0.0
- * @category Utils
  */
 export const mutate: {
   <Services, B>(
@@ -989,14 +1333,21 @@ const withMapUnsafe = <Services, B>(self: Context<Services>, f: (map: Map<string
 /**
  * Creates a context key with a default value.
  *
+ * **When to use**
+ *
+ * Use when you need to define a context key with a lazily computed default
+ * value.
+ *
  * **Details**
  *
  * `Context.Reference` allows you to create a key that can hold a value. You
  * can provide a default value for the service, which will automatically be used
  * when the context is accessed, or override it with a custom implementation
- * when needed.
+ * when needed. The default value is computed lazily and cached on the
+ * reference.
  *
- * @example
+ * **Example** (Creating references with default values)
+ *
  * ```ts
  * import { Context } from "effect"
  *
@@ -1016,8 +1367,10 @@ const withMapUnsafe = <Services, B>(self: Context<Services>, f: (map: Map<string
  * const customLogger = Context.get(customContext, LoggerRef)
  * ```
  *
- * @since 4.0.0
- * @category References
+ * @see {@link Service} for required services without default values
+ *
+ * @category references
+ * @since 3.11.0
  */
 export const Reference: <Service>(
   key: string,

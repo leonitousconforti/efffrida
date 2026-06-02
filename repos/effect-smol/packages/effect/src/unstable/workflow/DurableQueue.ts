@@ -1,4 +1,38 @@
 /**
+ * Durable workflow queues delegate work to persisted background workers and
+ * resume the waiting workflow with the worker result.
+ *
+ * A workflow calls `process` to encode a payload, offer it to a named
+ * `PersistedQueue`, attach a `DurableDeferred` token, and suspend. A worker
+ * created with `makeWorker` or `worker` takes the item, runs the handler, and
+ * records the handler's `Exit` through that token so the original workflow can
+ * continue with the typed success or error.
+ *
+ * **Mental model**
+ *
+ * A `DurableQueue` definition names the persisted queue and carries the payload,
+ * success, and error schemas shared by producers and workers. The
+ * `idempotencyKey` becomes the persisted queue item id, while `process` also
+ * stores trace context and a deferred token alongside the payload. Worker
+ * concurrency is local to the worker layer; delivery and retry behavior come
+ * from the underlying `PersistedQueue`.
+ *
+ * **Common tasks**
+ *
+ * Use `make` to define the queue once, call `process` from workflow code, and
+ * run `worker` in the service responsible for executing queued work. Tune
+ * `process` retries for transient persistence failures, and tune worker
+ * concurrency for the downstream system being called.
+ *
+ * **Gotchas**
+ *
+ * Queue names, schemas, result types, and idempotency keys are persisted
+ * coordination state. Keep them deterministic and stable across deployments;
+ * changing them is a persistence migration. Delivery is at least once according
+ * to the backing `PersistedQueue`, so handlers should be idempotent and prepared
+ * for retries, duplicate observations, worker restarts, and completions that are
+ * decoded by a later version of the queue definition.
+ *
  * @since 4.0.0
  */
 import * as Effect from "../../Effect.ts"
@@ -12,20 +46,27 @@ import * as DurableDeferred from "./DurableDeferred.ts"
 import type { WorkflowEngine, WorkflowInstance } from "./WorkflowEngine.ts"
 
 /**
+ * Type-level identifier used to recognize `DurableQueue` values.
+ *
+ * @category type IDs
  * @since 4.0.0
- * @category Type IDs
  */
 export type TypeId = "~effect/workflow/DurableQueue"
 
 /**
+ * Runtime identifier attached to `DurableQueue` values.
+ *
+ * @category type IDs
  * @since 4.0.0
- * @category Type IDs
  */
 export const TypeId: TypeId = "~effect/workflow/DurableQueue"
 
 /**
+ * Durable workflow queue definition containing a payload schema, idempotency
+ * key, and deferred used to await worker results.
+ *
+ * @category models
  * @since 4.0.0
- * @category Models
  */
 export interface DurableQueue<
   Payload extends Schema.Top,
@@ -40,12 +81,14 @@ export interface DurableQueue<
 }
 
 /**
- * A `DurableQueue` wraps a `PersistedQueue`, providing a way to wait for items
- * to finish processing using a `DurableDeferred`.
+ * Creates a `DurableQueue` that waits for persisted items to finish processing
+ * using a `DurableDeferred`.
+ *
+ * **Example** (Defining a durable queue with workers)
  *
  * ```ts
- * import { DurableQueue, Workflow } from "effect/unstable/workflow"
  * import { Effect, Schema } from "effect"
+ * import { DurableQueue, Workflow } from "effect/unstable/workflow"
  *
  * // Define a DurableQueue that can be used to derive workers and offer items for
  * // processing.
@@ -61,8 +104,7 @@ export interface DurableQueue<
  *   }
  * })
  *
- * const MyWorkflow = Workflow.make({
- *   name: "MyWorkflow",
+ * const MyWorkflow = Workflow.make("MyWorkflow", {
  *   payload: {
  *     id: Schema.String
  *   },
@@ -92,8 +134,8 @@ export interface DurableQueue<
  * )
  * ```
  *
+ * @category constructors
  * @since 4.0.0
- * @category Constructors
  */
 export const make = <
   Payload extends Schema.Top | Schema.Struct.Fields,
@@ -151,10 +193,10 @@ const getQueueSchema = <Payload extends Schema.Top>(
 }
 
 /**
- * Add an item to the queue and wait for a worker to process it.
+ * Adds an item to the queue and wait for a worker to process it.
  *
- * @since 4.0.0
  * @category Processing
+ * @since 4.0.0
  */
 export const process: <
   Payload extends Schema.Top,
@@ -229,8 +271,8 @@ const defaultRetrySchedule = Schedule.exponential(500, 1.5).pipe(
 /**
  * Create a worker effect that processes items from the durable queue.
  *
- * @since 4.0.0
  * @category Worker
+ * @since 4.0.0
  */
 export const makeWorker: <
   Payload extends Schema.Top,
@@ -316,8 +358,8 @@ export const makeWorker: <
 /**
  * Create a layer that runs workers for the durable queue.
  *
- * @since 4.0.0
  * @category Worker
+ * @since 4.0.0
  */
 export const worker: <
   Payload extends Schema.Top,

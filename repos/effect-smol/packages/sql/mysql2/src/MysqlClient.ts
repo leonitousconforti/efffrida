@@ -1,5 +1,36 @@
 /**
- * @since 1.0.0
+ * MySQL adapter for Effect SQL, backed by the `mysql2` driver.
+ *
+ * This module provides constructors and layers for a {@link MysqlClient} and
+ * the generic Effect SQL client service. Use it in server applications,
+ * background workers, migrations, and tests that need MySQL query compilation,
+ * scoped pool management, streaming queries, and consistent `SqlError`
+ * classification for mysql2 driver failures.
+ *
+ * **Mental model**
+ *
+ * {@link make} allocates a mysql2 pool inside the current scope, verifies it
+ * with `SELECT 1`, and closes it when the scope is released. Regular queries
+ * use the shared pool, transactions acquire a dedicated pooled connection for
+ * their lifetime, and streams stay tied to mysql2 stream resources until they
+ * are consumed or closed.
+ *
+ * **Common tasks**
+ *
+ * Use {@link layer} when configuration is already available, or
+ * {@link layerConfig} when it should be read through `Config`. Pass `url` for a
+ * connection URI, or pass `host`, `port`, `database`, `username`, and
+ * `password` for discrete connection settings. Use `poolConfig` for additional
+ * mysql2 pool options when configuring discrete fields.
+ *
+ * **Gotchas**
+ *
+ * When `url` is supplied it takes precedence over the discrete connection
+ * fields and does not merge in `poolConfig`. Long-running transactions and
+ * streams occupy pool capacity, so tune `maxConnections` and `connectionTTL`
+ * for those workloads.
+ *
+ * @since 4.0.0
  */
 import * as Config from "effect/Config"
 import * as Context from "effect/Context"
@@ -126,20 +157,26 @@ const classifyError = (
 }
 
 /**
- * @category type ids
- * @since 1.0.0
+ * Runtime type identifier used to mark `MysqlClient` values.
+ *
+ * @category type IDs
+ * @since 4.0.0
  */
 export const TypeId: TypeId = "~@effect/sql-mysql2/MysqlClient"
 
 /**
- * @category type ids
- * @since 1.0.0
+ * Type-level identifier used to mark `MysqlClient` values.
+ *
+ * @category type IDs
+ * @since 4.0.0
  */
 export type TypeId = "~@effect/sql-mysql2/MysqlClient"
 
 /**
+ * mysql2-backed SQL client service, extending `SqlClient` with its runtime type marker and client configuration.
+ *
  * @category models
- * @since 1.0.0
+ * @since 4.0.0
  */
 export interface MysqlClient extends Client.SqlClient {
   readonly [TypeId]: TypeId
@@ -147,14 +184,22 @@ export interface MysqlClient extends Client.SqlClient {
 }
 
 /**
- * @category tags
- * @since 1.0.0
+ * Service tag for the mysql2 SQL client service.
+ *
+ * **When to use**
+ *
+ * Use to access or provide a mysql2 client through the Effect context.
+ *
+ * @category services
+ * @since 4.0.0
  */
 export const MysqlClient = Context.Service<MysqlClient>("@effect/sql-mysql2/MysqlClient")
 
 /**
+ * Configuration for a mysql2 client, including connection URI or connection fields, pool options, span attributes, and query/result name transforms.
+ *
  * @category models
- * @since 1.0.0
+ * @since 4.0.0
  */
 export interface MysqlClientConfig {
   /**
@@ -180,8 +225,10 @@ export interface MysqlClientConfig {
 }
 
 /**
+ * Creates a scoped MySQL client backed by a managed mysql2 pool, verifying connectivity and supporting streaming queries through mysql2 query streams.
+ *
  * @category constructors
- * @since 1.0.0
+ * @since 4.0.0
  */
 export const make = (
   options: MysqlClientConfig
@@ -382,8 +429,10 @@ export const make = (
   })
 
 /**
+ * Creates a layer from a `Config`-wrapped MySQL client configuration, providing both `MysqlClient` and `SqlClient`.
+ *
  * @category layers
- * @since 1.0.0
+ * @since 4.0.0
  */
 export const layerConfig = (
   config: Config.Wrap<MysqlClientConfig>
@@ -400,8 +449,10 @@ export const layerConfig = (
   ).pipe(Layer.provide(Reactivity.layer))
 
 /**
+ * Creates a layer from a concrete MySQL client configuration, providing both `MysqlClient` and `SqlClient`.
+ *
  * @category layers
- * @since 1.0.0
+ * @since 4.0.0
  */
 export const layer = (
   config: MysqlClientConfig
@@ -414,8 +465,10 @@ export const layer = (
   ).pipe(Layer.provide(Reactivity.layer))
 
 /**
+ * Creates the MySQL statement compiler, using `?` placeholders and backtick-escaped identifiers.
+ *
  * @category compiler
- * @since 1.0.0
+ * @since 4.0.0
  */
 export const makeCompiler = (transform?: (_: string) => string) =>
   Statement.makeCompiler({
