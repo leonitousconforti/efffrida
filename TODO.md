@@ -1,9 +1,12 @@
 [] - Update workflow actions
-[] - Update git subtrees
-    [] - `git subtree pull --prefix=repos/effect https://github.com/Effect-TS/effect.git main --squash`
-    [] - `git subtree pull --prefix=repos/effect-smol https://github.com/Effect-TS/effect-smol.git main --squash`
-    [] - `git subtree pull --prefix=repos/frida-core https://github.com/frida/frida-core main --squash`
-    [] - `git subtree pull --prefix=repos/frida-gum https://github.com/frida/frida-gum main --squash`
-    [] - `git subtree pull --prefix=repos/frida-node https://github.com/frida/frida-node main --squash`
-    [] - `git subtree pull --prefix=repos/frida-python https://github.com/frida/frida-python main --squash`
-    [] - `git subtree pull --prefix=repos/frida-tools https://github.com/frida/frida-tools main --squash`
+[] - Update repos
+    [] - Update effect subtrees
+        [] - `git subtree pull --prefix=repos/effect https://github.com/Effect-TS/effect.git main --squash`
+        [] - `git subtree pull --prefix=repos/effect-smol https://github.com/Effect-TS/effect-smol.git main --squash`
+    [] - Update frida submodules
+        [] - `git submodule update --remote --recursive repos/frida-core`
+        [] - `git submodule update --remote --recursive repos/frida-gum`
+        [] - `git submodule update --remote --recursive repos/frida-node`
+        [] - `git submodule update --remote --recursive repos/frida-python`
+        [] - `git submodule update --remote --recursive repos/frida-tools`
+        [] - `git add repos/frida-{core,gum,node,python,tools} && git commit -m "Update frida submodules"`
