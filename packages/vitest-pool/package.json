@@ -52,13 +52,13 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "frida": "17.9.11",
+        "frida": "17.10.1",
         "ioredis": "5.11.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
         "@efffrida/polyfills": "workspace:*",
-        "@types/frida-gum": "19.1.0",
+        "@types/frida-gum": "19.4.0",
         "@types/node": "25.9.1",
         "@vitest/runner": "4.1.7",
         "@vitest/utils": "4.1.7",
