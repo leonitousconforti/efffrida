@@ -1,7 +1,0 @@
-{
-  global:
-    _frida_compiler_backend_*;
-
-  local:
-    *;
-};

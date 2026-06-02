@@ -1,0 +1,15 @@
+[submodule "repos/frida-core"]
+	path = repos/frida-core
+	url = https://github.com/frida/frida-core
+[submodule "repos/frida-gum"]
+	path = repos/frida-gum
+	url = https://github.com/frida/frida-gum
+[submodule "repos/frida-node"]
+	path = repos/frida-node
+	url = https://github.com/frida/frida-node
+[submodule "repos/frida-python"]
+	path = repos/frida-python
+	url = https://github.com/frida/frida-python
+[submodule "repos/frida-tools"]
+	path = repos/frida-tools
+	url = https://github.com/frida/frida-tools

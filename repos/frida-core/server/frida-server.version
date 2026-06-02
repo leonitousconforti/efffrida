@@ -1,8 +1,0 @@
-{
-  global:
-    # Allow users to load the server as a shared library with dlopen() and call main() directly
-    main;
-
-  local:
-    *;
-};

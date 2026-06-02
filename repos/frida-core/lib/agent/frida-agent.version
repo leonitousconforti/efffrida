@@ -1,7 +1,0 @@
-{
-  global:
-    frida_agent_main;
-
-  local:
-    *;
-};

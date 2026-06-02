@@ -1,1 +1,0 @@
-option('stem_suffix', type: 'string', value: '', description: 'Stem suffix used')

@@ -1,9 +1,0 @@
-{
-  global:
-    init;
-    finalize;
-    run;
-
-  local:
-    *;
-};
