@@ -8,7 +8,8 @@
  * unified API that can be implemented by different AI providers while
  * maintaining type safety and effect management.
  *
- * @example
+ * **Example** (Generating text)
+ *
  * ```ts
  * import { Effect } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -25,7 +26,8 @@
  * })
  * ```
  *
- * @example
+ * **Example** (Generating structured output)
+ *
  * ```ts
  * import { Effect, Schema } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -59,7 +61,7 @@ import * as Predicate from "../../Predicate.ts"
 import * as Queue from "../../Queue.ts"
 import { CurrentConcurrency } from "../../References.ts"
 import * as Schema from "../../Schema.ts"
-import * as AST from "../../SchemaAST.ts"
+import * as SchemaAST from "../../SchemaAST.ts"
 import * as Sink from "../../Sink.ts"
 import * as Stream from "../../Stream.ts"
 import type { Span } from "../../Tracer.ts"
@@ -80,13 +82,15 @@ import * as Toolkit from "./Toolkit.ts"
 // =============================================================================
 
 /**
- * The `LanguageModel` service key for dependency injection.
+ * Service tag for AI model services.
  *
- * This provides access to language model functionality throughout your
- * application, enabling text generation, streaming, and structured output
- * capabilities.
+ * **When to use**
  *
- * @example
+ * Use to access or provide text generation, streaming generation, structured
+ * output, and tool-calling capabilities through the Effect context.
+ *
+ * **Example** (Accessing the language model service)
+ *
  * ```ts
  * import { Effect } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -100,21 +104,18 @@ import * as Toolkit from "./Toolkit.ts"
  * })
  * ```
  *
- * @since 4.0.0
  * @category services
+ * @since 4.0.0
  */
 export class LanguageModel extends Context.Service<LanguageModel, Service>()(
   "effect/unstable/ai/LanguageModel"
 ) {}
 
 /**
- * The service interface for language model operations.
+ * The service interface for language model operations, defining the contract that all language model implementations must fulfill.
  *
- * Defines the contract that all language model implementations must fulfill,
- * providing text generation, structured output, and streaming capabilities.
- *
- * @since 4.0.0
  * @category models
+ * @since 4.0.0
  */
 export interface Service {
   /**
@@ -218,15 +219,16 @@ export interface Service {
 }
 
 /**
- * A function that transforms a `Schema.Codec` into a provider-compatible form
- * for structured output generation.
+ * A function that transforms a `Schema.Codec` into a provider-compatible form for structured output generation.
+ *
+ * **Details**
  *
  * Different language model providers have varying constraints on the JSON
  * schemas they accept. A `CodecTransformer` rewrites a codec's encoded side to
  * satisfy those constraints while preserving the decoded type.
  *
- * @since 4.0.0
  * @category models
+ * @since 4.0.0
  */
 export type CodecTransformer = <T, E, RD, RE>(schema: Schema.Codec<T, E, RD, RE>) => {
   readonly codec: Schema.Codec<T, unknown, RD, RE>
@@ -237,16 +239,30 @@ export type CodecTransformer = <T, E, RD, RE>(schema: Schema.Codec<T, E, RD, RE>
  * The default codec transformer that passes schemas through without
  * provider-specific rewrites.
  *
- * @since 4.0.0
+ * **When to use**
+ *
+ * Use as the codec transformer for provider implementations when the provider
+ * accepts the JSON Schema generated from an `Effect` Schema codec without
+ * provider-specific rewrites.
+ *
+ * **Details**
+ *
+ * The transformer returns the original codec, resolves a top-level `$ref`, and
+ * copies schema definitions into `$defs`.
+ *
+ * @see {@link CodecTransformer} for the structured-output transformer contract
+ * @see {@link make} for where this transformer is used as the default
+ *
  * @category services
+ * @since 4.0.0
  */
 export const defaultCodecTransformer: CodecTransformer = InternalCodecTransformer.defaultCodecTransformer
 
 /**
  * Configuration options for text generation.
  *
+ * @category options
  * @since 4.0.0
- * @category models
  */
 export interface GenerateTextOptions<Tools extends Record<string, Tool.Any>> {
   /**
@@ -285,15 +301,13 @@ export interface GenerateTextOptions<Tools extends Record<string, Tool.Any>> {
   readonly concurrency?: Concurrency | undefined
 
   /**
-   * When set to `true`, tool calls requested by the large language model
-   * will not be auto-resolved by the framework.
+   * When set to `true`, tool calls requested by the large language model are not auto-resolved by the framework.
    *
-   * This option is useful when:
-   *   1. The user wants to include tool call definitions from an `AiToolkit`
-   *      in requests to the large language model so that the model has the
-   *      capability to call tools
-   *   2. The user wants to control the execution of tool call resolvers
-   *      instead of having the framework handle tool call resolution
+   * **When to use**
+   *
+   * Use when you want to include tool call definitions from an `AiToolkit`
+   * in requests to the large language model, while controlling tool call
+   * resolver execution yourself.
    */
   readonly disableToolCallResolution?: boolean | undefined
 }
@@ -305,8 +319,8 @@ type GenerateTextOptionsWithoutToolkit = Omit<GenerateTextOptions<{}>, "toolkit"
 /**
  * Configuration options for structured object generation.
  *
+ * @category options
  * @since 4.0.0
- * @category models
  */
 export interface GenerateObjectOptions<
   Tools extends Record<string, Tool.Any>,
@@ -339,8 +353,8 @@ export interface GenerateObjectOptions<
  *   `"required"`, the model **must** call one tool from the allowed subset of
  *   tools.
  *
- * @since 4.0.0
  * @category models
+ * @since 4.0.0
  */
 export type ToolChoice<ToolName extends string> =
   | "auto"
@@ -355,13 +369,10 @@ export type ToolChoice<ToolName extends string> =
   }
 
 /**
- * Response class for text generation operations.
+ * Response class for text generation operations, with accessors for extracting text, tool calls, usage information, and other response parts from generated content.
  *
- * Contains the generated content and provides convenient accessors for
- * extracting different types of response parts like text, tool calls, and usage
- * information.
+ * **Example** (Inspecting a text response)
  *
- * @example
  * ```ts
  * import { Effect } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -379,8 +390,8 @@ export type ToolChoice<ToolName extends string> =
  * })
  * ```
  *
- * @since 4.0.0
  * @category models
+ * @since 4.0.0
  */
 export class GenerateTextResponse<Tools extends Record<string, Tool.Any>> {
   readonly content: Array<Response.Part<Tools>>
@@ -471,7 +482,8 @@ export class GenerateTextResponse<Tools extends Record<string, Tool.Any>> {
 /**
  * Response class for structured object generation operations.
  *
- * @example
+ * **Example** (Inspecting an object response)
+ *
  * ```ts
  * import { Effect, Schema } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -494,8 +506,8 @@ export class GenerateTextResponse<Tools extends Record<string, Tool.Any>> {
  * })
  * ```
  *
- * @since 4.0.0
  * @category models
+ * @since 4.0.0
  */
 export class GenerateObjectResponse<
   Tools extends Record<string, Tool.Any>,
@@ -519,8 +531,8 @@ export class GenerateObjectResponse<
 /**
  * The supported toolkit option shapes for language model operations.
  *
- * @since 4.0.0
  * @category utility types
+ * @since 4.0.0
  */
 export type ToolkitOption<
   Tools extends Record<string, Tool.Any>,
@@ -539,12 +551,14 @@ export type ToolkitOption<
 /**
  * The supported toolkit input shapes for language model operation options.
  *
+ * **Details**
+ *
  * Unlike `ToolkitOption`, this type does not distribute over unions. It is
  * intended for call-site assignability, while `ToolkitOption` remains the
  * distributive helper used for extraction and inference.
  *
- * @since 4.0.0
  * @category utility types
+ * @since 4.0.0
  */
 export type ToolkitInput<
   Tools extends Record<string, Tool.Any>,
@@ -570,8 +584,8 @@ type ExtractToolsFromToolkitOption<ToolkitValue> = ToolkitValue extends Toolkit.
 /**
  * Utility type that extracts the toolset from LanguageModel options.
  *
- * @since 4.0.0
  * @category utility types
+ * @since 4.0.0
  */
 export type ExtractTools<Options> = Options extends {
   readonly toolkit: infer ToolkitValue
@@ -619,11 +633,13 @@ type ExtractToolkitResolutionServices<ToolkitValue> = ToolkitValue extends Effec
 /**
  * Utility type that extracts the error type from LanguageModel options.
  *
+ * **Details**
+ *
  * Automatically infers the possible error types based on toolkit configuration
  * and tool call resolution settings.
  *
- * @since 4.0.0
  * @category utility types
+ * @since 4.0.0
  */
 export type ExtractError<Options> = Options extends {
   readonly disableToolCallResolution: true
@@ -640,10 +656,12 @@ export type ExtractError<Options> = Options extends {
 /**
  * Utility type that extracts the context requirements from LanguageModel options.
  *
+ * **Details**
+ *
  * Automatically infers the required services based on the toolkit configuration.
  *
- * @since 4.0.0
  * @category utility types
+ * @since 4.0.0
  */
 export type ExtractServices<Options> = Options extends {
   readonly disableToolCallResolution: true
@@ -658,15 +676,16 @@ export type ExtractServices<Options> = Options extends {
 // =============================================================================
 
 /**
- * Configuration options passed along to language model provider
- * implementations.
+ * Configuration options passed along to language model provider implementations.
+ *
+ * **Details**
  *
  * This interface defines the normalized options that are passed to the
  * underlying provider implementation, regardless of the specific provider being
  * used.
  *
+ * @category options
  * @since 4.0.0
- * @category models
  */
 export interface ProviderOptions {
   /**
@@ -681,15 +700,14 @@ export interface ProviderOptions {
   readonly tools: ReadonlyArray<Tool.Any>
 
   /**
-   * The format which the response should be provided in.
+   * The format the response should be provided in.
    *
-   * If `"text"` is specified, the large language model response will be
-   * returned as text.
+   * **Details**
    *
-   * If `"json"` is specified, the large language model respose will be provided
-   * as an JSON object that conforms to the shape of the specified schema.
-   *
-   * Defaults to `{ type: "text" }`.
+   * If `"text"` is specified, the large language model response is returned as
+   * text. If `"json"` is specified, the large language model response is
+   * provided as a JSON object that conforms to the shape of the specified schema.
+   * The default is `{ type: "text" }`.
    */
   readonly responseFormat:
     | {
@@ -735,31 +753,47 @@ export interface ProviderOptions {
 }
 
 /**
- * Creates a LanguageModel service from provider-specific implementations.
+ * Creates a LanguageModel service from provider-specific text generation and
+ * streaming implementations.
  *
- * This constructor takes provider-specific implementations for text generation
- * and streaming text generation and returns a LanguageModel service.
+ * **When to use**
  *
- * @since 4.0.0
+ * Use when you are implementing a provider adapter and need to expose the
+ * standard language-model service while keeping provider-specific request hooks
+ * behind it.
+ *
+ * **Details**
+ *
+ * The returned service implements `generateText`, `generateObject`, and
+ * `streamText`. It prepares `ProviderOptions` for each request, including the
+ * normalized prompt, tools, tool choice, response format, tracing span, and
+ * incremental response fields, before calling the supplied provider hook.
+ * Structured object generation uses the `generateText` hook and the configured
+ * `codecTransformer`, or `defaultCodecTransformer` when none is supplied.
+ *
+ * **Gotchas**
+ *
+ * Provider hooks must return encoded response parts that match the toolkit and
+ * response format prepared in `ProviderOptions`; invalid parts fail decoding as
+ * `AiError.InvalidOutputError`.
+ *
+ * @see {@link Service} for the returned service contract
+ * @see {@link ProviderOptions} for the normalized options passed to provider hooks
+ * @see {@link defaultCodecTransformer} for the default structured-output schema transformer
+ *
  * @category constructors
+ * @since 4.0.0
  */
 export const make: (params: {
   /**
-   * A method which requests text generation from the large language model
-   * provider.
-   *
-   * The final result is returned when the large language model provider
-   * finishes text generation.
+   * A method that requests text generation from the large language model provider and returns the final result when generation finishes.
    */
   readonly generateText: (
     options: ProviderOptions
   ) => Effect.Effect<Array<Response.PartEncoded>, AiError.AiError, IdGenerator>
 
   /**
-   * A method which requests text generation from the large language model
-   * provider.
-   *
-   * Intermediate results are streamed from the large language model provider.
+   * A method that requests text generation from the large language model provider and streams intermediate results.
    */
   readonly streamText: (
     options: ProviderOptions
@@ -1593,9 +1627,10 @@ export const make: (params: {
 // =============================================================================
 
 /**
- * Generate text using a language model.
+ * Generates text using a language model.
  *
- * @example
+ * **Example** (Generating text with options)
+ *
  * ```ts
  * import { Effect } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -1613,8 +1648,8 @@ export const make: (params: {
  * })
  * ```
  *
- * @since 4.0.0
  * @category text generation
+ * @since 4.0.0
  */
 export const generateText: {
   // No toolkit: force `{}` instead of falling back to `Record<string, Tool.Any>`.
@@ -1661,9 +1696,10 @@ export const generateText: {
   )
 
 /**
- * Generate a structured object from a schema using a language model.
+ * Generates a structured object from a schema using a language model.
  *
- * @example
+ * **Example** (Generating an object)
+ *
  * ```ts
  * import { Effect, Schema } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -1689,8 +1725,8 @@ export const generateText: {
  * })
  * ```
  *
- * @since 4.0.0
  * @category object generation
+ * @since 4.0.0
  */
 export const generateObject = <
   ObjectEncoded extends Record<string, any>,
@@ -1712,12 +1748,15 @@ export const generateObject = <
   ) as any
 
 /**
- * Generate text using a language model with streaming output.
+ * Generates text using a language model with streaming output.
+ *
+ * **Details**
  *
  * Returns a stream of response parts that are emitted as soon as they are
  * available from the model, enabling real-time text generation experiences.
  *
- * @example
+ * **Example** (Streaming text deltas)
+ *
  * ```ts
  * import { Console, Effect, Stream } from "effect"
  * import { LanguageModel } from "effect/unstable/ai"
@@ -1732,8 +1771,8 @@ export const generateObject = <
  * }))
  * ```
  *
- * @since 4.0.0
  * @category text generation
+ * @since 4.0.0
  */
 export const streamText: {
   // No toolkit: force `{}` instead of falling back to `Record<string, Tool.Any>`.
@@ -2171,7 +2210,7 @@ export const getObjectName = <StructuredOutputSchema extends Schema.Top>(
   if ("identifier" in schema && typeof schema.identifier === "string") {
     return schema.identifier
   }
-  const identifier = AST.resolveIdentifier(schema.ast)
+  const identifier = SchemaAST.resolveIdentifier(schema.ast)
   if (typeof identifier === "string") {
     return identifier
   }
