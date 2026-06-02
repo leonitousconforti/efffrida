@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.33
+
+### Patch Changes
+
+- 445b216: Upgrade frida to 17.10.1 <https://frida.re/news/2026/06/02/frida-17-10-1-released/>
+
 ## 0.0.32
 
 ### Patch Changes
