@@ -9,4 +9,3 @@
         [] - `git submodule update --remote --recursive repos/frida-node`
         [] - `git submodule update --remote --recursive repos/frida-python`
         [] - `git submodule update --remote --recursive repos/frida-tools`
-        [] - `git add repos/frida-{core,gum,node,python,tools} && git commit -m "Update frida submodules"`
