@@ -34,8 +34,8 @@
         "birpc": "4.0.0",
         "flatted": "3.4.2",
         "ioredis": "5.11.0",
-        "oxfmt": "0.52.0",
-        "oxlint": "1.67.0",
+        "oxfmt": "0.53.0",
+        "oxlint": "1.68.0",
         "typescript": "6.0.3",
         "vite": "8.0.14",
         "vitest": "4.1.7"
