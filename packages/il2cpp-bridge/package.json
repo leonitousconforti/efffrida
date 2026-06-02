@@ -54,7 +54,7 @@
     "devDependencies": {
         "@effect/vitest": "4.0.0-beta.69",
         "@efffrida/polyfills": "workspace:*",
-        "@types/frida-gum": "19.1.0",
+        "@types/frida-gum": "19.4.0",
         "effect": "4.0.0-beta.69",
         "vite": "8.0.14",
         "vitest": "4.1.7"

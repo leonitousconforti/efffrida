@@ -50,7 +50,7 @@
         "fast-text-encoding": "1.0.6"
     },
     "devDependencies": {
-        "@types/frida-gum": "19.1.0",
+        "@types/frida-gum": "19.4.0",
         "@types/node": "25.9.1"
     },
     "tags": [

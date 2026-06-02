@@ -52,7 +52,7 @@
         "@effect/vitest": "4.0.0-beta.69",
         "@efffrida/polyfills": "workspace:*",
         "@efffrida/vitest-pool": "workspace:*",
-        "@types/frida-gum": "19.1.0",
+        "@types/frida-gum": "19.4.0",
         "@types/node": "25.9.1",
         "birpc": "4.0.0",
         "effect": "4.0.0-beta.69",
