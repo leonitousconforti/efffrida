@@ -1,5 +1,12 @@
 # @efffrida/frida-tools
 
+## 0.0.34
+
+### Patch Changes
+
+- 0c867fd: Make FridaScript load, layer, and watch functions also accept a string for the entrypoint
+- 5729e6c: Move schemas to @efffrida/frida-tools
+
 ## 0.0.33
 
 ### Patch Changes
