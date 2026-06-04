@@ -1,5 +1,15 @@
 # @efffrida/vitest-pool
 
+## 0.0.25
+
+### Patch Changes
+
+- b6b26e6: Bump tar and ioredis dependencies
+- c9fd13b: Bump Vitest dependencies
+- Updated dependencies [b6b26e6]
+- Updated dependencies [c9fd13b]
+  - @efffrida/frida-tools@0.0.35
+
 ## 0.0.24
 
 ### Patch Changes
