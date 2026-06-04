@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.26
+
+### Patch Changes
+
+- c9fd13b: Bump Vitest dependencies
+
 ## 0.0.25
 
 ### Patch Changes

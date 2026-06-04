@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.32
+
+### Patch Changes
+
+- c9fd13b: Bump Vitest dependencies
+
 ## 0.0.31
 
 ### Patch Changes

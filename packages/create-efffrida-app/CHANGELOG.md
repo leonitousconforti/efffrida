@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.6
+
+### Patch Changes
+
+- b6b26e6: Bump tar and ioredis dependencies
+
 ## 0.0.5
 
 ### Patch Changes
