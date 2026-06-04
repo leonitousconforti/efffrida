@@ -40,14 +40,14 @@ export const load = Function.dual<
     (
         options?: FridaScript.LoadOptions | undefined
     ) => (
-        entrypoint: URL
+        entrypoint: URL | string
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
         Path.Path | FridaSession.FridaSession | Scope.Scope
     >,
     (
-        entrypoint: URL,
+        entrypoint: URL | string,
         options?: FridaScript.LoadOptions | undefined
     ) => Effect.Effect<
         FridaScript.FridaScript,
@@ -55,46 +55,40 @@ export const load = Function.dual<
         Path.Path | FridaSession.FridaSession | Scope.Scope
     >
 >(
-    (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
-    Effect.fnUntraced(function* (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) {
+    (arguments_) => Predicate.hasProperty(arguments_[0], "href") || Predicate.isString(arguments_[0]),
+    Effect.fnUntraced(function* (entrypoint: URL | string, options?: FridaScript.LoadOptions | undefined) {
         const path = yield* Path.Path;
         const { session } = yield* FridaSession.FridaSession;
 
-        const projectRoot = yield* path.fromFileUrl(entrypoint).pipe(
-            Effect.mapError(
-                (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "compile",
-                        cause,
-                    })
-            ),
-            Effect.map((p) => path.dirname(p))
-        );
+        const entrypointString = Predicate.isString(entrypoint)
+            ? entrypoint
+            : yield* path.fromFileUrl(entrypoint).pipe(
+                  Effect.mapError(
+                      (cause) =>
+                          new FridaSessionError.FridaSessionError({
+                              when: "compile",
+                              cause,
+                          })
+                  )
+              );
 
-        const source = yield* path.fromFileUrl(entrypoint).pipe(
-            Effect.flatMap(
-                internalCompiler.compile({
-                    ...options,
-                    projectRoot: options?.projectRoot ?? projectRoot,
+        const projectRoot = path.dirname(entrypointString);
+
+        const source = yield* internalCompiler
+            .compile(entrypointString, {
+                ...options,
+                projectRoot: options?.projectRoot ?? projectRoot,
+            })
+            .pipe(
+                Effect.timeoutOrElse({
+                    duration: "1 minute",
+                    orElse: () =>
+                        new FridaSessionError.FridaSessionError({
+                            cause: "Compilation timed out",
+                            when: "compile",
+                        }),
                 })
-            ),
-            Effect.timeoutOrElse({
-                duration: "1 minute",
-                orElse: () =>
-                    new FridaSessionError.FridaSessionError({
-                        cause: "Compilation timed out",
-                        when: "compile",
-                    }),
-            }),
-            Effect.catchTag(
-                "BadArgument",
-                (platformCause) =>
-                    new FridaSessionError.FridaSessionError({
-                        cause: platformCause,
-                        when: "compile",
-                    })
-            )
-        );
+            );
 
         const script = yield* Effect.tryPromise({
             try: (signal) => {
@@ -276,22 +270,22 @@ export const layer = Function.dual<
     (
         options?: FridaScript.LoadOptions | undefined
     ) => (
-        entrypoint: URL
+        entrypoint: URL | string
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>,
     (
-        entrypoint: URL,
+        entrypoint: URL | string,
         options?: FridaScript.LoadOptions | undefined
     ) => Layer.Layer<FridaScript.FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
 >(
-    (arguments_) => Predicate.hasProperty(arguments_[0], "href"),
-    (entrypoint: URL, options?: FridaScript.LoadOptions | undefined) =>
+    (arguments_) => Predicate.hasProperty(arguments_[0], "href") || Predicate.isString(arguments_[0]),
+    (entrypoint: URL | string, options?: FridaScript.LoadOptions | undefined) =>
         Layer.effect(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer))
 );
 
 /** @internal */
 export const watch = Function.dual<
     (
-        entrypoint: URL,
+        entrypoint: URL | string,
         options?: FridaScript.LoadOptions | undefined
     ) => <A, E, R>(
         effect: Effect.Effect<A, E, R>
@@ -302,7 +296,7 @@ export const watch = Function.dual<
     >,
     <A, E, R>(
         effect: Effect.Effect<A, E, R>,
-        entrypoint: URL,
+        entrypoint: URL | string,
         options?: FridaScript.LoadOptions | undefined
     ) => Stream.Stream<
         Exit.Exit<A, E>,
@@ -314,7 +308,7 @@ export const watch = Function.dual<
     Effect.fnUntraced(
         function* <A, E, R>(
             effect: Effect.Effect<A, E, R>,
-            entrypoint: URL,
+            entrypoint: URL | string,
             options?: FridaScript.LoadOptions | undefined
         ): Effect.fn.Return<
             Stream.Stream<
@@ -328,18 +322,21 @@ export const watch = Function.dual<
             const path = yield* Path.Path;
             const fileSystem = yield* FileSystem.FileSystem;
 
-            const pathString = yield* Effect.mapError(
-                path.fromFileUrl(entrypoint),
-                (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "watch",
-                        cause,
-                    })
-            );
+            const entrypointString = Predicate.isString(entrypoint)
+                ? entrypoint
+                : yield* path.fromFileUrl(entrypoint).pipe(
+                      Effect.mapError(
+                          (cause) =>
+                              new FridaSessionError.FridaSessionError({
+                                  when: "watch",
+                                  cause,
+                              })
+                      )
+                  );
 
-            return fileSystem.watch(pathString).pipe(
+            return fileSystem.watch(entrypointString).pipe(
                 Stream.filter((event) => event._tag === "Update"),
-                Stream.prepend([{ _tag: "Update" as const, path: pathString }]),
+                Stream.prepend([{ _tag: "Update" as const, path: entrypointString }]),
                 Stream.debounce("2 second"),
                 Stream.mapError(
                     (cause) =>

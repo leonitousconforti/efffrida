@@ -64,7 +64,7 @@ Since v1.0.0
 ```ts
 declare const load: {
   (
-    entrypoint: URL,
+    entrypoint: URL | string,
     options?: LoadOptions | undefined
   ): Effect.Effect<
     FridaScript,
@@ -74,7 +74,7 @@ declare const load: {
   (
     options?: LoadOptions | undefined
   ): (
-    entrypoint: URL
+    entrypoint: URL | string
   ) => Effect.Effect<
     FridaScript,
     FridaSessionError.FridaSessionError,
@@ -100,7 +100,7 @@ declare const logWatchErrors: <A, E1, E2, R>(
 ) => Stream.Stream<Exit.Exit<A, E1>, E2, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L190)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L192)
 
 Since v1.0.0
 
@@ -112,7 +112,7 @@ Since v1.0.0
 declare const watch: {
   <A, E, R>(
     effect: Effect.Effect<A, E, R>,
-    entrypoint: URL,
+    entrypoint: URL | string,
     options?: LoadOptions | undefined
   ): Stream.Stream<
     Exit.Exit<A, E>,
@@ -120,7 +120,7 @@ declare const watch: {
     FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
   >
   (
-    entrypoint: URL,
+    entrypoint: URL | string,
     options?: LoadOptions | undefined
   ): <A, E, R>(
     effect: Effect.Effect<A, E, R>
@@ -132,7 +132,7 @@ declare const watch: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L161)
+[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaScript.ts#L163)
 
 Since v1.0.0
 
@@ -145,12 +145,14 @@ Since v1.0.0
 ```ts
 declare const layer: {
   (
-    entrypoint: URL,
+    entrypoint: URL | string,
     options?: LoadOptions | undefined
   ): Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
   (
     options?: LoadOptions | undefined
-  ): (entrypoint: URL) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
+  ): (
+    entrypoint: URL | string
+  ) => Layer.Layer<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession>
 }
 ```
 

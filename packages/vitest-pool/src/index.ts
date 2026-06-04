@@ -100,14 +100,8 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             );
 
             yield* fs.writeFileString(tempFile, baseAgent.replace(marker, newContent));
-            return yield* path.toFileUrl(tempFile);
-        }).pipe(
-            Effect.map(FridaScript.layer()),
-            Layer.unwrap,
-            Layer.provide(FridaLive),
-            Layer.provide(NodeServices.layer),
-            Layer.satisfiesSuccessType<FridaScript.FridaScript>()
-        );
+            return FridaScript.layer(tempFile);
+        }).pipe(Layer.unwrap, Layer.provide(FridaLive), Layer.provide(NodeServices.layer));
 
         this.scope = Scope.makeUnsafe();
         const prev = FridaPoolWorker.initQueue;
