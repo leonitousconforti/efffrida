@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.37
+
+### Patch Changes
+
+- Updated dependencies [0c867fd]
+- Updated dependencies [5729e6c]
+  - @efffrida/frida-tools@0.0.34
+  - @efffrida/platform@0.0.25
+
 ## 0.0.36
 
 ### Patch Changes

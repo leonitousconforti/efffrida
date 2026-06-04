@@ -1,5 +1,15 @@
 # @efffrida/vitest-pool
 
+## 0.0.24
+
+### Patch Changes
+
+- 0c867fd: Make FridaScript load, layer, and watch functions also accept a string for the entrypoint
+- 5729e6c: Move schemas to @efffrida/frida-tools
+- Updated dependencies [0c867fd]
+- Updated dependencies [5729e6c]
+  - @efffrida/frida-tools@0.0.34
+
 ## 0.0.23
 
 ### Patch Changes
