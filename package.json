@@ -30,17 +30,17 @@
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5",
         "@effect/language-service": "0.86.2",
-        "@vitest/coverage-v8": "4.1.7",
+        "@vitest/coverage-v8": "4.1.8",
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "glob": "13.0.6",
         "madge": "8.0.0",
         "oxfmt": "0.53.0",
         "oxlint": "1.68.0",
         "rimraf": "6.1.3",
-        "tsx": "4.22.3",
+        "tsx": "4.22.4",
         "typescript": "6.0.3",
-        "vite": "8.0.14",
-        "vitest": "4.1.7"
+        "vite": "8.0.16",
+        "vitest": "4.1.8"
     },
     "packageManager": "pnpm@10.34.0+sha512.8736169c56fdb6e26afb5d7e2bd5f4c99cc299620d8bdc288cb354e6dd0936bd4ea62276d1a6b2de4b6e971a00a530e0e08bbeeda63da5d820118d3d7e21ff69"
 }
