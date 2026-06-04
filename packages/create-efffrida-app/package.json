@@ -33,8 +33,8 @@
         "@effect/platform-node": "4.0.0-beta.69",
         "@types/node": "25.9.1",
         "effect": "4.0.0-beta.69",
-        "ioredis": "5.11.0",
-        "tar": "7.5.15",
+        "ioredis": "5.11.1",
+        "tar": "7.5.16",
         "tsup": "8.5.1",
         "typescript": "6.0.3"
     }

@@ -33,7 +33,7 @@
         "@vitest/utils": "4.1.7",
         "birpc": "4.0.0",
         "flatted": "3.4.2",
-        "ioredis": "5.11.0",
+        "ioredis": "5.11.1",
         "oxfmt": "0.53.0",
         "oxlint": "1.68.0",
         "typescript": "6.0.3",
