@@ -1,4 +1,6 @@
+import type * as PlatformError from "effect/PlatformError";
 import type * as Scope from "effect/Scope";
+import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
@@ -7,6 +9,9 @@ import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
+import * as Schema from "effect/Schema";
+import * as Tuple from "effect/Tuple";
+import * as ChildProcess from "effect/unstable/process/ChildProcess";
 
 import type * as FridaSession from "../FridaSession.ts";
 
@@ -254,3 +259,95 @@ export const layerFrontmost = (
     options?: Frida.FrontmostQueryOptions | undefined
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
     Layer.unwrap(Effect.map(frontmost(options), (app) => layer(app.pid)));
+
+/** @internal */
+export const AttachSchema: Schema.Union<
+    readonly [
+        Schema.Struct<{
+            readonly pid: Schema.Number;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+        Schema.Struct<{
+            readonly spawn: Schema.NonEmptyArray<Schema.String>;
+            readonly preSpawn: Schema.optional<Schema.Boolean>;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+        Schema.Struct<{
+            readonly attachFrontmost: Schema.Literal<true>;
+            readonly frontmostScope: Schema.optional<Schema.Enum<typeof Frida.Scope>>;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+    ]
+> = Schema.Union([
+    Schema.Struct({
+        pid: Schema.Number,
+    }),
+    Schema.Struct({
+        spawn: Schema.NonEmptyArray(Schema.String),
+        preSpawn: Schema.optional(Schema.Boolean),
+    }),
+    Schema.Struct({
+        attachFrontmost: Schema.Literal(true),
+        frontmostScope: Schema.optional(Schema.Enum(Frida.Scope)),
+    }),
+]).mapMembers(
+    Tuple.map(
+        Schema.fieldsAssign({
+            runtime: Schema.optional(Schema.Enum(Frida.ScriptRuntime)),
+            platform: Schema.optional(Schema.Enum(Frida.JsPlatform)),
+            realm: Schema.optional(Schema.Enum(Frida.Realm)),
+        })
+    )
+);
+
+/** @internal */
+export const SessionLive = (
+    config: Schema.Schema.Type<typeof AttachSchema>
+): Layer.Layer<
+    FridaSession.FridaSession,
+    FridaSessionError.FridaSessionError | PlatformError.PlatformError,
+    FridaDevice.FridaDevice | ChildProcessSpawner.ChildProcessSpawner
+> =>
+    Match.value(config).pipe(
+        Match.when({ pid: Match.number }, ({ pid, runtime, platform, realm }) =>
+            layer(pid, {
+                ...(runtime !== undefined ? { runtime } : {}),
+                ...(platform !== undefined ? { platform } : {}),
+                ...(realm !== undefined ? { realm } : {}),
+            })
+        ),
+        Match.when({ attachFrontmost: true }, ({ frontmostScope, runtime, platform, realm }) =>
+            layerFrontmost({
+                ...(frontmostScope !== undefined ? { scope: frontmostScope } : {}),
+                ...(runtime !== undefined ? { runtime } : {}),
+                ...(platform !== undefined ? { platform } : {}),
+                ...(realm !== undefined ? { realm } : {}),
+            })
+        ),
+        Match.when({ preSpawn: true }, ({ spawn, runtime, platform, realm }) =>
+            Layer.unwrap(
+                Effect.gen(function* () {
+                    const [command, ...args] = spawn;
+                    const handle = yield* ChildProcess.make(command, args);
+                    return layer(handle.pid, {
+                        ...(runtime !== undefined ? { runtime } : {}),
+                        ...(platform !== undefined ? { platform } : {}),
+                        ...(realm !== undefined ? { realm } : {}),
+                    });
+                })
+            )
+        ),
+        Match.orElse(({ spawn, runtime, platform, realm }) =>
+            layer(spawn, {
+                ...(runtime !== undefined ? { runtime } : {}),
+                ...(platform !== undefined ? { platform } : {}),
+                ...(realm !== undefined ? { realm } : {}),
+            })
+        )
+    );

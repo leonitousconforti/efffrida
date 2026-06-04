@@ -9,6 +9,7 @@ import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Path from "effect/Path";
+import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
@@ -187,3 +188,46 @@ export const layerAndroidEmulatorDeviceConfig: (
     Config.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
     ChildProcessSpawner.ChildProcessSpawner | Path.Path
 > = internal.layerAndroidEmulatorDeviceConfig;
+
+/**
+ * @since 1.0.0
+ * @category Schemas
+ */
+export const DeviceSchema: Schema.Union<
+    readonly [
+        Schema.Struct<{
+            readonly connection: Schema.Literal<"local">;
+        }>,
+        Schema.Struct<{
+            readonly connection: Schema.Literal<"usb">;
+            readonly timeout: Schema.optional<Schema.DurationFromMillis>;
+        }>,
+        Schema.Struct<{
+            readonly address: Schema.String;
+            readonly connection: Schema.Literal<"remote">;
+            readonly token: Schema.optional<Schema.String>;
+            readonly origin: Schema.optional<Schema.String>;
+            readonly keepaliveInterval: Schema.optional<Schema.DurationFromMillis>;
+        }>,
+        Schema.Struct<{
+            readonly emulatorName: Schema.String;
+            readonly hidden: Schema.optional<Schema.Boolean>;
+            readonly adbExecutable: Schema.optional<Schema.String>;
+            readonly connection: Schema.Literal<"android-emulator">;
+            readonly fridaExecutable: Schema.optional<Schema.String>;
+            readonly emulatorExecutable: Schema.optional<Schema.String>;
+        }>,
+    ]
+> = internal.DeviceSchema;
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const DeviceLive: (
+    config: Schema.Schema.Type<typeof DeviceSchema>
+) => Layer.Layer<
+    FridaDevice,
+    FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    ChildProcessSpawner.ChildProcessSpawner
+> = internal.DeviceLive;

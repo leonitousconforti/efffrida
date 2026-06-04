@@ -10,7 +10,10 @@ import type * as Deferred from "effect/Deferred";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
+import type * as PlatformError from "effect/PlatformError";
+import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
+import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as FridaDevice from "./FridaDevice.ts";
 import type * as FridaSessionError from "./FridaSessionError.ts";
@@ -119,3 +122,44 @@ export const layer: (
 export const layerFrontmost: (
     options?: Frida.FrontmostQueryOptions | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layerFrontmost;
+
+/**
+ * @since 1.0.0
+ * @category Schemas
+ */
+export const AttachSchema: Schema.Union<
+    readonly [
+        Schema.Struct<{
+            readonly pid: Schema.Number;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+        Schema.Struct<{
+            readonly spawn: Schema.NonEmptyArray<Schema.String>;
+            readonly preSpawn: Schema.optional<Schema.Boolean>;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+        Schema.Struct<{
+            readonly attachFrontmost: Schema.Literal<true>;
+            readonly frontmostScope: Schema.optional<Schema.Enum<typeof Frida.Scope>>;
+            readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>;
+            readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>;
+            readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>;
+        }>,
+    ]
+> = internal.AttachSchema;
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const SessionLive: (
+    config: Schema.Schema.Type<typeof AttachSchema>
+) => Layer.Layer<
+    FridaSession,
+    FridaSessionError.FridaSessionError | PlatformError.PlatformError,
+    FridaDevice.FridaDevice | ChildProcessSpawner.ChildProcessSpawner
+> = internal.SessionLive;

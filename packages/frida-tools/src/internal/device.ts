@@ -3,8 +3,10 @@ import type * as Scope from "effect/Scope";
 
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as Match from "effect/Match";
 import * as Path from "effect/Path";
 import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
@@ -395,3 +397,87 @@ export const layerAndroidEmulatorDeviceConfig = (
     Config.ConfigError | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
     ChildProcessSpawner.ChildProcessSpawner | Path.Path
 > => Layer.effect(Tag, acquireAndroidEmulatorDeviceConfig(name, options));
+
+/** @internal */
+export const DeviceSchema: Schema.Union<
+    readonly [
+        Schema.Struct<{
+            readonly connection: Schema.Literal<"local">;
+        }>,
+        Schema.Struct<{
+            readonly connection: Schema.Literal<"usb">;
+            readonly timeout: Schema.optional<Schema.DurationFromMillis>;
+        }>,
+        Schema.Struct<{
+            readonly address: Schema.String;
+            readonly connection: Schema.Literal<"remote">;
+            readonly token: Schema.optional<Schema.String>;
+            readonly origin: Schema.optional<Schema.String>;
+            readonly keepaliveInterval: Schema.optional<Schema.DurationFromMillis>;
+        }>,
+        Schema.Struct<{
+            readonly emulatorName: Schema.String;
+            readonly hidden: Schema.optional<Schema.Boolean>;
+            readonly adbExecutable: Schema.optional<Schema.String>;
+            readonly connection: Schema.Literal<"android-emulator">;
+            readonly fridaExecutable: Schema.optional<Schema.String>;
+            readonly emulatorExecutable: Schema.optional<Schema.String>;
+        }>,
+    ]
+> = Schema.Union([
+    Schema.Struct({
+        connection: Schema.Literal("local"),
+    }),
+    Schema.Struct({
+        connection: Schema.Literal("usb"),
+        timeout: Schema.optional(Schema.DurationFromMillis),
+    }),
+    Schema.Struct({
+        address: Schema.String,
+        connection: Schema.Literal("remote"),
+        token: Schema.optional(Schema.String),
+        origin: Schema.optional(Schema.String),
+        keepaliveInterval: Schema.optional(Schema.DurationFromMillis),
+    }),
+    Schema.Struct({
+        emulatorName: Schema.String,
+        hidden: Schema.optional(Schema.Boolean),
+        adbExecutable: Schema.optional(Schema.String),
+        connection: Schema.Literal("android-emulator"),
+        fridaExecutable: Schema.optional(Schema.String),
+        emulatorExecutable: Schema.optional(Schema.String),
+    }),
+]);
+
+/** @internal */
+export const DeviceLive = (
+    config: Schema.Schema.Type<typeof DeviceSchema>
+): Layer.Layer<
+    FridaDevice.FridaDevice,
+    FridaDeviceAcquisitionError.FridaDeviceAcquisitionError,
+    ChildProcessSpawner.ChildProcessSpawner
+> =>
+    Match.value(config).pipe(
+        Match.when({ connection: "local" }, () => layerLocalDevice),
+        Match.when({ connection: "usb" }, ({ timeout }) =>
+            layerUsbDevice(timeout !== undefined ? { timeout: Duration.toMillis(timeout) } : {})
+        ),
+        Match.when({ connection: "remote" }, ({ address, keepaliveInterval, origin, token }) =>
+            layerRemoteDevice(address, {
+                ...(token !== undefined ? { token } : {}),
+                ...(origin !== undefined ? { origin } : {}),
+                ...(keepaliveInterval !== undefined ? { keepaliveInterval: Duration.toMillis(keepaliveInterval) } : {}),
+            })
+        ),
+        Match.when(
+            { connection: "android-emulator" },
+            ({ adbExecutable, emulatorExecutable, emulatorName, fridaExecutable, hidden }) =>
+                layerAndroidEmulatorDevice(emulatorName, {
+                    hidden: hidden ?? undefined,
+                    adbExecutable: adbExecutable ?? undefined,
+                    fridaExecutable: fridaExecutable ?? undefined,
+                    emulatorExecutable: emulatorExecutable ?? undefined,
+                })
+        ),
+        Match.exhaustive
+    );

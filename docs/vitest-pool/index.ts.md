@@ -10,6 +10,8 @@ parent: "@efffrida/vitest-pool"
 
 ## Exports Grouped by Category
 
+- [Schemas](#schemas)
+  - [FridaSchema](#fridaschema)
 - [Tests](#tests)
   - [FridaPoolWorker (class)](#fridapoolworker-class)
     - [start (method)](#start-method)
@@ -24,6 +26,69 @@ parent: "@efffrida/vitest-pool"
 
 ---
 
+# Schemas
+
+## FridaSchema
+
+**Signature**
+
+```ts
+declare const FridaSchema: Schema.Struct<{
+  readonly device: Schema.Union<
+    readonly [
+      Schema.Struct<{ readonly connection: Schema.Literal<"local"> }>,
+      Schema.Struct<{
+        readonly connection: Schema.Literal<"usb">
+        readonly timeout: Schema.optional<Schema.DurationFromMillis>
+      }>,
+      Schema.Struct<{
+        readonly address: Schema.String
+        readonly connection: Schema.Literal<"remote">
+        readonly token: Schema.optional<Schema.String>
+        readonly origin: Schema.optional<Schema.String>
+        readonly keepaliveInterval: Schema.optional<Schema.DurationFromMillis>
+      }>,
+      Schema.Struct<{
+        readonly emulatorName: Schema.String
+        readonly hidden: Schema.optional<Schema.Boolean>
+        readonly adbExecutable: Schema.optional<Schema.String>
+        readonly connection: Schema.Literal<"android-emulator">
+        readonly fridaExecutable: Schema.optional<Schema.String>
+        readonly emulatorExecutable: Schema.optional<Schema.String>
+      }>
+    ]
+  >
+  readonly attach: Schema.Union<
+    readonly [
+      Schema.Struct<{
+        readonly pid: Schema.Number
+        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
+        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
+        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
+      }>,
+      Schema.Struct<{
+        readonly spawn: Schema.NonEmptyArray<Schema.String>
+        readonly preSpawn: Schema.optional<Schema.Boolean>
+        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
+        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
+        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
+      }>,
+      Schema.Struct<{
+        readonly attachFrontmost: Schema.Literal<true>
+        readonly frontmostScope: Schema.optional<Schema.Enum<typeof Scope>>
+        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
+        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
+        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
+      }>
+    ]
+  >
+}>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L31)
+
+Since v1.0.0
+
 # Tests
 
 ## FridaPoolWorker (class)
@@ -32,11 +97,11 @@ parent: "@efffrida/vitest-pool"
 
 ```ts
 declare class FridaPoolWorker {
-  constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof ConfigSchema>)
+  constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof FridaSchema>)
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L84)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L40)
 
 Since v1.0.0
 
@@ -48,7 +113,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L239)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L122)
 
 ### stop (method)
 
@@ -58,7 +123,7 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L245)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L128)
 
 ### send (method)
 
@@ -68,7 +133,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L252)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L135)
 
 ### on (method)
 
@@ -78,7 +143,7 @@ declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L266)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L149)
 
 ### off (method)
 
@@ -88,7 +153,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (_event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L318)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L201)
 
 ### deserialize (method)
 
@@ -98,7 +163,7 @@ declare const off: (_event: string, callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L326)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L209)
 
 ### serialize (method)
 
@@ -108,7 +173,7 @@ declare const deserialize: (data: unknown) => any
 declare const serialize: (data: unknown) => unknown
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L331)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L214)
 
 ### name (property)
 
@@ -118,7 +183,7 @@ declare const serialize: (data: unknown) => unknown
 readonly name: "frida-pool"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L85)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L41)
 
 ## createFridaPool
 
@@ -126,10 +191,10 @@ readonly name: "frida-pool"
 
 ```ts
 declare const createFridaPool: (
-  customOptions: Schema.Codec.Encoded<typeof ConfigSchema>
+  customOptions: Schema.Codec.Encoded<typeof FridaSchema>
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L340)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/src/index.ts#L223)
 
 Since v1.0.0
