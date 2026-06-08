@@ -11,7 +11,6 @@ import * as SchemaTransformation from "effect/SchemaTransformation";
 
 import * as internalAuth from "./auth.ts";
 
-/** @internal */
 export const StringArrayFromString = Schema.suspend(() => {
     const splitter = SchemaGetter.split({ separator: "," });
     const joiner = SchemaGetter.transform((arr: ReadonlyArray<string>) => arr.join(","));
@@ -19,7 +18,6 @@ export const StringArrayFromString = Schema.suspend(() => {
     return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
 });
 
-/** @internal */
 export const BooleanFromString = Schema.Literals(["true", "false"]).pipe(
     Schema.decodeTo(
         Schema.Boolean,
@@ -30,7 +28,6 @@ export const BooleanFromString = Schema.Literals(["true", "false"]).pipe(
     )
 );
 
-/** @internal */
 export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
     UserReadableName: Schema.String,
     "Build.BOOTLOADER": Schema.String,
