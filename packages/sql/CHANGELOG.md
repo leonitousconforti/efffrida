@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.26
+
+### Patch Changes
+
+- 2d7ca22: Frida 17.11.0 <https://frida.re/news/2026/06/05/frida-17-11-0-released/>
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.26
+
+### Patch Changes
+
+- 2d7ca22: Frida 17.11.0 <https://frida.re/news/2026/06/05/frida-17-11-0-released/>
+- Updated dependencies [2d7ca22]
+  - @efffrida/frida-tools@0.0.36
+  - @efffrida/polyfills@0.0.12
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.15
+
+### Patch Changes
+
+- 8d99013: Make re-exported AndroidDevice class public
+
 ## 0.0.14
 
 ### Patch Changes
