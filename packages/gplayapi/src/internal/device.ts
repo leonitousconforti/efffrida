@@ -2,8 +2,10 @@ import type * as PlatformError from "effect/PlatformError";
 import type * as HttpClient from "effect/unstable/http/HttpClient";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
+import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
@@ -18,15 +20,11 @@ export const StringArrayFromString = Schema.suspend(() => {
     return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
 });
 
-export const BooleanFromString = Schema.Literals(["true", "false"]).pipe(
-    Schema.decodeTo(
-        Schema.Boolean,
-        SchemaTransformation.transform({
-            decode: (str) => str === "true",
-            encode: (bool) => (bool ? "true" : "false"),
-        })
-    )
-);
+export const BooleanFromString = Schema.Literals(["true", "false"])
+    .transform([true, false])
+    .pipe(Schema.decodeTo(Schema.Boolean));
+
+export class Service extends Context.Service<Service, AndroidDevice>()("@efffrida/gplayapi/device") {}
 
 export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
     UserReadableName: Schema.String,
@@ -95,6 +93,8 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
         Effect.flatMap((path) => path.fromFileUrl(new URL("../../devices/arm64_xxhdpi.properties", import.meta.url))),
         Effect.flatMap(AndroidDevice.fromPropertiesFile)
     );
+
+    public static EmbeddedPixel7aLive = Layer.effect(Service, AndroidDevice.EmbeddedPixel7a);
 
     public get userAgent(): string {
         const deviceProperties = {

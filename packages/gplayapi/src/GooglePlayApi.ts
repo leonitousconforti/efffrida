@@ -11,15 +11,13 @@ import type * as Scope from "effect/Scope";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
 import * as Array from "effect/Array";
+import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
-import * as Function from "effect/Function";
+import * as Match from "effect/Match";
 import * as Stream from "effect/Stream";
 import * as HttpClient from "effect/unstable/http/HttpClient";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
-import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
-
-import type { AndroidDevice } from "./internal/device.ts";
 
 import {
     BulkDetailsRequestSchema,
@@ -28,6 +26,7 @@ import {
     type DeliveryResponse,
     type DetailsResponse,
 } from "./generated/GooglePlay_pb.ts";
+import { Service as AndroidDeviceService } from "./internal/device.ts";
 import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
 /** @internal */
@@ -39,200 +38,169 @@ export {
      * @category Device
      */
     AndroidDevice,
+
+    /**
+     * @since 1.0.0
+     * @category Device
+     */
+    Service as AndroidDeviceService,
 } from "./internal/device.ts";
 
 /**
  * @since 1.0.0
  * @category API
  */
-export const details = Function.dual<
-    (
-        device: AndroidDevice
-    ) => (
-        bundleIdentifier: string
-    ) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>,
-    (
-        bundleIdentifier: string,
-        device: AndroidDevice
-    ) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>
->(
-    2,
-    Effect.fnUntraced(function* (bundleIdentifier: string, device: AndroidDevice) {
-        const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
-        const httpRequest = HttpClientRequest.get("/details", {
-            urlParams: { doc: bundleIdentifier },
-            headers: yield* device.authHeaders,
-        }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-        const httpResponse = yield* HttpClient.execute(httpRequest);
-        const pbResponse = yield* decoderDetailsResponse(httpResponse);
-        return pbResponse;
-    })
-);
-
-/**
- * @since 1.0.0
- * @category API
- */
-export const bulkDetails = Function.dual<
-    (
-        device: AndroidDevice
-    ) => (
-        bundleIdentifier: string
-    ) => Effect.Effect<
-        BulkDetailsResponse,
-        HttpClientError.HttpClientError | Schema.SchemaError,
-        HttpClient.HttpClient
-    >,
-    (
-        bundleIdentifier: string,
-        device: AndroidDevice
-    ) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>
->(
-    2,
-    Effect.fnUntraced(function* (bundleIdentifier: string, device: AndroidDevice) {
-        const decoderBulkDetailsResponse = decodeResponseFromResponseWrapper("bulkDetailsResponse");
-        const encoderBulkDetailsRequest = encodeRequest(BulkDetailsRequestSchema, {
-            includeDetails: true,
-            includeChildDocs: true,
-            DocId: [bundleIdentifier],
-        });
-
-        const httpRequest = HttpClientRequest.post("/bulkDetails", {
-            headers: yield* device.authHeaders,
-        }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-        const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
-        const httpResponse = yield* HttpClient.execute(pbRequest);
-        const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
-        return pbResponse;
-    })
-);
-
-/**
- * @since 1.0.0
- * @category API
- */
-export const purchase = Function.dual<
-    (
-        device: AndroidDevice
-    ) => (
-        bundleIdentifier: string,
-        options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
-    ) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>,
-    (
-        bundleIdentifier: string,
-        options: { offerType: number; versionCode: number | bigint; certificateHash?: string },
-        device: AndroidDevice
-    ) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>
->(
-    3,
-    Effect.fnUntraced(function* (
-        bundleIdentifier: string,
-        options: { offerType: number; versionCode: number | bigint; certificateHash?: string },
-        device: AndroidDevice
-    ) {
-        const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
-        const httpRequest = HttpClientRequest.post("/purchase", {
-            headers: yield* device.authHeaders,
-            urlParams: {
-                doc: bundleIdentifier,
-                ch: options.certificateHash ?? "",
-                ot: options.offerType.toString(),
-                vc: options.versionCode.toString(),
-            },
-        }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-        const httpResponse = yield* HttpClient.execute(httpRequest);
-        const pbResponse = yield* decoderBuyResponse(httpResponse);
-        return pbResponse;
-    })
-);
-
-/**
- * @since 1.0.0
- * @category API
- */
-export const delivery = Function.dual<
-    (device: AndroidDevice) => (
-        bundleIdentifier: string,
-        options: {
-            offerType: number;
-            deliveryToken: string;
-            versionCode: number | bigint;
-            certificateHash?: string | undefined;
-        }
-    ) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>,
-    (
-        bundleIdentifier: string,
-        options: {
-            offerType: number;
-            deliveryToken: string;
-            versionCode: number | bigint;
-            certificateHash?: string | undefined;
-        },
-        device: AndroidDevice
-    ) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>
->(
-    3,
-    Effect.fnUntraced(function* (
-        bundleIdentifier: string,
-        options: {
-            offerType: number;
-            deliveryToken: string;
-            versionCode: number | bigint;
-            certificateHash?: string | undefined;
-        },
-        device: AndroidDevice
-    ) {
-        const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
-        const httpRequest = HttpClientRequest.get("/delivery", {
-            headers: yield* device.authHeaders,
-            urlParams: {
-                doc: bundleIdentifier,
-                dtok: options.deliveryToken,
-                ch: options.certificateHash ?? "",
-                ot: options.offerType.toString(),
-                vc: options.versionCode.toString(),
-            },
-        }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-        const httpResponse = yield* HttpClient.execute(httpRequest);
-        const pbResponse = yield* decoderDeliveryResponse(httpResponse);
-        return pbResponse;
-    })
-);
-
-/**
- * @since 1.0.0
- * @category API
- */
-export const download = Effect.fnUntraced(function* (
-    device: AndroidDevice,
+export const details = Effect.fnUntraced(function* (
     bundleIdentifier: string
 ): Effect.fn.Return<
-    Array.NonEmptyReadonlyArray<{
-        url: string;
-        name: string;
-        file: string;
-        size: bigint;
-        integrity: { sha1: string } | { sha256: string };
-    }>,
-    PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+    DetailsResponse,
+    HttpClientError.HttpClientError | Schema.SchemaError,
+    HttpClient.HttpClient | AndroidDeviceService
 > {
-    const fileSystem = yield* FileSystem.FileSystem;
+    const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
+    const device = yield* AndroidDeviceService;
 
-    const { item } = yield* details(device)(bundleIdentifier);
-    const { encodedDeliveryToken } = yield* purchase(device)(bundleIdentifier, {
-        offerType: item?.offer[0].offerType ?? 1,
-        versionCode: item?.details?.appDetails?.versionCode ?? 0,
+    const httpRequest = HttpClientRequest.get("/details", {
+        urlParams: { doc: bundleIdentifier },
+        headers: yield* device.authHeaders,
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+
+    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const pbResponse = yield* decoderDetailsResponse(httpResponse);
+    return pbResponse;
+});
+
+/**
+ * @since 1.0.0
+ * @category API
+ */
+export const bulkDetails = Effect.fnUntraced(function* (
+    bundleIdentifier: string
+): Effect.fn.Return<
+    BulkDetailsResponse,
+    HttpClientError.HttpClientError | Schema.SchemaError,
+    HttpClient.HttpClient | AndroidDeviceService
+> {
+    const decoderBulkDetailsResponse = decodeResponseFromResponseWrapper("bulkDetailsResponse");
+    const encoderBulkDetailsRequest = encodeRequest(BulkDetailsRequestSchema, {
+        includeDetails: true,
+        includeChildDocs: true,
+        DocId: [bundleIdentifier],
     });
 
-    const deliveryResult = yield* delivery(device)(bundleIdentifier, {
+    const device = yield* AndroidDeviceService;
+    const httpRequest = HttpClientRequest.post("/bulkDetails", {
+        headers: yield* device.authHeaders,
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+
+    const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
+    const httpResponse = yield* HttpClient.execute(pbRequest);
+    const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
+    return pbResponse;
+});
+
+/**
+ * @since 1.0.0
+ * @category API
+ */
+export const purchase = Effect.fnUntraced(function* (
+    bundleIdentifier: string,
+    options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
+): Effect.fn.Return<
+    BuyResponse,
+    HttpClientError.HttpClientError | Schema.SchemaError,
+    HttpClient.HttpClient | AndroidDeviceService
+> {
+    const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
+
+    const device = yield* AndroidDeviceService;
+    const httpRequest = HttpClientRequest.post("/purchase", {
+        headers: yield* device.authHeaders,
+        urlParams: {
+            doc: bundleIdentifier,
+            ch: options.certificateHash ?? "",
+            ot: options.offerType.toString(),
+            vc: options.versionCode.toString(),
+        },
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+
+    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const pbResponse = yield* decoderBuyResponse(httpResponse);
+    return pbResponse;
+});
+
+/**
+ * @since 1.0.0
+ * @category API
+ */
+export const delivery = Effect.fnUntraced(function* (
+    bundleIdentifier: string,
+    options: {
+        offerType: number;
+        deliveryToken: string;
+        versionCode: number | bigint;
+        certificateHash?: string | undefined;
+    }
+): Effect.fn.Return<
+    DeliveryResponse,
+    HttpClientError.HttpClientError | Schema.SchemaError,
+    HttpClient.HttpClient | AndroidDeviceService
+> {
+    const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
+
+    const device = yield* AndroidDeviceService;
+    const httpRequest = HttpClientRequest.get("/delivery", {
+        headers: yield* device.authHeaders,
+        urlParams: {
+            doc: bundleIdentifier,
+            dtok: options.deliveryToken,
+            ch: options.certificateHash ?? "",
+            ot: options.offerType.toString(),
+            vc: options.versionCode.toString(),
+        },
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+
+    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const pbResponse = yield* decoderDeliveryResponse(httpResponse);
+    return pbResponse;
+});
+
+/**
+ * @since 1.0.0
+ * @category API
+ */
+export const downloadToStreams = Effect.fnUntraced(function* (
+    bundleIdentifier: string,
+    options?:
+        | {
+              offerType?: number | undefined;
+              versionCode?: number | bigint | undefined;
+          }
+        | undefined
+): Effect.fn.Return<
+    Array.NonEmptyReadonlyArray<{
+        stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>;
+        integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
+        size: bigint;
+        name: string;
+        url: string;
+    }>,
+    HttpClientError.HttpClientError | Schema.SchemaError,
+    AndroidDeviceService | HttpClient.HttpClient
+> {
+    const { item } = yield* details(bundleIdentifier);
+    const offerType = options?.offerType ?? item?.offer[0].offerType ?? 1;
+    const versionCode = options?.versionCode ?? item?.details?.appDetails?.versionCode ?? 0;
+
+    const { encodedDeliveryToken } = yield* purchase(bundleIdentifier, {
+        offerType: offerType,
+        versionCode: versionCode,
+    });
+
+    const deliveryResult = yield* delivery(bundleIdentifier, {
         deliveryToken: encodedDeliveryToken,
-        offerType: item?.offer[0].offerType ?? 1,
-        versionCode: item?.details?.appDetails?.versionCode ?? 0,
+        offerType: offerType,
+        versionCode: versionCode,
     });
 
     const mainDeliveryData = deliveryResult?.appDeliveryData;
@@ -240,75 +208,40 @@ export const download = Effect.fnUntraced(function* (
         return yield* Effect.die("No delivery data available");
     }
 
-    const digest =
-        (algorithm: "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512") =>
-        <E, R>(stream: Stream.Stream<Uint8Array, E, R>): Effect.Effect<string, E, R> =>
-            stream.pipe(
-                Stream.mkUint8Array,
-                Effect.flatMap((buffer) =>
-                    Effect.promise(() => crypto.subtle.digest(algorithm, buffer as BufferSource))
-                ),
-                Effect.map((digestBuffer) =>
-                    Array.fromIterable(new Uint8Array(digestBuffer))
-                        .map((b) => b.toString(16).padStart(2, "0"))
-                        .join("")
-                )
-            );
-
     const main = Effect.gen(function* () {
-        const file = yield* fileSystem.makeTempFileScoped({ suffix: ".apk" });
         const integrity = Buffer.from(mainDeliveryData.sha256, "base64url").toString("hex");
-        const downloadedIntegrity = yield* HttpClient.get(mainDeliveryData.downloadUrl).pipe(
-            HttpClientResponse.stream,
-            Stream.tapSink(fileSystem.sink(file)),
-            digest("SHA-256")
+        const stream = yield* HttpClient.get(mainDeliveryData.downloadUrl).pipe(
+            Effect.map((response) => response.stream)
         );
 
         yield* Effect.logDebug(
-            `main APK of ${mainDeliveryData.downloadSize}bytes from ${mainDeliveryData.downloadUrl} with integrity ${integrity}(sha256) downloaded to ${file}`
+            `fetched main APK of ${mainDeliveryData.downloadSize}bytes from ${mainDeliveryData.downloadUrl} with integrity ${integrity}(sha256)`
         );
 
-        if (downloadedIntegrity !== integrity) {
-            return yield* Effect.die(
-                `Downloaded main APK integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`
-            );
-        }
-
         return {
-            file,
+            stream,
             name: `${bundleIdentifier}.apk`,
             url: mainDeliveryData.downloadUrl,
             size: mainDeliveryData.downloadSize,
-            integrity: { sha256: integrity },
+            integrity: { "SHA-256": integrity },
         };
     });
 
     const splits = Array.map(mainDeliveryData.splitDeliveryData, (split) =>
         Effect.gen(function* () {
-            const file = yield* fileSystem.makeTempFileScoped({ suffix: ".apk" });
             const integrity = Buffer.from(split.sha256, "base64url").toString("hex");
-            const downloadedIntegrity = yield* HttpClient.get(split.downloadUrl).pipe(
-                HttpClientResponse.stream,
-                Stream.tapSink(fileSystem.sink(file)),
-                digest("SHA-256")
-            );
+            const stream = yield* HttpClient.get(split.downloadUrl).pipe(Effect.map((response) => response.stream));
 
             yield* Effect.logDebug(
-                `split ${split.name} of ${split.downloadSize}bytes from ${split.downloadUrl} with integrity ${integrity}(sha256) downloaded to ${file}`
+                `fetched split ${split.name} of ${split.downloadSize}bytes from ${split.downloadUrl} with integrity ${integrity}(sha256)`
             );
 
-            if (downloadedIntegrity !== integrity) {
-                return yield* Effect.die(
-                    `Downloaded split ${split.name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`
-                );
-            }
-
             return {
-                file,
+                stream,
                 url: split.downloadUrl,
                 size: split.downloadSize,
                 name: `${split.name}.apk`,
-                integrity: { sha256: integrity },
+                integrity: { "SHA-256": integrity },
             };
         })
     );
@@ -317,33 +250,106 @@ export const download = Effect.fnUntraced(function* (
         Effect.gen(function* () {
             const typeStr = expansion.fileType === 1 ? "main" : "patch";
             const name = `${typeStr}.${expansion.versionCode}.${bundleIdentifier}.obb`;
-            const file = yield* fileSystem.makeTempFileScoped({ suffix: ".obb" });
             const integrity = Buffer.from(expansion.sha1, "base64url").toString("hex");
-            const downloadedIntegrity = yield* HttpClient.get(expansion.downloadUrl).pipe(
-                HttpClientResponse.stream,
-                Stream.tapSink(fileSystem.sink(file)),
-                digest("SHA-1")
-            );
+            const stream = yield* HttpClient.get(expansion.downloadUrl).pipe(Effect.map((response) => response.stream));
 
             yield* Effect.logDebug(
-                `expansion file ${name} of ${expansion.size}bytes from ${expansion.downloadUrl} with integrity ${integrity}(sha1) downloaded to ${file}`
+                `fetched expansion file ${name} of ${expansion.size}bytes from ${expansion.downloadUrl} with integrity ${integrity}(sha1)`
             );
 
-            if (downloadedIntegrity !== integrity) {
-                return yield* Effect.die(
-                    `Downloaded expansion file ${name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`
-                );
-            }
-
             return {
-                file,
                 name,
+                stream,
                 size: expansion.size,
                 url: expansion.downloadUrl,
-                integrity: { sha1: integrity },
+                integrity: { "SHA-1": integrity },
             };
         })
     );
 
     return yield* Effect.all([main, ...splits, ...expansions]);
+});
+
+/**
+ * @since 1.0.0
+ * @category API
+ */
+export const downloadToDisk = Effect.fnUntraced(function* (
+    bundleIdentifier: string,
+    options?:
+        | {
+              offerType?: number | undefined;
+              versionCode?: number | bigint | undefined;
+          }
+        | undefined
+): Effect.fn.Return<
+    Array.NonEmptyReadonlyArray<{
+        url: string;
+        name: string;
+        file: string;
+        size: bigint;
+        integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
+    }>,
+    PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
+    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+> {
+    const fileSystem = yield* FileSystem.FileSystem;
+    const streams = yield* downloadToStreams(bundleIdentifier, options);
+
+    const digest =
+        (algorithm: Crypto.DigestAlgorithm) =>
+        <E, R>(
+            stream: Stream.Stream<Uint8Array, E, R>
+        ): Effect.Effect<string, E | PlatformError.PlatformError, R | Crypto.Crypto> =>
+            stream.pipe(
+                Stream.mkUint8Array,
+                Effect.flatMap((buffer) => Crypto.Crypto.use((crypto) => crypto.digest(algorithm, buffer))),
+                Effect.map((digestBuffer) =>
+                    Array.fromIterable(digestBuffer)
+                        .map((b) => b.toString(16).padStart(2, "0"))
+                        .join("")
+                )
+            );
+
+    const write: (stream: (typeof streams)[number]) => Effect.Effect<
+        {
+            url: string;
+            name: string;
+            file: string;
+            size: bigint;
+            integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
+        },
+        PlatformError.PlatformError | HttpClientError.HttpClientError,
+        Crypto.Crypto | Scope.Scope
+    > = Effect.fnUntraced(function* ({ stream, name, url, size, integrity }) {
+        const file = yield* fileSystem.makeTempFileScoped();
+
+        const digestAlgorithm = Match.value(integrity).pipe(
+            Match.when({ "SHA-1": Match.string }, () => "SHA-1" as const),
+            Match.when({ "SHA-256": Match.string }, () => "SHA-256" as const),
+            Match.when({ "SHA-384": Match.string }, () => "SHA-384" as const),
+            Match.when({ "SHA-512": Match.string }, () => "SHA-512" as const),
+            Match.exhaustive
+        );
+
+        const expectedIntegrity = (integrity as Record<Crypto.DigestAlgorithm, string>)[digestAlgorithm];
+        const downloadedIntegrity = yield* stream.pipe(Stream.tapSink(fileSystem.sink(file)), digest(digestAlgorithm));
+
+        if (downloadedIntegrity !== expectedIntegrity) {
+            return yield* Effect.die(
+                `Downloaded ${name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`
+            );
+        }
+
+        return {
+            url,
+            name,
+            file,
+            size,
+            integrity,
+        };
+    });
+
+    const effects = Array.map(streams, write);
+    return yield* Effect.all(effects);
 });
