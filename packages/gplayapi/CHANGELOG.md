@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.16
+
+### Patch Changes
+
+- ea099f1: Switch android device from being a function parameter to a service. Add streaming apis for downloading apks but not writing them to disk
+
 ## 0.0.15
 
 ### Patch Changes
