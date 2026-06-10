@@ -1,5 +1,12 @@
 # @efffrida/vitest-pool
 
+## 0.0.27
+
+### Patch Changes
+
+- Updated dependencies [f582fc4]
+  - @efffrida/frida-tools@0.0.37
+
 ## 0.0.26
 
 ### Patch Changes
