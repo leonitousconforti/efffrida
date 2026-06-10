@@ -290,7 +290,7 @@ export const watch = Function.dual<
     ) => <A, E, R>(
         effect: Effect.Effect<A, E, R>
     ) => Stream.Stream<
-        Exit.Exit<A, E>,
+        Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >,
@@ -299,7 +299,7 @@ export const watch = Function.dual<
         entrypoint: URL | string,
         options?: FridaScript.LoadOptions | undefined
     ) => Stream.Stream<
-        Exit.Exit<A, E>,
+        Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
     >
@@ -312,7 +312,7 @@ export const watch = Function.dual<
             options?: FridaScript.LoadOptions | undefined
         ): Effect.fn.Return<
             Stream.Stream<
-                Exit.Exit<A, E>,
+                Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
                 FridaSessionError.FridaSessionError,
                 Path.Path | FridaSession.FridaSession | Exclude<R, FridaScript.FridaScript>
             >,
@@ -348,10 +348,10 @@ export const watch = Function.dual<
                 Stream.tap((event) => Effect.logDebug(`reloading ${event.path}`)),
                 Stream.mapEffect(() =>
                     effect.pipe(
-                        Effect.exit,
                         Effect.provideServiceEffect(Tag, load(entrypoint, options)),
                         Effect.interruptible,
-                        Effect.scoped
+                        Effect.scoped,
+                        Effect.exit
                     )
                 ),
                 Stream.tap((_exit) => Effect.logDebug(`script reloaded`))
