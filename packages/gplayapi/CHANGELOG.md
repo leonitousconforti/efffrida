@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.17
+
+### Patch Changes
+
+- e43820d: Better error handling when requesting downloads for apks
+
 ## 0.0.16
 
 ### Patch Changes
