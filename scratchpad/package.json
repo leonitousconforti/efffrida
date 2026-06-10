@@ -8,6 +8,7 @@
         "@efffrida/gplayapi": "workspace:*",
         "@efffrida/il2cpp-bridge": "workspace:*",
         "@efffrida/platform": "workspace:*",
+        "@efffrida/polyfills": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@efffrida/sql": "workspace:*",
         "frida": "17.11.0"

@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, pipe, Stream, String, Tuple, References } from "effect";
+import { Context, Effect, Layer, pipe, Stream, String, Tuple, References, Duration } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 
 import { NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
@@ -7,7 +7,7 @@ import { GooglePlayApi } from "@efffrida/gplayapi";
 
 const DeviceLive = pipe(
     FridaDevice.layerAndroidEmulatorDeviceConfig("Small_Phone", {
-        fridaExecutable: "/data/local/tmp/frida-server-17.9.8-android-arm64",
+        fridaExecutable: "/data/local/tmp/frida-server-17.11.0-android-arm64",
         extraEmulatorArgs: ["-gpu", "swiftshader_indirect"],
     }),
     Layer.tap(
@@ -16,9 +16,7 @@ const DeviceLive = pipe(
                 const device = Context.get(deviceCtx, FridaDevice.FridaDevice);
                 const emulatorName = String.replace("android-emulator://", "")(device.host);
                 const childProcessSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
-
-                const androidDevice = yield* GooglePlayApi.AndroidDevice.EmbeddedPixel7a;
-                const apks = yield* GooglePlayApi.download(androidDevice, "com.nimblebit.tinytower");
+                const apks = yield* GooglePlayApi.downloadToDisk("com.nimblebit.tinytower");
 
                 yield* Effect.annotateCurrentSpan({
                     "apk.path": apks,
@@ -47,24 +45,29 @@ const DeviceLive = pipe(
             },
             Effect.scoped,
             Effect.timed,
-            Effect.map(Tuple.get(1)),
-            Effect.flatMap((time) => Effect.logDebug(`APK downloading and installing took ${time}`)),
+            Effect.map(Tuple.get(0)),
+            Effect.map(Duration.toSeconds),
+            Effect.flatMap((time) => Effect.logDebug(`APK downloading and installing took ${time} seconds`)),
             Effect.asVoid
         )
     ),
-    Layer.provide(NodeServices.layer),
-    Layer.provide(NodeHttpClient.layerFetch)
+    Layer.provide(GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive),
+    Layer.provide(NodeHttpClient.layerFetch),
+    Layer.provide(NodeServices.layer)
 );
 
 const SessionLive = Layer.provide(FridaSession.layer("com.nimblebit.tinytower"), DeviceLive);
-const ScriptLive = Layer.provide(FridaScript.layer(new URL("agent.ts", import.meta.url)), SessionLive);
 
 Effect.gen(function* () {
     const script = yield* FridaScript.FridaScript;
     const firstMessage = yield* Stream.runHead(script.stream);
     yield* Effect.log(firstMessage);
-    yield* Effect.sleep("30 seconds");
-})
-    .pipe(Effect.provide(ScriptLive))
-    .pipe(Effect.provideService(References.MinimumLogLevel, "Debug"))
-    .pipe(NodeRuntime.runMain);
+}).pipe(
+    Effect.timeout("30 seconds"),
+    FridaScript.watch(new URL("agent.ts", import.meta.url)),
+    Stream.provide(Layer.merge(SessionLive, NodeServices.layer)),
+    Stream.provideService(References.MinimumLogLevel, "Debug"),
+    FridaScript.logWatchErrors,
+    Stream.runDrain,
+    NodeRuntime.runMain
+);
