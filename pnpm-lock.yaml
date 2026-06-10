@@ -355,6 +355,9 @@ importers:
       '@efffrida/platform':
         specifier: workspace:*
         version: link:../packages/platform
+      '@efffrida/polyfills':
+        specifier: workspace:*
+        version: link:../packages/polyfills
       '@efffrida/rpc':
         specifier: workspace:*
         version: link:../packages/rpc
