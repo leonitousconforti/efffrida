@@ -166,7 +166,7 @@ export const watch: {
         entrypoint: URL | string,
         options?: LoadOptions | undefined
     ): Stream.Stream<
-        Exit.Exit<A, E>,
+        Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
@@ -176,7 +176,7 @@ export const watch: {
     ): <A, E, R>(
         effect: Effect.Effect<A, E, R>
     ) => Stream.Stream<
-        Exit.Exit<A, E>,
+        Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
         FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
