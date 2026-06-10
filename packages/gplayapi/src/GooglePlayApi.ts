@@ -5,16 +5,17 @@
  * @since 1.0.0
  */
 
-import type * as PlatformError from "effect/PlatformError";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
 import * as Array from "effect/Array";
+import * as Cause from "effect/Cause";
 import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Match from "effect/Match";
+import * as PlatformError from "effect/PlatformError";
 import * as Stream from "effect/Stream";
 import * as HttpClient from "effect/unstable/http/HttpClient";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
@@ -185,7 +186,7 @@ export const downloadToStreams = Effect.fnUntraced(function* (
         name: string;
         url: string;
     }>,
-    HttpClientError.HttpClientError | Schema.SchemaError,
+    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError,
     AndroidDeviceService | HttpClient.HttpClient
 > {
     const { item } = yield* details(bundleIdentifier);
@@ -205,7 +206,7 @@ export const downloadToStreams = Effect.fnUntraced(function* (
 
     const mainDeliveryData = deliveryResult?.appDeliveryData;
     if (mainDeliveryData === undefined) {
-        return yield* Effect.die("No delivery data available");
+        return yield* new Cause.NoSuchElementError();
     }
 
     const main = Effect.gen(function* () {
@@ -290,7 +291,7 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         size: bigint;
         integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
     }>,
-    PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
+    Cause.NoSuchElementError | PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
     AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
 > {
     const fileSystem = yield* FileSystem.FileSystem;
@@ -336,8 +337,13 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         const downloadedIntegrity = yield* stream.pipe(Stream.tapSink(fileSystem.sink(file)), digest(digestAlgorithm));
 
         if (downloadedIntegrity !== expectedIntegrity) {
-            return yield* Effect.die(
-                `Downloaded ${name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`
+            return yield* new PlatformError.PlatformError(
+                new PlatformError.SystemError({
+                    _tag: "InvalidData",
+                    module: "GooglePlayApi",
+                    method: "downloadToDisk",
+                    description: `Downloaded ${name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`,
+                })
             );
         }
 
