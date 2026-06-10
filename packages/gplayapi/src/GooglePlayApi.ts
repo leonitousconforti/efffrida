@@ -323,7 +323,7 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         PlatformError.PlatformError | HttpClientError.HttpClientError,
         Crypto.Crypto | Scope.Scope
     > = Effect.fnUntraced(function* ({ stream, name, url, size, integrity }) {
-        const file = yield* fileSystem.makeTempFileScoped();
+        const file = yield* fileSystem.makeTempFileScoped({ suffix: ".apk" });
 
         const digestAlgorithm = Match.value(integrity).pipe(
             Match.when({ "SHA-1": Match.string }, () => "SHA-1" as const),
