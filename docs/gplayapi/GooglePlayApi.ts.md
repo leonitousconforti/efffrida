@@ -19,10 +19,12 @@ Since v1.0.0
   - [bulkDetails](#bulkdetails)
   - [delivery](#delivery)
   - [details](#details)
-  - [download](#download)
+  - [downloadToDisk](#downloadtodisk)
+  - [downloadToStreams](#downloadtostreams)
   - [purchase](#purchase)
 - [Device](#device)
   - [AndroidDevice](#androiddevice)
+  - [AndroidDeviceService](#androiddeviceservice)
 
 ---
 
@@ -33,18 +35,16 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const bulkDetails: ((
-  device: AndroidDevice
-) => (
+declare const bulkDetails: (
   bundleIdentifier: string
-) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
-  ((
-    bundleIdentifier: string,
-    device: AndroidDevice
-  ) => Effect.Effect<BulkDetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
+) => Effect.Effect<
+  BulkDetailsResponse,
+  HttpClientError.HttpClientError | Schema.SchemaError,
+  HttpClient.HttpClient | AndroidDeviceService
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L77)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L78)
 
 Since v1.0.0
 
@@ -53,9 +53,7 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const delivery: ((
-  device: AndroidDevice
-) => (
+declare const delivery: (
   bundleIdentifier: string,
   options: {
     offerType: number
@@ -63,20 +61,14 @@ declare const delivery: ((
     versionCode: number | bigint
     certificateHash?: string | undefined
   }
-) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
-  ((
-    bundleIdentifier: string,
-    options: {
-      offerType: number
-      deliveryToken: string
-      versionCode: number | bigint
-      certificateHash?: string | undefined
-    },
-    device: AndroidDevice
-  ) => Effect.Effect<DeliveryResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
+) => Effect.Effect<
+  DeliveryResponse,
+  HttpClientError.HttpClientError | Schema.SchemaError,
+  HttpClient.HttpClient | AndroidDeviceService
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L156)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L137)
 
 Since v1.0.0
 
@@ -85,40 +77,84 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const details: ((
-  device: AndroidDevice
-) => (
+declare const details: (
   bundleIdentifier: string
-) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
-  ((
-    bundleIdentifier: string,
-    device: AndroidDevice
-  ) => Effect.Effect<DetailsResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
+) => Effect.Effect<
+  DetailsResponse,
+  HttpClientError.HttpClientError | Schema.SchemaError,
+  HttpClient.HttpClient | AndroidDeviceService
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L48)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L54)
 
 Since v1.0.0
 
-## download
+## downloadToDisk
 
 **Signature**
 
 ```ts
-declare const download: (
-  device: AndroidDevice,
-  bundleIdentifier: string
+declare const downloadToDisk: (
+  bundleIdentifier: string,
+  options?: { offerType?: number | undefined; versionCode?: number | bigint | undefined } | undefined
 ) => Effect.Effect<
   readonly [
-    { url: string; name: string; file: string; size: bigint; integrity: { sha1: string } | { sha256: string } },
-    ...{ url: string; name: string; file: string; size: bigint; integrity: { sha1: string } | { sha256: string } }[]
+    {
+      url: string
+      name: string
+      file: string
+      size: bigint
+      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+    },
+    ...{
+      url: string
+      name: string
+      file: string
+      size: bigint
+      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+    }[]
   ],
-  HttpClientError.HttpClientError | Schema.SchemaError | PlatformError.PlatformError,
-  HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+  HttpClientError.HttpClientError | Schema.SchemaError | Cause.NoSuchElementError | PlatformError.PlatformError,
+  HttpClient.HttpClient | AndroidDeviceService | Crypto.Crypto | FileSystem.FileSystem | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L210)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L278)
+
+Since v1.0.0
+
+## downloadToStreams
+
+**Signature**
+
+```ts
+declare const downloadToStreams: (
+  bundleIdentifier: string,
+  options?: { offerType?: number | undefined; versionCode?: number | bigint | undefined } | undefined
+) => Effect.Effect<
+  readonly [
+    {
+      stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>
+      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+      size: bigint
+      name: string
+      url: string
+    },
+    ...{
+      stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>
+      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+      size: bigint
+      name: string
+      url: string
+    }[]
+  ],
+  HttpClientError.HttpClientError | Schema.SchemaError | Cause.NoSuchElementError,
+  HttpClient.HttpClient | AndroidDeviceService
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L173)
 
 Since v1.0.0
 
@@ -127,20 +163,17 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const purchase: ((
-  device: AndroidDevice
-) => (
+declare const purchase: (
   bundleIdentifier: string,
   options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
-) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>) &
-  ((
-    bundleIdentifier: string,
-    options: { offerType: number; versionCode: number | bigint; certificateHash?: string },
-    device: AndroidDevice
-  ) => Effect.Effect<BuyResponse, HttpClientError.HttpClientError | Schema.SchemaError, HttpClient.HttpClient>)
+) => Effect.Effect<
+  BuyResponse,
+  HttpClientError.HttpClientError | Schema.SchemaError,
+  HttpClient.HttpClient | AndroidDeviceService
+>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L116)
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L107)
 
 Since v1.0.0
 
@@ -155,5 +188,17 @@ declare const AndroidDevice: typeof AndroidDevice
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L41)
+
+Since v1.0.0
+
+## AndroidDeviceService
+
+**Signature**
+
+```ts
+declare const AndroidDeviceService: typeof AndroidDeviceService
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/GooglePlayApi.ts#L47)
 
 Since v1.0.0
