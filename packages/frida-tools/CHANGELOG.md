@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.37
+
+### Patch Changes
+
+- f582fc4: Capture compile errors from `FridaScript.watch` earlier so they don't end the watch session
+
 ## 0.0.36
 
 ### Patch Changes

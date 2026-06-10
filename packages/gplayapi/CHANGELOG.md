@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.18
+
+### Patch Changes
+
+- c1b2f7f: Fix `downloadToDisk` to make the temp files with a ".apk" suffix so they are accepted by adb commands
+
 ## 0.0.17
 
 ### Patch Changes
