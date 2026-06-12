@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.41
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+- Updated dependencies [5b84fd0]
+  - @efffrida/frida-tools@0.0.38
+  - @efffrida/polyfills@0.0.13
+  - @efffrida/platform@0.0.28
+
 ## 0.0.40
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.34
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+
 ## 0.0.33
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.28
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+
 ## 0.0.27
 
 ### Patch Changes
