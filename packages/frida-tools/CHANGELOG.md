@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.38
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+
 ## 0.0.37
 
 ### Patch Changes

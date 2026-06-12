@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.27
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+
 ## 0.0.26
 
 ### Patch Changes

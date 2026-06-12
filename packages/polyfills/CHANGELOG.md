@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.13
+
+### Patch Changes
+
+- 5b84fd0: Frida 17.12.0
+
 ## 0.0.12
 
 ### Patch Changes
