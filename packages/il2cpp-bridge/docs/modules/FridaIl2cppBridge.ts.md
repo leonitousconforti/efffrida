@@ -26,12 +26,15 @@ Attaches the caller thread to Il2Cpp domain and executes the given block.
 **Signature**
 
 ```ts
-declare const il2cppPerformEffect: <X, E, R>(
-  effect: Effect.Effect<X, E, R>,
+declare const il2cppPerformEffect: ((
   flag?: "free" | "bind" | "leak" | "main" | undefined
-) => Effect.Effect<X, E, R>
+) => <X, E, R>(effect: Effect.Effect<X, E, R>) => Effect.Effect<X, E, R>) &
+  (<X, E, R>(
+    effect: Effect.Effect<X, E, R>,
+    flag?: "free" | "bind" | "leak" | "main" | undefined
+  ) => Effect.Effect<X, E, R>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/FridaIl2cppBridge.ts#L15)
+[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/FridaIl2cppBridge.ts#L16)
 
 Since v1.0.0
