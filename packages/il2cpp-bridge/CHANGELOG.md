@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.35
+
+### Patch Changes
+
+- 447ea1b: Make `il2cppPerformEffect` dual
+
 ## 0.0.34
 
 ### Patch Changes
