@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.36
+
+### Patch Changes
+
+- fd3c09f: Cache keys implement hash and equals
+
 ## 0.0.35
 
 ### Patch Changes
