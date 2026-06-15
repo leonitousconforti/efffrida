@@ -9,7 +9,9 @@ import * as Cache from "effect/Cache";
 import * as Cause from "effect/Cause";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
+import * as Equal from "effect/Equal";
 import * as Function from "effect/Function";
+import * as Hash from "effect/Hash";
 
 import { CacheCapacity } from "./Assembly.ts";
 
@@ -22,23 +24,58 @@ export {
 } from "./Assembly.ts";
 
 /** @internal */
-class ImageNameKey extends Data.Class<{
-    readonly image: Il2Cpp.Image;
-    readonly name: string;
-}> {}
+class ImageNameKey
+    extends Data.Class<{
+        readonly image: Il2Cpp.Image;
+        readonly name: string;
+    }>
+    implements Equal.Equal, Hash.Hash
+{
+    [Hash.symbol](): number {
+        return Hash.string(`${this.image.handle}:${this.name}`);
+    }
+    [Equal.symbol](that: Equal.Equal): boolean {
+        return that instanceof ImageNameKey && this.image.handle.equals(that.image.handle) && this.name === that.name;
+    }
+}
 
 /** @internal */
-class ClassNameKey extends Data.Class<{
-    readonly klass: Il2Cpp.Class;
-    readonly name: string;
-}> {}
+class ClassNameKey
+    extends Data.Class<{
+        readonly klass: Il2Cpp.Class;
+        readonly name: string;
+    }>
+    implements Equal.Equal, Hash.Hash
+{
+    [Hash.symbol](): number {
+        return Hash.string(`${this.klass.handle}:${this.name}`);
+    }
+    [Equal.symbol](that: Equal.Equal): boolean {
+        return that instanceof ClassNameKey && this.klass.handle.equals(that.klass.handle) && this.name === that.name;
+    }
+}
 
 /** @internal */
-class MethodKey extends Data.Class<{
-    readonly klass: Il2Cpp.Class;
-    readonly name: string;
-    readonly parameterCount: number | undefined;
-}> {}
+class MethodKey
+    extends Data.Class<{
+        readonly klass: Il2Cpp.Class;
+        readonly name: string;
+        readonly parameterCount: number | undefined;
+    }>
+    implements Equal.Equal, Hash.Hash
+{
+    [Hash.symbol](): number {
+        return Hash.string(`${this.klass.handle}:${this.name}:${this.parameterCount}`);
+    }
+    [Equal.symbol](that: Equal.Equal): boolean {
+        return (
+            that instanceof MethodKey &&
+            this.klass.handle.equals(that.klass.handle) &&
+            this.name === that.name &&
+            this.parameterCount === that.parameterCount
+        );
+    }
+}
 
 /**
  * @since 1.0.0
