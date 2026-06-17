@@ -65,7 +65,7 @@
         "@types/frida-gum": "19.6.0",
         "@types/node": "25.9.1",
         "effect": "4.0.0-beta.69",
-        "frida": "17.12.0",
+        "frida": "17.14.1",
         "ioredis": "5.11.1",
         "vite": "8.0.16",
         "vitest": "4.1.8"
