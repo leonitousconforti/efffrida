@@ -9,6 +9,6 @@ describe("vitest-pool spec1", () => {
     });
 
     it("can access Frida APIs", () => {
-        expect(Frida.version).toBe("17.14.1");
+        expect(Frida.version).toBe("17.15.1");
     });
 });
