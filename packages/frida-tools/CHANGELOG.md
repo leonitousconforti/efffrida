@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.40
+
+### Patch Changes
+
+- 891d9ac: Frida 17.15.1 <https://frida.re/news/2026/06/20/frida-17-15-1-released/>
+
 ## 0.0.39
 
 ### Patch Changes

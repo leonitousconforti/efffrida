@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.43
+
+### Patch Changes
+
+- 891d9ac: Frida 17.15.1 <https://frida.re/news/2026/06/20/frida-17-15-1-released/>
+- Updated dependencies [891d9ac]
+  - @efffrida/frida-tools@0.0.40
+  - @efffrida/polyfills@0.0.14
+  - @efffrida/platform@0.0.29
+
 ## 0.0.42
 
 ### Patch Changes
