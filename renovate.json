@@ -20,25 +20,25 @@
         {
             "description": "Group all @types/* packages into one PR",
             "matchPackagePatterns": ["^@types/"],
-            "groupName": "@types packages",
+            "groupName": "types packages",
             "addLabels": ["pnpm"]
         },
         {
             "description": "Group all @babel/* packages into one PR",
             "matchPackagePatterns": ["^@babel/", "babel-plugin-annotate-pure-calls"],
-            "groupName": "@babel packages",
+            "groupName": "babel packages",
             "addLabels": ["pnpm"]
         },
         {
             "description": "Group all @vitest/* packages into one PR",
             "matchPackagePatterns": ["^@vitest/", "vitest", "vite"],
-            "groupName": "@vitest packages",
+            "groupName": "vitest packages",
             "addLabels": ["pnpm"]
         },
         {
             "description": "Group all @changesets/* packages into one PR",
             "matchPackagePatterns": ["^@changesets/"],
-            "groupName": "@changesets packages",
+            "groupName": "changesets packages",
             "addLabels": ["pnpm"]
         },
         {
