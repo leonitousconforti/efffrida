@@ -36,6 +36,6 @@
         "ioredis": "5.11.1",
         "tar": "7.5.16",
         "tsup": "8.5.1",
-        "typescript": "6.0.3"
+        "typescript": "7.0.2"
     }
 }
