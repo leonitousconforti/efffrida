@@ -54,8 +54,8 @@
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.69",
         "@effect/vitest": "4.0.0-beta.69",
-        "@types/frida-gum": "19.7.0",
-        "@types/node": "25.9.3",
+        "@types/frida-gum": "19.8.0",
+        "@types/node": "25.9.5",
         "effect": "4.0.0-beta.69",
         "ioredis": "5.11.1",
         "vite": "8.0.16",
