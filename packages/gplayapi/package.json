@@ -52,15 +52,15 @@
         "protobuf": "buf generate"
     },
     "devDependencies": {
-        "@bufbuild/buf": "1.70.0",
-        "@bufbuild/protobuf": "2.12.0",
+        "@bufbuild/buf": "1.71.0",
+        "@bufbuild/protobuf": "2.12.1",
         "@effect/platform-node": "4.0.0-beta.69",
         "@types/node": "25.9.5",
         "effect": "4.0.0-beta.69",
         "ioredis": "5.11.1"
     },
     "peerDependencies": {
-        "@bufbuild/protobuf": "2.12.0",
+        "@bufbuild/protobuf": "2.12.1",
         "effect": "4.0.0-beta.69"
     },
     "tags": [
