@@ -19,51 +19,67 @@
     "packageRules": [
         {
             "description": "Group all @types/* packages into one PR",
-            "matchPackagePatterns": ["^@types/"],
             "groupName": "types packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@types//"
+            ]
         },
         {
             "description": "Group all @babel/* packages into one PR",
-            "matchPackagePatterns": ["^@babel/", "babel-plugin-annotate-pure-calls"],
             "groupName": "babel packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@babel//",
+                "/babel-plugin-annotate-pure-calls/"
+            ]
         },
         {
             "description": "Group all @vitest/* packages into one PR",
-            "matchPackagePatterns": ["^@vitest/", "vitest", "vite"],
             "groupName": "vitest packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@vitest//",
+                "/vitest/",
+                "/vite/"
+            ]
         },
         {
             "description": "Group all @changesets/* packages into one PR",
-            "matchPackagePatterns": ["^@changesets/"],
             "groupName": "changesets packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@changesets//"
+            ]
         },
         {
             "description": "Group oxc-tools packages into one PR",
-            "matchPackagePatterns": [
-                "oxfmt",
-                "oxlint",
-                "@effect/build-utils",
-                "@effect/docgen",
-                "@effect/language-service"
-            ],
             "groupName": "oxc tools packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/oxfmt/",
+                "/oxlint/",
+                "/@effect/build-utils/",
+                "/@effect/docgen/",
+                "/@effect/language-service/"
+            ]
         },
         {
             "description": "Group all bufbuild packages into one PR",
-            "matchPackagePatterns": ["^@bufbuild/"],
             "groupName": "bufbuild packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@bufbuild//"
+            ]
         },
         {
             "description": "Group all Effect-TS packages into one PR",
-            "matchPackagePatterns": ["^@effect/", "effect"],
             "groupName": "Effect-TS packages",
-            "addLabels": ["pnpm"]
+            "addLabels": ["pnpm"],
+            "matchPackageNames": [
+                "/^@effect//",
+                "/effect/"
+            ]
         },
         {
             "description": "Pin GitHub Actions to a full commit SHA and keep that SHA at the latest release",
