@@ -18,10 +18,6 @@
     },
     "packageRules": [
         {
-            "matchManagers": ["npm"],
-            "enabled": false
-        },
-        {
             "description": "Pin GitHub Actions to a full commit SHA and keep that SHA at the latest release",
             "matchManagers": ["github-actions"],
             "pinDigests": true,
