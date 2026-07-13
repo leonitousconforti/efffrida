@@ -1,5 +1,12 @@
 # create-efffrida-app
 
+## 0.0.7
+
+### Patch Changes
+
+- 5f96136: Update Effect-TS packages to v4.0.0-beta.98
+- 6c4058a: Update dependency tar to v7.5.20
+
 ## 0.0.6
 
 ### Patch Changes
