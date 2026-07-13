@@ -46,9 +46,9 @@
             "matchPackageNames": [
                 "/oxfmt/",
                 "/oxlint/",
-                "/@effect/build-utils/",
-                "/@effect/docgen/",
-                "/@effect/language-service/"
+                "/@effect//build-utils/",
+                "/@effect//docgen/",
+                "/@effect//language-service/"
             ],
             "groupName": "oxc tools packages",
             "addLabels": ["pnpm"]
