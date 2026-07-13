@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@effect/docgen>typescript': 6.0.3
+  '@effect/docgen>typescript': 7.0.2
   madge>typescript: 6.0.3
 
 importers:
@@ -744,7 +744,7 @@ packages:
     hasBin: true
     peerDependencies:
       tsx: ^4.19.3
-      typescript: 6.0.3
+      typescript: 7.0.2
 
   '@effect/language-service@0.86.2':
     resolution: {integrity: sha512-SaPln+8srOqDJDUwNTDmP5e+IYpEDr9+1epGznnsLqu8xvo6VnxyWARdeLpqvZJlb0Pgy9ca7ppqvvdWbHPXAg==}
