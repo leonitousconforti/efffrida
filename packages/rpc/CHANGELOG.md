@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.45
+
+### Patch Changes
+
+- ab8fd4b: Update vitest packages
+- Updated dependencies [ab8fd4b]
+  - @efffrida/frida-tools@0.0.42
+  - @efffrida/platform@0.0.31
+
 ## 0.0.44
 
 ### Patch Changes

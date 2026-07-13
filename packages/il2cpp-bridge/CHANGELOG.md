@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.39
+
+### Patch Changes
+
+- ab8fd4b: Update vitest packages
+
 ## 0.0.38
 
 ### Patch Changes

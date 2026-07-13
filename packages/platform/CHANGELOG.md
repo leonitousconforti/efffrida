@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.31
+
+### Patch Changes
+
+- ab8fd4b: Update vitest packages
+
 ## 0.0.30
 
 ### Patch Changes
