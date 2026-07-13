@@ -738,7 +738,7 @@ packages:
     hasBin: true
 
   '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5':
-    resolution: {tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5}
+    resolution: {integrity: sha512-DIHhD5hKwbeZDACeG+6r+ARde2MrFMYe49PLyz+YXVhObtr+ENdpsLk/BsMFjEPX0QxrMZJXf8uWFYNFaRUwfw==, tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5}
     version: 0.5.2
     engines: {node: '>=18.0.0'}
     hasBin: true
