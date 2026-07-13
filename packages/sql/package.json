@@ -49,19 +49,19 @@
         "coverage": "vitest --coverage"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.0-beta.69",
+        "@effect/vitest": "4.0.0-beta.98",
         "@efffrida/polyfills": "workspace:*",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.8.0",
         "@types/node": "25.9.5",
         "birpc": "4.0.0",
-        "effect": "4.0.0-beta.69",
+        "effect": "4.0.0-beta.98",
         "flatted": "3.4.2",
         "vite": "8.0.16",
         "vitest": "4.1.8"
     },
     "peerDependencies": {
-        "effect": "4.0.0-beta.69"
+        "effect": "4.0.0-beta.98"
     },
     "tags": [
         "frida.re",

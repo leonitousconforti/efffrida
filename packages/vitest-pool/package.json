@@ -56,25 +56,25 @@
         "ioredis": "5.11.1"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.69",
+        "@effect/platform-node": "4.0.0-beta.98",
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.8.0",
         "@types/node": "25.9.5",
         "@vitest/runner": "4.1.8",
         "@vitest/utils": "4.1.8",
         "birpc": "4.0.0",
-        "effect": "4.0.0-beta.69",
+        "effect": "4.0.0-beta.98",
         "flatted": "3.4.2",
         "vite": "8.0.16",
         "vitest": "4.1.8"
     },
     "peerDependencies": {
-        "@effect/platform-node": "4.0.0-beta.69",
+        "@effect/platform-node": "4.0.0-beta.98",
         "@efffrida/polyfills": "workspace:*",
         "@vitest/runner": "4.1.8",
         "@vitest/utils": "4.1.8",
         "birpc": "4.0.0",
-        "effect": "4.0.0-beta.69",
+        "effect": "4.0.0-beta.98",
         "flatted": "3.4.2",
         "vite": "8.0.16",
         "vitest": "4.1.8"
