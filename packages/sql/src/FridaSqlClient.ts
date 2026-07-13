@@ -200,6 +200,9 @@ export const make = (
                     const effect = runStatement(db.prepare(sql), params ?? []);
                     return transformRows ? Effect.map(effect, transformRows) : effect;
                 },
+                executeValuesUnprepared(sql, params) {
+                    return runStatement(db.prepare(sql), params ?? []);
+                },
                 executeStream(_sql, _params, _transformRows) {
                     return Stream.die("executeStream not implemented");
                 },

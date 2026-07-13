@@ -55,7 +55,7 @@ export const makeProtocolFrida = (
             const clientExportName = yield* Effect.orDie(informServerToSetupExport());
 
             const parser = serialization.makeUnsafe();
-            const requestClientMap = new Map<string, number>();
+            const requestClientMap = new Map<string | number, number>();
             let currentError: RpcClientError.RpcClientError | undefined = undefined;
 
             const broadcast = (response: RpcMessage.FromServerEncoded) =>
