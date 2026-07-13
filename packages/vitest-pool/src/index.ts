@@ -53,7 +53,8 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         >
     >;
 
-    private readonly cancelables: Map<(arg: any) => void, (interrupter?: number) => void> = new Map();
+    private readonly listeners: Map<string, (...args: Array<unknown>) => void> = new Map();
+    private cancelables: Array<(interrupter?: number) => void> = [];
     private sends: Array<Promise<unknown>> = [];
 
     constructor(poolOptions: VitestNode.PoolOptions, customOptions: Schema.Schema.Type<typeof FridaSchema>) {
@@ -121,9 +122,9 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
     async stop(): Promise<void> {
         await Promise.allSettled(this.sends);
-        for (const cancelable of this.cancelables.values()) cancelable();
+        for (const cancelable of this.cancelables) cancelable();
         await Scope.close(this.scope, Exit.void).pipe(Effect.runPromise);
-        this.cancelables.clear();
+        this.cancelables = [];
     }
 
     async send(message: VitestNode.WorkerRequest): Promise<void> {
@@ -141,63 +142,72 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     }
 
     on(event: string, callback: (arg: any) => void): void {
+        let makeCancellable: () => (interrupter?: number | undefined) => void = undefined!;
+
         switch (event) {
             case "message": {
-                this.cancelables.set(
-                    callback,
+                makeCancellable = () =>
                     Effect.runCallbackWith(this.scriptContext)(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                            Stream.runForEach(fridaScript.stream, (input) => Effect.sync(() => callback(input.message)))
+                            Stream.runForEach(fridaScript.stream, (input) =>
+                                Effect.sync(() => {
+                                    const listener = this.listeners.get(event);
+                                    if (listener) listener(input.message);
+                                })
+                            )
                         )
-                    )
-                );
+                    );
 
                 break;
             }
 
             case "error":
-                this.cancelables.set(
-                    callback,
+                makeCancellable = () =>
                     Effect.runCallbackWith(this.scriptContext)(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                             Deferred.await(fridaScript.scriptError)
                         ),
                         {
                             onExit: (exit) => {
+                                const listener = this.listeners.get(event);
+                                if (!listener) return;
+
                                 if (Exit.isSuccess(exit)) {
-                                    callback(exit.value);
+                                    listener(exit.value);
                                 } else if (!Cause.hasInterruptsOnly(exit.cause)) {
-                                    callback(exit.cause);
+                                    listener(exit.cause);
                                 }
                             },
                         }
-                    )
-                );
+                    );
 
                 break;
 
             case "exit":
-                this.cancelables.set(
-                    callback,
+                makeCancellable = () =>
                     Effect.runCallbackWith(this.scriptContext)(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
-                        { onExit: () => callback(void 0) }
-                    )
-                );
+                        {
+                            onExit: () => {
+                                const listener = this.listeners.get(event);
+                                if (listener) listener(void 0);
+                            },
+                        }
+                    );
 
                 break;
 
             default:
                 throw new Error(`Event ${event} not supported in FridaPoolWorker`);
         }
+
+        const cancelable = makeCancellable();
+        this.listeners.set(event, callback);
+        this.cancelables.push(cancelable);
     }
 
-    off(_event: string, callback: (arg: any) => void): void {
-        const cancelable = this.cancelables.get(callback);
-        if (cancelable !== undefined) {
-            this.cancelables.delete(callback);
-            cancelable();
-        }
+    off(event: string, _callback: (arg: any) => void): void {
+        this.listeners.delete(event);
     }
 
     deserialize(data: unknown) {
