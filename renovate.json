@@ -18,6 +18,54 @@
     },
     "packageRules": [
         {
+            "description": "Group all @types/* packages into one PR",
+            "matchPackagePatterns": ["^@types/"],
+            "groupName": "@types packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group all @babel/* packages into one PR",
+            "matchPackagePatterns": ["^@babel/", "babel-plugin-annotate-pure-calls"],
+            "groupName": "@babel packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group all @vitest/* packages into one PR",
+            "matchPackagePatterns": ["^@vitest/", "vitest", "vite"],
+            "groupName": "@vitest packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group all @changesets/* packages into one PR",
+            "matchPackagePatterns": ["^@changesets/"],
+            "groupName": "@changesets packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group oxc-tools packages into one PR",
+            "matchPackagePatterns": [
+                "oxfmt",
+                "oxlint",
+                "@effect/build-utils",
+                "@effect/docgen",
+                "@effect/language-service"
+            ],
+            "groupName": "oxc tools packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group all bufbuild packages into one PR",
+            "matchPackagePatterns": ["^@bufbuild/"],
+            "groupName": "bufbuild packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group all Effect-TS packages into one PR",
+            "matchPackagePatterns": ["^@effect/", "effect"],
+            "groupName": "Effect-TS packages",
+            "addLabels": ["pnpm"]
+        },
+        {
             "description": "Pin GitHub Actions to a full commit SHA and keep that SHA at the latest release",
             "matchManagers": ["github-actions"],
             "pinDigests": true,
