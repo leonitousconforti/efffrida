@@ -60,7 +60,7 @@
         "@efffrida/polyfills": "workspace:*"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.69",
+        "@effect/platform-node": "4.0.0-beta.98",
         "@effect/vitest": "4.0.0-beta.69",
         "@types/frida-gum": "19.7.0",
         "@types/node": "25.9.3",

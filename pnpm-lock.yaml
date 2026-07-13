@@ -76,8 +76,8 @@ importers:
   packages/create-efffrida-app:
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@types/node':
         specifier: 25.9.3
         version: 25.9.3
@@ -104,8 +104,8 @@ importers:
         version: 17.15.1
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.8(@types/node@25.9.3)(vite@8.0.16(@types/node@25.9.3)))
@@ -137,8 +137,8 @@ importers:
         specifier: 2.12.0
         version: 2.12.0
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@types/node':
         specifier: 25.9.3
         version: 25.9.3
@@ -239,8 +239,8 @@ importers:
         version: link:../polyfills
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.8(@types/node@25.9.3)(vite@8.0.16(@types/node@25.9.3)))
@@ -312,8 +312,8 @@ importers:
         version: 5.11.1
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -373,8 +373,8 @@ importers:
         version: 17.15.1
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       effect:
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69
@@ -395,8 +395,8 @@ importers:
         specifier: 0.86.2
         version: 0.86.2
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.8)
@@ -465,8 +465,8 @@ importers:
         specifier: 0.86.2
         version: 0.86.2
       '@effect/platform-node':
-        specifier: 4.0.0-beta.69
-        version: 4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)
+        specifier: 4.0.0-beta.98
+        version: 4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.69
         version: 4.0.0-beta.69(effect@4.0.0-beta.69)(vitest@4.1.8)
@@ -738,7 +738,7 @@ packages:
     hasBin: true
 
   '@effect/docgen@https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5':
-    resolution: {integrity: sha512-DIHhD5hKwbeZDACeG+6r+ARde2MrFMYe49PLyz+YXVhObtr+ENdpsLk/BsMFjEPX0QxrMZJXf8uWFYNFaRUwfw==, tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5}
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/docgen/@effect/docgen@e57e5f5}
     version: 0.5.2
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -755,17 +755,17 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  '@effect/platform-node-shared@4.0.0-beta.71':
-    resolution: {integrity: sha512-wTMfzEjNggk6Yi4IEo7JyyOeIeQOLpcoOQVc8c446ubOmNsDJVdsIFTB00Nk/CCWm6mxV0C3Vm5tYEB2Z08swg==}
+  '@effect/platform-node-shared@4.0.0-beta.98':
+    resolution: {integrity: sha512-iySXaffnCJX1sNAIp79ghhIeui9E5qwUQyqd1VLPkB9UNO4vdpd9B5fTEXwe7S/GusL4jsk9vSvX38XJgRFG1w==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.71
+      effect: ^4.0.0-beta.98
 
-  '@effect/platform-node@4.0.0-beta.69':
-    resolution: {integrity: sha512-CkyueiY7/tJjCvyoRUOO8cXy7K5YtKxF6MGeuDyDw2IJRNy5Vf1WewXz15H6CO6Gyz/3Bl7HVs3dqEQYiMMAYA==}
+  '@effect/platform-node@4.0.0-beta.98':
+    resolution: {integrity: sha512-IQu1TiLXQEDSGkDBllyYjVadf+UqdjptryqX4mmktVTTbGDq7X4uVxe7cSgXuqZvyfG6kagTzwj2lfynxOaKQg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.69
+      effect: ^4.0.0-beta.98
       ioredis: ^5.7.0
 
   '@effect/vitest@4.0.0-beta.69':
@@ -3401,8 +3401,8 @@ packages:
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
-  undici@8.3.0:
-    resolution: {integrity: sha512-TkUDgb6tl7KOGZ+7e8E3d2FYgUQgF6z5YypqjWmixVQSQERFcVrVg0ySADm2LVLRh5ljAaHTCR5Fmz3Q34rB7Q==}
+  undici@8.7.0:
+    resolution: {integrity: sha512-N7iQtfyLhIMOFgQubvmLV26svHpO0bqKnAiWotTQCVKCmWrcGbBotPuW1x+xwYZ2VHdSTVUfPQQnlEt1/LouTQ==}
     engines: {node: '>=22.19.0'}
 
   universalify@0.1.2:
@@ -3904,7 +3904,7 @@ snapshots:
       repeat-string: 1.6.1
       strip-color: 0.1.0
 
-  '@effect/platform-node-shared@4.0.0-beta.71(effect@4.0.0-beta.69)':
+  '@effect/platform-node-shared@4.0.0-beta.98(effect@4.0.0-beta.69)':
     dependencies:
       '@types/ws': 8.18.1
       effect: 4.0.0-beta.69
@@ -3913,13 +3913,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.69(effect@4.0.0-beta.69)(ioredis@5.11.1)':
+  '@effect/platform-node@4.0.0-beta.98(effect@4.0.0-beta.69)(ioredis@5.11.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.71(effect@4.0.0-beta.69)
+      '@effect/platform-node-shared': 4.0.0-beta.98(effect@4.0.0-beta.69)
       effect: 4.0.0-beta.69
       ioredis: 5.11.1
       mime: 4.1.0
-      undici: 8.3.0
+      undici: 8.7.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -6237,7 +6237,7 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici@8.3.0: {}
+  undici@8.7.0: {}
 
   universalify@0.1.2: {}
 

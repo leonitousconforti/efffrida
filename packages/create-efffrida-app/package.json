@@ -30,7 +30,7 @@
         "check": "tsc -b tsconfig.json"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.69",
+        "@effect/platform-node": "4.0.0-beta.98",
         "@types/node": "25.9.3",
         "effect": "4.0.0-beta.69",
         "ioredis": "5.11.1",
