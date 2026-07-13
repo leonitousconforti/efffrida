@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.42
+
+### Patch Changes
+
+- ab8fd4b: Update vitest packages
+
 ## 0.0.41
 
 ### Patch Changes
