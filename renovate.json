@@ -62,7 +62,8 @@
                 "@effect/build-utils",
                 "@effect/docgen",
                 "@effect/language-service",
-                "typescript"
+                "typescript",
+                "tsx"
             ],
             "groupName": "build tools packages",
             "addLabels": ["pnpm"]
