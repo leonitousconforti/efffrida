@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.38
+
+### Patch Changes
+
+- 5f96136: Update Effect-TS packages to v4.0.0-beta.98
+
 ## 0.0.37
 
 ### Patch Changes
