@@ -25,13 +25,13 @@
         },
         {
             "description": "Group all @babel/* packages into one PR",
-            "matchPackageNames": ["/^@babel//", "/babel-plugin-annotate-pure-calls/"],
+            "matchPackageNames": ["/^@babel//", "babel-plugin-annotate-pure-calls"],
             "groupName": "babel packages",
             "addLabels": ["pnpm"]
         },
         {
             "description": "Group all @vitest/* packages into one PR",
-            "matchPackageNames": ["/^@vitest//", "/vitest/", "/vite/"],
+            "matchPackageNames": ["/^@vitest//", "vitest", "vite"],
             "groupName": "vitest packages",
             "addLabels": ["pnpm"]
         },
@@ -42,27 +42,29 @@
             "addLabels": ["pnpm"]
         },
         {
-            "description": "Group oxc-tools packages into one PR",
-            "matchPackageNames": [
-                "/oxfmt/",
-                "/oxlint/",
-                "/@effect//build-utils/",
-                "/@effect//docgen/",
-                "/@effect//language-service/"
-            ],
-            "groupName": "oxc tools packages",
-            "addLabels": ["pnpm"]
-        },
-        {
-            "description": "Group all bufbuild packages into one PR",
+            "description": "Group all @bufbuild/* packages into one PR",
             "matchPackageNames": ["/^@bufbuild//"],
             "groupName": "bufbuild packages",
             "addLabels": ["pnpm"]
         },
         {
             "description": "Group all Effect-TS packages into one PR",
-            "matchPackageNames": ["/^@effect//", "/effect/"],
+            "matchPackageNames": ["/^@effect//", "effect"],
+            "excludePackageNames": ["@effect/build-utils", "@effect/docgen", "@effect/language-service"],
             "groupName": "Effect-TS packages",
+            "addLabels": ["pnpm"]
+        },
+        {
+            "description": "Group build tools packages into one PR",
+            "matchPackageNames": [
+                "oxfmt",
+                "oxlint",
+                "@effect/build-utils",
+                "@effect/docgen",
+                "@effect/language-service",
+                "typescript"
+            ],
+            "groupName": "build tools packages",
             "addLabels": ["pnpm"]
         },
         {
