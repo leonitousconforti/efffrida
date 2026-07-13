@@ -1,5 +1,12 @@
 # @efffrida/gplayapi
 
+## 0.0.19
+
+### Patch Changes
+
+- dcf304c: Update bufbuild packages
+- 5f96136: Update Effect-TS packages to v4.0.0-beta.98
+
 ## 0.0.18
 
 ### Patch Changes
