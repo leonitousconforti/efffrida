@@ -110,8 +110,8 @@ importers:
         specifier: 4.0.0-beta.98
         version: 4.0.0-beta.98(effect@4.0.0-beta.98)(vitest@4.1.10(@types/node@25.9.5)(vite@8.1.4(@types/node@25.9.5)))
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -162,8 +162,8 @@ importers:
         specifier: workspace:*
         version: link:../polyfills
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       effect:
         specifier: 4.0.0-beta.98
         version: 4.0.0-beta.98
@@ -186,8 +186,8 @@ importers:
         specifier: workspace:*
         version: link:../vitest-pool
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -220,8 +220,8 @@ importers:
         version: 1.0.6
     devDependencies:
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -245,8 +245,8 @@ importers:
         specifier: 4.0.0-beta.98
         version: 4.0.0-beta.98(effect@4.0.0-beta.98)(vitest@4.1.10(@types/node@25.9.5)(vite@8.1.4(@types/node@25.9.5)))
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -278,8 +278,8 @@ importers:
         specifier: workspace:*
         version: link:../vitest-pool
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -318,8 +318,8 @@ importers:
         specifier: workspace:*
         version: link:../polyfills
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -407,8 +407,8 @@ importers:
         specifier: latest
         version: link:../../packages/vitest-pool
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -477,8 +477,8 @@ importers:
         specifier: latest
         version: link:../../packages/vitest-pool
       '@types/frida-gum':
-        specifier: 19.8.0
-        version: 19.8.0
+        specifier: 19.9.0
+        version: 19.9.0
       '@types/node':
         specifier: 25.9.5
         version: 25.9.5
@@ -1702,8 +1702,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/frida-gum@19.8.0':
-    resolution: {integrity: sha512-JxEu//mAKq1NhG81EVyQGwTZLNFprHD8oYo6BmVJ+rNiqTxxBQtTbec8YlR8rl65oDuOgJD0sncTT4gaIQCLTA==}
+  '@types/frida-gum@19.9.0':
+    resolution: {integrity: sha512-phGSt6wN2/PQFVzHQGPKGFh4TMJcoKm1y+TUh72CR5TYjcbp3KdyaBbIChwJOzjfhrYK/Kr6FB08g15mGSjzDQ==}
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
@@ -4449,7 +4449,7 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/frida-gum@19.8.0': {}
+  '@types/frida-gum@19.9.0': {}
 
   '@types/node@12.20.55': {}
 
