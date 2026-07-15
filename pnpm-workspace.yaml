@@ -1,6 +1,5 @@
 hoist: false
 hoistPattern: []
-minimumReleaseAge: 0 # FIXME: Get rid of this
 autoInstallPeers: false
 strictPeerDependencies: true
 publicHoistPattern:
