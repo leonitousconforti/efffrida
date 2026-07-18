@@ -23,7 +23,7 @@
         "@effect/vitest": "4.0.0-beta.98",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
-        "@types/frida-gum": "19.9.0",
+        "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.5",
         "@vitest/coverage-v8": "4.1.10",
         "@vitest/runner": "4.1.10",
