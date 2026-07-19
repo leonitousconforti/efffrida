@@ -54,14 +54,14 @@
     "devDependencies": {
         "@bufbuild/buf": "1.72.0",
         "@bufbuild/protobuf": "2.12.1",
-        "@effect/platform-node": "4.0.0-beta.98",
+        "@effect/platform-node": "4.0.0-beta.99",
         "@types/node": "25.9.5",
-        "effect": "4.0.0-beta.98",
+        "effect": "4.0.0-beta.99",
         "ioredis": "5.11.1"
     },
     "peerDependencies": {
         "@bufbuild/protobuf": "2.12.1",
-        "effect": "4.0.0-beta.98"
+        "effect": "4.0.0-beta.99"
     },
     "tags": [
         "frida.re",
