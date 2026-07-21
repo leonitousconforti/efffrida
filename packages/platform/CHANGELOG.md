@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.32
+
+### Patch Changes
+
+- 62e96ee: Update Effect-TS packages to v4.0.0-beta.99
+
 ## 0.0.31
 
 ### Patch Changes
