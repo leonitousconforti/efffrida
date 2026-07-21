@@ -1,5 +1,15 @@
 # @efffrida/vitest-pool
 
+## 0.0.33
+
+### Patch Changes
+
+- 5f67b36: Update dependency frida to v17.16.3
+- 62e96ee: Update Effect-TS packages to v4.0.0-beta.99
+- Updated dependencies [5f67b36]
+- Updated dependencies [62e96ee]
+  - @efffrida/frida-tools@0.0.43
+
 ## 0.0.32
 
 ### Patch Changes
