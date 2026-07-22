@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.44
+
+### Patch Changes
+
+- 35bd1e9: Update Effect-TS packages to v4.0.0-beta.100
+
 ## 0.0.43
 
 ### Patch Changes
