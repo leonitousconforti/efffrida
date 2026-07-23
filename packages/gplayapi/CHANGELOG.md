@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.22
+
+### Patch Changes
+
+- 43cc217: Update dependency @bufbuild/protobuf to v2.13.0
+
 ## 0.0.21
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.35
+
+### Patch Changes
+
+- 231b8eb: Update dependency frida to v17.16.4
+- Updated dependencies [231b8eb]
+  - @efffrida/frida-tools@0.0.45
+
 ## 0.0.34
 
 ### Patch Changes

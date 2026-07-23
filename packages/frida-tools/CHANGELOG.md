@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.45
+
+### Patch Changes
+
+- 231b8eb: Update dependency frida to v17.16.4
+
 ## 0.0.44
 
 ### Patch Changes
