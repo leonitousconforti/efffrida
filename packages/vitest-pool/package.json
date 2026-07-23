@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "frida": "17.16.3",
+        "frida": "17.16.4",
         "ioredis": "5.11.1"
     },
     "devDependencies": {
