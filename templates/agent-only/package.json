@@ -32,7 +32,7 @@
         "@vitest/runner": "4.1.10",
         "@vitest/utils": "4.1.10",
         "birpc": "4.0.0",
-        "flatted": "3.4.2",
+        "flatted": "3.4.3",
         "ioredis": "5.11.1",
         "oxfmt": "0.60.0",
         "oxlint": "1.75.0",
