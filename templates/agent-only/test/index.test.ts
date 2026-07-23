@@ -7,7 +7,7 @@ describe("agent tests", () => {
     it.effect("should have the correct frida version", () =>
         Effect.gen(function* () {
             const version = yield* FridaVersion.use((frida) => frida.version);
-            expect(version).toBe("17.16.3");
+            expect(version).toBe("17.16.4");
         }).pipe(Effect.provide(FridaVersion.default))
     );
 });
