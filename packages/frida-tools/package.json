@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/frida-tools",
-    "version": "0.0.44",
+    "version": "0.0.45",
     "description": "Frida with effect-ts",
     "keywords": [
         "effect-ts",

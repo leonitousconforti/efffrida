@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.48
+
+### Patch Changes
+
+- 231b8eb: Update dependency frida to v17.16.4
+- Updated dependencies [231b8eb]
+  - @efffrida/frida-tools@0.0.45
+  - @efffrida/platform@0.0.33
+
 ## 0.0.47
 
 ### Patch Changes
