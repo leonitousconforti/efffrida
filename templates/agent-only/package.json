@@ -21,7 +21,7 @@
         "effect": "4.0.0-beta.100"
     },
     "devDependencies": {
-        "@effect/language-service": "0.87.0",
+        "@effect/language-service": "0.87.1",
         "@effect/platform-node": "4.0.0-beta.100",
         "@effect/vitest": "4.0.0-beta.100",
         "@efffrida/polyfills": "latest",
