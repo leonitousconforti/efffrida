@@ -15,12 +15,12 @@
         "@efffrida/frida-tools": "latest",
         "@efffrida/platform": "latest",
         "@efffrida/rpc": "latest",
-        "effect": "4.0.0-beta.100"
+        "effect": "4.0.0-beta.101"
     },
     "devDependencies": {
         "@effect/language-service": "0.87.0",
-        "@effect/platform-node": "4.0.0-beta.100",
-        "@effect/vitest": "4.0.0-beta.100",
+        "@effect/platform-node": "4.0.0-beta.101",
+        "@effect/vitest": "4.0.0-beta.101",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.10.0",
@@ -39,6 +39,6 @@
         "vitest": "4.1.10"
     },
     "peerDependencies": {
-        "effect": "4.0.0-beta.100"
+        "effect": "4.0.0-beta.101"
     }
 }
