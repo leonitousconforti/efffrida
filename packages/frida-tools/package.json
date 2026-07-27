@@ -52,17 +52,17 @@
         "frida": "17.16.4"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.100",
-        "@effect/vitest": "4.0.0-beta.100",
+        "@effect/platform-node": "4.0.0-beta.101",
+        "@effect/vitest": "4.0.0-beta.101",
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.5",
-        "effect": "4.0.0-beta.100",
+        "effect": "4.0.0-beta.101",
         "ioredis": "5.11.1",
         "vite": "8.1.5",
         "vitest": "4.1.10"
     },
     "peerDependencies": {
-        "effect": "4.0.0-beta.100"
+        "effect": "4.0.0-beta.101"
     },
     "tags": [
         "frida.re",
