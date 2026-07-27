@@ -1,5 +1,12 @@
 # @efffrida/platform
 
+## 0.0.34
+
+### Patch Changes
+
+- abe5443: Update dependency flatted to v3.4.3
+- 46c6be4: Update Effect-TS packages to v4.0.0-beta.101
+
 ## 0.0.33
 
 ### Patch Changes
