@@ -31,6 +31,6 @@ Re-exports all named exports from the "./FridaSqlClient.ts" module as `FridaSqlC
 export * as FridaSqlClient from "./FridaSqlClient.ts"
 ```
 
-[Source](/blob/main/src/index.ts#L10)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/index.ts#L10)
 
 Since v1.0.0

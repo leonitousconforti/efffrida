@@ -36,7 +36,7 @@ declare const layerProtocolFrida: Layer.Layer<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L103)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L103)
 
 Since v1.0.0
 
@@ -54,6 +54,6 @@ declare const makeProtocolFrida: () => Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L27)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L27)
 
 Since v1.0.0

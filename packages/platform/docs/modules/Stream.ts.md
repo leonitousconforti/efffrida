@@ -46,7 +46,7 @@ declare const fromInputStream: <E>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L59)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L59)
 
 Since v1.0.0
 
@@ -66,7 +66,7 @@ declare const makeUnixInputStream: <E>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L70)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L70)
 
 Since v1.0.0
 
@@ -86,7 +86,7 @@ declare const makeWin32InputStream: <E>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L81)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L81)
 
 Since v1.0.0
 
@@ -104,7 +104,7 @@ Since v1.0.0
 declare const toInputStream: <E, R>(stream: Stream.Stream<Uint8Array, E, R>) => Effect.Effect<InputStream, never, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L92)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L92)
 
 Since v1.0.0
 
@@ -118,7 +118,7 @@ Like `toInputStream` but with `R` fixed to `never`.
 declare const toInputStreamNever: <E>(stream: Stream.Stream<Uint8Array, E, never>) => InputStream
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L101)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L101)
 
 Since v1.0.0
 
@@ -145,7 +145,7 @@ declare const receiveStream: (
 ) => Effect.Effect<Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never>, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L28)
 
 Since v1.0.0
 
@@ -161,6 +161,6 @@ export interface FromInputStreamOptions {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Stream.ts#L20)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L20)
 
 Since v1.0.0

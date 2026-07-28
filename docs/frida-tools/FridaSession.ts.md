@@ -49,7 +49,7 @@ declare const attach: (
 ) => Effect.Effect<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L103)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L103)
 
 Since v1.0.0
 
@@ -63,7 +63,7 @@ declare const frontmost: (
 ) => Effect.Effect<Frida.Application, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L85)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L85)
 
 Since v1.0.0
 
@@ -78,7 +78,7 @@ declare const spawn: (
 ) => Effect.Effect<number, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L94)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L94)
 
 Since v1.0.0
 
@@ -98,7 +98,7 @@ declare const SessionLive: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L159)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L159)
 
 Since v1.0.0
 
@@ -113,7 +113,7 @@ declare const layer: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L113)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L113)
 
 Since v1.0.0
 
@@ -127,7 +127,7 @@ declare const layerFrontmost: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L122)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L122)
 
 Since v1.0.0
 
@@ -168,7 +168,7 @@ export interface FridaSession {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L40)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L40)
 
 Since v1.0.0
 
@@ -182,7 +182,7 @@ Since v1.0.0
 declare const isFridaSession: (u: unknown) => u is FridaSession
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L79)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L79)
 
 Since v1.0.0
 
@@ -219,7 +219,7 @@ declare const AttachSchema: Schema.Union<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L130)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L130)
 
 Since v1.0.0
 
@@ -233,7 +233,7 @@ Since v1.0.0
 declare const FridaSession: Context.Service<FridaSession, FridaSession>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L73)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L73)
 
 Since v1.0.0
 
@@ -247,7 +247,7 @@ Since v1.0.0
 declare const FridaSessionTypeId: unique symbol
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L28)
 
 Since v1.0.0
 
@@ -259,6 +259,6 @@ Since v1.0.0
 type FridaSessionTypeId = typeof FridaSessionTypeId
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSession.ts#L34)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L34)
 
 Since v1.0.0

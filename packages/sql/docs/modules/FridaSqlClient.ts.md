@@ -42,7 +42,7 @@ declare const make: (
 ) => Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L102)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L102)
 
 Since v1.0.0
 
@@ -56,7 +56,7 @@ Since v1.0.0
 declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L270)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L273)
 
 Since v1.0.0
 
@@ -70,7 +70,7 @@ declare const layerConfig: (
 ) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L256)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L259)
 
 Since v1.0.0
 
@@ -99,7 +99,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L49)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L49)
 
 Since v1.0.0
 
@@ -122,7 +122,7 @@ type SqliteClientConfig = (
 }
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L76)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L76)
 
 Since v1.0.0
 
@@ -136,7 +136,7 @@ Since v1.0.0
 declare const SqliteClient: Context.Service<SqliteClient, SqliteClient>
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L70)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L70)
 
 Since v1.0.0
 
@@ -150,7 +150,7 @@ Since v1.0.0
 declare const TypeId: unique symbol
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L37)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L37)
 
 Since v1.0.0
 
@@ -162,6 +162,6 @@ Since v1.0.0
 type TypeId = typeof TypeId
 ```
 
-[Source](/blob/main/src/FridaSqlClient.ts#L43)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L43)
 
 Since v1.0.0

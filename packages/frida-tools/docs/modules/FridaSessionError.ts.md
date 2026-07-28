@@ -29,6 +29,6 @@ Since v1.0.0
 declare class FridaSessionError
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/FridaSessionError.ts#L13)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSessionError.ts#L13)
 
 Since v1.0.0

@@ -1,5 +1,6 @@
 {
     "$schema": "../../node_modules/@effect/docgen/schema.json",
+    "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/",
     "exclude": ["src/internal/**/*.ts", "src/shared/**/*.ts"],
     "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/rpc",
     "examplesCompilerOptions": {

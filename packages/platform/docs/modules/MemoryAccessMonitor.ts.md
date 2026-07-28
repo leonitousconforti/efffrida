@@ -38,6 +38,6 @@ declare const MemoryAccessMonitorStream: (
 ) => Stream.Stream<MemoryAccessDetails, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/MemoryAccessMonitor.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/MemoryAccessMonitor.ts#L19)
 
 Since v1.0.0

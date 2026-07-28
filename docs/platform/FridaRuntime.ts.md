@@ -41,6 +41,6 @@ declare const runMain: (<A, E>(options?: {
   ) => void)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/FridaRuntime.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/FridaRuntime.ts#L19)
 
 Since v1.0.0

@@ -31,7 +31,7 @@ Since v1.0.0
 declare const class: Equivalence.Equivalence<Il2Cpp.Class>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Equivalence.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L31)
 
 Since v1.0.0
 
@@ -43,7 +43,7 @@ Since v1.0.0
 declare const field: Equivalence.Equivalence<Il2Cpp.Field<Il2Cpp.Field.Type>>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Equivalence.ts#L38)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L38)
 
 Since v1.0.0
 
@@ -55,7 +55,7 @@ Since v1.0.0
 declare const image: Equivalence.Equivalence<Il2Cpp.Image>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Equivalence.ts#L18)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L18)
 
 Since v1.0.0
 
@@ -67,7 +67,7 @@ Since v1.0.0
 declare const method: Equivalence.Equivalence<Il2Cpp.Method<Il2Cpp.Method.ReturnType>>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Equivalence.ts#L44)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L44)
 
 Since v1.0.0
 
@@ -79,6 +79,6 @@ Since v1.0.0
 declare const nativePointer: Equivalence.Equivalence<NativePointer>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Equivalence.ts#L12)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L12)
 
 Since v1.0.0

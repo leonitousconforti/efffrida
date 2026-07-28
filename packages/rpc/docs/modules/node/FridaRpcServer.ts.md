@@ -32,11 +32,11 @@ Since v1.0.0
 declare const layerProtocolFrida: Layer.Layer<
   RpcServer.Protocol,
   never,
-  FridaScript.FridaScript | RpcSerialization.RpcSerialization
+  RpcSerialization.RpcSerialization | FridaScript.FridaScript
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L142)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L142)
 
 Since v1.0.0
 
@@ -54,6 +54,6 @@ declare const makeProtocolFrida: () => Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcServer.ts#L30)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L30)
 
 Since v1.0.0

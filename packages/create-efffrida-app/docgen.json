@@ -1,5 +1,6 @@
 {
     "$schema": "../../node_modules/@effect/docgen/schema.json",
+    "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/create-efffrida-app/src/",
     "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/create-efffrida-app",
     "exclude": ["src/*.ts"]
 }

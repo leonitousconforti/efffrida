@@ -33,7 +33,7 @@ Since v1.0.0
 declare const assembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L28)
 
 Since v1.0.0
 
@@ -49,7 +49,7 @@ declare const assemblyCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L45)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L45)
 
 Since v1.0.0
 
@@ -61,7 +61,7 @@ Since v1.0.0
 declare const attach: Effect.Effect<Il2Cpp.Thread, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L63)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L63)
 
 Since v1.0.0
 
@@ -73,7 +73,7 @@ Since v1.0.0
 declare const tryAssembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L35)
 
 Since v1.0.0
 
@@ -89,7 +89,7 @@ declare const tryAssemblyCached: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L54)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L54)
 
 Since v1.0.0
 
@@ -103,6 +103,6 @@ Since v1.0.0
 declare const CacheCapacity: Context.Reference<number>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/Assembly.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L19)
 
 Since v1.0.0

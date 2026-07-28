@@ -35,7 +35,7 @@ Re-exports all named exports from the "./FridaDevice.ts" module as `FridaDevice`
 export * as FridaDevice from "./FridaDevice.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L10)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/index.ts#L10)
 
 Since v1.0.0
 
@@ -49,7 +49,7 @@ Re-exports all named exports from the "./FridaDeviceAcquisitionError.ts" module 
 export * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/index.ts#L17)
 
 Since v1.0.0
 
@@ -63,7 +63,7 @@ Re-exports all named exports from the "./FridaScript.ts" module as `FridaScript`
 export * as FridaScript from "./FridaScript.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/index.ts#L24)
 
 Since v1.0.0
 
@@ -77,7 +77,7 @@ Re-exports all named exports from the "./FridaSession.ts" module as `FridaSessio
 export * as FridaSession from "./FridaSession.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/index.ts#L31)
 
 Since v1.0.0
 
@@ -91,6 +91,6 @@ Re-exports all named exports from the "./FridaSessionError.ts" module as `FridaS
 export * as FridaSessionError from "./FridaSessionError.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/frida-tools/blob/main/src/index.ts#L38)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/index.ts#L38)
 
 Since v1.0.0

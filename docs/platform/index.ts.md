@@ -36,7 +36,7 @@ Re-exports all named exports from the "./Channel.ts" module as `Channel`.
 export * as Channel from "./Channel.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L10)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L10)
 
 Since v1.0.0
 
@@ -50,7 +50,7 @@ Re-exports all named exports from the "./FridaRuntime.ts" module as `FridaRuntim
 export * as FridaRuntime from "./FridaRuntime.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L17)
 
 Since v1.0.0
 
@@ -64,7 +64,7 @@ Re-exports all named exports from the "./MemoryAccessMonitor.ts" module as `Memo
 export * as MemoryAccessMonitor from "./MemoryAccessMonitor.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L24)
 
 Since v1.0.0
 
@@ -78,7 +78,7 @@ Re-exports all named exports from the "./Sink.ts" module as `Sink`.
 export * as Sink from "./Sink.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L31)
 
 Since v1.0.0
 
@@ -92,7 +92,7 @@ Re-exports all named exports from the "./Socket.ts" module as `Socket`.
 export * as Socket from "./Socket.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L38)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L38)
 
 Since v1.0.0
 
@@ -106,6 +106,6 @@ Re-exports all named exports from the "./Stream.ts" module as `Stream`.
 export * as Stream from "./Stream.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/index.ts#L45)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L45)
 
 Since v1.0.0

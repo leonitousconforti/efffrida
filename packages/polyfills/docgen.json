@@ -1,5 +1,6 @@
 {
     "$schema": "../../node_modules/@effect/docgen/schema.json",
+    "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/polyfills/src/",
     "exclude": ["src/*.ts"],
     "projectHomepage": ""
 }

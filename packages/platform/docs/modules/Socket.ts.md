@@ -33,7 +33,7 @@ Connect to a TCP or UNIX server.
 declare const connect: (options: SocketConnectOptions) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L27)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Socket.ts#L27)
 
 Since v1.0.0
 
@@ -51,7 +51,7 @@ declare const liftSocketConnection: (
 ) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Socket.ts#L17)
 
 Since v1.0.0
 
@@ -69,6 +69,6 @@ declare const listen: (
 ) => Effect.Effect<EffectSocket.Socket, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Socket.ts#L38)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Socket.ts#L38)
 
 Since v1.0.0
