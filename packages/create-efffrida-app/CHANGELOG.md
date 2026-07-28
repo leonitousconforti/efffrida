@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.11
+
+### Patch Changes
+
+- a59a3cc: Update Effect-TS packages to v4.0.0-beta.102
+
 ## 0.0.10
 
 ### Patch Changes
