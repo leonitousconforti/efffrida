@@ -38,7 +38,7 @@ declare const layerProtocolFrida: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L140)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L140)
 
 Since v1.0.0
 
@@ -58,6 +58,6 @@ declare const makeProtocolFrida: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/FridaRpcClient.ts#L33)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L33)
 
 Since v1.0.0

@@ -35,3 +35,5 @@ overrides:
 peerDependencyRules:
   allowedVersions:
     typescript: "6.0.3"
+  ignoreMissing:
+    - ioredis

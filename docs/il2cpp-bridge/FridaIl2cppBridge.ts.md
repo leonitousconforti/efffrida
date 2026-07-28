@@ -35,6 +35,6 @@ declare const il2cppPerformEffect: ((
   ) => Effect.Effect<X, E, R>)
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/FridaIl2cppBridge.ts#L16)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/FridaIl2cppBridge.ts#L16)
 
 Since v1.0.0

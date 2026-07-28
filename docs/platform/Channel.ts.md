@@ -38,6 +38,6 @@ declare const fromIOStream: <E1, E2>(
 ) => ReturnType<typeof internal.fromIOStream<E1, E2>>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Channel.ts#L17)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Channel.ts#L17)
 
 Since v1.0.0

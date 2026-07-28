@@ -37,7 +37,7 @@ Re-exports all named exports from the "./Assembly.ts" module as `Assembly`.
 export * as Assembly from "./Assembly.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L9)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/index.ts#L9)
 
 Since v1.0.0
 
@@ -53,7 +53,7 @@ Re-exports all named exports from the "./Class.ts" module as `Class`.
 export * as Class from "./Class.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L15)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/index.ts#L15)
 
 Since v1.0.0
 
@@ -69,7 +69,7 @@ Re-exports all named exports from the "./Equivalence.ts" module as `Equivalence`
 export * as Equivalence from "./Equivalence.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L21)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/index.ts#L21)
 
 Since v1.0.0
 
@@ -85,7 +85,7 @@ Re-exports all named exports from the "./Extensions.ts" module as `Extensions`.
 export * as Extensions from "./Extensions.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L27)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/index.ts#L27)
 
 Since v1.0.0
 
@@ -101,6 +101,6 @@ Re-exports all named exports from the "./FridaIl2cppBridge.ts" module as `FridaI
 export * as FridaIl2cppBridge from "./FridaIl2cppBridge.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge/blob/main/src/index.ts#L33)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/index.ts#L33)
 
 Since v1.0.0

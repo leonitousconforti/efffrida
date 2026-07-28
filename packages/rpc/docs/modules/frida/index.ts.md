@@ -33,7 +33,7 @@ Re-exports all named exports from the "./FridaRpcClient.ts" module as `FridaRpcC
 export * as FridaRpcClient from "./FridaRpcClient.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/index.ts#L11)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/index.ts#L11)
 
 Since v1.0.0
 
@@ -47,6 +47,6 @@ Re-exports all named exports from the "./FridaRpcServer.ts" module as `FridaRpcS
 export * as FridaRpcServer from "./FridaRpcServer.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/rpc/blob/main/src/index.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/index.ts#L19)
 
 Since v1.0.0

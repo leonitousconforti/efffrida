@@ -32,6 +32,6 @@ Re-exports all named exports from the "./GooglePlayApi.ts" module as `GooglePlay
 export * as GooglePlayApi from "./GooglePlayApi.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/gplayapi/blob/main/src/index.ts#L11)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/index.ts#L11)
 
 Since v1.0.0

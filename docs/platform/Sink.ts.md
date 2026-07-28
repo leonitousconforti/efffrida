@@ -42,7 +42,7 @@ declare const fromOutputStream: <E>(
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L31)
 
 Since v1.0.0
 
@@ -62,7 +62,7 @@ declare const makeUnixOutputStream: <E>(
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L42)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L42)
 
 Since v1.0.0
 
@@ -82,7 +82,7 @@ declare const makeWin32OutputStream: <E>(
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L53)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L53)
 
 Since v1.0.0
 
@@ -94,7 +94,7 @@ Since v1.0.0
 declare const sendSink: () => Sink.Sink<void, string, never, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L24)
 
 Since v1.0.0
 
@@ -110,6 +110,6 @@ export interface FromWritableOptions {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/packages/platform/blob/main/src/Sink.ts#L16)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L16)
 
 Since v1.0.0
