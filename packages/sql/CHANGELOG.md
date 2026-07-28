@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.34
+
+### Patch Changes
+
+- a59a3cc: Update Effect-TS packages to v4.0.0-beta.102
+
 ## 0.0.33
 
 ### Patch Changes
