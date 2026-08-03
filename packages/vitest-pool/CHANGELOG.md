@@ -1,5 +1,12 @@
 # @efffrida/vitest-pool
 
+## 0.0.38
+
+### Patch Changes
+
+- 33db621: Update dependency flatted to v3.4.4
+- 17fe439: Update dependency vite to v8.2.0
+
 ## 0.0.37
 
 ### Patch Changes
