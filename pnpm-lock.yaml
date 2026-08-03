@@ -201,8 +201,8 @@ importers:
         specifier: 4.0.0-beta.102
         version: 4.0.0-beta.102
       flatted:
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 3.4.4
+        version: 3.4.4
       vite:
         specifier: 8.1.5
         version: 8.1.5(@types/node@25.9.5)
@@ -293,8 +293,8 @@ importers:
         specifier: 4.0.0-beta.102
         version: 4.0.0-beta.102
       flatted:
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 3.4.4
+        version: 3.4.4
       vite:
         specifier: 8.1.5
         version: 8.1.5(@types/node@25.9.5)
@@ -339,8 +339,8 @@ importers:
         specifier: 4.0.0-beta.102
         version: 4.0.0-beta.102
       flatted:
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 3.4.4
+        version: 3.4.4
       vite:
         specifier: 8.1.5
         version: 8.1.5(@types/node@25.9.5)
@@ -428,8 +428,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       flatted:
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 3.4.4
+        version: 3.4.4
       ioredis:
         specifier: 5.11.1
         version: 5.11.1
@@ -498,8 +498,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       flatted:
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 3.4.4
+        version: 3.4.4
       frida:
         specifier: 17.16.4
         version: 17.16.4
@@ -2269,8 +2269,8 @@ packages:
   fix-dts-default-cjs-exports@1.0.1:
     resolution: {integrity: sha512-pVIECanWFC61Hzl2+oOCtoJ3F17kglZC/6N94eRWycFgBH35hHx0Li604ZIzhseh97mf2p0cv7vVrOZGoqhlEg==}
 
-  flatted@3.4.3:
-    resolution: {integrity: sha512-/zipXxyO6rGvuNGDiULY9MvEGSkb2gaG4GGH4ygMi0ZZzyMHdUZBmntJmx5x1G2VuPytCwGN4xsJP6cw+sK+vQ==}
+  flatted@3.4.4:
+    resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
   for-in@1.0.2:
     resolution: {integrity: sha512-7EwmXrOjyL+ChxMhmG5lnW9MPt1aIeZEwKhQzoBUdTV0N3zuwWDZYVJatDvZ2OyzPUvdIAZDsCetk3coyMfcnQ==}
@@ -5129,7 +5129,7 @@ snapshots:
       mlly: 1.8.2
       rollup: 4.62.4
 
-  flatted@3.4.3: {}
+  flatted@3.4.4: {}
 
   for-in@1.0.2: {}
 
