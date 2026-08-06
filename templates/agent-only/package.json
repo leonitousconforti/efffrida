@@ -19,12 +19,12 @@
     },
     "dependencies": {
         "@efffrida/platform": "latest",
-        "effect": "4.0.0-beta.102"
+        "effect": "4.0.0-beta.103"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-beta.102",
+        "@effect/platform-node": "4.0.0-beta.103",
         "@effect/tsgo": "0.32.0",
-        "@effect/vitest": "4.0.0-beta.102",
+        "@effect/vitest": "4.0.0-beta.103",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.10.0",
@@ -42,6 +42,6 @@
         "vitest": "4.1.10"
     },
     "peerDependencies": {
-        "effect": "4.0.0-beta.102"
+        "effect": "4.0.0-beta.103"
     }
 }
