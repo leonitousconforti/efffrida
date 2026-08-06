@@ -1,5 +1,12 @@
 # @efffrida/frida-tools
 
+## 0.0.48
+
+### Patch Changes
+
+- 8c291bb: Update Effect-TS packages to v4.0.0-beta.103
+- d559b0a: Update dependency frida to v17.17.0
+
 ## 0.0.47
 
 ### Patch Changes
