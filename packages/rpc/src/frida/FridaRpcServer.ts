@@ -71,7 +71,6 @@ export const makeProtocolFridaNoSendRecv = (
             }
         };
 
-        // @effect-diagnostics-next-line runEffectInsideEffect:off
         const rpcExport = Effect.gen(function* () {
             const id = ++clientId;
             clients.set(id, { write });
@@ -97,9 +96,11 @@ export const makeProtocolFridaNoSendRecv = (
             };
 
             rpc.exports[makeExportName(id)] = (data: string | Record<number, string>): Promise<void> =>
+                // @effect-diagnostics-next-line runEffectInsideEffect:off
                 Effect.runPromise(onMessage(data));
 
             return makeExportName(id);
+            // @effect-diagnostics-next-line runEffectInsideEffect:off
         }).pipe((export_) => () => Effect.runPromise(export_));
 
         const protocol = yield* RpcServer.Protocol.make((writeRequest_) => {
