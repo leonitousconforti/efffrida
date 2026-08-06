@@ -16,6 +16,11 @@ hoistWorkspacePackages: false
 preferWorkspacePackages: true
 resolvePeersFromWorkspaceRoot: false
 
+# The root and both templates all run `effect-tsgo patch` in their `prepare`
+# script, and they all resolve to the same physical typescript install. Running
+# them concurrently races on the binary swap, so keep install scripts serial.
+childConcurrency: 1
+
 packages:
   - packages/*
   - scratchpad
