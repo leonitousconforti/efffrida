@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.25
+
+### Patch Changes
+
+- 8c291bb: Update Effect-TS packages to v4.0.0-beta.103
+
 ## 0.0.24
 
 ### Patch Changes
