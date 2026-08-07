@@ -47,7 +47,7 @@
     "dependencies": {
         "abort-controller": "3.0.0",
         "event-target-polyfill": "0.0.4",
-        "fast-text-encoding": "1.0.6"
+        "text-encoding-utf-8": "1.0.2"
     },
     "devDependencies": {
         "@types/frida-gum": "19.10.0",
