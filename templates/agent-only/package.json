@@ -23,7 +23,7 @@
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-beta.103",
-        "@effect/tsgo": "0.32.1",
+        "@effect/tsgo": "0.33.0",
         "@effect/vitest": "4.0.0-beta.103",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
