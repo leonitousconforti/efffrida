@@ -28,4 +28,5 @@ const program = Effect.gen(function* () {
     // - Process.enumerateModules()
 });
 
+// oxlint-disable-next-line effecttsgo/strict-effect-provide -- this is the entry point
 program.pipe(Effect.provide(FridaVersion.default), FridaRuntime.runMain);

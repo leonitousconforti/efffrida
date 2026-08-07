@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "prepare": "effect-tsgo patch",
+        "prepare": "effect-tsgo patch --typescript --oxlint",
         "build": "tsc -b tsconfig.build.json",
         "check": "tsc -b tsconfig.json",
         "lint": "oxlint && oxfmt --check frida node shared",
@@ -35,6 +35,7 @@
         "ioredis": "5.11.1",
         "oxfmt": "0.62.0",
         "oxlint": "1.77.0",
+        "oxlint-tsgolint": "7.0.2001",
         "typescript": "7.0.2",
         "vite": "8.2.1",
         "vitest": "4.1.10"

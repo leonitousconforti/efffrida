@@ -1,5 +1,5 @@
 {
-    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "$schema": "./node_modules/@effect/tsgo/oxlint-schema.json",
     "ignorePatterns": [
         "**/dist",
         "**/build",
@@ -10,7 +10,10 @@
         ".agents/**/*",
         "repos/**"
     ],
-    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node"],
+    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node", "effecttsgo"],
+    "options": {
+        "typeAware": true
+    },
     "categories": {
         "correctness": "error",
         "suspicious": "error",
@@ -20,11 +23,17 @@
         {
             "files": ["**/{test,typetest,examples,ai-docs,benchmark,bundle,scripts,scratchpad}/**"],
             "rules": {
-                "eslint/no-console": "off"
+                "eslint/no-console": "off",
+                // These are application entry points, so composing and providing layers here is correct.
+                "effecttsgo/strict-effect-provide": "off"
             }
         }
     ],
     "rules": {
+        // Several public entry points are deliberately exposed as zero-argument functions returning
+        // an Effect, so that adding parameters later is not a breaking change. Worth seeing, not
+        // worth failing the build over.
+        "effecttsgo/lazy-effect": "warn",
         // Import rules
         "typescript/consistent-type-imports": [
             "error",
@@ -40,6 +49,21 @@
         "typescript/no-unnecessary-type-assertion": "error",
         "typescript/no-unnecessary-type-constraint": "error",
         "typescript/no-useless-empty-export": "error",
+        // Writing out the defaulted `never` channels keeps the public signatures readable
+        // side by side, so this one stays off.
+        "typescript/no-unnecessary-type-arguments": "off",
+        // Optional parameters are annotated `?: T | undefined` throughout, so they read the same as
+        // the optional properties beside them, which do need the explicit `undefined` under
+        // `exactOptionalPropertyTypes`. Off here for the same reason the templates turn it off.
+        "typescript/no-duplicate-type-constituents": "off",
+        // Enabling `options.typeAware` for the `effecttsgo` rules also switches on oxlint's own
+        // type-aware rules. These four fire throughout the Frida binding layer, where casting at
+        // the native boundary is the job, so they are off for the same reason the templates turn
+        // them off. Enable them individually once the call sites they flag are cleaned up.
+        "typescript/no-unsafe-type-assertion": "off",
+        "typescript/restrict-template-expressions": "off",
+        "typescript/unbound-method": "off",
+        "typescript/consistent-return": "off",
         // Code quality
         "eslint/no-console": "error",
         "eslint/no-var": "error",

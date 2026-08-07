@@ -175,7 +175,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
 
                     if (error.code !== "ECONNREFUSED") {
                         resume(Effect.die("Failed to get two free consecutive ports"));
-                    } else if (socket1.connecting === false && socket2.connecting === false) {
+                    } else if (!socket1.connecting && !socket2.connecting) {
                         resume(Effect.succeed(Tuple.make(startingAt, startingAt + 1)));
                     }
                 };

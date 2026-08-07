@@ -24,4 +24,5 @@ const MainLive = GitHub.Default.pipe(
     )
 );
 
+// oxlint-disable-next-line effecttsgo/strict-effect-provide -- this is the entry point
 cli.pipe(Effect.provide(MainLive), NodeRuntime.runMain({ disableErrorReporting: true }));

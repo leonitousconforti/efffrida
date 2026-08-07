@@ -42,15 +42,17 @@ export const runMain = Function.dual<
             Effect.tapCause((cause): Effect.Effect<void, never, never> => {
                 if (!Cause.hasInterruptsOnly(cause)) {
                     throwNextTick(cause);
-                    return Function.absurd(void undefined as never);
+                    return Function.absurd(undefined as never);
                 } else {
                     return Effect.void;
                 }
             });
 
+        // This is the runtime entry point, so providing the logger layer here is the whole point.
         const withLogger =
             options?.disablePrettyLogger === false
-                ? Effect.provide(Logger.layer([Logger.consolePretty()]))
+                ? // oxlint-disable-next-line effecttsgo/strict-effect-provide
+                  Effect.provide(Logger.layer([Logger.consolePretty()]))
                 : Function.identity;
 
         const fiber = Effect.runFork(withLogger(throwFromTapErrorCause(effect)));
