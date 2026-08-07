@@ -70,11 +70,11 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(tsx@4.23.9)
+        specifier: 8.2.1
+        version: 8.2.1(tsx@4.23.9)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.0(tsx@4.23.9))
+        version: 4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.1(tsx@4.23.9))
 
   packages/create-efffrida-app:
     devDependencies:
@@ -111,7 +111,7 @@ importers:
         version: 4.0.0-beta.104(effect@4.0.0-beta.104)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.104
-        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)))
+        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)))
       '@types/frida-gum':
         specifier: 19.10.0
         version: 19.10.0
@@ -125,11 +125,11 @@ importers:
         specifier: 5.11.1
         version: 5.11.1
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
   packages/gplayapi:
     devDependencies:
@@ -160,7 +160,7 @@ importers:
     devDependencies:
       '@effect/vitest':
         specifier: 4.0.0-beta.104
-        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(vite@8.2.0))
+        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(vite@8.2.1))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -171,17 +171,17 @@ importers:
         specifier: 4.0.0-beta.104
         version: 4.0.0-beta.104
       vite:
-        specifier: 8.2.0
-        version: 8.2.0
+        specifier: 8.2.1
+        version: 8.2.1
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(vite@8.2.0)
+        version: 4.1.10(vite@8.2.1)
 
   packages/platform:
     devDependencies:
       '@effect/vitest':
         specifier: 4.0.0-beta.104
-        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)))
+        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -204,11 +204,11 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
   packages/polyfills:
     dependencies:
@@ -246,7 +246,7 @@ importers:
         version: 4.0.0-beta.104(effect@4.0.0-beta.104)(ioredis@5.11.1)
       '@effect/vitest':
         specifier: 4.0.0-beta.104
-        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)))
+        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)))
       '@types/frida-gum':
         specifier: 19.10.0
         version: 19.10.0
@@ -263,17 +263,17 @@ importers:
         specifier: 5.11.1
         version: 5.11.1
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
   packages/sql:
     devDependencies:
       '@effect/vitest':
         specifier: 4.0.0-beta.104
-        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)))
+        version: 4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -296,11 +296,11 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
   packages/vitest-pool:
     dependencies:
@@ -342,11 +342,11 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
   scratchpad:
     dependencies:
@@ -443,11 +443,11 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@25.9.5))
 
   templates/app-and-agent:
     dependencies:
@@ -516,11 +516,11 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@25.9.5)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@25.9.5)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.0(@types/node@25.9.5))
+        version: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@25.9.5))
 
 packages:
 
@@ -3520,8 +3520,8 @@ packages:
     resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
     hasBin: true
 
-  vite@8.2.0:
-    resolution: {integrity: sha512-pn+CFpM0lwDeKwmOq1ZaBK/9sjorZcgqxki6MbY/jPEVd9vichIlmlD4HmQ5wdP5EgqQCFRaACBxMC7uEGc6lQ==}
+  vite@8.2.1:
+    resolution: {integrity: sha512-EU/eS7BH3XROHh2YnBefjM6DBKA6ZeMZEYQbj7NLWg5wHYlhB8B/Mayd5XsgWq+NFYccDOTemRpdETWR6Ka/lw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -4054,20 +4054,20 @@ snapshots:
       '@effect/tsgo-win32-arm64': 0.33.0
       '@effect/tsgo-win32-x64': 0.33.0
 
-  '@effect/vitest@4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)))':
+  '@effect/vitest@4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)))':
     dependencies:
       effect: 4.0.0-beta.104
-      vitest: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5))
+      vitest: 4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5))
 
-  '@effect/vitest@4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(vite@8.2.0))':
+  '@effect/vitest@4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10(vite@8.2.1))':
     dependencies:
       effect: 4.0.0-beta.104
-      vitest: 4.1.10(vite@8.2.0)
+      vitest: 4.1.10(vite@8.2.1)
 
   '@effect/vitest@4.0.0-beta.104(effect@4.0.0-beta.104)(vitest@4.1.10)':
     dependencies:
       effect: 4.0.0-beta.104
-      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.0(@types/node@25.9.5))
+      vitest: 4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@25.9.5))
 
   '@emnapi/core@2.0.0-alpha.3':
     dependencies:
@@ -4724,7 +4724,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.0(tsx@4.23.9))
+      vitest: 4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.1(tsx@4.23.9))
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -4735,29 +4735,29 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.10(vite@8.2.0(@types/node@25.9.5))':
+  '@vitest/mocker@4.1.10(vite@8.2.1(@types/node@25.9.5))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.0(@types/node@25.9.5)
+      vite: 8.2.1(@types/node@25.9.5)
 
-  '@vitest/mocker@4.1.10(vite@8.2.0(tsx@4.23.9))':
+  '@vitest/mocker@4.1.10(vite@8.2.1(tsx@4.23.9))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.0(tsx@4.23.9)
+      vite: 8.2.1(tsx@4.23.9)
 
-  '@vitest/mocker@4.1.10(vite@8.2.0)':
+  '@vitest/mocker@4.1.10(vite@8.2.1)':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.0
+      vite: 8.2.1
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -6358,7 +6358,7 @@ snapshots:
 
   uuid@14.0.1: {}
 
-  vite@8.2.0:
+  vite@8.2.1:
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -6368,7 +6368,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vite@8.2.0(@types/node@25.9.5):
+  vite@8.2.1(@types/node@25.9.5):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -6379,7 +6379,7 @@ snapshots:
       '@types/node': 25.9.5
       fsevents: 2.3.3
 
-  vite@8.2.0(tsx@4.23.9):
+  vite@8.2.1(tsx@4.23.9):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -6390,10 +6390,10 @@ snapshots:
       fsevents: 2.3.3
       tsx: 4.23.9
 
-  vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.0(@types/node@25.9.5)):
+  vitest@4.1.10(@types/node@25.9.5)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@25.9.5)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.0(@types/node@25.9.5))
+      '@vitest/mocker': 4.1.10(vite@8.2.1(@types/node@25.9.5))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -6410,7 +6410,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.0(@types/node@25.9.5)
+      vite: 8.2.1(@types/node@25.9.5)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.5
@@ -6418,10 +6418,10 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)):
+  vitest@4.1.10(@types/node@25.9.5)(vite@8.2.1(@types/node@25.9.5)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.0(@types/node@25.9.5))
+      '@vitest/mocker': 4.1.10(vite@8.2.1(@types/node@25.9.5))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -6438,17 +6438,17 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.0(@types/node@25.9.5)
+      vite: 8.2.1(@types/node@25.9.5)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.5
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.0(tsx@4.23.9)):
+  vitest@4.1.10(@vitest/coverage-v8@4.1.10)(vite@8.2.1(tsx@4.23.9)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.0(tsx@4.23.9))
+      '@vitest/mocker': 4.1.10(vite@8.2.1(tsx@4.23.9))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -6465,17 +6465,17 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.0(tsx@4.23.9)
+      vite: 8.2.1(tsx@4.23.9)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.10(vitest@4.1.10)
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.10(vite@8.2.0):
+  vitest@4.1.10(vite@8.2.1):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.0)
+      '@vitest/mocker': 4.1.10(vite@8.2.1)
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -6492,7 +6492,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.0
+      vite: 8.2.1
       why-is-node-running: 2.3.0
     transitivePeerDependencies:
       - msw
