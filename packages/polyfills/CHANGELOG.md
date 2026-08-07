@@ -1,5 +1,12 @@
 # @efffrida/polyfills
 
+## 0.0.15
+
+### Patch Changes
+
+- e6d83ef: Replace fast-text-encoding with text-encoding-utf-8, which supports the streaming TextDecoder option
+- e6d83ef: Update Effect-TS packages to v4.0.0-beta.104
+
 ## 0.0.14
 
 ### Patch Changes
