@@ -245,7 +245,7 @@ export const make = (
                 transformRows,
             })) as SqliteClient,
             {
-                [TypeId]: TypeId as TypeId,
+                [TypeId]: TypeId,
                 config: options,
                 dump: Effect.flatMap(acquirer, (_) => _.dump),
             }

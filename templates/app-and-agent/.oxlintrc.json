@@ -1,7 +1,10 @@
 {
-    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "$schema": "./node_modules/@effect/tsgo/oxlint-schema.json",
     "ignorePatterns": ["**/dist", "**/build", "**/.tsbuildinfo"],
-    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node"],
+    "plugins": ["typescript", "import", "oxc", "eslint", "unicorn", "node", "effecttsgo"],
+    "options": {
+        "typeAware": true
+    },
     "categories": {
         "correctness": "error",
         "suspicious": "error",
@@ -11,11 +14,35 @@
         {
             "files": ["**/{test,benchmark,scripts}/**"],
             "rules": {
-                "eslint/no-console": "off"
+                "eslint/no-console": "off",
+                // These are application entry points, so composing and providing layers here is correct.
+                "effecttsgo/strict-effect-provide": "off"
             }
         }
     ],
     "rules": {
+        // Oxlint's own type-aware rules. `options.typeAware` is enabled for the `effecttsgo`
+        // rules, which also activates these, and they were never part of this project's lint
+        // baseline. Left off deliberately; enable them individually once they are cleaned up.
+        "typescript/consistent-return": "off",
+        "typescript/no-duplicate-type-constituents": "off",
+        "typescript/no-floating-promises": "off",
+        "typescript/no-for-in-array": "off",
+        "typescript/no-implied-eval": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/no-misused-spread": "off",
+        "typescript/no-redundant-type-constituents": "off",
+        "typescript/no-unnecessary-boolean-literal-compare": "off",
+        "typescript/no-unnecessary-template-expression": "off",
+        "typescript/no-unnecessary-type-arguments": "off",
+        "typescript/no-unnecessary-type-conversion": "off",
+        "typescript/no-unnecessary-type-parameters": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/no-unsafe-type-assertion": "off",
+        "typescript/no-unsafe-unary-minus": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/restrict-template-expressions": "off",
+        "typescript/unbound-method": "off",
         "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
         "typescript/no-import-type-side-effects": "error",
         "import/no-duplicates": "error",

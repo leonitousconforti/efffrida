@@ -74,7 +74,7 @@ export const makeProtocolFrida = (
                         step: Function.constVoid,
                         while: () => i < responses.length,
                         body: () => {
-                            const response = responses[i++]!;
+                            const response = responses[i++];
                             if ("requestId" in response) {
                                 const clientId = requestClientMap.get(response.requestId)!;
                                 if (response._tag === "Exit") requestClientMap.delete(response.requestId);

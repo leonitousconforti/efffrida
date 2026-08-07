@@ -119,7 +119,7 @@ class StreamAdapter<E, R> implements InputStream {
     constructor(_context: Context.Context<R>, _stream: Stream.Stream<Uint8Array, E, R>) {
         this.context = _context;
         this.stream = _stream;
-        this.scope = Effect.runSync(Scope.make());
+        this.scope = Scope.makeUnsafe();
         const pullEffect = this.stream.pipe(
             Stream.flatMap((arr) => Stream.fromIterable(arr)),
             Stream.rechunk(1),
@@ -127,7 +127,7 @@ class StreamAdapter<E, R> implements InputStream {
             Scope.provide(this.scope)
         );
         const pull = Effect.runSyncWith(this.context)(pullEffect).pipe(
-            Effect.map((arr) => Option.some(arr[0]!)),
+            Effect.map((arr) => Option.some(arr[0])),
             Pull.catchDone(() => Effect.succeed(Option.none<number>()))
         );
         this.pull = function (done) {

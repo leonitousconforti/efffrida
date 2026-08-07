@@ -160,7 +160,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             // Create a minimal runner without snapshot support
             const entrypoint = message.type === "run" ? startTests : collectTests;
             const testRunner: VitestRunner = {
-                config: setupContext.config as VitestRunner["config"],
+                config: setupContext.config,
                 importFile: async (_file: string): Promise<void> => {
                     // @efffrida/vitest-pool/agent/file-map
 

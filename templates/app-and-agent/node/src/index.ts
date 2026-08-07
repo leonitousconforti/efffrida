@@ -25,4 +25,5 @@ const ScriptLive = FridaScript.layer(new URL("../../frida/src/index.ts", import.
 
 const MainLive = ProtocolLive.pipe(Layer.provide(ScriptLive));
 
+// oxlint-disable-next-line effecttsgo/strict-effect-provide -- this is the entry point
 NodeRuntime.runMain(Effect.scoped(Effect.provide(program, MainLive)));

@@ -30,7 +30,7 @@ class UserRepository extends Context.Service<UserRepository>()("UserRepository",
                 ),
             create: (name: string) =>
                 Ref.updateAndGet(ref, (users) => [...users, new User({ id: String(users.length + 1), name })]).pipe(
-                    Effect.map((users) => users[users.length - 1]!)
+                    Effect.map((users) => users[users.length - 1])
                 ),
         };
     }),
