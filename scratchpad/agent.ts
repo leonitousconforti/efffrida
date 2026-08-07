@@ -2,7 +2,7 @@ import "@efffrida/polyfills";
 
 import { Effect } from "effect";
 
-import { FridaIl2cppBridge, Assembly, Class } from "@Efffrida/il2cpp-bridge";
+import { FridaIl2cppBridge, Assembly, Class } from "@efffrida/il2cpp-bridge";
 import { FridaRuntime } from "@efffrida/platform";
 
 Effect.gen(function* () {
