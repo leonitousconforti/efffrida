@@ -56,7 +56,7 @@
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.10.0",
         "effect": "4.0.0-beta.103",
-        "vite": "8.2.0",
+        "vite": "8.2.1",
         "vitest": "4.1.10"
     },
     "peerDependencies": {
