@@ -2,20 +2,9 @@
 
 Unofficial Google Play Store API for downloading APKs directly from the Google Play Store.
 
-### Play account credentials
-
-Every `GooglePlayApi` call authenticates with a Play account, and how that account is obtained is a
-policy decision left to the application. Provide exactly one `PlayAccount` layer; leaving it out is a
-compile error rather than a runtime surprise.
-
-| Layer                              | Where the credentials come from                                                                                        |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `PlayAccount.layerAuroraDispenser` | An Aurora store compatible anonymous dispenser, `https://auroraoss.com/api/auth` by default. Requires an `HttpClient`. |
-| `PlayAccount.layerConfig`          | The config provider, reading `GPLAY_EMAIL` and `GPLAY_AUTH_TOKEN` by default.                                          |
-| `PlayAccount.layerStatic`          | Credentials that are already in hand, for tests and for applications that fetch their token out of band.               |
-
-The hosted Aurora dispenser blocks and rate limits datacenter ip ranges, so anything running on cloud
-infrastructure should use `layerConfig` (or `layerStatic`) with a token acquired elsewhere.
+The store's protobuf endpoints are exposed as effects: `details` and `bulkDetails` for app metadata,
+`purchase` and `delivery` for acquiring a download token, and `downloadToStreams` and
+`downloadToDisk` for pulling down the APK along with its splits and expansion files.
 
 ### Example usage
 
@@ -24,28 +13,40 @@ import { NodeHttpClient, NodeServices } from "@effect/platform-node";
 import { GooglePlayApi, PlayAccount } from "@efffrida/gplayapi";
 import { Effect, Layer } from "effect";
 
-const DeviceLive = GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive;
-const HttpLive = NodeHttpClient.layerUndici;
-
-// Reads GPLAY_EMAIL and GPLAY_AUTH_TOKEN
-const AccountLive = PlayAccount.layerConfig();
-
-const PlayLive = Layer.mergeAll(DeviceLive, HttpLive, AccountLive).pipe(Layer.provide(NodeServices.layer));
+const PlayLive = Layer.mergeAll(
+    GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive,
+    NodeHttpClient.layerUndici,
+    PlayAccount.layerConfig()
+).pipe(Layer.provideMerge(NodeServices.layer));
 
 const program = Effect.gen(function* () {
-    const details = yield* GooglePlayApi.details("com.nimblebit.tinytower");
+    const { item } = yield* GooglePlayApi.details("com.nimblebit.tinytower");
+    yield* Effect.log(`${item?.title} ${item?.details?.appDetails?.versionString}`);
+
+    const files = yield* GooglePlayApi.downloadToDisk("com.nimblebit.tinytower");
     // ...
-}).pipe(Effect.provide(PlayLive));
+}).pipe(Effect.scoped, Effect.provide(PlayLive));
 ```
 
-To keep the pre-`PlayAccount` behaviour, add the dispenser layer to an existing composition:
+### Services
 
-```diff
--const PlayLive = Layer.mergeAll(DeviceLive, HttpLive);
-+const AccountLive = PlayAccount.layerAuroraDispenser().pipe(Layer.provide(HttpLive));
-+const PlayLive = Layer.mergeAll(DeviceLive, HttpLive, AccountLive);
-```
+Three things have to be provided.
 
-Auth headers are cached per device for 30 minutes, comfortably inside the hour that Google's tokens
-live for. A 401 or a 403 from Play evicts them early and fails that call, so the next one acquires a
-fresh set. Failures for any other reason leave the cache alone.
+**A device**, which decides the hardware fingerprint the store sees, and therefore which builds it
+will offer. `AndroidDevice.EmbeddedPixel7aLive` ships with the package; other devices can be built
+from an Aurora store style properties file with `AndroidDevice.fromPropertiesFile`.
+
+**An `HttpClient`**, from whichever platform package suits the runtime.
+
+**A `PlayAccount`**, which decides how google play credentials are obtained. There is no default, so
+pick one of:
+
+- `layerAuroraDispenser(url?)` hands out anonymous credentials from an Aurora store compatible
+  dispenser, `https://auroraoss.com/api/auth` by default. The hosted one blocks and rate limits
+  datacenter ip ranges, so it is a poor fit for anything running on cloud infrastructure.
+- `layerConfig({email?, token?})` reads credentials that were obtained out of band from the config
+  provider, defaulting to the `GPLAY_EMAIL` and `GPLAY_AUTH_TOKEN` environment variables.
+- `layerStatic(credentials)` serves credentials that are already in hand.
+
+Auth headers are derived from the device and the account once, then cached for 30 minutes. A 401 or a
+403 from the store evicts them early, so the next call acquires a fresh set.
