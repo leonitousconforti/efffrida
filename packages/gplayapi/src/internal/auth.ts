@@ -8,7 +8,7 @@ import * as HttpClient from "effect/unstable/http/HttpClient";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
-import type { AndroidDevice } from "./device.ts";
+import type { AndroidDevice } from "../AndroidDevice.ts";
 
 import {
     AndroidCheckinRequestSchema,

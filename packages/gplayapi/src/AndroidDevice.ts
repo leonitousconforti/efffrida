@@ -1,3 +1,9 @@
+/**
+ * Google play android device profiles.
+ *
+ * @since 1.0.0
+ */
+
 import type * as PlatformError from "effect/PlatformError";
 import type * as HttpClient from "effect/unstable/http/HttpClient";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
@@ -13,30 +19,47 @@ import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
 import * as SchemaTransformation from "effect/SchemaTransformation";
 
-import type { PlayAccount, PlayAccountError } from "../PlayAccount.ts";
+import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
-import * as internalAuth from "./auth.ts";
+import * as internalAuth from "./internal/auth.ts";
 
-export const StringArrayFromString = Schema.suspend(() => {
+/** @internal */
+const StringArrayFromString = Schema.suspend(() => {
     const splitter = SchemaGetter.split({ separator: "," });
     const joiner = SchemaGetter.transform((arr: ReadonlyArray<string>) => arr.join(","));
     const transform = SchemaTransformation.make({ encode: joiner, decode: splitter });
     return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
 });
 
-export const BooleanFromString = Schema.Literals(["true", "false"])
+/** @internal */
+const BooleanFromString = Schema.Literals(["true", "false"])
     .transform([true, false])
     .pipe(Schema.decodeTo(Schema.Boolean));
 
-export class Service extends Context.Service<Service, AndroidDevice>()("@efffrida/gplayapi/device") {}
+/**
+ * @since 1.0.0
+ * @category Tags
+ */
+export class AndroidDeviceService extends Context.Service<AndroidDeviceService, AndroidDevice>()(
+    "@efffrida/gplayapi/AndroidDevice"
+) {}
 
 /**
  * How long resolved auth headers stay usable. Google's oauth tokens live for an
  * hour, so re-acquiring well inside that window keeps a long lived process from
  * ever reaching for headers that expired underneath it.
+ *
+ * @since 1.0.0
+ * @category Constants
  */
 export const authHeadersTtl: Duration.Duration = Duration.minutes(30);
 
+/**
+ * The profile of the android device that google play requests are made as.
+ *
+ * @since 1.0.0
+ * @category Models
+ */
 export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
     UserReadableName: Schema.String,
     "Build.BOOTLOADER": Schema.String,
@@ -79,35 +102,10 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
     private authHeadersCache?: { readonly headers: Record<string, string>; readonly expiresAt: number } | undefined =
         undefined;
 
-    public static fromPropertiesFile = Effect.fnUntraced(function* (
-        file: string
-    ): Effect.fn.Return<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem> {
-        const decodeDevice = Schema.decodeUnknownEffect(AndroidDevice);
-        const decodePropertiesFile = Schema.decodeEffect(
-            Schema.String.pipe(
-                Schema.decodeTo(
-                    Schema.Record(Schema.String, Schema.String),
-                    SchemaTransformation.splitKeyValue({
-                        keyValueSeparator: "=",
-                        separator: "\n",
-                    })
-                )
-            )
-        );
-
-        const fileSystem = yield* FileSystem.FileSystem;
-        const content = yield* fileSystem.readFileString(file);
-        const properties = yield* decodePropertiesFile(content);
-        return yield* decodeDevice(properties);
-    });
-
-    public static EmbeddedPixel7a = Path.Path.pipe(
-        Effect.flatMap((path) => path.fromFileUrl(new URL("../../devices/arm64_xxhdpi.properties", import.meta.url))),
-        Effect.flatMap(AndroidDevice.fromPropertiesFile)
-    );
-
-    public static EmbeddedPixel7aLive = Layer.effect(Service, AndroidDevice.EmbeddedPixel7a);
-
+    /**
+     * @since 1.0.0
+     * @category Destructors
+     */
     public get userAgent(): string {
         const deviceProperties = {
             api: 3,
@@ -130,6 +128,10 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
         return `Android-Finsky/${this["Vending.versionString"]} (${devicePropertiesString})`;
     }
 
+    /**
+     * @since 1.0.0
+     * @category Destructors
+     */
     public readonly authHeaders: Effect.Effect<
         Record<string, string>,
         HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
@@ -157,3 +159,52 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
         this.authHeadersCache = undefined;
     }
 }
+
+/**
+ * @since 1.0.0
+ * @category Constructors
+ */
+export const fromPropertiesFile = Effect.fnUntraced(function* (
+    file: string
+): Effect.fn.Return<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem> {
+    const decodeDevice = Schema.decodeUnknownEffect(AndroidDevice);
+    const decodePropertiesFile = Schema.decodeEffect(
+        Schema.String.pipe(
+            Schema.decodeTo(
+                Schema.Record(Schema.String, Schema.String),
+                SchemaTransformation.splitKeyValue({
+                    keyValueSeparator: "=",
+                    separator: "\n",
+                })
+            )
+        )
+    );
+
+    const fileSystem = yield* FileSystem.FileSystem;
+    const content = yield* fileSystem.readFileString(file);
+    const properties = yield* decodePropertiesFile(content);
+    return yield* decodeDevice(properties);
+});
+
+/**
+ * @since 1.0.0
+ * @category Constructors
+ */
+export const EmbeddedPixel7a: Effect.Effect<
+    AndroidDevice,
+    Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
+    Path.Path | FileSystem.FileSystem
+> = Path.Path.pipe(
+    Effect.flatMap((path) => path.fromFileUrl(new URL("../devices/arm64_xxhdpi.properties", import.meta.url))),
+    Effect.flatMap(fromPropertiesFile)
+);
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const EmbeddedPixel7aLive: Layer.Layer<
+    AndroidDeviceService,
+    Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
+    Path.Path | FileSystem.FileSystem
+> = Layer.effect(AndroidDeviceService, EmbeddedPixel7a);

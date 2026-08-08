@@ -23,6 +23,7 @@ import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 
 import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
+import { type AndroidDevice, AndroidDeviceService } from "./AndroidDevice.ts";
 import {
     BulkDetailsRequestSchema,
     type BulkDetailsResponse,
@@ -30,7 +31,6 @@ import {
     type DeliveryResponse,
     type DetailsResponse,
 } from "./generated/GooglePlay_pb.ts";
-import { type AndroidDevice, Service as AndroidDeviceService } from "./internal/device.ts";
 import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
 /** @internal */
@@ -67,20 +67,6 @@ const evictRejectedAuthHeaders =
                 })
             );
         });
-
-export {
-    /**
-     * @since 1.0.0
-     * @category Device
-     */
-    AndroidDevice,
-
-    /**
-     * @since 1.0.0
-     * @category Device
-     */
-    Service as AndroidDeviceService,
-} from "./internal/device.ts";
 
 /**
  * @since 1.0.0
