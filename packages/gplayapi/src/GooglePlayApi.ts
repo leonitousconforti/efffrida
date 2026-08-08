@@ -36,55 +36,37 @@ import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/htt
 /** @internal */
 const fdfeBase = "https://android.clients.google.com/fdfe";
 
-/** @internal */
-const isUnauthorized = (response: HttpClientResponse.HttpClientResponse): boolean =>
-    response.status === 401 || response.status === 403;
-
 /**
- * Runs a request that carries the device's auth headers. Play answers with a
- * 401/403 once the token behind those headers expires, so the cached headers
- * are dropped and the request is rebuilt and sent exactly once more. Every
- * other status is left alone for the caller to decode.
+ * Play rejects a request with a 401/403 once the credentials behind the
+ * device's auth headers stop being good, which can happen well before they
+ * expire on their own. Drop them so the next call acquires a fresh set, and
+ * report the rejection instead of handing a body that is not a protobuf
+ * payload to the caller's decoder.
  *
  * @internal
  */
-const withAuthRetry = Effect.fnUntraced(function* (
-    device: AndroidDevice,
-    makeRequest: (
-        headers: Record<string, string>
-    ) => Effect.Effect<HttpClientRequest.HttpClientRequest, HttpClientError.HttpClientError, never>
-): Effect.fn.Return<
-    HttpClientResponse.HttpClientResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
-    HttpClient.HttpClient | PlayAccount
-> {
-    const request = yield* makeRequest(yield* device.authHeaders);
-    const response = yield* HttpClient.execute(request);
+const evictRejectedAuthHeaders =
+    (device: AndroidDevice) =>
+    <E, R>(
+        self: Effect.Effect<HttpClientResponse.HttpClientResponse, E, R>
+    ): Effect.Effect<HttpClientResponse.HttpClientResponse, E | HttpClientError.HttpClientError, R> =>
+        Effect.flatMap(self, (response) => {
+            if (response.status !== 401 && response.status !== 403) {
+                return Effect.succeed(response);
+            }
 
-    if (!isUnauthorized(response)) {
-        return response;
-    }
-
-    yield* Effect.logDebug(`google play answered ${response.status}, reacquiring auth headers and retrying once`);
-    device.invalidateAuthHeaders();
-
-    const retriedRequest = yield* makeRequest(yield* device.authHeaders);
-    const retriedResponse = yield* HttpClient.execute(retriedRequest);
-
-    // Reacquiring did not help, so report the rejection rather than handing a
-    // body that is not a protobuf payload to the caller's decoder.
-    if (isUnauthorized(retriedResponse)) {
-        return yield* new HttpClientError.HttpClientError({
-            reason: new HttpClientError.StatusCodeError({
-                request: retriedRequest,
-                response: retriedResponse,
-                description: "google play rejected the reacquired credentials",
-            }),
+            device.invalidateAuthHeaders();
+            return Effect.andThen(
+                Effect.logDebug(`google play answered ${response.status}, dropping the cached auth headers`),
+                new HttpClientError.HttpClientError({
+                    reason: new HttpClientError.StatusCodeError({
+                        request: response.request,
+                        response,
+                        description: "google play rejected the request credentials",
+                    }),
+                })
+            );
         });
-    }
-
-    return retriedResponse;
-});
 
 export {
     /**
@@ -114,15 +96,12 @@ export const details = Effect.fnUntraced(function* (
     const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
     const device = yield* AndroidDeviceService;
 
-    const httpResponse = yield* withAuthRetry(device, (headers) =>
-        Effect.succeed(
-            HttpClientRequest.get("/details", {
-                urlParams: { doc: bundleIdentifier },
-                headers,
-            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
-        )
-    );
+    const httpRequest = HttpClientRequest.get("/details", {
+        urlParams: { doc: bundleIdentifier },
+        headers: yield* device.authHeaders,
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -146,12 +125,12 @@ export const bulkDetails = Effect.fnUntraced(function* (
     });
 
     const device = yield* AndroidDeviceService;
-    const httpResponse = yield* withAuthRetry(device, (headers) =>
-        encoderBulkDetailsRequest(
-            HttpClientRequest.post("/bulkDetails", { headers }).pipe(HttpClientRequest.prependUrl(fdfeBase))
-        )
-    );
+    const httpRequest = HttpClientRequest.post("/bulkDetails", {
+        headers: yield* device.authHeaders,
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
+    const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
+    const httpResponse = yield* HttpClient.execute(pbRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -171,20 +150,17 @@ export const purchase = Effect.fnUntraced(function* (
     const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
 
     const device = yield* AndroidDeviceService;
-    const httpResponse = yield* withAuthRetry(device, (headers) =>
-        Effect.succeed(
-            HttpClientRequest.post("/purchase", {
-                headers,
-                urlParams: {
-                    doc: bundleIdentifier,
-                    ch: options.certificateHash ?? "",
-                    ot: options.offerType.toString(),
-                    vc: options.versionCode.toString(),
-                },
-            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
-        )
-    );
+    const httpRequest = HttpClientRequest.post("/purchase", {
+        headers: yield* device.authHeaders,
+        urlParams: {
+            doc: bundleIdentifier,
+            ch: options.certificateHash ?? "",
+            ot: options.offerType.toString(),
+            vc: options.versionCode.toString(),
+        },
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderBuyResponse(httpResponse);
     return pbResponse;
 });
@@ -209,21 +185,18 @@ export const delivery = Effect.fnUntraced(function* (
     const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
 
     const device = yield* AndroidDeviceService;
-    const httpResponse = yield* withAuthRetry(device, (headers) =>
-        Effect.succeed(
-            HttpClientRequest.get("/delivery", {
-                headers,
-                urlParams: {
-                    doc: bundleIdentifier,
-                    dtok: options.deliveryToken,
-                    ch: options.certificateHash ?? "",
-                    ot: options.offerType.toString(),
-                    vc: options.versionCode.toString(),
-                },
-            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
-        )
-    );
+    const httpRequest = HttpClientRequest.get("/delivery", {
+        headers: yield* device.authHeaders,
+        urlParams: {
+            doc: bundleIdentifier,
+            dtok: options.deliveryToken,
+            ch: options.certificateHash ?? "",
+            ot: options.offerType.toString(),
+            vc: options.versionCode.toString(),
+        },
+    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderDeliveryResponse(httpResponse);
     return pbResponse;
 });

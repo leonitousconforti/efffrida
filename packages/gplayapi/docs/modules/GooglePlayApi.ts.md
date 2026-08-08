@@ -44,7 +44,7 @@ declare const bulkDetails: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L134)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L113)
 
 Since v1.0.0
 
@@ -68,7 +68,7 @@ declare const delivery: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L196)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L172)
 
 Since v1.0.0
 
@@ -86,7 +86,7 @@ declare const details: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L107)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L89)
 
 Since v1.0.0
 
@@ -124,7 +124,7 @@ declare const downloadToDisk: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L340)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L313)
 
 Since v1.0.0
 
@@ -158,7 +158,7 @@ declare const downloadToStreams: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L235)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L208)
 
 Since v1.0.0
 
@@ -177,7 +177,7 @@ declare const purchase: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L163)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L142)
 
 Since v1.0.0
 
@@ -191,7 +191,7 @@ Since v1.0.0
 declare const AndroidDevice: typeof AndroidDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L94)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L76)
 
 Since v1.0.0
 
@@ -203,6 +203,6 @@ Since v1.0.0
 declare const AndroidDeviceService: typeof AndroidDeviceService
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L100)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L82)
 
 Since v1.0.0

@@ -1,6 +1,8 @@
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Redacted from "effect/Redacted";
+import * as TestClock from "effect/testing/TestClock";
 import * as HttpClientError from "effect/unstable/http/HttpClientError";
 
 import { NodeServices } from "@effect/platform-node";
@@ -75,8 +77,30 @@ describe("AndroidDevice.authHeaders", () => {
     });
 });
 
-describe("GooglePlayApi auth retry", () => {
-    it.effect("reacquires credentials once when play answers 401", () => {
+describe("auth header expiry", () => {
+    it.effect("reuses the headers until the ttl runs out", () => {
+        const http = mockHttpClient((request) => respondToCheckin(request) ?? new Response(null, { status: 404 }));
+
+        const credentials = { email: "static@example.com", token: Redacted.make("static-token") };
+        const layers = Layer.mergeAll(deviceLayer(), http.layer, PlayAccount.layerStatic(credentials));
+
+        return Effect.gen(function* () {
+            const device = yield* GooglePlayApi.AndroidDeviceService;
+
+            yield* device.authHeaders;
+            yield* TestClock.adjust(Duration.minutes(29));
+            yield* device.authHeaders;
+            assert.strictEqual(countRequests(http.requests, "/checkin"), 1);
+
+            yield* TestClock.adjust(Duration.minutes(2));
+            yield* device.authHeaders;
+            assert.strictEqual(countRequests(http.requests, "/checkin"), 2);
+        }).pipe(Effect.provide(layers));
+    });
+});
+
+describe("auth header eviction", () => {
+    it.effect("drops the cached headers when play answers 401, without retrying", () => {
         let detailsCalls = 0;
 
         const http = mockHttpClient((request) => {
@@ -102,45 +126,23 @@ describe("GooglePlayApi auth retry", () => {
         );
 
         return Effect.gen(function* () {
+            const error = yield* Effect.flip(GooglePlayApi.details(bundleIdentifier));
+            assert.instanceOf(error, HttpClientError.HttpClientError);
+            assert.strictEqual(error.reason._tag, "StatusCodeError");
+
+            // The rejected call was sent once, no retry happened inside it.
+            assert.strictEqual(countRequests(http.requests, "/fdfe/details"), 1);
+            assert.strictEqual(countRequests(http.requests, "/api/auth"), 1);
+
+            // The next call pays for a fresh acquisition and succeeds.
             const response = yield* GooglePlayApi.details(bundleIdentifier);
             assert.strictEqual(response.detailsStreamUrl, detailsStreamUrl);
-
-            // Exactly one retry, and the retry went through a full reacquisition.
-            assert.strictEqual(countRequests(http.requests, "/fdfe/details"), 2);
             assert.strictEqual(countRequests(http.requests, "/api/auth"), 2);
             assert.strictEqual(countRequests(http.requests, "/checkin"), 2);
         }).pipe(Effect.provide(layers));
     });
 
-    it.effect("gives up after a second 401", () => {
-        const http = mockHttpClient((request) => {
-            if (request.url.includes("/api/auth")) {
-                return dispenserResponse({ email: "anon@example.com", auth: "dispensed-token" });
-            }
-
-            const checkin = respondToCheckin(request);
-            if (checkin !== undefined) return checkin;
-
-            if (request.url.includes("/fdfe/details")) return new Response(null, { status: 401 });
-            return new Response(null, { status: 404 });
-        });
-
-        const layers = Layer.mergeAll(
-            deviceLayer(),
-            http.layer,
-            PlayAccount.layerAuroraDispenser().pipe(Layer.provide(http.layer))
-        );
-
-        return Effect.gen(function* () {
-            const error = yield* Effect.flip(GooglePlayApi.details(bundleIdentifier));
-
-            assert.instanceOf(error, HttpClientError.HttpClientError);
-            assert.strictEqual(error.reason._tag, "StatusCodeError");
-            assert.strictEqual(countRequests(http.requests, "/fdfe/details"), 2);
-        }).pipe(Effect.provide(layers));
-    });
-
-    it.effect("leaves other failing statuses alone", () => {
+    it.effect("keeps the cached headers when play fails for another reason", () => {
         const http = mockHttpClient((request) => {
             const checkin = respondToCheckin(request);
             if (checkin !== undefined) return checkin;
@@ -152,7 +154,10 @@ describe("GooglePlayApi auth retry", () => {
 
         return Effect.gen(function* () {
             yield* Effect.flip(GooglePlayApi.details(bundleIdentifier));
-            assert.strictEqual(countRequests(http.requests, "/fdfe/details"), 1);
+            yield* Effect.flip(GooglePlayApi.details(bundleIdentifier));
+
+            assert.strictEqual(countRequests(http.requests, "/fdfe/details"), 2);
+            assert.strictEqual(countRequests(http.requests, "/checkin"), 1);
         }).pipe(Effect.provide(layers));
     });
 });

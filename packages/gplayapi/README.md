@@ -46,5 +46,6 @@ To keep the pre-`PlayAccount` behaviour, add the dispenser layer to an existing 
 +const PlayLive = Layer.mergeAll(DeviceLive, HttpLive, AccountLive);
 ```
 
-Auth headers are cached per device. When Play answers a request with a 401 or a 403 the cache is
-dropped, the credentials are reacquired, and the request is retried exactly once.
+Auth headers are cached per device for 30 minutes, comfortably inside the hour that Google's tokens
+live for. A 401 or a 403 from Play evicts them early and fails that call, so the next one acquires a
+fresh set. Failures for any other reason leave the cache alone.

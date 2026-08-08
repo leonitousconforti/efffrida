@@ -2,7 +2,9 @@ import type * as PlatformError from "effect/PlatformError";
 import type * as HttpClient from "effect/unstable/http/HttpClient";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
+import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
@@ -27,6 +29,13 @@ export const BooleanFromString = Schema.Literals(["true", "false"])
     .pipe(Schema.decodeTo(Schema.Boolean));
 
 export class Service extends Context.Service<Service, AndroidDevice>()("@efffrida/gplayapi/device") {}
+
+/**
+ * How long resolved auth headers stay usable. Google's oauth tokens live for an
+ * hour, so re-acquiring well inside that window keeps a long lived process from
+ * ever reaching for headers that expired underneath it.
+ */
+export const authHeadersTtl: Duration.Duration = Duration.minutes(30);
 
 export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
     UserReadableName: Schema.String,
@@ -67,7 +76,8 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
     "Vending.version": Schema.NumberFromString,
     "Vending.versionString": Schema.String,
 }) {
-    private authHeadersCache?: Record<string, string> | undefined = undefined;
+    private authHeadersCache?: { readonly headers: Record<string, string>; readonly expiresAt: number } | undefined =
+        undefined;
 
     public static fromPropertiesFile = Effect.fnUntraced(function* (
         file: string
@@ -125,19 +135,21 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
         HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
         HttpClient.HttpClient | PlayAccount
     > = Effect.gen({ self: this }, function* () {
-        if (this.authHeadersCache) {
-            return this.authHeadersCache;
-        } else {
-            const authHeaders = yield* internalAuth.authHeaders(this);
-            this.authHeadersCache = authHeaders;
-            return this.authHeadersCache;
+        const now = yield* Clock.currentTimeMillis;
+        const cached = this.authHeadersCache;
+
+        if (cached !== undefined && cached.expiresAt > now) {
+            return cached.headers;
         }
+
+        const headers = yield* internalAuth.authHeaders(this);
+        this.authHeadersCache = { headers, expiresAt: now + Duration.toMillis(authHeadersTtl) };
+        return headers;
     });
 
     /**
      * Drops the cached auth headers so that the next `authHeaders` evaluation
-     * re-runs the whole acquisition. Dispenser tokens expire, so long lived
-     * processes need a way to recover from the 401s that follow.
+     * re-runs the whole acquisition, whether or not they have expired.
      *
      * @internal
      */
