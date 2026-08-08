@@ -1,8 +1,9 @@
+import type * as Schema from "effect/Schema";
 import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
-import * as Schema from "effect/Schema";
+import * as Redacted from "effect/Redacted";
 import * as HttpClient from "effect/unstable/http/HttpClient";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
@@ -14,6 +15,7 @@ import {
     AndroidCheckinResponseSchema,
     UploadDeviceConfigRequestSchema,
 } from "../generated/GooglePlay_pb.ts";
+import { PlayAccount, type PlayAccountError } from "../PlayAccount.ts";
 import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.ts";
 
 /** @internal */
@@ -21,29 +23,11 @@ export const authHeaders = Effect.fn(function* (
     device: AndroidDevice
 ): Effect.fn.Return<
     Record<string, string>,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | PlayAccount
 > {
-    //  curl \
-    //      --request GET \
-    //      --header "Accept: application/json" \
-    //      --header "User-Agent: com.aurora.store-4.7.5-71" \
-    //      "https://auroraoss.com/api/auth"
-    const account = yield* Function.pipe(
-        HttpClientRequest.get("https://auroraoss.com/api/auth"),
-        HttpClientRequest.setHeader("User-Agent", "com.aurora.store-4.7.5-71"),
-        HttpClientRequest.acceptJson,
-        HttpClient.execute,
-        Effect.flatMap(HttpClientResponse.filterStatusOk),
-        Effect.flatMap(
-            HttpClientResponse.schemaBodyJson(
-                Schema.Struct({
-                    email: Schema.String,
-                    auth: Schema.String,
-                })
-            )
-        )
-    );
+    const account = yield* PlayAccount;
+    const credentials = yield* account.credentials;
 
     const checkinResponse = yield* Function.pipe(
         HttpClientRequest.post("https://android.clients.google.com/checkin"),
@@ -163,10 +147,10 @@ export const authHeaders = Effect.fn(function* (
     //     HttpClientRequest.setUrlParams({
     //         app: "com.android.vending",
     //         oauth2_foreground: "1",
-    //         Email: account.email,
+    //         Email: credentials.email,
     //         token_request_options: "CAA4AVAB",
     //         client_sig: "38918a453d07199354f8b19af05ec6562ced5788",
-    //         Token: account.auth,
+    //         Token: Redacted.value(credentials.token),
     //         google_play_services_version: `${device["GSF.version"]}`,
     //         check_email: "1",
     //         system_partition: "1",
@@ -184,7 +168,7 @@ export const authHeaders = Effect.fn(function* (
     // );
 
     return {
-        Authorization: "Bearer " + account.auth,
+        Authorization: "Bearer " + Redacted.value(credentials.token),
         "User-Agent": device.userAgent,
         "X-DFE-Device-Id": checkinResponse.androidId.toString(16),
         "Accept-Language": "en",

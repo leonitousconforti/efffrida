@@ -7,7 +7,7 @@
 
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
-import type * as HttpClientError from "effect/unstable/http/HttpClientError";
+import type * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
@@ -18,7 +18,10 @@ import * as Match from "effect/Match";
 import * as PlatformError from "effect/PlatformError";
 import * as Stream from "effect/Stream";
 import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClientError from "effect/unstable/http/HttpClientError";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+
+import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
 import {
     BulkDetailsRequestSchema,
@@ -27,11 +30,43 @@ import {
     type DeliveryResponse,
     type DetailsResponse,
 } from "./generated/GooglePlay_pb.ts";
-import { Service as AndroidDeviceService } from "./internal/device.ts";
+import { type AndroidDevice, Service as AndroidDeviceService } from "./internal/device.ts";
 import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
 /** @internal */
 const fdfeBase = "https://android.clients.google.com/fdfe";
+
+/**
+ * Play rejects a request with a 401/403 once the credentials behind the
+ * device's auth headers stop being good, which can happen well before they
+ * expire on their own. Drop them so the next call acquires a fresh set, and
+ * report the rejection instead of handing a body that is not a protobuf
+ * payload to the caller's decoder.
+ *
+ * @internal
+ */
+const evictRejectedAuthHeaders =
+    (device: AndroidDevice) =>
+    <E, R>(
+        self: Effect.Effect<HttpClientResponse.HttpClientResponse, E, R>
+    ): Effect.Effect<HttpClientResponse.HttpClientResponse, E | HttpClientError.HttpClientError, R> =>
+        Effect.flatMap(self, (response) => {
+            if (response.status !== 401 && response.status !== 403) {
+                return Effect.succeed(response);
+            }
+
+            device.invalidateAuthHeaders();
+            return Effect.andThen(
+                Effect.logDebug(`google play answered ${response.status}, dropping the cached auth headers`),
+                new HttpClientError.HttpClientError({
+                    reason: new HttpClientError.StatusCodeError({
+                        request: response.request,
+                        response,
+                        description: "google play rejected the request credentials",
+                    }),
+                })
+            );
+        });
 
 export {
     /**
@@ -55,8 +90,8 @@ export const details = Effect.fnUntraced(function* (
     bundleIdentifier: string
 ): Effect.fn.Return<
     DetailsResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
     const device = yield* AndroidDeviceService;
@@ -66,7 +101,7 @@ export const details = Effect.fnUntraced(function* (
         headers: yield* device.authHeaders,
     }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -79,8 +114,8 @@ export const bulkDetails = Effect.fnUntraced(function* (
     bundleIdentifier: string
 ): Effect.fn.Return<
     BulkDetailsResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderBulkDetailsResponse = decodeResponseFromResponseWrapper("bulkDetailsResponse");
     const encoderBulkDetailsRequest = encodeRequest(BulkDetailsRequestSchema, {
@@ -95,7 +130,7 @@ export const bulkDetails = Effect.fnUntraced(function* (
     }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
     const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
-    const httpResponse = yield* HttpClient.execute(pbRequest);
+    const httpResponse = yield* HttpClient.execute(pbRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -109,8 +144,8 @@ export const purchase = Effect.fnUntraced(function* (
     options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
 ): Effect.fn.Return<
     BuyResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
 
@@ -125,7 +160,7 @@ export const purchase = Effect.fnUntraced(function* (
         },
     }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderBuyResponse(httpResponse);
     return pbResponse;
 });
@@ -144,8 +179,8 @@ export const delivery = Effect.fnUntraced(function* (
     }
 ): Effect.fn.Return<
     DeliveryResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
 
@@ -161,7 +196,7 @@ export const delivery = Effect.fnUntraced(function* (
         },
     }).pipe(HttpClientRequest.prependUrl(fdfeBase));
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
+    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
     const pbResponse = yield* decoderDeliveryResponse(httpResponse);
     return pbResponse;
 });
@@ -186,8 +221,8 @@ export const downloadToStreams = Effect.fnUntraced(function* (
         name: string;
         url: string;
     }>,
-    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError,
-    AndroidDeviceService | HttpClient.HttpClient
+    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    AndroidDeviceService | HttpClient.HttpClient | PlayAccount
 > {
     const { item } = yield* details(bundleIdentifier);
     const offerType = options?.offerType ?? item?.offer[0].offerType ?? 1;
@@ -291,8 +326,12 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         size: bigint;
         integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
     }>,
-    Cause.NoSuchElementError | PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
-    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+    | Cause.NoSuchElementError
+    | PlatformError.PlatformError
+    | HttpClientError.HttpClientError
+    | Schema.SchemaError
+    | PlayAccountError,
+    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope | PlayAccount
 > {
     const fileSystem = yield* FileSystem.FileSystem;
     const streams = yield* downloadToStreams(bundleIdentifier, options);
