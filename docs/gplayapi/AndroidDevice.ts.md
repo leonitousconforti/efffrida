@@ -16,6 +16,8 @@ Since v1.0.0
 
 - [Constants](#constants)
   - [authHeadersTtl](#authheadersttl)
+- [Layers](#layers)
+  - [EmbeddedPixel7aLive](#embeddedpixel7alive)
 - [Models](#models)
   - [AndroidDevice (class)](#androiddevice-class)
     - [authHeaders (property)](#authheaders-property)
@@ -39,6 +41,24 @@ declare const authHeadersTtl: Duration.Duration
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L55)
+
+Since v1.0.0
+
+# Layers
+
+## EmbeddedPixel7aLive
+
+**Signature**
+
+```ts
+declare const EmbeddedPixel7aLive: Layer.Layer<
+  AndroidDeviceService,
+  Schema.SchemaError | PlatformError.PlatformError | PlatformError.BadArgument,
+  FileSystem.FileSystem | Path.Path
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L202)
 
 Since v1.0.0
 
@@ -66,7 +86,7 @@ Since v1.0.0
 readonly authHeaders: Effect.Effect<Record<string, string>, HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError, PlayAccount | HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L176)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L170)
 
 Since v1.0.0
 

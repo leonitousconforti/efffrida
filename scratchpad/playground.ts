@@ -51,7 +51,7 @@ const DeviceLive = pipe(
             Effect.asVoid
         )
     ),
-    Layer.provide(AndroidDevice.AndroidDevice.EmbeddedPixel7aLive),
+    Layer.provide(AndroidDevice.EmbeddedPixel7aLive),
     Layer.provide(NodeHttpClient.layerFetch),
     Layer.provide(NodeServices.layer)
 );

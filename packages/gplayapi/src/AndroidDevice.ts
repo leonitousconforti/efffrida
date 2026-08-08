@@ -139,12 +139,6 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
 
     /**
      * @since 1.0.0
-     * @category Layers
-     */
-    public static EmbeddedPixel7aLive = Layer.effect(AndroidDeviceService, AndroidDevice.EmbeddedPixel7a);
-
-    /**
-     * @since 1.0.0
      * @category Destructors
      */
     public get userAgent(): string {
@@ -200,3 +194,13 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
         this.authHeadersCache = undefined;
     }
 }
+
+/**
+ * @since 1.0.0
+ * @category Layers
+ */
+export const EmbeddedPixel7aLive: Layer.Layer<
+    AndroidDeviceService,
+    Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
+    Path.Path | FileSystem.FileSystem
+> = Layer.effect(AndroidDeviceService, AndroidDevice.EmbeddedPixel7a);
