@@ -3,7 +3,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 
 import { NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";
-import { GooglePlayApi } from "@efffrida/gplayapi";
+import { AndroidDevice, GooglePlayApi } from "@efffrida/gplayapi";
 
 const DeviceLive = pipe(
     FridaDevice.layerAndroidEmulatorDeviceConfig("Small_Phone", {
@@ -51,7 +51,7 @@ const DeviceLive = pipe(
             Effect.asVoid
         )
     ),
-    Layer.provide(GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive),
+    Layer.provide(AndroidDevice.AndroidDevice.EmbeddedPixel7aLive),
     Layer.provide(NodeHttpClient.layerFetch),
     Layer.provide(NodeServices.layer)
 );
