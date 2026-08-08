@@ -49,20 +49,15 @@
         "build": "tsc -b tsconfig.build.json && pnpm babel",
         "babel": "babel dist --plugins annotate-pure-calls --out-dir dist --source-maps",
         "check": "tsc -b tsconfig.json",
-        "protobuf": "buf generate",
-        "test": "vitest",
-        "coverage": "vitest --coverage"
+        "protobuf": "buf generate"
     },
     "devDependencies": {
         "@bufbuild/buf": "1.72.0",
         "@bufbuild/protobuf": "2.13.0",
         "@effect/platform-node": "4.0.0-beta.104",
-        "@effect/vitest": "4.0.0-beta.104",
         "@types/node": "25.9.5",
         "effect": "4.0.0-beta.104",
-        "ioredis": "5.11.1",
-        "vite": "8.2.1",
-        "vitest": "4.1.10"
+        "ioredis": "5.11.1"
     },
     "peerDependencies": {
         "@bufbuild/protobuf": "2.13.0",
