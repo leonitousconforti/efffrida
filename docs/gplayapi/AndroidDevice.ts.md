@@ -16,6 +16,9 @@ Since v1.0.0
 
 - [Constants](#constants)
   - [authHeadersTtl](#authheadersttl)
+- [Constructors](#constructors)
+  - [EmbeddedPixel7a](#embeddedpixel7a)
+  - [fromPropertiesFile](#frompropertiesfile)
 - [Layers](#layers)
   - [EmbeddedPixel7aLive](#embeddedpixel7alive)
 - [Models](#models)
@@ -44,6 +47,38 @@ declare const authHeadersTtl: Duration.Duration
 
 Since v1.0.0
 
+# Constructors
+
+## EmbeddedPixel7a
+
+**Signature**
+
+```ts
+declare const EmbeddedPixel7a: Effect.Effect<
+  AndroidDevice,
+  Schema.SchemaError | PlatformError.PlatformError | PlatformError.BadArgument,
+  FileSystem.FileSystem | Path.Path
+>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L193)
+
+Since v1.0.0
+
+## fromPropertiesFile
+
+**Signature**
+
+```ts
+declare const fromPropertiesFile: (
+  file: string
+) => Effect.Effect<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem>
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L167)
+
+Since v1.0.0
+
 # Layers
 
 ## EmbeddedPixel7aLive
@@ -58,7 +93,7 @@ declare const EmbeddedPixel7aLive: Layer.Layer<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L202)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L206)
 
 Since v1.0.0
 
@@ -86,7 +121,7 @@ Since v1.0.0
 readonly authHeaders: Effect.Effect<Record<string, string>, HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError, PlayAccount | HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L170)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L135)
 
 Since v1.0.0
 

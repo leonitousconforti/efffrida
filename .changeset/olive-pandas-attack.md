@@ -6,4 +6,4 @@ Break `AndroidDevice` out of `GooglePlayApi` into its own `AndroidDevice` module
 
 `GooglePlayApi.AndroidDevice` and `GooglePlayApi.AndroidDeviceService` are no longer exported. Import them from the new module instead, either through the package index (`import { AndroidDevice } from "@efffrida/gplayapi"`) or through the subpath (`import * as AndroidDevice from "@efffrida/gplayapi/AndroidDevice"`).
 
-The `EmbeddedPixel7aLive` layer also moved from a static on the `AndroidDevice` class to a top level export of the new module: `AndroidDevice.EmbeddedPixel7aLive`.
+The statics on the `AndroidDevice` class also moved to top level exports of the new module: `AndroidDevice.fromPropertiesFile`, `AndroidDevice.EmbeddedPixel7a`, and `AndroidDevice.EmbeddedPixel7aLive`.

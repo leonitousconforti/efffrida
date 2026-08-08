@@ -104,41 +104,6 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
 
     /**
      * @since 1.0.0
-     * @category Constructors
-     */
-    public static fromPropertiesFile = Effect.fnUntraced(function* (
-        file: string
-    ): Effect.fn.Return<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem> {
-        const decodeDevice = Schema.decodeUnknownEffect(AndroidDevice);
-        const decodePropertiesFile = Schema.decodeEffect(
-            Schema.String.pipe(
-                Schema.decodeTo(
-                    Schema.Record(Schema.String, Schema.String),
-                    SchemaTransformation.splitKeyValue({
-                        keyValueSeparator: "=",
-                        separator: "\n",
-                    })
-                )
-            )
-        );
-
-        const fileSystem = yield* FileSystem.FileSystem;
-        const content = yield* fileSystem.readFileString(file);
-        const properties = yield* decodePropertiesFile(content);
-        return yield* decodeDevice(properties);
-    });
-
-    /**
-     * @since 1.0.0
-     * @category Constructors
-     */
-    public static EmbeddedPixel7a = Path.Path.pipe(
-        Effect.flatMap((path) => path.fromFileUrl(new URL("../devices/arm64_xxhdpi.properties", import.meta.url))),
-        Effect.flatMap(AndroidDevice.fromPropertiesFile)
-    );
-
-    /**
-     * @since 1.0.0
      * @category Destructors
      */
     public get userAgent(): string {
@@ -197,10 +162,49 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
 
 /**
  * @since 1.0.0
+ * @category Constructors
+ */
+export const fromPropertiesFile = Effect.fnUntraced(function* (
+    file: string
+): Effect.fn.Return<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem> {
+    const decodeDevice = Schema.decodeUnknownEffect(AndroidDevice);
+    const decodePropertiesFile = Schema.decodeEffect(
+        Schema.String.pipe(
+            Schema.decodeTo(
+                Schema.Record(Schema.String, Schema.String),
+                SchemaTransformation.splitKeyValue({
+                    keyValueSeparator: "=",
+                    separator: "\n",
+                })
+            )
+        )
+    );
+
+    const fileSystem = yield* FileSystem.FileSystem;
+    const content = yield* fileSystem.readFileString(file);
+    const properties = yield* decodePropertiesFile(content);
+    return yield* decodeDevice(properties);
+});
+
+/**
+ * @since 1.0.0
+ * @category Constructors
+ */
+export const EmbeddedPixel7a: Effect.Effect<
+    AndroidDevice,
+    Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
+    Path.Path | FileSystem.FileSystem
+> = Path.Path.pipe(
+    Effect.flatMap((path) => path.fromFileUrl(new URL("../devices/arm64_xxhdpi.properties", import.meta.url))),
+    Effect.flatMap(fromPropertiesFile)
+);
+
+/**
+ * @since 1.0.0
  * @category Layers
  */
 export const EmbeddedPixel7aLive: Layer.Layer<
     AndroidDeviceService,
     Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
     Path.Path | FileSystem.FileSystem
-> = Layer.effect(AndroidDeviceService, AndroidDevice.EmbeddedPixel7a);
+> = Layer.effect(AndroidDeviceService, EmbeddedPixel7a);
