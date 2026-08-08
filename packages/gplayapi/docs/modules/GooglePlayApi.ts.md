@@ -39,12 +39,12 @@ declare const bulkDetails: (
   bundleIdentifier: string
 ) => Effect.Effect<
   BulkDetailsResponse,
-  HttpClientError.HttpClientError | Schema.SchemaError,
-  HttpClient.HttpClient | AndroidDeviceService
+  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L78)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L134)
 
 Since v1.0.0
 
@@ -63,12 +63,12 @@ declare const delivery: (
   }
 ) => Effect.Effect<
   DeliveryResponse,
-  HttpClientError.HttpClientError | Schema.SchemaError,
-  HttpClient.HttpClient | AndroidDeviceService
+  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L137)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L196)
 
 Since v1.0.0
 
@@ -81,12 +81,12 @@ declare const details: (
   bundleIdentifier: string
 ) => Effect.Effect<
   DetailsResponse,
-  HttpClientError.HttpClientError | Schema.SchemaError,
-  HttpClient.HttpClient | AndroidDeviceService
+  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L54)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L107)
 
 Since v1.0.0
 
@@ -115,12 +115,16 @@ declare const downloadToDisk: (
       integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
     }[]
   ],
-  HttpClientError.HttpClientError | Schema.SchemaError | Cause.NoSuchElementError | PlatformError.PlatformError,
-  HttpClient.HttpClient | AndroidDeviceService | Crypto.Crypto | FileSystem.FileSystem | Scope.Scope
+  | HttpClientError.HttpClientError
+  | Schema.SchemaError
+  | PlayAccountError
+  | Cause.NoSuchElementError
+  | PlatformError.PlatformError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService | Crypto.Crypto | FileSystem.FileSystem | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L278)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L340)
 
 Since v1.0.0
 
@@ -149,12 +153,12 @@ declare const downloadToStreams: (
       url: string
     }[]
   ],
-  HttpClientError.HttpClientError | Schema.SchemaError | Cause.NoSuchElementError,
-  HttpClient.HttpClient | AndroidDeviceService
+  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError | Cause.NoSuchElementError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L173)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L235)
 
 Since v1.0.0
 
@@ -168,12 +172,12 @@ declare const purchase: (
   options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
 ) => Effect.Effect<
   BuyResponse,
-  HttpClientError.HttpClientError | Schema.SchemaError,
-  HttpClient.HttpClient | AndroidDeviceService
+  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L107)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L163)
 
 Since v1.0.0
 
@@ -187,7 +191,7 @@ Since v1.0.0
 declare const AndroidDevice: typeof AndroidDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L41)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L94)
 
 Since v1.0.0
 
@@ -199,6 +203,6 @@ Since v1.0.0
 declare const AndroidDeviceService: typeof AndroidDeviceService
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L47)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L100)
 
 Since v1.0.0

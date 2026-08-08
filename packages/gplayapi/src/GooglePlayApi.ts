@@ -7,7 +7,7 @@
 
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
-import type * as HttpClientError from "effect/unstable/http/HttpClientError";
+import type * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
@@ -18,7 +18,10 @@ import * as Match from "effect/Match";
 import * as PlatformError from "effect/PlatformError";
 import * as Stream from "effect/Stream";
 import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClientError from "effect/unstable/http/HttpClientError";
 import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+
+import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
 import {
     BulkDetailsRequestSchema,
@@ -27,11 +30,61 @@ import {
     type DeliveryResponse,
     type DetailsResponse,
 } from "./generated/GooglePlay_pb.ts";
-import { Service as AndroidDeviceService } from "./internal/device.ts";
+import { type AndroidDevice, Service as AndroidDeviceService } from "./internal/device.ts";
 import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
 /** @internal */
 const fdfeBase = "https://android.clients.google.com/fdfe";
+
+/** @internal */
+const isUnauthorized = (response: HttpClientResponse.HttpClientResponse): boolean =>
+    response.status === 401 || response.status === 403;
+
+/**
+ * Runs a request that carries the device's auth headers. Play answers with a
+ * 401/403 once the token behind those headers expires, so the cached headers
+ * are dropped and the request is rebuilt and sent exactly once more. Every
+ * other status is left alone for the caller to decode.
+ *
+ * @internal
+ */
+const withAuthRetry = Effect.fnUntraced(function* (
+    device: AndroidDevice,
+    makeRequest: (
+        headers: Record<string, string>
+    ) => Effect.Effect<HttpClientRequest.HttpClientRequest, HttpClientError.HttpClientError, never>
+): Effect.fn.Return<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | PlayAccount
+> {
+    const request = yield* makeRequest(yield* device.authHeaders);
+    const response = yield* HttpClient.execute(request);
+
+    if (!isUnauthorized(response)) {
+        return response;
+    }
+
+    yield* Effect.logDebug(`google play answered ${response.status}, reacquiring auth headers and retrying once`);
+    device.invalidateAuthHeaders();
+
+    const retriedRequest = yield* makeRequest(yield* device.authHeaders);
+    const retriedResponse = yield* HttpClient.execute(retriedRequest);
+
+    // Reacquiring did not help, so report the rejection rather than handing a
+    // body that is not a protobuf payload to the caller's decoder.
+    if (isUnauthorized(retriedResponse)) {
+        return yield* new HttpClientError.HttpClientError({
+            reason: new HttpClientError.StatusCodeError({
+                request: retriedRequest,
+                response: retriedResponse,
+                description: "google play rejected the reacquired credentials",
+            }),
+        });
+    }
+
+    return retriedResponse;
+});
 
 export {
     /**
@@ -55,18 +108,21 @@ export const details = Effect.fnUntraced(function* (
     bundleIdentifier: string
 ): Effect.fn.Return<
     DetailsResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
     const device = yield* AndroidDeviceService;
 
-    const httpRequest = HttpClientRequest.get("/details", {
-        urlParams: { doc: bundleIdentifier },
-        headers: yield* device.authHeaders,
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    const httpResponse = yield* withAuthRetry(device, (headers) =>
+        Effect.succeed(
+            HttpClientRequest.get("/details", {
+                urlParams: { doc: bundleIdentifier },
+                headers,
+            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
+        )
+    );
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
     const pbResponse = yield* decoderDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -79,8 +135,8 @@ export const bulkDetails = Effect.fnUntraced(function* (
     bundleIdentifier: string
 ): Effect.fn.Return<
     BulkDetailsResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderBulkDetailsResponse = decodeResponseFromResponseWrapper("bulkDetailsResponse");
     const encoderBulkDetailsRequest = encodeRequest(BulkDetailsRequestSchema, {
@@ -90,12 +146,12 @@ export const bulkDetails = Effect.fnUntraced(function* (
     });
 
     const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.post("/bulkDetails", {
-        headers: yield* device.authHeaders,
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    const httpResponse = yield* withAuthRetry(device, (headers) =>
+        encoderBulkDetailsRequest(
+            HttpClientRequest.post("/bulkDetails", { headers }).pipe(HttpClientRequest.prependUrl(fdfeBase))
+        )
+    );
 
-    const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
-    const httpResponse = yield* HttpClient.execute(pbRequest);
     const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
     return pbResponse;
 });
@@ -109,23 +165,26 @@ export const purchase = Effect.fnUntraced(function* (
     options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
 ): Effect.fn.Return<
     BuyResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
 
     const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.post("/purchase", {
-        headers: yield* device.authHeaders,
-        urlParams: {
-            doc: bundleIdentifier,
-            ch: options.certificateHash ?? "",
-            ot: options.offerType.toString(),
-            vc: options.versionCode.toString(),
-        },
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    const httpResponse = yield* withAuthRetry(device, (headers) =>
+        Effect.succeed(
+            HttpClientRequest.post("/purchase", {
+                headers,
+                urlParams: {
+                    doc: bundleIdentifier,
+                    ch: options.certificateHash ?? "",
+                    ot: options.offerType.toString(),
+                    vc: options.versionCode.toString(),
+                },
+            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
+        )
+    );
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
     const pbResponse = yield* decoderBuyResponse(httpResponse);
     return pbResponse;
 });
@@ -144,24 +203,27 @@ export const delivery = Effect.fnUntraced(function* (
     }
 ): Effect.fn.Return<
     DeliveryResponse,
-    HttpClientError.HttpClientError | Schema.SchemaError,
-    HttpClient.HttpClient | AndroidDeviceService
+    HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
     const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
 
     const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.get("/delivery", {
-        headers: yield* device.authHeaders,
-        urlParams: {
-            doc: bundleIdentifier,
-            dtok: options.deliveryToken,
-            ch: options.certificateHash ?? "",
-            ot: options.offerType.toString(),
-            vc: options.versionCode.toString(),
-        },
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    const httpResponse = yield* withAuthRetry(device, (headers) =>
+        Effect.succeed(
+            HttpClientRequest.get("/delivery", {
+                headers,
+                urlParams: {
+                    doc: bundleIdentifier,
+                    dtok: options.deliveryToken,
+                    ch: options.certificateHash ?? "",
+                    ot: options.offerType.toString(),
+                    vc: options.versionCode.toString(),
+                },
+            }).pipe(HttpClientRequest.prependUrl(fdfeBase))
+        )
+    );
 
-    const httpResponse = yield* HttpClient.execute(httpRequest);
     const pbResponse = yield* decoderDeliveryResponse(httpResponse);
     return pbResponse;
 });
@@ -186,8 +248,8 @@ export const downloadToStreams = Effect.fnUntraced(function* (
         name: string;
         url: string;
     }>,
-    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError,
-    AndroidDeviceService | HttpClient.HttpClient
+    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    AndroidDeviceService | HttpClient.HttpClient | PlayAccount
 > {
     const { item } = yield* details(bundleIdentifier);
     const offerType = options?.offerType ?? item?.offer[0].offerType ?? 1;
@@ -291,8 +353,12 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         size: bigint;
         integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
     }>,
-    Cause.NoSuchElementError | PlatformError.PlatformError | HttpClientError.HttpClientError | Schema.SchemaError,
-    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+    | Cause.NoSuchElementError
+    | PlatformError.PlatformError
+    | HttpClientError.HttpClientError
+    | Schema.SchemaError
+    | PlayAccountError,
+    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope | PlayAccount
 > {
     const fileSystem = yield* FileSystem.FileSystem;
     const streams = yield* downloadToStreams(bundleIdentifier, options);

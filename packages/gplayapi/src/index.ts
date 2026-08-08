@@ -9,3 +9,10 @@
  * @since 1.0.0
  */
 export * as GooglePlayApi from "./GooglePlayApi.ts"
+
+/**
+ * Google play account credentials.
+ *
+ * @since 1.0.0
+ */
+export * as PlayAccount from "./PlayAccount.ts"

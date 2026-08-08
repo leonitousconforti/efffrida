@@ -11,6 +11,8 @@ import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
 import * as SchemaTransformation from "effect/SchemaTransformation";
 
+import type { PlayAccount, PlayAccountError } from "../PlayAccount.ts";
+
 import * as internalAuth from "./auth.ts";
 
 export const StringArrayFromString = Schema.suspend(() => {
@@ -120,8 +122,8 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
 
     public readonly authHeaders: Effect.Effect<
         Record<string, string>,
-        HttpClientError.HttpClientError | Schema.SchemaError,
-        HttpClient.HttpClient
+        HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+        HttpClient.HttpClient | PlayAccount
     > = Effect.gen({ self: this }, function* () {
         if (this.authHeadersCache) {
             return this.authHeadersCache;
@@ -131,4 +133,15 @@ export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")(
             return this.authHeadersCache;
         }
     });
+
+    /**
+     * Drops the cached auth headers so that the next `authHeaders` evaluation
+     * re-runs the whole acquisition. Dispenser tokens expire, so long lived
+     * processes need a way to recover from the 401s that follow.
+     *
+     * @internal
+     */
+    public invalidateAuthHeaders(): void {
+        this.authHeadersCache = undefined;
+    }
 }
