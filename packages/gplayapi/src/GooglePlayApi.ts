@@ -342,9 +342,7 @@ export const downloadToDisk = Effect.fnUntraced(function* (
                     _tag: "InvalidData",
                     module: "GooglePlayApi",
                     method: "downloadToDisk",
-                    // The runtime value has a meaningful toString; the default Object stringification is not in play.
-                    // oxlint-disable-next-line typescript/no-base-to-string
-                    description: `Downloaded ${name} integrity mismatch: expected ${integrity}, got ${downloadedIntegrity}`,
+                    description: `Downloaded ${name} integrity mismatch: expected ${expectedIntegrity}, got ${downloadedIntegrity}`,
                 })
             );
         }
