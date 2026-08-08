@@ -196,7 +196,7 @@ Since v1.0.0
 declare const AttachSchema: Schema.Union<
   readonly [
     Schema.Struct<{
-      readonly pid: Schema.Number
+      readonly pid: Schema.Finite
       readonly runtime: Schema.optional<Schema.Enum<typeof Frida.ScriptRuntime>>
       readonly platform: Schema.optional<Schema.Enum<typeof Frida.JsPlatform>>
       readonly realm: Schema.optional<Schema.Enum<typeof Frida.Realm>>

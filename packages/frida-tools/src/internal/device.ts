@@ -270,7 +270,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
             "tcp:27042",
         ]).pipe(
             childProcessSpawner.string,
-            Effect.flatMap(Schema.decodeEffect(Schema.NumberFromString)),
+            Effect.flatMap(Schema.decodeEffect(Schema.FiniteFromString)),
             Effect.catchTag(
                 "SchemaError",
                 (cause) =>

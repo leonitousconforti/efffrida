@@ -61,7 +61,7 @@ declare const FridaSchema: Schema.Struct<{
   readonly attach: Schema.Union<
     readonly [
       Schema.Struct<{
-        readonly pid: Schema.Number
+        readonly pid: Schema.Finite
         readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
         readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
         readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
