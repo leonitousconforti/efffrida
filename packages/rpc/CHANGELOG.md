@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.54
+
+### Patch Changes
+
+- 6e2d555: Update Effect-TS packages to v4.0.0-beta.106
+- Updated dependencies [6e2d555]
+  - @efffrida/frida-tools@0.0.51
+  - @efffrida/platform@0.0.39
+
 ## 0.0.53
 
 ### Patch Changes
