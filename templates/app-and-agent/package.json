@@ -29,7 +29,7 @@
         "@vitest/coverage-v8": "4.1.10",
         "@vitest/runner": "4.1.10",
         "@vitest/utils": "4.1.10",
-        "birpc": "4.0.0",
+        "birpc": "4.1.0",
         "flatted": "3.4.4",
         "frida": "17.17.0",
         "ioredis": "5.11.1",
