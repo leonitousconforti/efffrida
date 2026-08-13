@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/gplayapi",
-    "version": "0.0.28",
+    "version": "0.0.29",
     "description": "Google play api",
     "keywords": [
         "effect-ts",
