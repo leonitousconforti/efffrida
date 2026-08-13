@@ -1,6 +1,6 @@
 {
     "name": "create-efffrida-app",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "description": "Create efffrida applications with a single command",
     "keywords": [
         "effect-ts",
