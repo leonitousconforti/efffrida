@@ -8,7 +8,7 @@
     "baseBranch": "main",
     "updateInternalDependencies": "patch",
     "privatePackages": false,
-    "format": "auto",
+    "format": "oxfmt",
     "snapshot": {
         "useCalculatedVersion": false,
         "prereleaseTemplate": "{tag}-{commit}"
