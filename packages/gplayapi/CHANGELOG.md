@@ -13,22 +13,22 @@
 - 0d7b9e5: Update Effect-TS packages to v4.0.0-beta.105
 - 7de828a: Make google play account acquisition pluggable through a new `PlayAccount` service.
 
-  `AndroidDevice.authHeaders` no longer hardcodes the Aurora dispenser fetch, so every
-  `GooglePlayApi.*` function now requires a `PlayAccount` layer in addition to the device and http
-  client layers. Three layers ship with it: `PlayAccount.layerAuroraDispenser` (the previous
-  behaviour, with a configurable url), `PlayAccount.layerConfig` (reads `GPLAY_EMAIL` and
-  `GPLAY_AUTH_TOKEN` by default), and `PlayAccount.layerStatic`. Add
-  `PlayAccount.layerAuroraDispenser()` to an existing composition to keep the old behaviour.
+    `AndroidDevice.authHeaders` no longer hardcodes the Aurora dispenser fetch, so every
+    `GooglePlayApi.*` function now requires a `PlayAccount` layer in addition to the device and http
+    client layers. Three layers ship with it: `PlayAccount.layerAuroraDispenser` (the previous
+    behaviour, with a configurable url), `PlayAccount.layerConfig` (reads `GPLAY_EMAIL` and
+    `GPLAY_AUTH_TOKEN` by default), and `PlayAccount.layerStatic`. Add
+    `PlayAccount.layerAuroraDispenser()` to an existing composition to keep the old behaviour.
 
-  Auth headers used to be cached on the device forever, so a long lived process eventually served
-  expired headers with no way to recover. They now expire after 30 minutes, and a 401 or a 403 from
-  google play evicts them early so the next call acquires a fresh set.
+    Auth headers used to be cached on the device forever, so a long lived process eventually served
+    expired headers with no way to recover. They now expire after 30 minutes, and a 401 or a 403 from
+    google play evicts them early so the next call acquires a fresh set.
 
 - aac9fa9: Break `AndroidDevice` out of `GooglePlayApi` into its own `AndroidDevice` module, mirroring the `PlayAccount` module.
 
-  `GooglePlayApi.AndroidDevice` and `GooglePlayApi.AndroidDeviceService` are no longer exported. Import them from the new module instead, either through the package index (`import { AndroidDevice } from "@efffrida/gplayapi"`) or through the subpath (`import * as AndroidDevice from "@efffrida/gplayapi/AndroidDevice"`).
+    `GooglePlayApi.AndroidDevice` and `GooglePlayApi.AndroidDeviceService` are no longer exported. Import them from the new module instead, either through the package index (`import { AndroidDevice } from "@efffrida/gplayapi"`) or through the subpath (`import * as AndroidDevice from "@efffrida/gplayapi/AndroidDevice"`).
 
-  The statics on the `AndroidDevice` class also moved to top level exports of the new module: `AndroidDevice.fromPropertiesFile`, `AndroidDevice.EmbeddedPixel7a`, and `AndroidDevice.EmbeddedPixel7aLive`.
+    The statics on the `AndroidDevice` class also moved to top level exports of the new module: `AndroidDevice.fromPropertiesFile`, `AndroidDevice.EmbeddedPixel7a`, and `AndroidDevice.EmbeddedPixel7aLive`.
 
 ## 0.0.26
 

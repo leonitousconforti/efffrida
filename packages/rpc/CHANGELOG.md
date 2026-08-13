@@ -6,8 +6,8 @@
 
 - 6e2d555: Update Effect-TS packages to v4.0.0-beta.106
 - Updated dependencies [6e2d555]
-  - @efffrida/frida-tools@0.0.51
-  - @efffrida/platform@0.0.39
+    - @efffrida/frida-tools@0.0.51
+    - @efffrida/platform@0.0.39
 
 ## 0.0.53
 
@@ -15,8 +15,8 @@
 
 - 0d7b9e5: Update Effect-TS packages to v4.0.0-beta.105
 - Updated dependencies [0d7b9e5]
-  - @efffrida/frida-tools@0.0.50
-  - @efffrida/platform@0.0.38
+    - @efffrida/frida-tools@0.0.50
+    - @efffrida/platform@0.0.38
 
 ## 0.0.52
 
@@ -25,9 +25,9 @@
 - e6d83ef: Update Effect-TS packages to v4.0.0-beta.104
 - Updated dependencies [e6d83ef]
 - Updated dependencies [e6d83ef]
-  - @efffrida/polyfills@0.0.15
-  - @efffrida/frida-tools@0.0.49
-  - @efffrida/platform@0.0.37
+    - @efffrida/polyfills@0.0.15
+    - @efffrida/frida-tools@0.0.49
+    - @efffrida/platform@0.0.37
 
 ## 0.0.51
 
@@ -37,8 +37,8 @@
 - d559b0a: Update dependency frida to v17.17.0
 - Updated dependencies [8c291bb]
 - Updated dependencies [d559b0a]
-  - @efffrida/frida-tools@0.0.48
-  - @efffrida/platform@0.0.36
+    - @efffrida/frida-tools@0.0.48
+    - @efffrida/platform@0.0.36
 
 ## 0.0.50
 
@@ -46,8 +46,8 @@
 
 - a59a3cc: Update Effect-TS packages to v4.0.0-beta.102
 - Updated dependencies [a59a3cc]
-  - @efffrida/frida-tools@0.0.47
-  - @efffrida/platform@0.0.35
+    - @efffrida/frida-tools@0.0.47
+    - @efffrida/platform@0.0.35
 
 ## 0.0.49
 
@@ -56,8 +56,8 @@
 - 46c6be4: Update Effect-TS packages to v4.0.0-beta.101
 - Updated dependencies [abe5443]
 - Updated dependencies [46c6be4]
-  - @efffrida/platform@0.0.34
-  - @efffrida/frida-tools@0.0.46
+    - @efffrida/platform@0.0.34
+    - @efffrida/frida-tools@0.0.46
 
 ## 0.0.48
 
@@ -65,8 +65,8 @@
 
 - 231b8eb: Update dependency frida to v17.16.4
 - Updated dependencies [231b8eb]
-  - @efffrida/frida-tools@0.0.45
-  - @efffrida/platform@0.0.33
+    - @efffrida/frida-tools@0.0.45
+    - @efffrida/platform@0.0.33
 
 ## 0.0.47
 
@@ -74,8 +74,8 @@
 
 - 35bd1e9: Update Effect-TS packages to v4.0.0-beta.100
 - Updated dependencies [35bd1e9]
-  - @efffrida/frida-tools@0.0.44
-  - @efffrida/platform@0.0.33
+    - @efffrida/frida-tools@0.0.44
+    - @efffrida/platform@0.0.33
 
 ## 0.0.46
 
@@ -85,8 +85,8 @@
 - 62e96ee: Update Effect-TS packages to v4.0.0-beta.99
 - Updated dependencies [5f67b36]
 - Updated dependencies [62e96ee]
-  - @efffrida/frida-tools@0.0.43
-  - @efffrida/platform@0.0.32
+    - @efffrida/frida-tools@0.0.43
+    - @efffrida/platform@0.0.32
 
 ## 0.0.45
 
@@ -94,8 +94,8 @@
 
 - ab8fd4b: Update vitest packages
 - Updated dependencies [ab8fd4b]
-  - @efffrida/frida-tools@0.0.42
-  - @efffrida/platform@0.0.31
+    - @efffrida/frida-tools@0.0.42
+    - @efffrida/platform@0.0.31
 
 ## 0.0.44
 
@@ -105,8 +105,8 @@
 - 5f96136: Update Effect-TS packages to v4.0.0-beta.98
 - Updated dependencies [936f0fa]
 - Updated dependencies [5f96136]
-  - @efffrida/frida-tools@0.0.41
-  - @efffrida/platform@0.0.30
+    - @efffrida/frida-tools@0.0.41
+    - @efffrida/platform@0.0.30
 
 ## 0.0.43
 
@@ -114,9 +114,9 @@
 
 - 891d9ac: Frida 17.15.1 <https://frida.re/news/2026/06/20/frida-17-15-1-released/>
 - Updated dependencies [891d9ac]
-  - @efffrida/frida-tools@0.0.40
-  - @efffrida/polyfills@0.0.14
-  - @efffrida/platform@0.0.29
+    - @efffrida/frida-tools@0.0.40
+    - @efffrida/polyfills@0.0.14
+    - @efffrida/platform@0.0.29
 
 ## 0.0.42
 
@@ -124,8 +124,8 @@
 
 - 1de9bbe: Frida 17.14.1 https://frida.re/news/2026/06/17/frida-17-14-1-released/
 - Updated dependencies [1de9bbe]
-  - @efffrida/frida-tools@0.0.39
-  - @efffrida/platform@0.0.28
+    - @efffrida/frida-tools@0.0.39
+    - @efffrida/platform@0.0.28
 
 ## 0.0.41
 
@@ -133,17 +133,17 @@
 
 - 5b84fd0: Frida 17.12.0
 - Updated dependencies [5b84fd0]
-  - @efffrida/frida-tools@0.0.38
-  - @efffrida/polyfills@0.0.13
-  - @efffrida/platform@0.0.28
+    - @efffrida/frida-tools@0.0.38
+    - @efffrida/polyfills@0.0.13
+    - @efffrida/platform@0.0.28
 
 ## 0.0.40
 
 ### Patch Changes
 
 - Updated dependencies [f582fc4]
-  - @efffrida/frida-tools@0.0.37
-  - @efffrida/platform@0.0.27
+    - @efffrida/frida-tools@0.0.37
+    - @efffrida/platform@0.0.27
 
 ## 0.0.39
 
@@ -151,9 +151,9 @@
 
 - 2d7ca22: Frida 17.11.0 <https://frida.re/news/2026/06/05/frida-17-11-0-released/>
 - Updated dependencies [2d7ca22]
-  - @efffrida/frida-tools@0.0.36
-  - @efffrida/polyfills@0.0.12
-  - @efffrida/platform@0.0.27
+    - @efffrida/frida-tools@0.0.36
+    - @efffrida/polyfills@0.0.12
+    - @efffrida/platform@0.0.27
 
 ## 0.0.38
 
@@ -163,8 +163,8 @@
 - c9fd13b: Bump Vitest dependencies
 - Updated dependencies [b6b26e6]
 - Updated dependencies [c9fd13b]
-  - @efffrida/frida-tools@0.0.35
-  - @efffrida/platform@0.0.26
+    - @efffrida/frida-tools@0.0.35
+    - @efffrida/platform@0.0.26
 
 ## 0.0.37
 
@@ -172,8 +172,8 @@
 
 - Updated dependencies [0c867fd]
 - Updated dependencies [5729e6c]
-  - @efffrida/frida-tools@0.0.34
-  - @efffrida/platform@0.0.25
+    - @efffrida/frida-tools@0.0.34
+    - @efffrida/platform@0.0.25
 
 ## 0.0.36
 
@@ -181,9 +181,9 @@
 
 - 445b216: Upgrade frida to 17.10.1 <https://frida.re/news/2026/06/02/frida-17-10-1-released/>
 - Updated dependencies [445b216]
-  - @efffrida/frida-tools@0.0.33
-  - @efffrida/polyfills@0.0.11
-  - @efffrida/platform@0.0.25
+    - @efffrida/frida-tools@0.0.33
+    - @efffrida/polyfills@0.0.11
+    - @efffrida/platform@0.0.25
 
 ## 0.0.35
 
@@ -196,8 +196,8 @@
 ### Patch Changes
 
 - Updated dependencies [fed76e6]
-  - @efffrida/frida-tools@0.0.32
-  - @efffrida/platform@0.0.24
+    - @efffrida/frida-tools@0.0.32
+    - @efffrida/platform@0.0.24
 
 ## 0.0.33
 
@@ -207,9 +207,9 @@
 - 31be93f: Bump Vite and Vitest
 - Updated dependencies [6a69bda]
 - Updated dependencies [31be93f]
-  - @efffrida/frida-tools@0.0.31
-  - @efffrida/polyfills@0.0.10
-  - @efffrida/platform@0.0.24
+    - @efffrida/frida-tools@0.0.31
+    - @efffrida/polyfills@0.0.10
+    - @efffrida/platform@0.0.24
 
 ## 0.0.32
 
@@ -217,9 +217,9 @@
 
 - 0b4af19: Test publish after modifying changeset config
 - Updated dependencies [0b4af19]
-  - @efffrida/frida-tools@0.0.30
-  - @efffrida/platform@0.0.23
-  - @efffrida/polyfills@0.0.9
+    - @efffrida/frida-tools@0.0.30
+    - @efffrida/platform@0.0.23
+    - @efffrida/polyfills@0.0.9
 
 ## 0.0.31
 
@@ -232,7 +232,7 @@
 ### Patch Changes
 
 - Updated dependencies [b7dd6f6]
-  - @efffrida/platform@0.0.22
+    - @efffrida/platform@0.0.22
 
 ## 0.0.29
 
@@ -240,9 +240,9 @@
 
 - 76b7c23: Bump dependencies
 - Updated dependencies [76b7c23]
-  - @efffrida/frida-tools@0.0.29
-  - @efffrida/platform@0.0.21
-  - @efffrida/polyfills@0.0.8
+    - @efffrida/frida-tools@0.0.29
+    - @efffrida/platform@0.0.21
+    - @efffrida/polyfills@0.0.8
 
 ## 0.0.28
 
@@ -250,9 +250,9 @@
 
 - 325d6fd: Migrate to effect-smol
 - Updated dependencies [325d6fd]
-  - @efffrida/frida-tools@0.0.28
-  - @efffrida/platform@0.0.20
-  - @efffrida/polyfills@0.0.7
+    - @efffrida/frida-tools@0.0.28
+    - @efffrida/platform@0.0.20
+    - @efffrida/polyfills@0.0.7
 
 ## 0.0.27
 
@@ -260,9 +260,9 @@
 
 - 0aed69e: Test new publishing workflow
 - Updated dependencies [0aed69e]
-  - @efffrida/frida-tools@0.0.27
-  - @efffrida/platform@0.0.19
-  - @efffrida/polyfills@0.0.6
+    - @efffrida/frida-tools@0.0.27
+    - @efffrida/platform@0.0.19
+    - @efffrida/polyfills@0.0.6
 
 ## 0.0.26
 
@@ -270,9 +270,9 @@
 
 - 0009f3f: Bump dependencies
 - Updated dependencies [0009f3f]
-  - @efffrida/frida-tools@0.0.26
-  - @efffrida/platform@0.0.18
-  - @efffrida/polyfills@0.0.5
+    - @efffrida/frida-tools@0.0.26
+    - @efffrida/platform@0.0.18
+    - @efffrida/polyfills@0.0.5
 
 ## 0.0.25
 
@@ -280,9 +280,9 @@
 
 - fe03a5c: Bumped dependencies
 - Updated dependencies [fe03a5c]
-  - @efffrida/frida-tools@0.0.25
-  - @efffrida/platform@0.0.17
-  - @efffrida/polyfills@0.0.4
+    - @efffrida/frida-tools@0.0.25
+    - @efffrida/platform@0.0.17
+    - @efffrida/polyfills@0.0.4
 
 ## 0.0.14
 
@@ -292,7 +292,7 @@
 - Updated dependencies [a71390b]
 - Updated dependencies [278eb60]
 - Updated dependencies [09df298]
-  - @efffrida/frida-tools@0.0.14
+    - @efffrida/frida-tools@0.0.14
 
 ## 0.0.13
 
@@ -300,14 +300,14 @@
 
 - 6c1bdb0: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql
 - Updated dependencies [6c1bdb0]
-  - @efffrida/frida-tools@0.0.13
+    - @efffrida/frida-tools@0.0.13
 
 ## 0.0.12
 
 ### Patch Changes
 
 - Updated dependencies [8d762d3]
-  - @efffrida/frida-tools@0.0.12
+    - @efffrida/frida-tools@0.0.12
 
 ## 0.0.11
 
@@ -315,7 +315,7 @@
 
 - fe78d3e: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [fe78d3e]
-  - @efffrida/frida-tools@0.0.11
+    - @efffrida/frida-tools@0.0.11
 
 ## 0.0.10
 
@@ -323,7 +323,7 @@
 
 - f046df3: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [f046df3]
-  - @efffrida/frida-tools@0.0.10
+    - @efffrida/frida-tools@0.0.10
 
 ## 0.0.9
 
@@ -331,7 +331,7 @@
 
 - d54213c: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [d54213c]
-  - @efffrida/frida-tools@0.0.9
+    - @efffrida/frida-tools@0.0.9
 
 ## 0.0.8
 
@@ -341,7 +341,7 @@
 - 308bf2c: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [df75cf3]
 - Updated dependencies [308bf2c]
-  - @efffrida/frida-tools@0.0.8
+    - @efffrida/frida-tools@0.0.8
 
 ## 0.0.7
 
@@ -349,7 +349,7 @@
 
 - 0462d89: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [0462d89]
-  - @efffrida/frida-tools@0.0.7
+    - @efffrida/frida-tools@0.0.7
 
 ## 0.0.6
 
@@ -357,14 +357,14 @@
 
 - 354ea95: Update @effect/cluster @effect/cluster @effect/cluster @effect/cluster @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform-node @effect/platform-node @effect/platform-node @effect/platform-node @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/rpc @effect/sql @effect/sql @effect/sql @effect/sql @effect/sql @effect/vitest @effect/vitest @effect/vitest @effect/vitest effect effect effect effect effect effect effect effect effect effect effect effect
 - Updated dependencies [354ea95]
-  - @efffrida/frida-tools@0.0.6
+    - @efffrida/frida-tools@0.0.6
 
 ## 0.0.5
 
 ### Patch Changes
 
 - Updated dependencies [9684ec0]
-  - @efffrida/frida-tools@0.0.5
+    - @efffrida/frida-tools@0.0.5
 
 ## 0.0.4
 
@@ -372,7 +372,7 @@
 
 - a6bd5d7: test publish
 - Updated dependencies [a6bd5d7]
-  - @efffrida/frida-tools@0.0.4
+    - @efffrida/frida-tools@0.0.4
 
 ## 0.0.3
 
@@ -380,7 +380,7 @@
 
 - 14bda9d: Update @effect/experimental @effect/platform @effect/platform @effect/platform @effect/platform @effect/platform @effect/rpc @effect/sql effect effect effect effect effect effect
 - Updated dependencies [14bda9d]
-  - @efffrida/frida-tools@0.0.3
+    - @efffrida/frida-tools@0.0.3
 
 ## 0.0.2
 
@@ -389,4 +389,4 @@
 - [`e583d7c`](https://github.com/leonitousconforti/efffrida/commit/e583d7cbc1a61b0aefca1b6fb5a7a4ee6b94da7c) Thanks [@leonitousconforti](https://github.com/leonitousconforti)! - Test publish
 
 - Updated dependencies [[`e583d7c`](https://github.com/leonitousconforti/efffrida/commit/e583d7cbc1a61b0aefca1b6fb5a7a4ee6b94da7c)]:
-  - @efffrida/frida-tools@0.0.2
+    - @efffrida/frida-tools@0.0.2
