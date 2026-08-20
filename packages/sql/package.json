@@ -54,7 +54,7 @@
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.5",
-        "birpc": "4.1.0",
+        "birpc": "4.2.0",
         "effect": "4.0.0-rc.108",
         "flatted": "3.4.4",
         "vite": "8.2.1",

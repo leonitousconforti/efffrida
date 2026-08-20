@@ -198,8 +198,8 @@ importers:
         specifier: 25.9.5
         version: 25.9.5
       birpc:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       effect:
         specifier: 4.0.0-rc.108
         version: 4.0.0-rc.108
@@ -290,8 +290,8 @@ importers:
         specifier: 25.9.5
         version: 25.9.5
       birpc:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       effect:
         specifier: 4.0.0-rc.108
         version: 4.0.0-rc.108
@@ -336,8 +336,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10
       birpc:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       effect:
         specifier: 4.0.0-rc.108
         version: 4.0.0-rc.108
@@ -428,8 +428,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10
       birpc:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       flatted:
         specifier: 3.4.4
         version: 3.4.4
@@ -501,8 +501,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10
       birpc:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       flatted:
         specifier: 3.4.4
         version: 3.4.4
@@ -2048,8 +2048,8 @@ packages:
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
 
-  birpc@4.1.0:
-    resolution: {integrity: sha512-O8L9vALWGqdEe0cG4HJckauw3WeJETlJnDRPUYpgwB7wrU43b/5NGMdVjdVcRo+4ROgd3ih2wha1glDe4HRVgw==}
+  birpc@4.2.0:
+    resolution: {integrity: sha512-KxgKcZPfrtzJDDALHPguGpGJUrzdgpymyiQQgzFjWreHMOpWrnFNVREr5J48x2DBh8ZVioscrV1SBkDipGiX+Q==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -4637,7 +4637,7 @@ snapshots:
     dependencies:
       file-uri-to-path: 1.0.0
 
-  birpc@4.1.0: {}
+  birpc@4.2.0: {}
 
   bl@4.1.0:
     dependencies:
