@@ -34,10 +34,10 @@
         "@vitest/utils": "4.1.11",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
-        "ioredis": "5.11.1",
         "oxfmt": "0.63.0",
         "oxlint": "1.78.0",
         "oxlint-tsgolint": "7.0.2001",
+        "redis": "6.2.1",
         "typescript": "7.0.2",
         "vite": "8.2.1",
         "vitest": "4.1.11"

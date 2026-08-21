@@ -121,6 +121,7 @@ export const makeProtocolFridaNoSendRecv = (
                 supportsAck: true,
                 supportsTransferables: false,
                 supportsSpanPropagation: true,
+                supportsNotifications: true,
             });
         });
 

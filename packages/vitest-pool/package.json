@@ -53,7 +53,7 @@
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
         "frida": "17.17.0",
-        "ioredis": "5.11.1"
+        "redis": "6.2.1"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.111",

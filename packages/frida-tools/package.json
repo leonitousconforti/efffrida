@@ -57,7 +57,7 @@
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.5",
         "effect": "4.0.0-rc.111",
-        "ioredis": "5.11.1",
+        "redis": "6.2.1",
         "vite": "8.2.1",
         "vitest": "4.1.11"
     },
