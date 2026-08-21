@@ -49,7 +49,7 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "frida-il2cpp-bridge": "0.13.1"
+        "frida-il2cpp-bridge": "0.13.2"
     },
     "devDependencies": {
         "@effect/vitest": "4.0.0-rc.108",
