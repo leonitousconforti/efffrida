@@ -1,5 +1,12 @@
 # @efffrida/sql
 
+## 0.0.40
+
+### Patch Changes
+
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+
 ## 0.0.39
 
 ### Patch Changes
