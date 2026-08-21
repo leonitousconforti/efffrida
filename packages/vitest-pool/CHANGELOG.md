@@ -1,5 +1,17 @@
 # @efffrida/vitest-pool
 
+## 0.0.44
+
+### Patch Changes
+
+- 4bcff2b: Update dependency birpc to v4.2.0
+- 4bcff2b: Update vitest packages to v4.1.11
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+- Updated dependencies [560b7b1]
+- Updated dependencies [560b7b1]
+    - @efffrida/frida-tools@0.0.53
+
 ## 0.0.43
 
 ### Patch Changes

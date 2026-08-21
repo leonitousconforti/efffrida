@@ -1,5 +1,13 @@
 # @efffrida/gplayapi
 
+## 0.0.30
+
+### Patch Changes
+
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+- 560b7b1: Update Effect-TS packages to v4.0.0-rc.111
+- 9134187: Update dependency @bufbuild/protobuf to v2.14.0
+
 ## 0.0.29
 
 ### Patch Changes
