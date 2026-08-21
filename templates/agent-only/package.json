@@ -19,12 +19,12 @@
     },
     "dependencies": {
         "@efffrida/platform": "latest",
-        "effect": "4.0.0-rc.108"
+        "effect": "4.0.0-rc.111"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.108",
+        "@effect/platform-node": "4.0.0-rc.111",
         "@effect/tsgo": "0.36.5",
-        "@effect/vitest": "4.0.0-rc.108",
+        "@effect/vitest": "4.0.0-rc.111",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.10.0",
@@ -34,15 +34,15 @@
         "@vitest/utils": "4.1.11",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
-        "ioredis": "5.11.1",
         "oxfmt": "0.63.0",
         "oxlint": "1.78.0",
         "oxlint-tsgolint": "7.0.2001",
+        "redis": "6.2.1",
         "typescript": "7.0.2",
         "vite": "8.2.1",
         "vitest": "4.1.11"
     },
     "peerDependencies": {
-        "effect": "4.0.0-rc.108"
+        "effect": "4.0.0-rc.111"
     }
 }

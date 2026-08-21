@@ -30,10 +30,10 @@
         "check": "tsc -b tsconfig.json"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.108",
+        "@effect/platform-node": "4.0.0-rc.111",
         "@types/node": "25.9.5",
-        "effect": "4.0.0-rc.108",
-        "ioredis": "5.11.1",
+        "effect": "4.0.0-rc.111",
+        "redis": "6.2.1",
         "tar": "7.5.22",
         "tsup": "8.5.1",
         "typescript": "7.0.2"

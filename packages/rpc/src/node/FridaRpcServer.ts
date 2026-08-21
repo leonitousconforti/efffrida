@@ -131,6 +131,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                 supportsAck: true,
                 supportsTransferables: false,
                 supportsSpanPropagation: true,
+                supportsNotifications: true,
             });
         });
     });
