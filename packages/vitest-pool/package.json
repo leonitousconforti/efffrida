@@ -61,23 +61,23 @@
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.5",
         "@vitest/runner": "4.1.11",
-        "@vitest/utils": "4.1.11",
+        "@vitest/utils": "5.0.0",
         "birpc": "4.2.0",
         "effect": "4.0.0-rc.111",
         "flatted": "3.4.4",
         "vite": "8.2.2",
-        "vitest": "4.1.11"
+        "vitest": "5.0.0"
     },
     "peerDependencies": {
         "@effect/platform-node": "4.0.0-rc.111",
         "@efffrida/polyfills": "workspace:*",
         "@vitest/runner": "4.1.11",
-        "@vitest/utils": "4.1.11",
+        "@vitest/utils": "5.0.0",
         "birpc": "4.2.0",
         "effect": "4.0.0-rc.111",
         "flatted": "3.4.4",
         "vite": "8.2.2",
-        "vitest": "4.1.11"
+        "vitest": "5.0.0"
     },
     "tags": [
         "frida.re",
