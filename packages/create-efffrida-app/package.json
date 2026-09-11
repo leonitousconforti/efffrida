@@ -31,7 +31,7 @@
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.111",
-        "@types/node": "25.9.5",
+        "@types/node": "25.9.6",
         "effect": "4.0.0-rc.111",
         "redis": "6.2.1",
         "tar": "7.5.22",

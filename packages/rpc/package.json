@@ -63,7 +63,7 @@
         "@effect/platform-node": "4.0.0-rc.111",
         "@effect/vitest": "4.0.0-rc.111",
         "@types/frida-gum": "19.10.0",
-        "@types/node": "25.9.5",
+        "@types/node": "25.9.6",
         "effect": "4.0.0-rc.111",
         "frida": "17.17.0",
         "redis": "6.2.1",
