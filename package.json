@@ -30,7 +30,7 @@
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "4.0.0-rc.111",
         "@effect/tsgo": "0.45.0",
-        "@vitest/coverage-v8": "4.1.11",
+        "@vitest/coverage-v8": "5.0.0",
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "glob": "13.0.6",
         "madge": "8.0.0",
@@ -42,7 +42,7 @@
         "tsx": "4.23.13",
         "typescript": "7.0.2",
         "vite": "8.2.2",
-        "vitest": "4.1.11"
+        "vitest": "5.0.0"
     },
     "packageManager": "pnpm@12.4.1+sha512.2e81e399d73fe8390dab25e06aa788ab7a5908248d2f5a370f82b481147a6a7a367bf8048f9a6fdb6460f21a66f0542dedb8b94ca2c8723596741920b1656d4c"
 }

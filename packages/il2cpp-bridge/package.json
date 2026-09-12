@@ -57,7 +57,7 @@
         "@types/frida-gum": "19.10.0",
         "effect": "4.0.0-rc.111",
         "vite": "8.2.2",
-        "vitest": "4.1.11"
+        "vitest": "5.0.0"
     },
     "peerDependencies": {
         "effect": "4.0.0-rc.111"
