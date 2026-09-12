@@ -65,7 +65,7 @@
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.6",
         "effect": "4.0.0-rc.111",
-        "frida": "17.17.0",
+        "frida": "17.18.0",
         "redis": "6.2.1",
         "vite": "8.2.2",
         "vitest": "4.1.11"

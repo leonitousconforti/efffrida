@@ -11,7 +11,7 @@
         "@efffrida/polyfills": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@efffrida/sql": "workspace:*",
-        "frida": "17.17.0"
+        "frida": "17.18.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.111",
