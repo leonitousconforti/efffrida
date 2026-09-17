@@ -9,9 +9,9 @@ import { ProjectNameSchema } from "./Utils.ts";
 // CLI Specification
 // =============================================================================
 
-const projectName = Argument.directory("project-name").pipe(
+const projectName = Argument.Directory("project-name").pipe(
     Argument.withFallbackPrompt(
-        Prompt.text({
+        Prompt.String({
             message: "What is your project named?",
             default: "efffrida-app",
         })
@@ -21,10 +21,10 @@ const projectName = Argument.directory("project-name").pipe(
     Argument.mapEffect((projectName) => Effect.map(Path.Path, (path) => path.resolve(projectName)))
 );
 
-const templateFlag = Flag.choice("template", [...templates]).pipe(
+const templateFlag = Flag.Choice("template", [...templates]).pipe(
     Flag.withDescription("The project template to use"),
     Flag.withFallbackPrompt(
-        Prompt.select<TemplateType>({
+        Prompt.Select<TemplateType>({
             message: "Which template would you like to use?",
             choices: [
                 {
@@ -42,10 +42,10 @@ const templateFlag = Flag.choice("template", [...templates]).pipe(
     )
 );
 
-const withOxcToolsFlag = Flag.choiceWithValue("oxc-tools", [["yes", true] as const, ["no", false] as const]).pipe(
+const withOxcToolsFlag = Flag.ChoiceWithValue("oxc-tools", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Add oxc-tools for formatting and linting"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Add oxc-tools for formatting and linting?",
             active: "yes",
             inactive: "no",
@@ -54,10 +54,10 @@ const withOxcToolsFlag = Flag.choiceWithValue("oxc-tools", [["yes", true] as con
     )
 );
 
-const withNodeVitestFlag = Flag.choiceWithValue("node-vitest", [["yes", true] as const, ["no", false] as const]).pipe(
+const withNodeVitestFlag = Flag.ChoiceWithValue("node-vitest", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Add vitest for Node.js unit testing"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Add vitest for Node.js unit testing?",
             active: "yes",
             inactive: "no",
@@ -66,10 +66,10 @@ const withNodeVitestFlag = Flag.choiceWithValue("node-vitest", [["yes", true] as
     )
 );
 
-const withFridaVitestFlag = Flag.choiceWithValue("frida-vitest", [["yes", true] as const, ["no", false] as const]).pipe(
+const withFridaVitestFlag = Flag.ChoiceWithValue("frida-vitest", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Add @efffrida/vitest-pool for running tests inside Frida"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Add @efffrida/vitest-pool for running tests inside Frida?",
             active: "yes",
             inactive: "no",
@@ -78,10 +78,10 @@ const withFridaVitestFlag = Flag.choiceWithValue("frida-vitest", [["yes", true] 
     )
 );
 
-const withWorkflowsFlag = Flag.choiceWithValue("workflows", [["yes", true] as const, ["no", false] as const]).pipe(
+const withWorkflowsFlag = Flag.ChoiceWithValue("workflows", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Initialize project with GitHub Actions CI workflows"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Initialize project with GitHub Actions CI workflows?",
             active: "yes",
             inactive: "no",
@@ -90,10 +90,10 @@ const withWorkflowsFlag = Flag.choiceWithValue("workflows", [["yes", true] as co
     )
 );
 
-const withNixFlakeFlag = Flag.choiceWithValue("flake", [["yes", true] as const, ["no", false] as const]).pipe(
+const withNixFlakeFlag = Flag.ChoiceWithValue("flake", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Initialize project with a Nix flake"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Initialize project with a Nix flake?",
             active: "yes",
             inactive: "no",
@@ -102,10 +102,10 @@ const withNixFlakeFlag = Flag.choiceWithValue("flake", [["yes", true] as const, 
     )
 );
 
-const withChangesetsFlag = Flag.choiceWithValue("changesets", [["yes", true] as const, ["no", false] as const]).pipe(
+const withChangesetsFlag = Flag.ChoiceWithValue("changesets", [["yes", true] as const, ["no", false] as const]).pipe(
     Flag.withDescription("Initialize project with Changesets for versioning"),
     Flag.withFallbackPrompt(
-        Prompt.toggle({
+        Prompt.Toggle({
             message: "Initialize project with Changesets for versioning?",
             active: "yes",
             inactive: "no",

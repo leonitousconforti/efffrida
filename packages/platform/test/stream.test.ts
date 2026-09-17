@@ -1,4 +1,4 @@
-import { Data, Effect, Stream } from "effect";
+import { Data, Effect, Stream, ByteSize } from "effect";
 
 import { describe, expect, it } from "@effect/vitest";
 
@@ -16,7 +16,7 @@ describe("stream tests", () => {
             const reconstructedStream = FridaStream.fromInputStream(
                 () => inputStream,
                 (e) => new ReadError({ message: `Read error: ${e}` }),
-                { chunkSize: 1 }
+                { chunkSize: ByteSize.bytes(1) }
             );
 
             const result = yield* Stream.runCollect(reconstructedStream);
