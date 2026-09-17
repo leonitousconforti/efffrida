@@ -21,7 +21,10 @@ const projectName = Argument.Directory("project-name").pipe(
     Argument.mapEffect((projectName) => Effect.map(Path.Path, (path) => path.resolve(projectName)))
 );
 
-const templateFlag = Flag.Choice("template", [...templates]).pipe(
+const templateFlag = Flag.ChoiceWithValue(
+    "template",
+    templates.map((t) => [t, t] as const)
+).pipe(
     Flag.withDescription("The project template to use"),
     Flag.withFallbackPrompt(
         Prompt.Select<TemplateType>({
