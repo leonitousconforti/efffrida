@@ -1,5 +1,12 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.50
+
+### Patch Changes
+
+- 3bdfa71: Update dependency frida-il2cpp-bridge to v0.14.0
+- fd724e8: Update Effect-TS packages to v4.0.0-rc.115
+
 ## 0.0.49
 
 ### Patch Changes

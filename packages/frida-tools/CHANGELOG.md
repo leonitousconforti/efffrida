@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.54
+
+### Patch Changes
+
+- fd724e8: Update Effect-TS packages to v4.0.0-rc.115
+
 ## 0.0.53
 
 ### Patch Changes
