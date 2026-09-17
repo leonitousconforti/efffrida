@@ -116,6 +116,7 @@ export const makeProtocolFrida = (
             return {
                 supportsAck: true,
                 supportsTransferables: false,
+                codecFor: serialization.codecFor,
                 send(clientId, request) {
                     if (currentError) {
                         return Effect.fail(currentError);

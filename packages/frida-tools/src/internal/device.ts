@@ -325,7 +325,7 @@ export const acquireAndroidEmulatorDeviceConfig = (
     ChildProcessSpawner.ChildProcessSpawner | Path.Path | Scope.Scope
 > =>
     Effect.flatMap(Path.Path, (path) =>
-        Config.string("ANDROID_SDK").pipe(
+        Config.String("ANDROID_SDK").pipe(
             Config.map((androidSdk) => ({
                 adbExecutable: path.join(androidSdk, "platform-tools", "adb"),
                 emulatorExecutable: path.join(androidSdk, "emulator", "emulator"),

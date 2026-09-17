@@ -82,6 +82,7 @@ export const makeProtocolFrida = (): Effect.Effect<
             return {
                 supportsAck: true,
                 supportsTransferables: false,
+                codecFor: serialization.codecFor,
                 send(clientId, request) {
                     if (request._tag === "Request") {
                         requestClientMap.set(request.id, clientId);

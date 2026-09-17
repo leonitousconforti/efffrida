@@ -40,9 +40,7 @@ export const connect = (options: SocketConnectOptions): Effect.Effect<EffectSock
     );
 
 /** @internal */
-export const listen = (
-    options?: (SocketListenOptions & { readonly closeCodeIsError?: (code: number) => boolean }) | undefined
-): Effect.Effect<EffectSocket.Socket, never, never> => {
+export const listen = (options?: SocketListenOptions | undefined): Effect.Effect<EffectSocket.Socket, never, never> => {
     const error = (error: unknown) =>
         new EffectSocket.SocketError({
             reason: new EffectSocket.SocketOpenError({
@@ -65,8 +63,5 @@ export const listen = (
     const transformStream = Effect.map(scopedSocketConnection, toTransformStream);
 
     // Make the socket from the transform stream
-    return EffectSocket.fromTransformStream(
-        transformStream,
-        options?.closeCodeIsError ? { closeCodeIsError: options?.closeCodeIsError } : {}
-    );
+    return EffectSocket.fromTransformStream(transformStream);
 };

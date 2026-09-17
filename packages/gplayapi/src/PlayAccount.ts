@@ -131,8 +131,8 @@ export const layerConfig = (
         | undefined
 ): Layer.Layer<PlayAccount, never, never> => {
     const credentials = Effect.all({
-        email: options?.email ?? Config.string("GPLAY_EMAIL"),
-        token: options?.token ?? Config.redacted("GPLAY_AUTH_TOKEN"),
+        email: options?.email ?? Config.String("GPLAY_EMAIL"),
+        token: options?.token ?? Config.Redacted("GPLAY_AUTH_TOKEN"),
     }).pipe(Effect.catch((cause) => new PlayAccountError({ strategy: "config", cause })));
 
     return Layer.succeed(PlayAccount, { credentials });

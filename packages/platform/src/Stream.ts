@@ -4,9 +4,9 @@
  * @since 1.0.0
  */
 
+import type * as ByteSize from "effect/ByteSize";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
-import type * as FileSystem from "effect/FileSystem";
 import type * as Function from "effect/Function";
 import type * as Scope from "effect/Scope";
 import type * as Stream from "effect/Stream";
@@ -18,7 +18,7 @@ import * as internal from "./internal/stream.ts";
  * @category Types
  */
 export interface FromInputStreamOptions {
-    readonly chunkSize?: FileSystem.SizeInput | undefined;
+    readonly chunkSize?: ByteSize.ByteSize | undefined;
 }
 
 /**

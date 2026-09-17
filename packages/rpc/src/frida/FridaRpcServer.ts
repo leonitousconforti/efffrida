@@ -122,6 +122,7 @@ export const makeProtocolFridaNoSendRecv = (
                 supportsTransferables: false,
                 supportsSpanPropagation: true,
                 supportsNotifications: true,
+                codecFor: serialization.codecFor,
             });
         });
 

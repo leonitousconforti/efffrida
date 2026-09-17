@@ -132,6 +132,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                 supportsTransferables: false,
                 supportsSpanPropagation: true,
                 supportsNotifications: true,
+                codecFor: serialization.codecFor,
             });
         });
     });
