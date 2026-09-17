@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.42
+
+### Patch Changes
+
+- fd724e8: Update Effect-TS packages to v4.0.0-rc.115
+
 ## 0.0.41
 
 ### Patch Changes
