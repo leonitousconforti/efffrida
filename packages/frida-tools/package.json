@@ -58,7 +58,7 @@
         "@types/node": "25.9.7",
         "effect": "4.0.0-rc.115",
         "redis": "6.2.1",
-        "vite": "8.2.2",
+        "vite": "8.3.0",
         "vitest": "5.0.1"
     },
     "peerDependencies": {
