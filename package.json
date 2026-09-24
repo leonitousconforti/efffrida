@@ -28,7 +28,7 @@
         "@changesets/cli": "3.0.3",
         "@changesets/config": "4.0.1",
         "@effect/build-utils": "0.8.9",
-        "@effect/docgen": "4.0.0-rc.115",
+        "@effect/docgen": "4.0.0-rc.117",
         "@effect/tsgo": "0.45.0",
         "@vitest/coverage-v8": "5.0.1",
         "babel-plugin-annotate-pure-calls": "0.5.0",

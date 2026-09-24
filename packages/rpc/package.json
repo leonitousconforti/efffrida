@@ -60,18 +60,18 @@
         "@efffrida/polyfills": "workspace:*"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.115",
-        "@effect/vitest": "4.0.0-rc.115",
+        "@effect/platform-node": "4.0.0-rc.117",
+        "@effect/vitest": "4.0.0-rc.117",
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.7",
-        "effect": "4.0.0-rc.115",
+        "effect": "4.0.0-rc.117",
         "frida": "17.18.0",
         "redis": "6.2.1",
         "vite": "8.2.2",
         "vitest": "5.0.1"
     },
     "peerDependencies": {
-        "effect": "4.0.0-rc.115"
+        "effect": "4.0.0-rc.117"
     },
     "tags": [
         "frida.re",
