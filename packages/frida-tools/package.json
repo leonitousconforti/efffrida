@@ -49,7 +49,7 @@
         "coverage": "vitest --coverage"
     },
     "dependencies": {
-        "frida": "17.18.0"
+        "frida": "17.19.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.115",
