@@ -62,8 +62,8 @@
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.115",
         "@effect/vitest": "4.0.0-rc.115",
-        "@types/frida-gum": "19.10.0",
-        "@types/node": "25.9.7",
+        "@types/frida-gum": "19.11.0",
+        "@types/node": "25.9.8",
         "effect": "4.0.0-rc.115",
         "frida": "17.18.0",
         "redis": "6.2.1",

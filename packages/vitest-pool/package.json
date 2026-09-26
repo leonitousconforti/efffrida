@@ -58,8 +58,8 @@
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.115",
         "@efffrida/polyfills": "workspace:*",
-        "@types/frida-gum": "19.10.0",
-        "@types/node": "25.9.7",
+        "@types/frida-gum": "19.11.0",
+        "@types/node": "25.9.8",
         "@vitest/runner": "4.1.11",
         "@vitest/utils": "5.0.1",
         "birpc": "4.2.0",

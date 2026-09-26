@@ -55,7 +55,7 @@
         "@bufbuild/buf": "1.73.0",
         "@bufbuild/protobuf": "2.15.0",
         "@effect/platform-node": "4.0.0-rc.115",
-        "@types/node": "25.9.7",
+        "@types/node": "25.9.8",
         "effect": "4.0.0-rc.115",
         "redis": "6.2.1"
     },
