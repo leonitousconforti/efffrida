@@ -243,8 +243,8 @@ importers:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115(effect@4.0.0-rc.115)(redis@6.2.1)
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
@@ -274,11 +274,11 @@ importers:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115(effect@4.0.0-rc.115)(vitest@5.0.1)
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
@@ -287,10 +287,10 @@ importers:
         version: 6.2.1
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8))
 
   packages/gplayapi:
     devDependencies:
@@ -304,8 +304,8 @@ importers:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115(effect@4.0.0-rc.115)(redis@6.2.1)
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
@@ -326,8 +326,8 @@ importers:
         specifier: workspace:*
         version: link:../polyfills
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
@@ -350,11 +350,11 @@ importers:
         specifier: workspace:*
         version: link:../vitest-pool
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       birpc:
         specifier: 4.2.0
         version: 4.2.0
@@ -366,10 +366,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8))
 
   packages/polyfills:
     dependencies:
@@ -384,11 +384,11 @@ importers:
         version: 1.0.2
     devDependencies:
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
 
   packages/rpc:
     dependencies:
@@ -409,11 +409,11 @@ importers:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115(effect@4.0.0-rc.115)(vitest@5.0.1)
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
@@ -425,10 +425,10 @@ importers:
         version: 6.2.1
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8))
 
   packages/sql:
     devDependencies:
@@ -442,11 +442,11 @@ importers:
         specifier: workspace:*
         version: link:../vitest-pool
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       birpc:
         specifier: 4.2.0
         version: 4.2.0
@@ -458,10 +458,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8))
 
   packages/vitest-pool:
     dependencies:
@@ -482,11 +482,11 @@ importers:
         specifier: workspace:*
         version: link:../polyfills
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       '@vitest/runner':
         specifier: 4.1.11
         version: 4.1.11
@@ -504,10 +504,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8))
 
   scratchpad:
     dependencies:
@@ -571,11 +571,11 @@ importers:
         specifier: latest
         version: link:../../packages/vitest-pool
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
@@ -608,10 +608,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.8))
 
   templates/app-and-agent:
     dependencies:
@@ -644,11 +644,11 @@ importers:
         specifier: latest
         version: link:../../packages/vitest-pool
       '@types/frida-gum':
-        specifier: 19.10.0
-        version: 19.10.0
+        specifier: 19.11.0
+        version: 19.11.0
       '@types/node':
-        specifier: 25.9.7
-        version: 25.9.7
+        specifier: 25.9.8
+        version: 25.9.8
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
@@ -684,10 +684,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.2.2
-        version: 8.2.2(@types/node@25.9.7)
+        version: 8.2.2(@types/node@25.9.8)
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@25.9.7)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.7))
+        version: 5.0.1(@types/node@25.9.8)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.8))
 
 packages:
 
@@ -1940,8 +1940,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/frida-gum@19.10.0':
-    resolution: {integrity: sha512-GBKAzwmamtNPBXEcIve1yJ6BB9ZgyW9al3+f06S+lDAvennOx9GfFQ9RDY9kP5nJrkiiRHLzgbDFjQ/+g+iw1Q==}
+  '@types/frida-gum@19.11.0':
+    resolution: {integrity: sha512-gJGfy5spkhFzpvVJJ/oEdw1ZucNnvsbg4iQvCEUMEwdqPKPu8Tnimcl7wZtOaEHB/hYN2nPfzZSsWCsXTVMC/Q==}
 
   '@types/gensync@1.0.5':
     resolution: {integrity: sha512-MbsRCT7mTikHwKZ0X+LVUTLRrZZRLipTuXEO9qOYO+zmjMVk81axyClMROf6uoPD9MRVu46bx8zoR0Ad9q3NAg==}
@@ -1951,6 +1951,9 @@ packages:
 
   '@types/node@25.9.7':
     resolution: {integrity: sha512-Y+axoNWOFLvDNFxNbDA+kqqV05imHwTu5bZWWO6tQM3Y2NX1jvzUJkYlf4nYnMCnvu4wQBKW6Nr+ok6yHWA9aQ==}
+
+  '@types/node@25.9.8':
+    resolution: {integrity: sha512-VfMrScDmMhUJQmd5hArdQnFvK0OIeD36uN2Va1FcpYaLB/BgkgM8Ulc50XtYISPMz7APJ30+N0T5EM0jlcdfRw==}
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
@@ -4495,13 +4498,17 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/frida-gum@19.10.0': {}
+  '@types/frida-gum@19.11.0': {}
 
   '@types/gensync@1.0.5': {}
 
   '@types/jsesc@2.5.1': {}
 
   '@types/node@25.9.7':
+    dependencies:
+      undici-types: 7.24.6
+
+  '@types/node@25.9.8':
     dependencies:
       undici-types: 7.24.6
 
@@ -4622,14 +4629,14 @@ snapshots:
     dependencies:
       '@vitest/istanbul-lib-coverage': 1.0.1
 
-  '@vitest/mocker@5.0.1(vite@8.2.2(@types/node@25.9.7))':
+  '@vitest/mocker@5.0.1(vite@8.2.2(@types/node@25.9.8))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.1
       estree-walker: 3.0.3
       magic-string: 1.4.1
     optionalDependencies:
-      vite: 8.2.2(@types/node@25.9.7)
+      vite: 8.2.2(@types/node@25.9.8)
 
   '@vitest/mocker@5.0.1(vite@8.2.2(tsx@4.23.13))':
     dependencies:
@@ -6053,7 +6060,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vite@8.2.2(@types/node@25.9.7):
+  vite@8.2.2(@types/node@25.9.8):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -6061,7 +6068,7 @@ snapshots:
       rolldown: 1.2.9
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 25.9.7
+      '@types/node': 25.9.8
       fsevents: 2.3.3
 
   vite@8.2.2(tsx@4.23.13):
@@ -6075,10 +6082,10 @@ snapshots:
       fsevents: 2.3.3
       tsx: 4.23.13
 
-  vitest@5.0.1(@types/node@25.9.7)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.7)):
+  vitest@5.0.1(@types/node@25.9.8)(@vitest/coverage-v8@5.0.1)(vite@8.2.2(@types/node@25.9.8)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@8.2.2(@types/node@25.9.7))
+      '@vitest/mocker': 5.0.1(vite@8.2.2(@types/node@25.9.8))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -6089,18 +6096,18 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.2.2(@types/node@25.9.7)
+      vite: 8.2.2(@types/node@25.9.8)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.9.7
+      '@types/node': 25.9.8
       '@vitest/coverage-v8': 5.0.1(vitest@5.0.1)
     transitivePeerDependencies:
       - msw
 
-  vitest@5.0.1(@types/node@25.9.7)(vite@8.2.2(@types/node@25.9.7)):
+  vitest@5.0.1(@types/node@25.9.8)(vite@8.2.2(@types/node@25.9.8)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@8.2.2(@types/node@25.9.7))
+      '@vitest/mocker': 5.0.1(vite@8.2.2(@types/node@25.9.8))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -6111,10 +6118,10 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.2.2(@types/node@25.9.7)
+      vite: 8.2.2(@types/node@25.9.8)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.9.7
+      '@types/node': 25.9.8
     transitivePeerDependencies:
       - msw
 
