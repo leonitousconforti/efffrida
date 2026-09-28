@@ -26,9 +26,18 @@
     "sideEffects": [],
     "exports": {
         "./package.json": "./package.json",
-        "./node": "./src/node/index.ts",
-        "./frida": "./src/frida/index.ts",
-        "./*": "./src/*.ts",
+        "./node": {
+            "efffrida-src": "./src/node/index.ts",
+            "default": "./dist/node/index.js"
+        },
+        "./frida": {
+            "efffrida-src": "./src/frida/index.ts",
+            "default": "./dist/frida/index.js"
+        },
+        "./*": {
+            "efffrida-src": "./src/*.ts",
+            "default": "./dist/*.js"
+        },
         "./internal/*": null,
         "./shared/*": null,
         "./*/index": null

@@ -28,8 +28,14 @@
     "sideEffects": [],
     "exports": {
         "./package.json": "./package.json",
-        ".": "./src/index.ts",
-        "./*": "./src/*.ts",
+        ".": {
+            "efffrida-src": "./src/index.ts",
+            "default": "./dist/index.js"
+        },
+        "./*": {
+            "efffrida-src": "./src/*.ts",
+            "default": "./dist/*.js"
+        },
         "./internal/*": null,
         "./generated/*": null
     },

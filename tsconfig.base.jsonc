@@ -11,6 +11,12 @@
         "verbatimModuleSyntax": true, // Only transform/eliminate type-only import/export statements.
         "allowJs": false, // If you touch this, a puppy dies.
         "rewriteRelativeImportExtensions": true, // Rewrite `.ts` imports to `.js` at build time.
+        // Workspace packages expose both their TypeScript source and their built
+        // output via conditional `exports`. Selecting the source condition here
+        // keeps `tsc` and the editor on source, while resolvers that do not set it
+        // (notably frida-compile, which cannot emit JS for `.ts` reached through
+        // `node_modules`) fall through to `./dist`.
+        "customConditions": ["efffrida-src"],
         "erasableSyntaxOnly": true, // Allows to run directly with node and type removal
         // Emit source- & declaration maps.
         "declarationMap": true,
