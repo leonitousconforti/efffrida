@@ -1,9 +1,9 @@
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
+import * as HttpClientError from "effect/http/HttpClientError";
+import * as HttpClientRequest from "effect/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/http/HttpClientResponse";
 import * as Predicate from "effect/Predicate";
-import * as HttpClientError from "effect/unstable/http/HttpClientError";
-import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
-import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import * as Protobuf from "@bufbuild/protobuf";
 

@@ -5,7 +5,7 @@
  */
 
 import type * as Effect from "effect/Effect";
-import type * as EffectSocket from "effect/unstable/socket/Socket";
+import type * as EffectSocket from "effect/socket/Socket";
 
 import * as internal from "./internal/socket.ts";
 

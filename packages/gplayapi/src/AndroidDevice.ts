@@ -4,9 +4,9 @@
  * @since 1.0.0
  */
 
+import type * as HttpClient from "effect/http/HttpClient";
+import type * as HttpClientError from "effect/http/HttpClientError";
 import type * as PlatformError from "effect/PlatformError";
-import type * as HttpClient from "effect/unstable/http/HttpClient";
-import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
@@ -27,7 +27,7 @@ import * as internalAuth from "./internal/auth.ts";
 const StringArrayFromString = Schema.suspend(() => {
     const splitter = SchemaGetter.split({ separator: "," });
     const joiner = SchemaGetter.transform((arr: ReadonlyArray<string>) => arr.join(","));
-    const transform = SchemaTransformation.make({ encode: joiner, decode: splitter });
+    const transform = SchemaTransformation.makeTransformation({ encode: joiner, decode: splitter });
     return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
 });
 

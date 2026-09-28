@@ -11,9 +11,9 @@ import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
 import type * as PlatformError from "effect/PlatformError";
+import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
-import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as FridaDevice from "./FridaDevice.ts";
 import type * as FridaSessionError from "./FridaSessionError.ts";

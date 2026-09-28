@@ -9,12 +9,12 @@ import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
 import * as Path from "effect/Path";
 import * as Predicate from "effect/Predicate";
+import * as ChildProcess from "effect/process/ChildProcess";
+import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 import * as Tuple from "effect/Tuple";
-import * as ChildProcess from "effect/unstable/process/ChildProcess";
-import * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as FridaDevice from "../FridaDevice.ts";
 

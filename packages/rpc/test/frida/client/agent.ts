@@ -1,7 +1,7 @@
 import "@efffrida/polyfills";
 
 import { Effect, Stream, Layer, Crypto, PlatformError } from "effect";
-import { RpcSerialization, RpcClient } from "effect/unstable/rpc";
+import { RpcSerialization, RpcClient } from "effect/rpc";
 
 import { FridaRuntime } from "@efffrida/platform";
 import { FridaRpcClient } from "@efffrida/rpc/frida";

@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
+import type * as RpcMessage from "effect/rpc/RpcMessage";
 import type * as Scope from "effect/Scope";
-import type * as RpcMessage from "effect/unstable/rpc/RpcMessage";
 
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
@@ -14,11 +14,11 @@ import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Result from "effect/Result";
+import * as RpcClient from "effect/rpc/RpcClient";
+import * as RpcClientError from "effect/rpc/RpcClientError";
+import * as RpcSerialization from "effect/rpc/RpcSerialization";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
-import * as RpcClient from "effect/unstable/rpc/RpcClient";
-import * as RpcClientError from "effect/unstable/rpc/RpcClientError";
-import * as RpcSerialization from "effect/unstable/rpc/RpcSerialization";
 
 import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 

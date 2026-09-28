@@ -42,7 +42,14 @@ peerDependencyRules:
     - tsx
   allowedVersions:
     typescript: "7.0.2"
-    "@babel/core": "8.0.5"
+    "@babel/core": "8.0.6"
 
 patchedDependencies:
   vitest@5.0.2: patches/vitest@5.0.2.patch
+
+minimumReleaseAgeExclude:
+  - '@effect/docgen'
+  - '@effect/platform-node-shared'
+  - '@effect/platform-node'
+  - '@effect/vitest'
+  - effect

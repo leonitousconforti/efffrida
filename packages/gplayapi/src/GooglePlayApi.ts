@@ -5,21 +5,21 @@
  * @since 1.0.0
  */
 
+import type * as HttpClientResponse from "effect/http/HttpClientResponse";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
-import type * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
 import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
+import * as HttpClient from "effect/http/HttpClient";
+import * as HttpClientError from "effect/http/HttpClientError";
+import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import * as Match from "effect/Match";
 import * as PlatformError from "effect/PlatformError";
 import * as Stream from "effect/Stream";
-import * as HttpClient from "effect/unstable/http/HttpClient";
-import * as HttpClientError from "effect/unstable/http/HttpClientError";
-import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 
 import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 

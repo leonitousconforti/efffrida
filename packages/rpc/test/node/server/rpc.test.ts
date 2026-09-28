@@ -1,6 +1,6 @@
 import { Effect, Layer } from "effect";
-import { ChildProcess } from "effect/unstable/process";
-import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
+import { ChildProcess } from "effect/process";
+import { RpcSerialization, RpcServer } from "effect/rpc";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, layer } from "@effect/vitest";

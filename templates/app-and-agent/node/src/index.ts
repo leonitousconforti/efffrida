@@ -1,5 +1,5 @@
 import { Effect, Layer } from "effect";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+import { RpcClient, RpcSerialization } from "effect/rpc";
 
 import { NodeRuntime, NodeServices } from "@effect/platform-node";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";

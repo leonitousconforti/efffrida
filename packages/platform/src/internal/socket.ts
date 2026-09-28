@@ -1,6 +1,6 @@
 import * as Effect from "effect/Effect";
+import * as EffectSocket from "effect/socket/Socket";
 import * as Stream from "effect/Stream";
-import * as EffectSocket from "effect/unstable/socket/Socket";
 
 import * as internalStream from "./stream.ts";
 

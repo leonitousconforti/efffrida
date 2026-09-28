@@ -1,5 +1,5 @@
 import { Effect, Path, FileSystem } from "effect";
-import { Argument, Command, Flag, Prompt } from "effect/unstable/cli";
+import { Argument, Command, Flag, Prompt } from "effect/cli";
 
 import { type ProjectConfig, templates, type TemplateType } from "./Domain.ts";
 import { GitHub } from "./GitHub.ts";

@@ -57,30 +57,30 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "frida": "17.18.0",
+        "frida": "17.19.0",
         "redis": "6.2.1"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.115",
-        "@effect/vitest": "4.0.0-rc.115",
+        "@effect/platform-node": "4.0.0-rc.118",
+        "@effect/vitest": "4.0.0-rc.118",
         "@efffrida/polyfills": "workspace:*",
-        "@types/frida-gum": "19.10.0",
-        "@types/node": "25.9.7",
+        "@types/frida-gum": "19.11.0",
+        "@types/node": "26.6.3",
         "@vitest/utils": "5.0.2",
         "birpc": "4.2.0",
-        "effect": "4.0.0-rc.115",
+        "effect": "4.0.0-rc.118",
         "flatted": "3.4.4",
-        "vite": "8.2.2",
+        "vite": "8.3.1",
         "vitest": "5.0.2"
     },
     "peerDependencies": {
-        "@effect/platform-node": "4.0.0-rc.115",
+        "@effect/platform-node": "4.0.0-rc.118",
         "@efffrida/polyfills": "workspace:*",
         "@vitest/utils": "5.0.2",
         "birpc": "4.2.0",
-        "effect": "4.0.0-rc.115",
+        "effect": "4.0.0-rc.118",
         "flatted": "3.4.4",
-        "vite": "8.2.2",
+        "vite": "8.3.1",
         "vitest": "5.0.2"
     },
     "tags": [

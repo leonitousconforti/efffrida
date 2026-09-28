@@ -1,5 +1,5 @@
 import { Effect, Layer } from "effect";
-import { ChildProcess } from "effect/unstable/process";
+import { ChildProcess } from "effect/process";
 
 import { NodeServices } from "@effect/platform-node";
 import { FridaDevice, FridaSession } from "@efffrida/frida-tools";

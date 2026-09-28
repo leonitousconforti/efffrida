@@ -1,4 +1,4 @@
-import type { Rpc } from "effect/unstable/rpc";
+import type { Rpc } from "effect/rpc";
 
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";

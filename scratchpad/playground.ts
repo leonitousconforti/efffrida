@@ -1,5 +1,5 @@
 import { Context, Effect, Layer, pipe, Stream, String, Tuple, References, Duration } from "effect";
-import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
+import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
 import { NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";

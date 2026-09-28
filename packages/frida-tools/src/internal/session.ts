@@ -1,6 +1,6 @@
 import type * as PlatformError from "effect/PlatformError";
+import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Scope from "effect/Scope";
-import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
@@ -9,9 +9,9 @@ import * as Layer from "effect/Layer";
 import * as Match from "effect/Match";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
+import * as ChildProcess from "effect/process/ChildProcess";
 import * as Schema from "effect/Schema";
 import * as Tuple from "effect/Tuple";
-import * as ChildProcess from "effect/unstable/process/ChildProcess";
 
 import type * as FridaSession from "../FridaSession.ts";
 

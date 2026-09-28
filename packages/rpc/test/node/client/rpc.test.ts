@@ -1,6 +1,6 @@
 import { Effect, Layer, Option, Stream } from "effect";
-import { ChildProcess } from "effect/unstable/process";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+import { ChildProcess } from "effect/process";
+import { RpcClient, RpcSerialization } from "effect/rpc";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, layer } from "@effect/vitest";

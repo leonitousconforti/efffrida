@@ -9,9 +9,9 @@ import type * as Context from "effect/Context";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Path from "effect/Path";
+import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
-import type * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawner";
 
 import type * as FridaDeviceAcquisitionError from "./FridaDeviceAcquisitionError.ts";
 import type * as Frida from "frida";
