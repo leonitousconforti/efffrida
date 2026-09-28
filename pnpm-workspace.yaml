@@ -41,3 +41,6 @@ peerDependencyRules:
   allowedVersions:
     typescript: "7.0.2"
     "@babel/core": "8.0.5"
+
+patchedDependencies:
+  vitest@5.0.2: patches/vitest@5.0.2.patch

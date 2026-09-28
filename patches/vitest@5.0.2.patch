@@ -1,0 +1,13 @@
+diff --git a/dist/chunks/run.C5UmxDPh.js b/dist/chunks/run.C5UmxDPh.js
+index d397cb801d96ed4387adec3f8ef09123ddc636fe..59a61f6d447bf7f31a433096c8e26d37dd68ffa4 100644
+--- a/dist/chunks/run.C5UmxDPh.js
++++ b/dist/chunks/run.C5UmxDPh.js
+@@ -2998,7 +2998,7 @@ function formatTitle(template, items, idx) {
+ 	const inspectOptions = { truncate: runner.config.taskTitleValueFormatTruncate };
+ 	const isObjectItem = isObject(items[0]);
+ 	function formatAttribute(s) {
+-		return s.replace(/\$([$\p{ID_Continue}.]+)/gu, (_, key) => {
++		return s.replace(/\$([$\w.]+)/g, (_, key) => {
+ 			const isArrayKey = /^\d+$/.test(key);
+ 			if (!isObjectItem && !isArrayKey) return `$${key}`;
+ 			const arrayElement = isArrayKey ? objectAttr(items, key) : void 0;

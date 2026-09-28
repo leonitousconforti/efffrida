@@ -9,8 +9,7 @@
         "check": "tsc -b tsconfig.json",
         "lint": "oxlint && oxfmt --check frida node shared",
         "lint-fix": "oxlint --fix && oxfmt --write frida node shared",
-        "test": "vitest",
-        "coverage": "vitest --coverage"
+        "test": "vitest"
     },
     "dependencies": {
         "@efffrida/frida-tools": "latest",
@@ -26,7 +25,6 @@
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.10.0",
         "@types/node": "25.9.7",
-        "@vitest/coverage-v8": "5.0.2",
         "@vitest/utils": "5.0.2",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
