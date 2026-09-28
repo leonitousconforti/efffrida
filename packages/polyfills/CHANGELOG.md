@@ -1,5 +1,12 @@
 # @efffrida/polyfills
 
+## 0.0.16
+
+### Patch Changes
+
+- f8c8183: Add performance polyfill
+- 2c5cb81: bump deps
+
 ## 0.0.15
 
 ### Patch Changes

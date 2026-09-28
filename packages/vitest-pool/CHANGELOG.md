@@ -1,5 +1,15 @@
 # @efffrida/vitest-pool
 
+## 0.0.46
+
+### Patch Changes
+
+- 2c5cb81: bump deps
+- Updated dependencies [f8c8183]
+- Updated dependencies [2c5cb81]
+    - @efffrida/polyfills@0.0.16
+    - @efffrida/frida-tools@0.0.55
+
 ## 0.0.45
 
 ### Patch Changes

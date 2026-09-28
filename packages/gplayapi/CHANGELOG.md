@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.32
+
+### Patch Changes
+
+- 2c5cb81: bump deps
+
 ## 0.0.31
 
 ### Patch Changes
