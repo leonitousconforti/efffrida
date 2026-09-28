@@ -32,7 +32,7 @@ Since v1.0.0
 declare const layerProtocolFrida: Layer.Layer<
   RpcServer.Protocol,
   never,
-  FridaScript.FridaScript | RpcSerialization.RpcSerialization
+  RpcSerialization.RpcSerialization | FridaScript.FridaScript
 >
 ```
 
