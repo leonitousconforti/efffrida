@@ -11,6 +11,7 @@
         "circular": "node scripts/circular.mjs",
         "test": "vitest",
         "check": "tsc -b tsconfig.json",
+        "check:templates": "tsc -b templates/agent-only templates/app-and-agent",
         "check-recursive": "pnpm --recursive --filter \"./packages/**/*\" exec tsc -b tsconfig.json",
         "lint": "oxlint --disable-nested-config && oxfmt --check packages scratchpad scripts templates",
         "lint-fix": "oxlint --disable-nested-config --fix && oxfmt --write packages scratchpad scripts templates",
