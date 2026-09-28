@@ -58,7 +58,7 @@
         "effect": "4.0.0-rc.115",
         "flatted": "3.4.4",
         "vite": "8.2.2",
-        "vitest": "5.0.1"
+        "vitest": "5.0.2"
     },
     "peerDependencies": {
         "effect": "4.0.0-rc.115"

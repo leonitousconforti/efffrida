@@ -8,16 +8,16 @@ if (!("toJSON" in String.prototype)) {
     (String.prototype as any).toJSON = String.prototype.valueOf;
 }
 
-import type { CancelReason, VitestRunner } from "@vitest/runner";
-import type { ContextRPC, RunnerRPC, RuntimeRPC, WorkerGlobalState } from "vitest";
+import type { CancelReason, ContextRPC, RunnerRPC, RuntimeRPC, WorkerGlobalState } from "vitest";
 import type { WorkerRequest, WorkerResponse } from "vitest/node";
+import type { VitestRunner } from "vitest/runtime";
 
-import { collectTests, startTests } from "@vitest/runner";
 import { serializeError } from "@vitest/utils/error";
 import { createStackString, parseStacktrace } from "@vitest/utils/source-map";
 import { createBirpc } from "birpc";
 import { stringify as flattedStringify } from "flatted";
 import { EvaluatedModules } from "vitest";
+import { collectTests, startTests } from "vitest/internal/browser";
 
 // There should only ever be one test running at a time in a worker and these
 // need to be shared across multiple rpc calls anyways so they will live up here
@@ -106,7 +106,15 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             process.env.VITEST_POOL_ID = String(message.poolId);
             process.env.VITEST_WORKER_ID = String(message.workerId);
             const { config, environment, pool } = message.context;
-            setupContext = { environment, config, pool, rpc: birpc, projectName: config.name ?? "" };
+            setupContext = {
+                environment,
+                config,
+                pool,
+                rpc: birpc,
+                projectName: config.name ?? "",
+                metaEnv: process.env as ContextRPC["metaEnv"],
+                concurrencyId: message.poolId,
+            };
             return send({ type: "started", __vitest_worker_response__: true });
         }
 
@@ -143,7 +151,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
                 rpc: birpc,
                 environment: null!,
                 config: setupContext.config,
-                durations: { environment: 0, prepare: 0 },
+                durations: { environment: 0, prepare: 0, fetch: 0 },
                 ctx: { ...setupContext, ...message.context },
                 providedContext: message.context.providedContext,
                 metaEnv: process.env as WorkerGlobalState["metaEnv"],
@@ -152,9 +160,14 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
                 moduleExecutionInfo: new Map(), // TODO: share this between runs? https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/workers/base.ts#L18-L19
                 evaluatedModules: new EvaluatedModules(), // TODO: share this between runs? https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/workers/base.ts#L18-L19
 
-                onCancel: (listener) => cancelListeners.add(listener),
                 onCleanup: (listener) => cleanupListeners.add(listener),
                 onFilterStackTrace: (stack) => createStackString(parseStacktrace(stack)),
+                onCancel: (listener) => {
+                    cancelListeners.add(listener);
+                    return () => {
+                        cancelListeners.delete(listener);
+                    };
+                },
             } satisfies WorkerGlobalState);
 
             // Create a minimal runner without snapshot support
