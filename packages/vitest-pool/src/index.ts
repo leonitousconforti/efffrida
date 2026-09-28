@@ -114,12 +114,14 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         );
     }
 
+    // @effect-diagnostics-next-line asyncFunction:off
     async start(): Promise<void> {
         const exit = await this.scriptContextPromise;
         if (Exit.isSuccess(exit)) this.scriptContext = exit.value;
         else throw Cause.prettyErrors(exit.cause)[0];
     }
 
+    // @effect-diagnostics-next-line asyncFunction:off
     async stop(): Promise<void> {
         await Promise.allSettled(this.sends);
         for (const cancelable of this.cancelables) cancelable();
@@ -127,6 +129,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         this.cancelables = [];
     }
 
+    // @effect-diagnostics-next-line asyncFunction:off
     async send(message: VitestNode.WorkerRequest): Promise<void> {
         let sendPromise: Promise<unknown> = undefined!;
 
