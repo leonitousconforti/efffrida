@@ -147,7 +147,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
             }
 
             /** @see https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/worker.ts#L28-L49 */
-            provideWorkerState(globalThis, {
+            const workerState = provideWorkerState(globalThis, {
                 rpc: birpc,
                 environment: null!,
                 config: setupContext.config,
@@ -172,18 +172,22 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
 
             // Create a minimal runner without snapshot support
             const entrypoint = message.type === "run" ? startTests : collectTests;
-            const testRunner: VitestRunner = {
+            const testRunner: VitestRunner = patchTestRunner({
                 config: setupContext.config,
                 importFile: async (_file: string): Promise<void> => {
                     // @efffrida/vitest-pool/agent/file-map
 
                     return Promise.reject("importFile is not supported in the frida pool agent");
                 },
-            };
+            });
+
+            // `startTests` installs `cancel` on the runner, so this has to read
+            // the property lazily instead of capturing it up front.
+            const offCancel = workerState.onCancel((reason) => testRunner.cancel?.(reason));
 
             try {
                 for (const file of message.context.files) {
-                    runPromise = entrypoint([file], patchTestRunner(testRunner));
+                    runPromise = entrypoint([file], testRunner);
                     await runPromise;
                 }
 
@@ -198,6 +202,7 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
                     error: serializeError(error),
                 });
             } finally {
+                offCancel();
                 runPromise = undefined;
             }
         }
