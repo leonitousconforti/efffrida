@@ -1,8 +1,6 @@
 import * as Fs from "node:fs";
 
-import * as Glob from "glob";
-
-const dirs = [".", ...Glob.sync("packages/*/"), ...Glob.sync("templates/*/")];
+const dirs = [".", ...Fs.globSync(["packages/*", "templates/*"]).filter((_) => Fs.statSync(_).isDirectory())];
 dirs.forEach((pkg) => {
     const files = [".tsbuildinfo", "build", "dist", "temp", "coverage"];
 

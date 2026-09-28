@@ -38,6 +38,8 @@ overrides:
   "madge>typescript": "7.0.2"
 
 peerDependencyRules:
+  ignoreMissing:
+    - tsx
   allowedVersions:
     typescript: "7.0.2"
     "@babel/core": "8.0.5"

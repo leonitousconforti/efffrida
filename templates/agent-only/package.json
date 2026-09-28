@@ -21,7 +21,6 @@
         "effect": "4.0.0-rc.115"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.0-rc.115",
         "@effect/tsgo": "0.45.0",
         "@effect/vitest": "4.0.0-rc.115",
         "@efffrida/polyfills": "latest",
@@ -34,7 +33,6 @@
         "oxfmt": "0.67.0",
         "oxlint": "1.82.0",
         "oxlint-tsgolint": "7.0.2001",
-        "redis": "6.2.1",
         "typescript": "7.0.2",
         "vite": "8.2.2",
         "vitest": "5.0.2"
