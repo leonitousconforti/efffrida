@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.51
+
+### Patch Changes
+
+- 2c5cb81: bump deps
+
 ## 0.0.50
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.55
+
+### Patch Changes
+
+- 2c5cb81: bump deps
+
 ## 0.0.54
 
 ### Patch Changes

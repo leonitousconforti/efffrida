@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.19
+
+### Patch Changes
+
+- 2c5cb81: bump deps
+
 ## 0.0.18
 
 ### Patch Changes
