@@ -1,3 +1,6 @@
+/** @effect-diagnostics processEnv:off */
+/** @effect-diagnostics asyncFunction:off */
+
 import "@efffrida/polyfills";
 
 // QuickJS returns Error.stack as a boxed String object, not a primitive. This
