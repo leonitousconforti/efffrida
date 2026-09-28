@@ -66,7 +66,7 @@ Lifts an Il2Cpp.Object to a Dictionary.
 **Signature**
 
 ```ts
-declare const lift: <K extends Il2Cpp.Field.Type = Il2Cpp.Field.Type, V extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+declare const lift: <K extends Il2Cpp.Field.Type = any, V extends Il2Cpp.Field.Type = any>(
   object: Il2Cpp.Object
 ) => Dictionary<K, V>
 ```
@@ -80,7 +80,7 @@ Creates a new dictionary with the given elements.
 **Signature**
 
 ```ts
-declare const of: <K extends Il2Cpp.Field.Type = Il2Cpp.Field.Type, V extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+declare const of: <K extends Il2Cpp.Field.Type = any, V extends Il2Cpp.Field.Type = any>(
   keyClass: Il2Cpp.Class,
   valueClass: Il2Cpp.Class,
   elements?: Map<K, V> | undefined
@@ -234,7 +234,7 @@ Lifts an Il2Cpp.Array to a List.
 **Signature**
 
 ```ts
-declare const lift: <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(object: Il2Cpp.Object) => List<T>
+declare const lift: <T extends Il2Cpp.Field.Type = any>(object: Il2Cpp.Object) => List<T>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L233)
@@ -246,10 +246,7 @@ Creates a new list with the given elements.
 **Signature**
 
 ```ts
-declare const of: <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
-  klass: Il2Cpp.Class,
-  elements?: Array<T> | undefined
-) => List<T>
+declare const of: <T extends Il2Cpp.Field.Type = any>(klass: Il2Cpp.Class, elements?: Array<T> | undefined) => List<T>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L238)

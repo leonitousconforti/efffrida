@@ -90,7 +90,7 @@ declare const field: ((
 ) => <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
   klass: Il2Cpp.Class
 ) => Effect.Effect<Il2Cpp.Field<T>, never, never>) &
-  (<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+  (<T extends Il2Cpp.Field.Type = any>(
     klass: Il2Cpp.Class,
     name: string
   ) => Effect.Effect<Il2Cpp.Field<T>, never, never>)
@@ -106,7 +106,7 @@ Since v1.0.0
 
 ```ts
 declare const fieldCached: Effect.Effect<
-  <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+  <T extends Il2Cpp.Field.Type = any>(
     klass: Il2Cpp.Class,
     name: string
   ) => Effect.Effect<Il2Cpp.Field<T>, never, never>,
@@ -142,7 +142,7 @@ declare const method: ((
 ) => <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
   klass: Il2Cpp.Class
 ) => Effect.Effect<Il2Cpp.Method<T>, never, never>) &
-  (<T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
+  (<T extends Il2Cpp.Method.ReturnType = any>(
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined
@@ -159,7 +159,7 @@ Since v1.0.0
 
 ```ts
 declare const methodCached: Effect.Effect<
-  <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
+  <T extends Il2Cpp.Method.ReturnType = any>(
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined
@@ -255,7 +255,7 @@ declare const tryField: ((
 ) => <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
   klass: Il2Cpp.Class
 ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>) &
-  (<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+  (<T extends Il2Cpp.Field.Type = any>(
     klass: Il2Cpp.Class,
     name: string
   ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>)
@@ -271,7 +271,7 @@ Since v1.0.0
 
 ```ts
 declare const tryFieldCached: Effect.Effect<
-  <T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
+  <T extends Il2Cpp.Field.Type = any>(
     klass: Il2Cpp.Class,
     name: string
   ) => Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never>,
@@ -295,7 +295,7 @@ declare const tryMethod: ((
 ) => <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
   klass: Il2Cpp.Class
 ) => Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never>) &
-  (<T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
+  (<T extends Il2Cpp.Method.ReturnType = any>(
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined
@@ -312,7 +312,7 @@ Since v1.0.0
 
 ```ts
 declare const tryMethodCached: Effect.Effect<
-  <T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType>(
+  <T extends Il2Cpp.Method.ReturnType = any>(
     klass: Il2Cpp.Class,
     name: string,
     parameterCount?: number | undefined

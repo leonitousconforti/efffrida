@@ -157,7 +157,7 @@ Since v1.0.0
 
 ```ts
 export interface FromInputStreamOptions {
-  readonly chunkSize?: FileSystem.SizeInput | undefined
+  readonly chunkSize?: ByteSize.ByteSize | undefined
 }
 ```
 

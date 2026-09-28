@@ -40,7 +40,7 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const field: Equivalence.Equivalence<Il2Cpp.Field<Il2Cpp.Field.Type>>
+declare const field: Equivalence.Equivalence<Il2Cpp.Field<any>>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L38)
@@ -64,7 +64,7 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const method: Equivalence.Equivalence<Il2Cpp.Method<Il2Cpp.Method.ReturnType>>
+declare const method: Equivalence.Equivalence<Il2Cpp.Method<any>>
 ```
 
 [Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Equivalence.ts#L44)
