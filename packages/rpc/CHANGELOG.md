@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.57
+
+### Patch Changes
+
+- fd724e8: Update Effect-TS packages to v4.0.0-rc.115
+- Updated dependencies [fd724e8]
+    - @efffrida/frida-tools@0.0.54
+    - @efffrida/platform@0.0.42
+
 ## 0.0.56
 
 ### Patch Changes

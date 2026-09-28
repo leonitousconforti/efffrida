@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.45
+
+### Patch Changes
+
+- fd724e8: Update Effect-TS packages to v4.0.0-rc.115
+- Updated dependencies [fd724e8]
+    - @efffrida/frida-tools@0.0.54
+
 ## 0.0.44
 
 ### Patch Changes
