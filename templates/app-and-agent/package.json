@@ -28,7 +28,7 @@
         "@vitest/utils": "5.0.2",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
-        "frida": "17.19.0",
+        "frida": "17.20.0",
         "oxfmt": "0.70.0",
         "oxlint": "1.85.0",
         "oxlint-tsgolint": "7.0.2003",
