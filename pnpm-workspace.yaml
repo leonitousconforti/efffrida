@@ -45,7 +45,7 @@ peerDependencyRules:
     "@babel/core": "8.0.6"
 
 patchedDependencies:
-  vitest@5.0.2: patches/vitest@5.0.2.patch
+  vitest@5.0.3: patches/vitest@5.0.3.patch
 
 minimumReleaseAgeExclude:
   - '@effect/docgen'
