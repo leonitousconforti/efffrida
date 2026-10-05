@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.33
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.32
 
 ### Patch Changes

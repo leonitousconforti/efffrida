@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.52
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.51
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.56
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.55
 
 ### Patch Changes

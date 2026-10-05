@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.47
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+- Updated dependencies [3724b4f]
+    - @efffrida/frida-tools@0.0.56
+    - @efffrida/polyfills@0.0.17
+
 ## 0.0.46
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.43
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.42
 
 ### Patch Changes
