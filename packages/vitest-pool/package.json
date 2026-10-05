@@ -58,7 +58,7 @@
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
         "frida": "17.19.0",
-        "redis": "6.2.1"
+        "redis": "6.3.0"
     },
     "devDependencies": {
         "@effect/platform-node": "4.0.0-rc.118",
