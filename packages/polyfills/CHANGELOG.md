@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.17
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.16
 
 ### Patch Changes

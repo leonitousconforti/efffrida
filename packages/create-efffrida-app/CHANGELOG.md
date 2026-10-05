@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.20
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+
 ## 0.0.19
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.59
+
+### Patch Changes
+
+- 3724b4f: Bump vitest, frida, and effect
+- Updated dependencies [3724b4f]
+    - @efffrida/frida-tools@0.0.56
+    - @efffrida/platform@0.0.44
+    - @efffrida/polyfills@0.0.17
+
 ## 0.0.58
 
 ### Patch Changes
