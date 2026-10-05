@@ -57,7 +57,7 @@
     },
     "dependencies": {
         "@efffrida/frida-tools": "workspace:*",
-        "frida": "17.19.0",
+        "frida": "17.22.1",
         "redis": "6.3.0"
     },
     "devDependencies": {
