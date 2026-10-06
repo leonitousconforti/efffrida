@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.48
+
+### Patch Changes
+
+- bdd34c1: Bump frida to v17.22.2
+- Updated dependencies [bdd34c1]
+    - @efffrida/frida-tools@0.0.57
+
 ## 0.0.47
 
 ### Patch Changes
