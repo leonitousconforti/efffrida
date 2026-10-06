@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.60
+
+### Patch Changes
+
+- bdd34c1: Bump frida to v17.22.2
+- Updated dependencies [bdd34c1]
+    - @efffrida/frida-tools@0.0.57
+    - @efffrida/platform@0.0.44
+
 ## 0.0.59
 
 ### Patch Changes

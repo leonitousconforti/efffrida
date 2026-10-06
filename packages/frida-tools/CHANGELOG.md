@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.57
+
+### Patch Changes
+
+- bdd34c1: Bump frida to v17.22.2
+
 ## 0.0.56
 
 ### Patch Changes
