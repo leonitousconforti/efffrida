@@ -195,8 +195,8 @@ importers:
         specifier: 0.48.0
         version: 0.48.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       babel-plugin-annotate-pure-calls:
         specifier: 0.5.0
         version: 0.5.0(@babel/core@8.0.6)
@@ -220,10 +220,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   packages/create-efffrida-app:
     devDependencies:
@@ -231,8 +231,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1(effect@4.0.1)(redis@6.3.0)
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       effect:
         specifier: 4.0.1
         version: 4.0.1
@@ -260,13 +260,13 @@ importers:
         version: 4.0.1(effect@4.0.1)(redis@6.3.0)
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@types/frida-gum':
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       effect:
         specifier: 4.0.1
         version: 4.0.1
@@ -275,10 +275,10 @@ importers:
         version: 6.3.0
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   packages/gplayapi:
     devDependencies:
@@ -289,8 +289,8 @@ importers:
         specifier: 2.16.0
         version: 2.16.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       effect:
         specifier: 4.0.1
         version: 4.0.1
@@ -324,7 +324,7 @@ importers:
     devDependencies:
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -335,8 +335,8 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       birpc:
         specifier: 4.2.0
         version: 4.2.0
@@ -348,10 +348,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   packages/polyfills:
     dependencies:
@@ -386,13 +386,13 @@ importers:
         version: 4.0.1(effect@4.0.1)(redis@6.3.0)
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@types/frida-gum':
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       effect:
         specifier: 4.0.1
         version: 4.0.1
@@ -404,16 +404,16 @@ importers:
         version: 6.3.0
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   packages/sql:
     devDependencies:
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -424,8 +424,8 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       birpc:
         specifier: 4.2.0
         version: 4.2.0
@@ -437,10 +437,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   packages/vitest-pool:
     dependencies:
@@ -459,7 +459,7 @@ importers:
         version: 4.0.1(effect@4.0.1)(redis@6.3.0)
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -467,8 +467,8 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       '@vitest/utils':
         specifier: 5.0.3
         version: 5.0.3
@@ -483,10 +483,10 @@ importers:
         version: 3.4.4
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   scratchpad:
     dependencies:
@@ -539,7 +539,7 @@ importers:
         version: 0.48.0
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@efffrida/polyfills':
         specifier: latest
         version: link:../../packages/polyfills
@@ -550,8 +550,8 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       '@vitest/utils':
         specifier: 5.0.3
         version: 5.0.3
@@ -575,10 +575,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   templates/app-and-agent:
     dependencies:
@@ -603,7 +603,7 @@ importers:
         version: 0.48.0
       '@effect/vitest':
         specifier: 4.0.1
-        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))
+        version: 4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))
       '@efffrida/polyfills':
         specifier: latest
         version: link:../../packages/polyfills
@@ -614,8 +614,8 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       '@vitest/utils':
         specifier: 5.0.3
         version: 5.0.3
@@ -645,10 +645,10 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)
+        version: 8.3.2(@types/node@26.6.5)
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+        version: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
 packages:
 
@@ -1724,6 +1724,9 @@ packages:
 
   '@types/node@26.6.4':
     resolution: {integrity: sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg==}
+
+  '@types/node@26.6.5':
+    resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
 
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
@@ -3667,10 +3670,10 @@ snapshots:
       '@effect/tsgo-win32-arm64': 0.48.0
       '@effect/tsgo-win32-x64': 0.48.0
 
-  '@effect/vitest@4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)))':
+  '@effect/vitest@4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)))':
     dependencies:
       effect: 4.0.1
-      vitest: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4))
+      vitest: 5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5))
 
   '@effect/vitest@4.0.1(effect@4.0.1)(vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(vite@8.3.2))':
     dependencies:
@@ -4112,6 +4115,10 @@ snapshots:
     dependencies:
       undici-types: 8.9.0
 
+  '@types/node@26.6.5':
+    dependencies:
+      undici-types: 8.9.0
+
   '@types/ws@8.18.2':
     dependencies:
       '@types/node': 26.6.4
@@ -4211,14 +4218,14 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@26.6.4))':
+  '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@26.6.5))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.3
       estree-walker: 3.0.3
       magic-string: 1.4.2
     optionalDependencies:
-      vite: 8.3.2(@types/node@26.6.4)
+      vite: 8.3.2(@types/node@26.6.5)
 
   '@vitest/mocker@5.0.3(vite@8.3.2)':
     dependencies:
@@ -5558,7 +5565,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vite@8.3.2(@types/node@26.6.4):
+  vite@8.3.2(@types/node@26.6.5):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -5566,13 +5573,13 @@ snapshots:
       rolldown: 1.2.12
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
       fsevents: 2.3.3
 
-  vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)):
+  vitest@5.0.3(patch_hash=92f1fdb71c5377178c8233c6b8364ef89dd730438a4e58db69ec524ffee004af)(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.3(vite@8.3.2(@types/node@26.6.4))
+      '@vitest/mocker': 5.0.3(vite@8.3.2(@types/node@26.6.5))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -5583,10 +5590,10 @@ snapshots:
       tinybench: 6.2.0
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.2(@types/node@26.6.4)
+      vite: 8.3.2(@types/node@26.6.5)
       why-is-node-running: 3.2.1
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
     transitivePeerDependencies:
       - msw
 
