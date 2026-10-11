@@ -252,8 +252,8 @@ importers:
   packages/frida-tools:
     dependencies:
       frida:
-        specifier: 17.22.2
-        version: 17.22.2
+        specifier: 17.23.3
+        version: 17.23.3
     devDependencies:
       '@effect/platform-node':
         specifier: 4.0.1
@@ -397,8 +397,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       frida:
-        specifier: 17.22.2
-        version: 17.22.2
+        specifier: 17.23.3
+        version: 17.23.3
       redis:
         specifier: 6.3.0
         version: 6.3.0
@@ -448,8 +448,8 @@ importers:
         specifier: workspace:*
         version: link:../frida-tools
       frida:
-        specifier: 17.22.2
-        version: 17.22.2
+        specifier: 17.23.3
+        version: 17.23.3
       redis:
         specifier: 6.3.0
         version: 6.3.0
@@ -512,8 +512,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/sql
       frida:
-        specifier: 17.22.2
-        version: 17.22.2
+        specifier: 17.23.3
+        version: 17.23.3
     devDependencies:
       '@effect/platform-node':
         specifier: 4.0.1
@@ -626,8 +626,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       frida:
-        specifier: 17.22.2
-        version: 17.22.2
+        specifier: 17.23.3
+        version: 17.23.3
       oxfmt:
         specifier: 0.71.0
         version: 0.71.0
@@ -2316,8 +2316,8 @@ packages:
     resolution: {integrity: sha512-rtqHgsE3x1j05QV7hfowEsRynf276xHhEJPgoh87Dv7PEa9Zz13VLxRtt19DNVCtIzyCfH1vdMANUCtMYU29Kw==}
     hasBin: true
 
-  frida@17.22.2:
-    resolution: {integrity: sha512-PcSmQ88+eApuK0h+5OTsAuEvc1SuRi3iG+egZWMk512ACfFLsD9MdyWPJdyqKdtdEUP6uJLJcaYBkwJao1INdA==}
+  frida@17.23.3:
+    resolution: {integrity: sha512-h3UPc770oHxdHY6GX24kxESGTSMGNo/Sa3PtMcGKfGp/TNoBu+Lv+ufSmtyhx59+8N5n6La1aTWEU86aqBCZrg==}
     engines: {node: '>=16'}
 
   fs-constants@1.0.0:
@@ -4657,7 +4657,7 @@ snapshots:
 
   frida-il2cpp-bridge@0.14.0: {}
 
-  frida@17.22.2:
+  frida@17.23.3:
     dependencies:
       bindings: 1.5.0
       minimatch: 10.2.6
