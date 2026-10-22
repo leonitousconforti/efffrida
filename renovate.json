@@ -9,7 +9,7 @@
     "labels": ["dependencies", "renovate"],
     "automerge": true,
     "automergeType": "branch",
-    "ignorePaths": ["**/node_modules/**", "repos/effect/**", "repos/effect-smol/**"],
+    "ignorePaths": ["**/node_modules/**", "repos/effect/**"],
     "enabledManagers": ["github-actions", "nix", "git-submodules", "pip_requirements", "npm"],
     "git-submodules": {
         "enabled": true
