@@ -5,9 +5,10 @@ Provides effectful abstractions for frida such as connecting to devices, managin
 ### Example usage
 
 ```typescript
+import { Effect, Layer, Stream } from "effect";
+
 import { Path } from "@effect/platform";
 import { FridaDevice, FridaScript, FridaSession } from "@efffrida/frida-tools";
-import { Effect, Layer, Stream } from "effect";
 
 // Pick a device and a session/program
 const DeviceLive = FridaDevice.layerLocalDevice;

@@ -9,9 +9,10 @@ The store's protobuf endpoints are exposed as effects: `details` and `bulkDetail
 ### Example usage
 
 ```typescript
+import { Effect, Layer } from "effect";
+
 import { NodeHttpClient, NodeServices } from "@effect/platform-node";
 import { GooglePlayApi, PlayAccount } from "@efffrida/gplayapi";
-import { Effect, Layer } from "effect";
 
 const PlayLive = Layer.mergeAll(
     GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive,

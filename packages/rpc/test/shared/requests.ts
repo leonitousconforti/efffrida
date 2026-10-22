@@ -2,7 +2,7 @@ import { Schema } from "effect";
 import { Rpc, RpcGroup } from "effect/rpc";
 
 // Define a user with an ID and name
-export class User extends Schema.Class<User>("User")({
+export class User extends Schema.Class<User, { readonly brand: unique symbol }>("User")({
     id: Schema.String, // User's ID as a string
     name: Schema.String, // User's name as a string
 }) {}

@@ -60,7 +60,7 @@ export const authHeadersTtl: Duration.Duration = Duration.minutes(30);
  * @since 1.0.0
  * @category Models
  */
-export class AndroidDevice extends Schema.Class<AndroidDevice>("AndroidDevice")({
+export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand: unique symbol }>("AndroidDevice")({
     UserReadableName: Schema.String,
     "Build.BOOTLOADER": Schema.String,
     "Build.BRAND": Schema.String,
