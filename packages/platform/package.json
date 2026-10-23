@@ -54,7 +54,7 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.5",
+        "@effect/vitest": "4.0.6",
         "@efffrida/polyfills": "workspace:*",
         "@efffrida/vitest-pool": "workspace:*",
         "@types/frida-gum": "19.12.0",
