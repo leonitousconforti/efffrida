@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.61
+
+### Patch Changes
+
+- 3bb8c5c: Bump effect to v4.0.5 and frida to v17.24.3
+- Updated dependencies [3bb8c5c]
+    - @efffrida/frida-tools@0.0.58
+    - @efffrida/platform@0.0.45
+
 ## 0.0.60
 
 ### Patch Changes
