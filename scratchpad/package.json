@@ -11,11 +11,11 @@
         "@efffrida/polyfills": "workspace:*",
         "@efffrida/rpc": "workspace:*",
         "@efffrida/sql": "workspace:*",
-        "frida": "17.22.2"
+        "frida": "17.24.3"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.1",
-        "effect": "4.0.1",
+        "@effect/platform-node": "4.0.5",
+        "effect": "4.0.5",
         "redis": "6.3.0"
     }
 }

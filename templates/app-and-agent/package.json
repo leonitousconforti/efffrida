@@ -15,12 +15,12 @@
         "@efffrida/frida-tools": "latest",
         "@efffrida/platform": "latest",
         "@efffrida/rpc": "latest",
-        "effect": "4.0.1"
+        "effect": "4.0.5"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.1",
+        "@effect/platform-node": "4.0.5",
         "@effect/tsgo": "0.56.0",
-        "@effect/vitest": "4.0.1",
+        "@effect/vitest": "4.0.5",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.12.0",
@@ -28,7 +28,7 @@
         "@vitest/utils": "5.0.5",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
-        "frida": "17.22.2",
+        "frida": "17.24.3",
         "oxfmt": "0.74.0",
         "oxlint": "1.89.0",
         "oxlint-tsgolint": "7.0.2004",
@@ -38,6 +38,6 @@
         "vitest": "5.0.5"
     },
     "peerDependencies": {
-        "effect": "4.0.1"
+        "effect": "4.0.5"
     }
 }

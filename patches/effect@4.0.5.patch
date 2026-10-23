@@ -1,0 +1,26 @@
+diff --git a/dist/net/NetAddress.js b/dist/net/NetAddress.js
+index 344cfa93679f7e3c45ab42aaec5157eeccc349b4..864142a82ee3c15230b6735d99ba10d87fc584de 100644
+--- a/dist/net/NetAddress.js
++++ b/dist/net/NetAddress.js
+@@ -583,7 +583,7 @@ export const scopedIpv6LiteralFromString = input => {
+   const separator = input.indexOf("%");
+   if (separator === -1) return addressError(input, "expected an IPv6 zone");
+   let zone = input.slice(separator + 1);
+-  if (zone.length === 0 || /[%[\]/\s\p{Cc}]/u.test(zone)) {
++  if (zone.length === 0 || /[%[\]/\s\x00-\x1f\x7f-\x9f]/u.test(zone)) {
+     return addressError(input, "invalid IPv6 scope identifier");
+   }
+   if (/^\d+$/.test(zone)) {
+diff --git a/src/net/NetAddress.ts b/src/net/NetAddress.ts
+index 5b8a26370f03fba8387eaf36917fdfe137c9eef6..07bf7f4d569fddcf0135682b824227a2bd709594 100644
+--- a/src/net/NetAddress.ts
++++ b/src/net/NetAddress.ts
+@@ -1242,7 +1242,7 @@ export const scopedIpv6LiteralFromString = (
+   const separator = input.indexOf("%")
+   if (separator === -1) return addressError(input, "expected an IPv6 zone")
+   let zone = input.slice(separator + 1)
+-  if (zone.length === 0 || /[%[\]/\s\p{Cc}]/u.test(zone)) {
++  if (zone.length === 0 || /[%[\]/\s\x00-\x1f\x7f-\x9f]/u.test(zone)) {
+     return addressError(input, "invalid IPv6 scope identifier")
+   }
+   if (/^\d+$/.test(zone)) {

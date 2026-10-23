@@ -38,7 +38,7 @@ export const makeProtocolFrida = (): Effect.Effect<
             const parser = serialization.makeUnsafe();
             const requestClientMap = new Map<string | number, number>();
 
-            const exportName = yield* crypto.randomUUIDv4.pipe(Effect.orDie);
+            const exportName = yield* crypto.randomUUIDv4().pipe(Effect.orDie);
             const connectionRequest = constants.nodeRpcClientMakeConnectionRequestForServer(exportName);
 
             const broadcast = (response: RpcMessage.FromServerEncoded) =>

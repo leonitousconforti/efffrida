@@ -44,7 +44,11 @@ peerDependencyRules:
     typescript: "7.0.2"
     "@babel/core": "8.0.7"
 
+# Frida's V8 runtime is built without ICU, so regexes using `\p{...}` fail to
+# compile inside agents. Drop these once https://github.com/frida/frida-gum/issues/1195
+# is resolved.
 patchedDependencies:
+  effect@4.0.5: patches/effect@4.0.5.patch
   vitest@5.0.5: patches/vitest@5.0.5.patch
 
 minimumReleaseAgeExclude:
