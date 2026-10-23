@@ -238,6 +238,7 @@ export const make = (
                 acquirer,
                 compiler,
                 transactionAcquirer,
+                driver: "sqlite-frida",
                 spanAttributes: [
                     ...(options.spanAttributes ? Object.entries(options.spanAttributes) : []),
                     [ATTR_DB_SYSTEM_NAME, "sqlite"],

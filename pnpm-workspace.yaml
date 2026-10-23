@@ -48,7 +48,7 @@ peerDependencyRules:
 # compile inside agents. Drop these once https://github.com/frida/frida-gum/issues/1195
 # is resolved.
 patchedDependencies:
-  effect@4.0.5: patches/effect@4.0.5.patch
+  effect@4.0.6: patches/effect@4.0.6.patch
   vitest@5.0.5: patches/vitest@5.0.5.patch
 
 minimumReleaseAgeExclude:

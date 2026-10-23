@@ -30,9 +30,9 @@
         "check": "tsc -b tsconfig.json"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.0.5",
+        "@effect/platform-node": "4.0.6",
         "@types/node": "26.6.5",
-        "effect": "4.0.5",
+        "effect": "4.0.6",
         "redis": "6.3.0",
         "tar": "7.5.22",
         "tsup": "9.0.0",

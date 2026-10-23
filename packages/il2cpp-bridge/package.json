@@ -57,15 +57,15 @@
         "frida-il2cpp-bridge": "0.14.0"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.5",
+        "@effect/vitest": "4.0.6",
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.12.0",
-        "effect": "4.0.5",
+        "effect": "4.0.6",
         "vite": "8.3.5",
         "vitest": "5.0.5"
     },
     "peerDependencies": {
-        "effect": "4.0.5"
+        "effect": "4.0.6"
     },
     "tags": [
         "frida.re",
