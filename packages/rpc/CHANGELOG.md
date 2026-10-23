@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.62
+
+### Patch Changes
+
+- 1c1e07b: Bump effect to v4.0.6
+- Updated dependencies [1c1e07b]
+    - @efffrida/frida-tools@0.0.59
+    - @efffrida/platform@0.0.46
+
 ## 0.0.61
 
 ### Patch Changes

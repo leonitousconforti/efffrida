@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.46
+
+### Patch Changes
+
+- 1c1e07b: Bump effect to v4.0.6
+
 ## 0.0.45
 
 ### Patch Changes

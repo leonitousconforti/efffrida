@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.22
+
+### Patch Changes
+
+- 1c1e07b: Bump effect to v4.0.6
+
 ## 0.0.21
 
 ### Patch Changes

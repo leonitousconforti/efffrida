@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.59
+
+### Patch Changes
+
+- 1c1e07b: Bump effect to v4.0.6
+
 ## 0.0.58
 
 ### Patch Changes
