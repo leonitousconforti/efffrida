@@ -1,5 +1,13 @@
 # @efffrida/vitest-pool
 
+## 0.0.50
+
+### Patch Changes
+
+- 1c1e07b: Bump effect to v4.0.6
+- Updated dependencies [1c1e07b]
+    - @efffrida/frida-tools@0.0.59
+
 ## 0.0.49
 
 ### Patch Changes
