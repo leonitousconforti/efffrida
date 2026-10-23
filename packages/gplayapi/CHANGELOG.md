@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.34
+
+### Patch Changes
+
+- 3bb8c5c: Bump effect to v4.0.5 and frida to v17.24.3
+
 ## 0.0.33
 
 ### Patch Changes

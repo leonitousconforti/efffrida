@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.53
+
+### Patch Changes
+
+- 3bb8c5c: Bump effect to v4.0.5 and frida to v17.24.3
+
 ## 0.0.52
 
 ### Patch Changes
