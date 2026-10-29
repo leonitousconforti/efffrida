@@ -28,7 +28,7 @@
         "@effect/build-utils": "0.8.9",
         "@effect/docgen": "4.1.0",
         "@effect/tsgo": "0.57.0",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "babel-plugin-annotate-pure-calls": "0.5.0",
         "madge": "8.0.0",
         "oxfmt": "0.74.0",
