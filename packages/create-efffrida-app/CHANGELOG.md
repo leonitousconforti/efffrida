@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.23
+
+### Patch Changes
+
+- ea161b1: Bump to effect v4.1.0 and bug fixes
+
 ## 0.0.22
 
 ### Patch Changes

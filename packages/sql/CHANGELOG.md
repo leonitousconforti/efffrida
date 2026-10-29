@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.46
+
+### Patch Changes
+
+- ea161b1: Bump to effect v4.1.0 and bug fixes
+
 ## 0.0.45
 
 ### Patch Changes

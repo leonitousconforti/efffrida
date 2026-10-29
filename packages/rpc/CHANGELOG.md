@@ -1,5 +1,15 @@
 # @efffrida/rpc
 
+## 0.0.63
+
+### Patch Changes
+
+- ea161b1: Bump to effect v4.1.0 and bug fixes
+- Updated dependencies [ea161b1]
+    - @efffrida/frida-tools@0.0.60
+    - @efffrida/platform@0.0.47
+    - @efffrida/polyfills@0.0.18
+
 ## 0.0.62
 
 ### Patch Changes
