@@ -49,7 +49,7 @@ export const runMain = Function.dual<
             });
 
         const withLogger =
-            options?.disablePrettyLogger === true
+            options?.disablePrettyLogger !== false
                 ? Function.identity
                 : // oxlint-disable-next-line effecttsgo/strict-effect-provide
                   Effect.provide(Logger.layer([Logger.consolePretty()]));
