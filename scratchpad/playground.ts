@@ -1,7 +1,7 @@
 import { Context, Effect, Layer, pipe, Stream, String, Tuple, References, Duration } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
-import { NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
+import { NodeCrypto, NodeServices, NodeRuntime, NodeHttpClient } from "@effect/platform-node";
 import { FridaDevice, FridaDeviceAcquisitionError, FridaScript, FridaSession } from "@efffrida/frida-tools";
 import { AndroidDevice, GooglePlayApi, PlayAccount } from "@efffrida/gplayapi";
 
@@ -54,6 +54,7 @@ const DeviceLive = pipe(
     Layer.provide(AndroidDevice.EmbeddedPixel7aLive),
     Layer.provide(PlayAccount.layerAuroraDispenser()),
     Layer.provide(NodeHttpClient.layerFetch),
+    Layer.provide(NodeCrypto.layerDigest),
     Layer.provide(NodeServices.layer)
 );
 

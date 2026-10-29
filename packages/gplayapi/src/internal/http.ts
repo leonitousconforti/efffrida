@@ -161,7 +161,7 @@ export const decodeResponseFromResponseWrapper = Function.dual<
     (arguments_: IArguments) => Predicate.hasProperty(arguments_[0], HttpClientResponse.TypeId),
 
     // Body implementation
-    Effect.fn("decodeResponse")(function* <
+    Effect.fn("decodeResponseFromResponseWrapper")(function* <
         ExtractPayload extends Exclude<
             keyof Protobuf.MessageShape<typeof PayloadSchema>,
             keyof Protobuf.Message<"Payload">

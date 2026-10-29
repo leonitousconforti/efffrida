@@ -11,14 +11,14 @@ The store's protobuf endpoints are exposed as effects: `details` and `bulkDetail
 ```typescript
 import { Effect, Layer } from "effect";
 
-import { NodeHttpClient, NodeServices } from "@effect/platform-node";
-import { GooglePlayApi, PlayAccount } from "@efffrida/gplayapi";
+import { NodeCrypto, NodeHttpClient, NodeServices } from "@effect/platform-node";
+import { AndroidDevice, GooglePlayApi, PlayAccount } from "@efffrida/gplayapi";
 
 const PlayLive = Layer.mergeAll(
-    GooglePlayApi.AndroidDevice.EmbeddedPixel7aLive,
+    AndroidDevice.EmbeddedPixel7aLive,
     NodeHttpClient.layerUndici,
     PlayAccount.layerConfig()
-).pipe(Layer.provideMerge(NodeServices.layer));
+).pipe(Layer.provideMerge(Layer.merge(NodeServices.layer, NodeCrypto.layerDigest)));
 
 const program = Effect.gen(function* () {
     const { item } = yield* GooglePlayApi.details("com.nimblebit.tinytower");
@@ -45,9 +45,10 @@ pick one of:
 - `layerAuroraDispenser(url?)` hands out anonymous credentials from an Aurora store compatible
   dispenser, `https://auroraoss.com/api/auth` by default. The hosted one blocks and rate limits
   datacenter ip ranges, so it is a poor fit for anything running on cloud infrastructure.
-- `layerConfig({email?, token?})` reads credentials that were obtained out of band from the config
-  provider, defaulting to the `GPLAY_EMAIL` and `GPLAY_AUTH_TOKEN` environment variables.
+- `layerConfig({token?})` reads credentials that were obtained out of band from the config provider,
+  defaulting to the `GPLAY_AUTH_TOKEN` environment variable.
 - `layerStatic(credentials)` serves credentials that are already in hand.
 
-Auth headers are derived from the device and the account once, then cached for 30 minutes. A 401 or a
-403 from the store evicts them early, so the next call acquires a fresh set.
+The device derives auth headers from itself and the account once, then caches them for 30 minutes.
+A 401 or a 403 from the store evicts them early, so the next call acquires a
+fresh set.

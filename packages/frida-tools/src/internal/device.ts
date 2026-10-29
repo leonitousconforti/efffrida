@@ -3,6 +3,7 @@ import type * as Scope from "effect/Scope";
 
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
+import * as Deferred from "effect/Deferred";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -170,12 +171,13 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                     socket2.destroy();
                 };
 
+                let refused = 0;
                 const onError = (error: NodeJS.ErrnoException) => {
-                    cleanup();
-
                     if (error.code !== "ECONNREFUSED") {
+                        cleanup();
                         resume(Effect.die("Failed to get two free consecutive ports"));
-                    } else if (!socket1.connecting && !socket2.connecting) {
+                    } else if (++refused === 2) {
+                        cleanup();
                         resume(Effect.succeed(Tuple.make(startingAt, startingAt + 1)));
                     }
                 };
@@ -198,16 +200,22 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
         const [firstPort, _secondPort] = yield* getTwoConsecutiveFreePorts();
         const emulator = `emulator-${firstPort}`;
 
-        const emulatorProcess = yield* ChildProcess.make(emulatorExecutable, [
-            `@${name}`,
-            "-delay-adb",
-            "-read-only",
-            "-no-snapshot-save",
-            "-port",
-            firstPort.toString(),
-            ...(hidden ? ["-no-window"] : []),
-            ...(options?.extraEmulatorArgs ?? []),
-        ]);
+        // Nothing reads stderr, so leaving it piped would eventually block the
+        // emulator once the pipe buffer fills up
+        const emulatorProcess = yield* ChildProcess.make(
+            emulatorExecutable,
+            [
+                `@${name}`,
+                "-delay-adb",
+                "-read-only",
+                "-no-snapshot-save",
+                "-port",
+                firstPort.toString(),
+                ...(hidden ? ["-no-window"] : []),
+                ...(options?.extraEmulatorArgs ?? []),
+            ],
+            { stderr: "ignore" }
+        );
 
         yield* Effect.addFinalizer(() =>
             ChildProcess.make(adbExecutable, ["-s", emulator, "emu", "kill"]).pipe(
@@ -222,14 +230,22 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
             String.includes("Boot completed")
         );
 
-        yield* emulatorProcess.stderr.pipe(Stream.runHead, Effect.forkScoped);
+        // Keep draining stdout for the lifetime of the emulator, not just until
+        // boot completes, otherwise the emulator blocks once the pipe buffer
+        // fills up
+        const bootCompleted = yield* Deferred.make<void, PlatformError.PlatformError>();
         yield* emulatorProcess.stdout.pipe(
             Stream.decodeText(),
             Stream.splitLines,
-            Stream.takeUntil(isBootCompletedPredicate),
-            Stream.runDrain
+            Stream.runForEach((line) =>
+                isBootCompletedPredicate(line) ? Deferred.succeed(bootCompleted, undefined) : Effect.void
+            ),
+            Effect.exit,
+            Effect.flatMap((exit) => Deferred.done(bootCompleted, exit)),
+            Effect.forkScoped
         );
 
+        yield* Deferred.await(bootCompleted);
         yield* ChildProcess.make(adbExecutable, ["-s", emulator, "wait-for-device"]).pipe(
             childProcessSpawner.exitCode,
             Effect.flatMap(filterExitOk),

@@ -5,18 +5,18 @@
  * @since 1.0.0
  */
 
-import type * as HttpClientResponse from "effect/http/HttpClientResponse";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
-import * as Crypto from "effect/Crypto";
+import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientError from "effect/http/HttpClientError";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/http/HttpClientResponse";
 import * as Match from "effect/Match";
 import * as PlatformError from "effect/PlatformError";
 import * as Stream from "effect/Stream";
@@ -211,7 +211,7 @@ export const downloadToStreams = Effect.fnUntraced(function* (
     AndroidDeviceService | HttpClient.HttpClient | PlayAccount
 > {
     const { item } = yield* details(bundleIdentifier);
-    const offerType = options?.offerType ?? item?.offer[0].offerType ?? 1;
+    const offerType = options?.offerType ?? item?.offer[0]?.offerType ?? 1;
     const versionCode = options?.versionCode ?? item?.details?.appDetails?.versionCode ?? 0;
 
     const { encodedDeliveryToken } = yield* purchase(bundleIdentifier, {
@@ -230,69 +230,64 @@ export const downloadToStreams = Effect.fnUntraced(function* (
         return yield* new Cause.NoSuchElementError();
     }
 
-    const main = Effect.gen(function* () {
-        const integrity = Buffer.from(mainDeliveryData.sha256, "base64url").toString("hex");
-        const stream = yield* HttpClient.get(mainDeliveryData.downloadUrl).pipe(
-            Effect.map((response) => response.stream)
+    // Each request is only made once its stream is run, so that downloads
+    // happen one at a time as the caller drains them.
+    const httpClient = HttpClient.filterStatusOk(yield* HttpClient.HttpClient);
+    const download = (url: string, description: string) =>
+        HttpClientResponse.stream(
+            httpClient.get(url).pipe(Effect.tap(() => Effect.logDebug(`downloading ${description} from ${url}`)))
         );
 
-        yield* Effect.logDebug(
-            `fetched main APK of ${mainDeliveryData.downloadSize}bytes from ${mainDeliveryData.downloadUrl} with integrity ${integrity}(sha256)`
-        );
+    const mainIntegrity = Buffer.from(mainDeliveryData.sha256, "base64url").toString("hex");
+    const main = {
+        name: `${bundleIdentifier}.apk`,
+        url: mainDeliveryData.downloadUrl,
+        size: mainDeliveryData.downloadSize,
+        integrity: { "SHA-256": mainIntegrity },
+        stream: download(
+            mainDeliveryData.downloadUrl,
+            `main APK of ${mainDeliveryData.downloadSize}bytes with integrity ${mainIntegrity}(sha256)`
+        ),
+    };
 
+    const splits = Array.map(mainDeliveryData.splitDeliveryData, (split) => {
+        const integrity = Buffer.from(split.sha256, "base64url").toString("hex");
         return {
-            stream,
-            name: `${bundleIdentifier}.apk`,
-            url: mainDeliveryData.downloadUrl,
-            size: mainDeliveryData.downloadSize,
+            url: split.downloadUrl,
+            size: split.downloadSize,
+            name: `${split.name}.apk`,
             integrity: { "SHA-256": integrity },
+            stream: download(
+                split.downloadUrl,
+                `split ${split.name} of ${split.downloadSize}bytes with integrity ${integrity}(sha256)`
+            ),
         };
     });
 
-    const splits = Array.map(mainDeliveryData.splitDeliveryData, (split) =>
-        Effect.gen(function* () {
-            const integrity = Buffer.from(split.sha256, "base64url").toString("hex");
-            const stream = yield* HttpClient.get(split.downloadUrl).pipe(Effect.map((response) => response.stream));
+    const expansions = Array.map(mainDeliveryData.additionalFile, (expansion) => {
+        const typeStr = expansion.fileType === 1 ? "main" : "patch";
+        const name = `${typeStr}.${expansion.versionCode}.${bundleIdentifier}.obb`;
+        const integrity = Buffer.from(expansion.sha1, "base64url").toString("hex");
+        return {
+            name,
+            size: expansion.size,
+            url: expansion.downloadUrl,
+            integrity: { "SHA-1": integrity },
+            stream: download(
+                expansion.downloadUrl,
+                `expansion file ${name} of ${expansion.size}bytes with integrity ${integrity}(sha1)`
+            ),
+        };
+    });
 
-            yield* Effect.logDebug(
-                `fetched split ${split.name} of ${split.downloadSize}bytes from ${split.downloadUrl} with integrity ${integrity}(sha256)`
-            );
-
-            return {
-                stream,
-                url: split.downloadUrl,
-                size: split.downloadSize,
-                name: `${split.name}.apk`,
-                integrity: { "SHA-256": integrity },
-            };
-        })
-    );
-
-    const expansions = Array.map(mainDeliveryData.additionalFile, (expansion) =>
-        Effect.gen(function* () {
-            const typeStr = expansion.fileType === 1 ? "main" : "patch";
-            const name = `${typeStr}.${expansion.versionCode}.${bundleIdentifier}.obb`;
-            const integrity = Buffer.from(expansion.sha1, "base64url").toString("hex");
-            const stream = yield* HttpClient.get(expansion.downloadUrl).pipe(Effect.map((response) => response.stream));
-
-            yield* Effect.logDebug(
-                `fetched expansion file ${name} of ${expansion.size}bytes from ${expansion.downloadUrl} with integrity ${integrity}(sha1)`
-            );
-
-            return {
-                name,
-                stream,
-                size: expansion.size,
-                url: expansion.downloadUrl,
-                integrity: { "SHA-1": integrity },
-            };
-        })
-    );
-
-    return yield* Effect.all([main, ...splits, ...expansions]);
+    return [main, ...splits, ...expansions];
 });
 
 /**
+ * Note that each file is buffered in memory in full while its integrity is
+ * hashed, so peak memory use is the size of the largest file (expansion files
+ * can be several gigabytes).
+ *
  * @since 1.0.0
  * @category API
  */
@@ -317,23 +312,25 @@ export const downloadToDisk = Effect.fnUntraced(function* (
     | HttpClientError.HttpClientError
     | Schema.SchemaError
     | PlayAccountError,
-    AndroidDeviceService | Crypto.Crypto | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope | PlayAccount
+    AndroidDeviceService | PlayAccount | Digest.Digest | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
 > {
     const fileSystem = yield* FileSystem.FileSystem;
     const streams = yield* downloadToStreams(bundleIdentifier, options);
 
+    const digestAlgorithms = {
+        "SHA-1": Digest.sha1,
+        "SHA-256": Digest.sha256,
+        "SHA-384": Digest.sha384,
+        "SHA-512": Digest.sha512,
+    } as const;
+
     const digest =
-        (algorithm: Crypto.DigestAlgorithm) =>
-        <E, R>(
-            stream: Stream.Stream<Uint8Array, E, R>
-        ): Effect.Effect<string, E | PlatformError.PlatformError, R | Crypto.Crypto> =>
+        (algorithm: keyof typeof digestAlgorithms) =>
+        <E, R>(stream: Stream.Stream<Uint8Array, E, R>): Effect.Effect<string, E, R | Digest.Digest> =>
             stream.pipe(
                 Stream.mkUint8Array,
-                Effect.flatMap((buffer) => Crypto.Crypto.use((crypto) => crypto.digest(algorithm, buffer))),
-                Effect.map((digestBuffer) =>
-                    Array.fromIterable(digestBuffer)
-                        .map((b) => b.toString(16).padStart(2, "0"))
-                        .join("")
+                Effect.flatMap((buffer) =>
+                    Digest.Digest.use((digest) => digest.digestHex(digestAlgorithms[algorithm], buffer))
                 )
             );
 
@@ -346,9 +343,9 @@ export const downloadToDisk = Effect.fnUntraced(function* (
             integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
         },
         PlatformError.PlatformError | HttpClientError.HttpClientError,
-        Crypto.Crypto | Scope.Scope
+        Digest.Digest | Scope.Scope
     > = Effect.fnUntraced(function* ({ stream, name, url, size, integrity }) {
-        const file = yield* fileSystem.makeTempFileScoped({ suffix: ".apk" });
+        const file = yield* fileSystem.makeTempFileScoped({ suffix: name.slice(name.lastIndexOf(".")) });
 
         const digestAlgorithm = Match.value(integrity).pipe(
             Match.when({ "SHA-1": Match.string }, () => "SHA-1" as const),
@@ -358,7 +355,7 @@ export const downloadToDisk = Effect.fnUntraced(function* (
             Match.exhaustive
         );
 
-        const expectedIntegrity = (integrity as Record<Crypto.DigestAlgorithm, string>)[digestAlgorithm];
+        const expectedIntegrity = (integrity as Record<keyof typeof digestAlgorithms, string>)[digestAlgorithm];
         const downloadedIntegrity = yield* stream.pipe(Stream.tapSink(fileSystem.sink(file)), digest(digestAlgorithm));
 
         if (downloadedIntegrity !== expectedIntegrity) {

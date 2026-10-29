@@ -13,8 +13,6 @@ import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
-import * as Match from "effect/Match";
-import * as Predicate from "effect/Predicate";
 import * as Reactivity from "effect/reactivity/Reactivity";
 import * as Scope from "effect/Scope";
 import * as Semaphore from "effect/Semaphore";
@@ -137,22 +135,34 @@ export const make = (
                     }),
             });
 
-            const isInt8Array = (input: unknown): input is Int8Array => input instanceof Int8Array;
+            const bind = (statement: SqliteStatement, index: number, param: unknown): void => {
+                switch (typeof param) {
+                    case "undefined":
+                        return statement.bindNull(index);
+                    case "string":
+                        return statement.bindText(index, param);
+                    case "number":
+                        return Number.isSafeInteger(param)
+                            ? statement.bindInteger(index, param)
+                            : statement.bindFloat(index, param);
+                    case "bigint":
+                        return statement.bindInteger(index, Number(param));
+                    case "boolean":
+                        return statement.bindInteger(index, param ? 1 : 0);
+                    case "object": {
+                        if (param === null) return statement.bindNull(index);
+                        if (param instanceof Date) return statement.bindText(index, param.toISOString());
+                        if (param instanceof ArrayBuffer) return statement.bindBlob(index, param);
+                        if (ArrayBuffer.isView(param)) {
+                            const start = param.byteOffset;
+                            const end = start + param.byteLength;
+                            return statement.bindBlob(index, param.buffer.slice(start, end) as ArrayBuffer);
+                        }
+                    }
+                }
 
-            const bind = (statement: SqliteStatement, index: number, param: unknown) =>
-                Function.pipe(
-                    Match.value(param),
-                    Match.when(Predicate.isNull, () => statement.bindNull(index)),
-                    Match.when(Predicate.isString, (p) => statement.bindText(index, p)),
-                    Match.when(Predicate.isNumber, (p) => statement.bindFloat(index, p)),
-                    Match.when(Predicate.isDate, (p) => statement.bindText(index, p.toISOString())),
-                    Match.when(Predicate.isBigInt, (p) => statement.bindInteger(index, Number(p))),
-                    Match.when(Predicate.isBoolean, (p) => statement.bindInteger(index, Number(p))),
-                    Match.when(Predicate.isUint8Array, (p) => statement.bindBlob(index, Array.from(p))),
-                    Match.when(Predicate.isUint8Array, (p) => statement.bindBlob(index, Array.from(p))),
-                    Match.when(isInt8Array, (p) => statement.bindBlob(index, Array.from(p))),
-                    Match.orElseAbsurd
-                );
+                throw new TypeError(`Unsupported parameter type at index ${index}: ${typeof param}`);
+            };
 
             const bindAll = (statement: SqliteStatement, params: ReadonlyArray<unknown>) => {
                 for (let i = 0; i < params.length; i++) {
@@ -163,16 +173,29 @@ export const make = (
 
             const runStatement = (
                 statement: SqliteStatement,
-                params: ReadonlyArray<unknown>
+                params: ReadonlyArray<unknown>,
+                raw: boolean
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
                 Effect.try({
                     try: () => {
-                        bindAll(statement, params);
-                        let row: Array<any> | null;
-                        const result: Array<any> = [];
-                        while ((row = statement.step()) !== null) result.push(row);
-                        statement.reset();
-                        return result;
+                        try {
+                            bindAll(statement, params);
+                            let row: Array<any> | null;
+                            const result: Array<any> = [];
+                            if (raw) {
+                                while ((row = statement.step()) !== null) result.push(row);
+                                return result;
+                            }
+                            const columns = statement.columnNames;
+                            while ((row = statement.step()) !== null) {
+                                const record: Record<string, any> = {};
+                                for (let i = 0; i < columns.length; i++) record[columns[i]] = row[i];
+                                result.push(record);
+                            }
+                            return result;
+                        } finally {
+                            statement.reset();
+                        }
                     },
                     catch: (cause) =>
                         new SqlError.SqlError({
@@ -182,26 +205,28 @@ export const make = (
 
             const run = (
                 sql: string,
-                params: ReadonlyArray<unknown>
+                params: ReadonlyArray<unknown>,
+                raw: boolean
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
-                Effect.flatMap(Cache.get(prepareCache, sql), (s) => runStatement(s, params));
+                Effect.flatMap(Cache.get(prepareCache, sql), (s) => runStatement(s, params, raw));
 
             return Function.identity<SqliteConnection>({
                 execute(sql, params, transformRows) {
-                    return transformRows ? Effect.map(run(sql, params), transformRows) : run(sql, params);
+                    const effect = run(sql, params, false);
+                    return transformRows ? Effect.map(effect, transformRows) : effect;
                 },
                 executeRaw(sql, params) {
-                    return run(sql, params);
+                    return run(sql, params, false);
                 },
                 executeValues(sql, params) {
-                    return run(sql, params);
+                    return run(sql, params, true);
                 },
                 executeUnprepared(sql, params, transformRows) {
-                    const effect = runStatement(db.prepare(sql), params ?? []);
+                    const effect = runStatement(db.prepare(sql), params ?? [], false);
                     return transformRows ? Effect.map(effect, transformRows) : effect;
                 },
                 executeValuesUnprepared(sql, params) {
-                    return runStatement(db.prepare(sql), params ?? []);
+                    return runStatement(db.prepare(sql), params ?? [], true);
                 },
                 executeStream(_sql, _params, _transformRows) {
                     return Stream.die("executeStream not implemented");

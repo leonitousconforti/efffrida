@@ -50,22 +50,17 @@
         "codegen": "build-utils prepare-v4",
         "build": "tsc -b tsconfig.build.json && pnpm babel",
         "babel": "babel dist --plugins annotate-pure-calls --out-dir dist --source-maps",
-        "check": "tsc -b tsconfig.json",
-        "test": "vitest"
+        "check": "tsc -b tsconfig.json"
     },
     "dependencies": {
         "frida-il2cpp-bridge": "0.14.0"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.6",
-        "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.12.0",
-        "effect": "4.0.6",
-        "vite": "8.3.5",
-        "vitest": "5.0.5"
+        "effect": "4.1.0"
     },
     "peerDependencies": {
-        "effect": "4.0.6"
+        "effect": "4.1.0"
     },
     "tags": [
         "frida.re",

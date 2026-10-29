@@ -34,9 +34,10 @@ export class GitHub extends Context.Service<GitHub>()("app/GitHub", {
                                 strip: 2 + config.template.split("/").length,
                                 filter: (path) => path.includes(`efffrida-main/templates/${config.template}`),
                             }) as NodeJS.WritableStream,
-                        onError: (_cause) =>
+                        onError: (cause) =>
                             new CliError.UserError({
-                                cause: `Failed to download template '${config.template}'`,
+                                cause,
+                                userMessage: `Failed to download template '${config.template}'`,
                             }),
                     })
                 )

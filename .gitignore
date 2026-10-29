@@ -12,6 +12,7 @@ node_modules/
 
 # Other
 tmp/
+.vitest-frida-pool-*/
 coverage/
 docs/examples/
 

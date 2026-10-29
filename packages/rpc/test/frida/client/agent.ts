@@ -1,6 +1,6 @@
 import "@efffrida/polyfills";
 
-import { Effect, Stream, Layer, Crypto, PlatformError } from "effect";
+import { Effect, Stream, Layer } from "effect";
 import { RpcSerialization, RpcClient } from "effect/rpc";
 
 import { FridaRuntime } from "@efffrida/platform";
@@ -8,29 +8,9 @@ import { FridaRpcClient } from "@efffrida/rpc/frida";
 
 import { UserRpcs, CallbackRpcs } from "../../shared/requests.ts";
 
-const CryptoLive = Crypto.make({
-    randomBytes: (size) => {
-        const array = new Uint8Array(size);
-        for (let i = 0; i < size; i++) {
-            array[i] = Math.floor(Math.random() * 256);
-        }
-        return array;
-    },
-    digest: () =>
-        PlatformError.systemError({
-            description: "Could not compute digest",
-            module: "Crypto",
-            method: "digest",
-            _tag: "Unknown",
-        }),
-});
-
 // Choose the protocol and serialization format
 const NdJsonSerialization = RpcSerialization.layerNdjson;
-const FridaProtocol = FridaRpcClient.layerProtocolFrida.pipe(
-    Layer.provide(Layer.succeed(Crypto.Crypto, CryptoLive)),
-    Layer.provide(NdJsonSerialization)
-);
+const FridaProtocol = FridaRpcClient.layerProtocolFrida.pipe(Layer.provide(NdJsonSerialization));
 
 const program = Effect.gen(function* () {
     const usersClient = yield* RpcClient.make(UserRpcs);

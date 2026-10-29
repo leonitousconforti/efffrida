@@ -53,6 +53,7 @@ export const makeProtocolFrida = (
             const mainExportName = options?.exportName ?? constants.defaultServerMainExportName;
             const informServerToSetupExport = script.callExport(mainExportName, Schema.String);
             const clientExportName = yield* Effect.orDie(informServerToSetupExport());
+            const responseMessage = constants.fridaRpcServerMakeResponseMessageForClient(clientExportName);
 
             const parser = serialization.makeUnsafe();
             const requestClientMap = new Map<string | number, number>();
@@ -61,13 +62,13 @@ export const makeProtocolFrida = (
             const broadcast = (response: RpcMessage.FromServerEncoded) =>
                 Effect.forEach(clientIds, (clientId) => writeResponse(clientId, response));
 
-            yield* Stream.runForEach(script.stream, (message) => {
-                if (Option.isNone(message.data)) {
+            yield* Stream.runForEach(script.stream, ({ message, data }) => {
+                if (message !== responseMessage || Option.isNone(data)) {
                     return Effect.void;
                 }
 
                 try {
-                    const responses = parser.decode(message.data.value) as Array<RpcMessage.FromServerEncoded>;
+                    const responses = parser.decode(data.value) as Array<RpcMessage.FromServerEncoded>;
                     if (responses.length === 0) return Effect.void;
                     let i = 0;
                     return Effect.whileLoop({

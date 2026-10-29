@@ -10,7 +10,6 @@ import "@efffrida/polyfills";
 import type * as RpcMessage from "effect/rpc/RpcMessage";
 import type * as Scope from "effect/Scope";
 
-import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -20,6 +19,15 @@ import * as RpcSerialization from "effect/rpc/RpcSerialization";
 
 import * as constants from "../shared/Constants.ts";
 
+/** Copies only the bytes covered by the view, not its whole backing buffer. */
+const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
+    bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+        ? (bytes.buffer as ArrayBuffer)
+        : (bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+
+/** Export names only need to be unique within this script. */
+let nextExportId = 0;
+
 /**
  * @since 1.0.0
  * @category Protocol
@@ -27,24 +35,29 @@ import * as constants from "../shared/Constants.ts";
 export const makeProtocolFrida = (): Effect.Effect<
     RpcClient.Protocol["Service"],
     never,
-    Crypto.Crypto | RpcSerialization.RpcSerialization | Scope.Scope
+    RpcSerialization.RpcSerialization | Scope.Scope
 > =>
     RpcClient.Protocol.make(
         Effect.fnUntraced(function* (writeResponse, clientIds) {
             const serialization = yield* RpcSerialization.RpcSerialization;
-            const crypto = yield* Crypto.Crypto;
 
             const encoder = new TextEncoder();
             const parser = serialization.makeUnsafe();
             const requestClientMap = new Map<string | number, number>();
 
-            const exportName = yield* crypto.randomUUIDv4().pipe(Effect.orDie);
+            const exportName = `efffrida-rpc-client-${nextExportId++}`;
             const connectionRequest = constants.nodeRpcClientMakeConnectionRequestForServer(exportName);
+            const disconnectionRequest = constants.nodeRpcClientMakeDisconnectionRequestForServer(exportName);
 
             const broadcast = (response: RpcMessage.FromServerEncoded) =>
                 Effect.forEach(clientIds, (id) => writeResponse(id, response), { discard: true });
 
-            yield* Effect.addFinalizer(() => Effect.sync(() => delete rpc.exports[exportName]));
+            yield* Effect.addFinalizer(() =>
+                Effect.sync(() => {
+                    delete rpc.exports[exportName];
+                    send(disconnectionRequest);
+                })
+            );
             rpc.exports[exportName] = (data: string | Record<string, number>): Promise<void> => {
                 try {
                     const responses = parser.decode(
@@ -91,7 +104,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                     const encoded = parser.encode(request);
                     if (encoded === undefined) return Effect.void;
                     const transformed = typeof encoded === "string" ? encoder.encode(encoded) : encoded;
-                    return Effect.sync(() => send(exportName, (transformed as Uint8Array<ArrayBuffer>).buffer));
+                    return Effect.sync(() => send(exportName, toArrayBuffer(transformed)));
                 },
             };
         })
@@ -101,8 +114,5 @@ export const makeProtocolFrida = (): Effect.Effect<
  * @since 1.0.0
  * @category Layers
  */
-export const layerProtocolFrida: Layer.Layer<
-    RpcClient.Protocol,
-    never,
-    Crypto.Crypto | RpcSerialization.RpcSerialization
-> = Layer.effect(RpcClient.Protocol, makeProtocolFrida());
+export const layerProtocolFrida: Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization> =
+    Layer.effect(RpcClient.Protocol, makeProtocolFrida());

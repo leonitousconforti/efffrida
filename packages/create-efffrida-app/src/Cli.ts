@@ -1,15 +1,18 @@
-import { Effect, Path, FileSystem } from "effect";
-import { Argument, Command, Flag, Prompt } from "effect/cli";
+import { Effect, Path, FileSystem, Schema } from "effect";
+import { Argument, CliError, Command, Flag, Prompt } from "effect/cli";
 
 import { type ProjectConfig, templates, type TemplateType } from "./Domain.ts";
 import { GitHub } from "./GitHub.ts";
 import { ProjectNameSchema } from "./Utils.ts";
 
+/** Injected from package.json at build time, see tsup.config.ts */
+declare const __VERSION__: string;
+
 // =============================================================================
 // CLI Specification
 // =============================================================================
 
-const projectName = Argument.Directory("project-name").pipe(
+const projectName = Argument.String("project-name").pipe(
     Argument.withFallbackPrompt(
         Prompt.String({
             message: "What is your project named?",
@@ -135,20 +138,41 @@ const command = Command.make("create-efffrida-app", {
     Command.withHandler(handleCommand)
 );
 
-export const cli = Command.run(command, { version: "v0.0.1" });
+export const cli = Command.run(command, { version: __VERSION__ });
 
 // =============================================================================
 // Handler
 // =============================================================================
 
+const PackageJson = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Json), { space: 4 });
+
 function handleCommand(config: ProjectConfig) {
     return Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+
+        if (yield* fs.exists(config.projectName)) {
+            const info = yield* fs.stat(config.projectName);
+            const isEmptyDirectory =
+                info.type === "Directory" && (yield* fs.readDirectory(config.projectName)).length === 0;
+            if (!isEmptyDirectory) {
+                const message = `Refusing to create a project in ${config.projectName} because it already exists and is not an empty directory`;
+                return yield* new CliError.UserError({ cause: message, userMessage: message });
+            }
+        }
 
         yield* Effect.logInfo(`Creating a new efffrida application in ${config.projectName}`);
         yield* fs.makeDirectory(config.projectName, { recursive: true });
 
         yield* Effect.logInfo(`Initializing project with template: ${config.template}`);
         yield* GitHub.use((github) => github.downloadTemplate(config));
+
+        const packageJsonPath = path.join(config.projectName, "package.json");
+        const packageJson = yield* Effect.flatMap(fs.readFileString(packageJsonPath), Schema.decodeEffect(PackageJson));
+        const renamed = yield* Schema.encodeEffect(PackageJson)({
+            ...packageJson,
+            name: path.basename(config.projectName),
+        });
+        yield* fs.writeFileString(packageJsonPath, `${renamed}\n`);
     });
 }

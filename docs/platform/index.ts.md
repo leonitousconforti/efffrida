@@ -92,7 +92,7 @@ Re-exports all named exports from the "./Socket.ts" module as `Socket`.
 export * as Socket from "./Socket.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L38)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L45)
 
 Since v1.0.0
 
@@ -106,6 +106,6 @@ Re-exports all named exports from the "./Stream.ts" module as `Stream`.
 export * as Stream from "./Stream.ts"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L45)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/index.ts#L52)
 
 Since v1.0.0

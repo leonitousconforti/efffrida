@@ -103,14 +103,15 @@ export const spawn = (
         })
     );
 
+    // The process may already have exited, in which case kill rejects
     const release = (pid: number) =>
         Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-            Effect.promise((signal) => {
+            Effect.tryPromise((signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
                 return device.kill(pid, cancellable);
             })
-        );
+        ).pipe(Effect.ignore);
 
     const resource = Effect.acquireRelease(acquire, release);
     return resource;
@@ -124,65 +125,71 @@ export const attach = (
     FridaSession.FridaSession,
     FridaSessionError.FridaSessionError,
     FridaDevice.FridaDevice | Scope.Scope
-> => {
-    const detached = Deferred.makeUnsafe<
-        {
-            reason: Frida.SessionDetachReason;
-            crash: Option.Option<{
-                pid: number;
-                processName: string;
-                summary: string;
-                report: string;
-                parameters: unknown;
-            }>;
-        },
-        FridaSessionError.FridaSessionError
-    >();
+> =>
+    Effect.gen(function* () {
+        const detached = yield* Deferred.make<
+            {
+                reason: Frida.SessionDetachReason;
+                crash: Option.Option<{
+                    pid: number;
+                    processName: string;
+                    summary: string;
+                    report: string;
+                    parameters: unknown;
+                }>;
+            },
+            FridaSessionError.FridaSessionError
+        >();
 
-    const onDetached = (reason: Frida.SessionDetachReason, crash: Frida.Crash | null): void => {
-        Deferred.doneUnsafe(
-            detached,
-            Effect.succeed({
-                reason,
-                crash: Option.fromNullOr(crash).pipe(
-                    Option.map((c) => ({
-                        pid: c.pid,
-                        processName: c.processName,
-                        summary: c.summary,
-                        report: c.report,
-                        parameters: c.parameters,
-                    }))
-                ),
+        const onDetached = (reason: Frida.SessionDetachReason, crash: Frida.Crash | null): void => {
+            Deferred.doneUnsafe(
+                detached,
+                Effect.succeed({
+                    reason,
+                    crash: Option.fromNullOr(crash).pipe(
+                        Option.map((c) => ({
+                            pid: c.pid,
+                            processName: c.processName,
+                            summary: c.summary,
+                            report: c.report,
+                            parameters: c.parameters,
+                        }))
+                    ),
+                })
+            );
+        };
+
+        // Connect the detached handler as soon as the session exists so that
+        // early detaches are not missed
+        const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
+            Effect.tryPromise({
+                try: (signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return device.attach(target, options, cancellable).then((session) => {
+                        session.detached.connect(onDetached);
+                        return session;
+                    });
+                },
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "attach",
+                        cause,
+                    }),
             })
         );
-    };
 
-    const acquire = Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
-        Effect.tryPromise({
-            try: (signal) => {
+        // The session may already be detached (e.g. the process exited), in
+        // which case detach rejects
+        const release = (session: Frida.Session) =>
+            Effect.tryPromise((signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
-                return device.attach(target, options, cancellable);
-            },
-            catch: (cause) =>
-                new FridaSessionError.FridaSessionError({
-                    when: "attach",
-                    cause,
-                }),
-        })
-    );
+                session.detached.disconnect(onDetached);
+                return session.detach(cancellable);
+            }).pipe(Effect.ignore);
 
-    const release = (session: Frida.Session) =>
-        Effect.promise((signal) => {
-            const cancellable = new Frida.Cancellable();
-            signal.onabort = () => cancellable.cancel();
-            session.detached.disconnect(onDetached);
-            return session.detach(cancellable);
-        });
-
-    const resource = Effect.acquireRelease(acquire, release);
-    return Effect.map(resource, (session) => {
-        session.detached.connect(onDetached);
+        const session = yield* Effect.acquireRelease(acquire, release);
 
         return {
             session,
@@ -215,7 +222,6 @@ export const attach = (
             [FridaSessionTypeId]: FridaSessionTypeId,
         } as const;
     });
-};
 
 /** @internal */
 export const layer = (
@@ -229,8 +235,7 @@ export const layer = (
 
             const pid = yield* Match.value(target).pipe(
                 Match.when(Match.number, (proc) => Effect.succeed(proc)),
-                Match.when(Match.string, (proc) => spawn(proc)),
-                Match.orElse((proc) => spawn(proc))
+                Match.orElse((proc) => spawn(proc, options))
             );
 
             const session = yield* attach(pid, options);
@@ -240,7 +245,7 @@ export const layer = (
                     try: (signal) => {
                         const cancellable = new Frida.Cancellable();
                         signal.onabort = () => cancellable.cancel();
-                        return device.resume(session.pid, cancellable);
+                        return device.resume(pid, cancellable);
                     },
                     catch: (cause) =>
                         new FridaSessionError.FridaSessionError({
@@ -256,9 +261,10 @@ export const layer = (
 
 /** @internal */
 export const layerFrontmost = (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
+    sessionOptions?: Frida.SessionOptions | undefined
 ): Layer.Layer<FridaSession.FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> =>
-    Layer.unwrap(Effect.map(frontmost(options), (app) => layer(app.pid)));
+    Layer.unwrap(Effect.map(frontmost(options), (app) => layer(app.pid, sessionOptions)));
 
 /** @internal */
 export const AttachSchema: Schema.Union<

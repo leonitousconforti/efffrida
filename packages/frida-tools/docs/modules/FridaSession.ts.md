@@ -98,11 +98,27 @@ declare const SessionLive: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L159)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L181)
 
 Since v1.0.0
 
 ## layer
+
+Attaches to the target process, spawning it first when `target` is a program
+or argv. The options are passed to both `spawn` and `attach`, each ignores
+the keys that are not its own.
+
+Pitfalls:
+
+- A spawned process is resumed as soon as the session is attached, before any
+  script has been loaded, so code that runs at process startup is not hooked.
+  For early instrumentation use `spawn` and `attach` directly,
+  load the script, and only then resume the process with
+  `device.resume(pid)`.
+- `FridaSession.resume` resumes an interrupted session, not a spawned
+  process.
+- Script options such as `runtime` and `platform` are not session options,
+  pass them to `FridaScript.load` / `FridaScript.layer` instead.
 
 **Signature**
 
@@ -113,7 +129,7 @@ declare const layer: (
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L113)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L129)
 
 Since v1.0.0
 
@@ -123,11 +139,12 @@ Since v1.0.0
 
 ```ts
 declare const layerFrontmost: (
-  options?: Frida.FrontmostQueryOptions | undefined
+  options?: Frida.FrontmostQueryOptions | undefined,
+  sessionOptions?: Frida.SessionOptions | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L122)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L138)
 
 Since v1.0.0
 
@@ -190,6 +207,11 @@ Since v1.0.0
 
 ## AttachSchema
 
+Only `realm` is applied to the session by `SessionLive`. `runtime` and
+`platform` are script options, so they are left to whatever loads scripts
+into the session (e.g. `@efffrida/vitest-pool` passes them to
+`FridaScript.layer`).
+
 **Signature**
 
 ```ts
@@ -219,7 +241,7 @@ declare const AttachSchema: Schema.Union<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L130)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaSession.ts#L152)
 
 Since v1.0.0
 

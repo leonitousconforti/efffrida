@@ -16,12 +16,17 @@ import * as Queue from "effect/Queue";
 import * as RpcMessage from "effect/rpc/RpcMessage";
 import * as RpcSerialization from "effect/rpc/RpcSerialization";
 import * as RpcServer from "effect/rpc/RpcServer";
+import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 
 import * as constants from "../shared/Constants.ts";
+
+/** Encodes defects like effect's own server protocols, so errors survive serialization. */
+const makeDefectEncoder = (codecFor: RpcSerialization.CodecFor): ((defect: unknown) => unknown) =>
+    Schema.encodeSync(codecFor(Schema.Defect()));
 
 /**
  * @since 1.0.0
@@ -35,9 +40,9 @@ export const makeProtocolFrida = (): Effect.Effect<
     Effect.gen(function* () {
         const serialization = yield* RpcSerialization.RpcSerialization;
         const script = yield* FridaScript.FridaScript;
+        const encodeDefect = makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
-        const parser = serialization.makeUnsafe();
         const encoder = new TextEncoder();
 
         let clientId = 0;
@@ -46,14 +51,20 @@ export const makeProtocolFrida = (): Effect.Effect<
         const clients = new Map<
             number,
             {
+                readonly parser: RpcSerialization.Parser;
                 readonly write: (bytes: RpcMessage.FromServerEncoded) => Effect.Effect<void>;
             }
         >();
 
-        const stripPrefix = String.replace(constants.nodeRpcClientConnectionRequestMessagePrefix, "");
+        const stripConnectionPrefix = String.replace(constants.nodeRpcClientConnectionRequestMessagePrefix, "");
+        const stripDisconnectionPrefix = String.replace(constants.nodeRpcClientDisconnectionRequestMessagePrefix, "");
         const newClientPredicate: Predicate.Refinement<unknown, string> = Predicate.compose(
             Predicate.isString,
             String.startsWith(constants.nodeRpcClientConnectionRequestMessagePrefix)
+        );
+        const clientDisconnectPredicate: Predicate.Refinement<unknown, string> = Predicate.compose(
+            Predicate.isString,
+            String.startsWith(constants.nodeRpcClientDisconnectionRequestMessagePrefix)
         );
         const clientMessagePredicate: Predicate.Refinement<unknown, string> = Predicate.compose(
             Predicate.isString,
@@ -69,29 +80,47 @@ export const makeProtocolFrida = (): Effect.Effect<
             };
 
         const onClientConnect = (message: string): Effect.Effect<void> => {
-            const writeRaw = makeRawWriter(stripPrefix(message));
+            const exportName = stripConnectionPrefix(message);
+            const writeRaw = makeRawWriter(exportName);
+            const parser = serialization.makeUnsafe();
             const write = (response: RpcMessage.FromServerEncoded): Effect.Effect<void> => {
                 try {
                     const encoded = parser.encode(response);
                     if (encoded === undefined) return Effect.void;
                     return writeRaw(encoded);
                 } catch (cause) {
-                    const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause))!;
+                    const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(encodeDefect(cause)))!;
                     return writeRaw(encoded);
                 }
             };
 
             const id = ++clientId;
-            clientIdsByExports.set(stripPrefix(message), id);
-            clients.set(id, { write });
+            clientIdsByExports.set(exportName, id);
+            clients.set(id, { parser, write });
             clientIds.add(id);
             return Effect.void;
         };
 
+        const removeClient = (exportName: string, id: number): Effect.Effect<void> => {
+            clientIdsByExports.delete(exportName);
+            clients.delete(id);
+            clientIds.delete(id);
+            return Queue.offer(disconnects, id);
+        };
+
+        const onClientDisconnect = (message: string): Effect.Effect<void> => {
+            const exportName = stripDisconnectionPrefix(message);
+            const id = clientIdsByExports.get(exportName);
+            if (id === undefined) return Effect.void;
+            return removeClient(exportName, id);
+        };
+
         const onMessage = (exportName: string, data: Uint8Array): Effect.Effect<void> => {
+            const id = clientIdsByExports.get(exportName);
+            const client = id === undefined ? undefined : clients.get(id);
+            if (id === undefined || client === undefined) return Effect.void;
             try {
-                const id = clientIdsByExports.get(exportName)!;
-                const decoded = parser.decode(data) as ReadonlyArray<RpcMessage.FromClientEncoded>;
+                const decoded = client.parser.decode(data) as ReadonlyArray<RpcMessage.FromClientEncoded>;
                 if (decoded.length === 0) return Effect.void;
                 let i = 0;
                 return Effect.whileLoop({
@@ -103,16 +132,22 @@ export const makeProtocolFrida = (): Effect.Effect<
                     },
                 });
             } catch (cause) {
-                const writeRaw = makeRawWriter(exportName);
-                return writeRaw(parser.encode(RpcMessage.ResponseDefectEncoded(cause))!);
+                return client.write(RpcMessage.ResponseDefectEncoded(encodeDefect(cause)));
             }
         };
 
+        const disconnectAll = Effect.suspend(() =>
+            Effect.forEach(Array.from(clientIdsByExports), ([exportName, id]) => removeClient(exportName, id), {
+                discard: true,
+            })
+        );
+
         yield* Stream.runForEach(script.stream, ({ message, data }) => {
             if (newClientPredicate(message)) return onClientConnect(message);
+            if (clientDisconnectPredicate(message)) return onClientDisconnect(message);
             if (clientMessagePredicate(message) && Option.isSome(data)) return onMessage(message, data.value);
             return Effect.void;
-        }).pipe(Effect.tapError(Effect.logError), Effect.forkScoped);
+        }).pipe(Effect.tapError(Effect.logError), Effect.ensuring(disconnectAll), Effect.forkScoped);
 
         return yield* RpcServer.Protocol.make((_writeRequest) => {
             writeRequest = _writeRequest;

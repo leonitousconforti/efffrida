@@ -5,6 +5,7 @@
     "references": [
         { "path": "packages/create-efffrida-app" },
         { "path": "packages/frida-tools" },
+        { "path": "packages/gplayapi" },
         { "path": "packages/il2cpp-bridge" },
         { "path": "packages/platform" },
         { "path": "packages/rpc" },

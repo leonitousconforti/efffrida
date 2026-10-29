@@ -21,6 +21,7 @@
         }
     ],
     "rules": {
+        "effecttsgo/unstable-api-usage": "off",
         // Oxlint's own type-aware rules. `options.typeAware` is enabled for the `effecttsgo`
         // rules, which also activates these, and they were never part of this project's lint
         // baseline. Left off deliberately; enable them individually once they are cleaned up.

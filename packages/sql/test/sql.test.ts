@@ -23,13 +23,13 @@ describe("sql tests", () => {
                 response = yield* sql`INSERT INTO test (name) VALUES ('hello')`;
                 assert.deepStrictEqual(response, []);
                 response = yield* sql`SELECT * FROM test`;
-                assert.deepStrictEqual(response, [[1, "hello"]]);
+                assert.deepStrictEqual(response, [{ id: 1, name: "hello" }]);
                 response = yield* sql`INSERT INTO test (name) VALUES ('world')`.pipe(sql.withTransaction);
                 assert.deepStrictEqual(response, []);
                 response = yield* sql`SELECT * FROM test`;
                 assert.deepStrictEqual(response, [
-                    [1, "hello"],
-                    [2, "world"],
+                    { id: 1, name: "hello" },
+                    { id: 2, name: "world" },
                 ]);
             })
         );
@@ -41,8 +41,8 @@ describe("sql tests", () => {
                 const sql = yield* SqlClient.SqlClient;
                 yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
                 yield* sql.withTransaction(sql`INSERT INTO test (name) VALUES ('hello')`);
-                const rows = yield* sql<[number, string]>`SELECT * FROM test`;
-                assert.deepStrictEqual(rows, [[1, "hello"]]);
+                const rows = yield* sql<{ id: number; name: string }>`SELECT * FROM test`;
+                assert.deepStrictEqual(rows, [{ id: 1, name: "hello" }]);
             })
         );
     });

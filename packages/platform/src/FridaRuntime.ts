@@ -48,12 +48,11 @@ export const runMain = Function.dual<
                 }
             });
 
-        // This is the runtime entry point, so providing the logger layer here is the whole point.
         const withLogger =
-            options?.disablePrettyLogger === false
-                ? // oxlint-disable-next-line effecttsgo/strict-effect-provide
-                  Effect.provide(Logger.layer([Logger.consolePretty()]))
-                : Function.identity;
+            options?.disablePrettyLogger === true
+                ? Function.identity
+                : // oxlint-disable-next-line effecttsgo/strict-effect-provide
+                  Effect.provide(Logger.layer([Logger.consolePretty()]));
 
         const fiber = Effect.runFork(withLogger(throwFromTapErrorCause(effect)));
         fiber.addObserver((exit) => (Predicate.isNotUndefined(options?.teardown) ? options.teardown(exit) : void 0));

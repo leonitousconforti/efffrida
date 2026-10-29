@@ -107,6 +107,22 @@ export const attach: (
     internal.attach;
 
 /**
+ * Attaches to the target process, spawning it first when `target` is a program
+ * or argv. The options are passed to both `spawn` and `attach`, each ignores
+ * the keys that are not its own.
+ *
+ * Pitfalls:
+ *
+ * - A spawned process is resumed as soon as the session is attached, before any
+ *   script has been loaded, so code that runs at process startup is not hooked.
+ *   For early instrumentation use {@link spawn} and {@link attach} directly,
+ *   load the script, and only then resume the process with
+ *   `device.resume(pid)`.
+ * - `FridaSession.resume` resumes an interrupted session, not a spawned
+ *   process.
+ * - Script options such as `runtime` and `platform` are not session options,
+ *   pass them to `FridaScript.load` / `FridaScript.layer` instead.
+ *
  * @since 1.0.0
  * @category Layers
  */
@@ -120,10 +136,16 @@ export const layer: (
  * @category Layers
  */
 export const layerFrontmost: (
-    options?: Frida.FrontmostQueryOptions | undefined
+    options?: Frida.FrontmostQueryOptions | undefined,
+    sessionOptions?: Frida.SessionOptions | undefined
 ) => Layer.Layer<FridaSession, FridaSessionError.FridaSessionError, FridaDevice.FridaDevice> = internal.layerFrontmost;
 
 /**
+ * Only `realm` is applied to the session by {@link SessionLive}. `runtime` and
+ * `platform` are script options, so they are left to whatever loads scripts
+ * into the session (e.g. `@efffrida/vitest-pool` passes them to
+ * `FridaScript.layer`).
+ *
  * @since 1.0.0
  * @category Schemas
  */

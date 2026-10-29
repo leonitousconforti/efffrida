@@ -1,13 +1,14 @@
 import type * as Duration from "effect/Duration";
 import type * as Function from "effect/Function";
 
+import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
+import * as Channel from "effect/Channel";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
 import * as Pull from "effect/Pull";
-import * as Queue from "effect/Queue";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 
@@ -15,6 +16,51 @@ import * as Buffer from "node:buffer";
 import * as util from "node:util";
 
 import type { FromInputStreamOptions } from "../Stream.ts";
+
+interface ReceivedMessage {
+    message: string;
+    data?: Uint8Array | undefined;
+}
+
+/**
+ * Frida's `recv` is a one-shot registration that cannot be cancelled, so a
+ * registration whose waiter was interrupted would otherwise swallow the next
+ * message. Registrations are shared through this module level state instead: a
+ * message that arrives with no waiter is kept for the next one, in order.
+ */
+const recvState: {
+    registered: number;
+    readonly waiters: Array<(message: ReceivedMessage) => void>;
+    readonly leftovers: Array<ReceivedMessage>;
+} = { registered: 0, waiters: [], leftovers: [] };
+
+const onRecv = (message: string, data: ArrayBuffer | null): void => {
+    recvState.registered--;
+    const received: ReceivedMessage = { message, data: data !== null ? new Uint8Array(data) : undefined };
+    const waiter = recvState.waiters.shift();
+    if (waiter !== undefined) waiter(received);
+    else recvState.leftovers.push(received);
+};
+
+const recvOnce: Effect.Effect<ReceivedMessage, never, never> = Effect.callback<ReceivedMessage>((resume) => {
+    const leftover = recvState.leftovers.shift();
+    if (leftover !== undefined) {
+        resume(Effect.succeed(leftover));
+        return;
+    }
+
+    const waiter = (message: ReceivedMessage): void => resume(Effect.succeed(message));
+    recvState.waiters.push(waiter);
+    if (recvState.registered < recvState.waiters.length) {
+        recvState.registered++;
+        recv(onRecv);
+    }
+
+    return Effect.sync(() => {
+        const index = recvState.waiters.indexOf(waiter);
+        if (index !== -1) recvState.waiters.splice(index, 1);
+    });
+});
 
 /** @internal */
 export const receiveStream = (
@@ -30,31 +76,11 @@ export const receiveStream = (
               readonly replay?: number | undefined;
               readonly idleTimeToLive?: Duration.Input | undefined;
           }
-): Effect.Effect<
-    Stream.Stream<
-        {
-            message: string;
-            data?: Uint8Array | undefined;
-        },
-        never,
-        never
-    >,
-    never,
-    Scope.Scope
-> =>
-    Stream.callback<{ message: string; data?: Uint8Array | undefined }>((queue) =>
-        Effect.forever(
-            Effect.callback<void>((resume) => {
-                recv((message: string, data: ArrayBuffer | null): void => {
-                    Queue.offerUnsafe(queue, {
-                        message,
-                        data: data !== null ? new Uint8Array(data) : undefined,
-                    });
-                    resume(Effect.void);
-                });
-            })
-        )
-    ).pipe(Stream.share(shareOptions));
+): Effect.Effect<Stream.Stream<ReceivedMessage, never, never>, never, Scope.Scope> =>
+    Stream.fromEffectRepeat(recvOnce).pipe(Stream.share(shareOptions));
+
+/** @internal */
+export const defaultChunkSize = 64 * 1024;
 
 /** @internal */
 export const fromInputStream = <E>(
@@ -62,27 +88,25 @@ export const fromInputStream = <E>(
     onError: (error: unknown) => E,
     options?: FromInputStreamOptions | undefined
 ): Stream.Stream<Uint8Array, E, never> =>
-    Stream.callback<Uint8Array, E>((queue) =>
-        Effect.acquireRelease(Effect.sync(inputStream), (is) => Effect.promise(() => is.close())).pipe(
-            Effect.flatMap((resource) =>
-                Effect.gen(function* () {
-                    while (true) {
-                        const buffer = yield* Effect.tryPromise({
-                            async try() {
-                                return await resource.read(options?.chunkSize ? Number(options.chunkSize) : 1);
-                            },
-                            catch: onError,
-                        });
-                        const data = new Uint8Array(buffer);
-                        if (data.length > 0) {
-                            Queue.offerUnsafe(queue, data);
-                        } else {
-                            Queue.endUnsafe(queue);
-                            return;
-                        }
-                    }
-                })
-            )
+    Stream.fromChannel(
+        Channel.fromTransform((_upstream, scope) =>
+            Effect.suspend(() => {
+                const resource = inputStream();
+                const chunkSize = options?.chunkSize ? Number(options.chunkSize) : defaultChunkSize;
+                const read = Effect.flatMap(
+                    Effect.tryPromise({ try: () => resource.read(chunkSize), catch: onError }),
+                    (buffer): Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E> =>
+                        buffer.byteLength > 0 ? Effect.succeed(Array.of(new Uint8Array(buffer))) : Cause.done()
+                );
+
+                return Effect.as(
+                    Scope.addFinalizer(
+                        scope,
+                        Effect.promise(() => resource.close())
+                    ),
+                    read
+                );
+            })
         )
     );
 
@@ -107,7 +131,8 @@ export const makeWin32InputStream = <E>(
  * from the effect platform-node toReadable implementation.
  *
  * @internal
- * @link https://github.com/Effect-TS/effect/blob/03c048ced2f7aa2357be52c62ef8e62e9da50817/packages/platform-node-shared/src/internal/stream.ts#L319-L372
+ * @link
+ * https://github.com/Effect-TS/effect/blob/03c048ced2f7aa2357be52c62ef8e62e9da50817/packages/platform-node-shared/src/internal/stream.ts#L319-L372
  */
 class StreamAdapter<E, R> implements InputStream {
     private readonly scope: Scope.Closeable;

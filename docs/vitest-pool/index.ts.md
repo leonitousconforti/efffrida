@@ -17,6 +17,7 @@ parent: "@efffrida/vitest-pool"
     - [start (method)](#start-method)
     - [stop (method)](#stop-method)
     - [send (method)](#send-method)
+    - [emitError (method)](#emiterror-method)
     - [on (method)](#on-method)
     - [off (method)](#off-method)
     - [deserialize (method)](#deserialize-method)
@@ -113,7 +114,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L118)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L122)
 
 ### stop (method)
 
@@ -123,17 +124,27 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L125)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L129)
 
 ### send (method)
 
 **Signature**
 
 ```ts
-declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
+declare const send: (message: VitestNode.WorkerRequest) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L133)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L136)
+
+### emitError (method)
+
+**Signature**
+
+```ts
+declare const emitError: (error: unknown) => void
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L157)
 
 ### on (method)
 
@@ -143,7 +154,7 @@ declare const send: (message: VitestNode.WorkerRequest) => Promise<void>
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L147)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L162)
 
 ### off (method)
 
@@ -153,7 +164,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (event: string, _callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L212)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L227)
 
 ### deserialize (method)
 
@@ -163,7 +174,7 @@ declare const off: (event: string, _callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L216)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L231)
 
 ### serialize (method)
 
@@ -173,7 +184,7 @@ declare const deserialize: (data: unknown) => any
 declare const serialize: (data: unknown) => unknown
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L221)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L236)
 
 ### name (property)
 
@@ -195,6 +206,6 @@ declare const createFridaPool: (
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L230)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L245)
 
 Since v1.0.0

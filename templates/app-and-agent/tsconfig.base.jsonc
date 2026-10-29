@@ -35,6 +35,7 @@
                 "ignoreEffectSuggestionsInTscExitCode": true,
                 "ignoreEffectWarningsInTscExitCode": true,
                 "diagnosticSeverity": {
+                    "unstableApiUsage": "off",
                     "abortControllerInEffect": "warning",
                     "asyncFunction": "warning",
                     "cryptoRandomUUID": "warning",

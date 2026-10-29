@@ -11,3 +11,11 @@ export const generateServerExportNameForClient = (clientId: number): string =>
 export const nodeRpcClientConnectionRequestMessagePrefix = "@efffrida/rpc/NodeRpcClientConnectionRequest/";
 export const nodeRpcClientMakeConnectionRequestForServer = (exportName: string) =>
     `${nodeRpcClientConnectionRequestMessagePrefix}${exportName}`;
+
+export const nodeRpcClientDisconnectionRequestMessagePrefix = "@efffrida/rpc/NodeRpcClientDisconnectionRequest/";
+export const nodeRpcClientMakeDisconnectionRequestForServer = (exportName: string) =>
+    `${nodeRpcClientDisconnectionRequestMessagePrefix}${exportName}`;
+
+export const fridaRpcServerResponseMessagePrefix = "@efffrida/rpc/FridaRpcServerResponse/";
+export const fridaRpcServerMakeResponseMessageForClient = (exportName: string) =>
+    `${fridaRpcServerResponseMessagePrefix}${exportName}`;

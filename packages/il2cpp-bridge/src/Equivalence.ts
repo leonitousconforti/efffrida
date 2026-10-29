@@ -3,6 +3,8 @@
  * @category Equivalence
  */
 
+import "frida-il2cpp-bridge";
+
 import * as Equivalence from "effect/Equivalence";
 
 /**

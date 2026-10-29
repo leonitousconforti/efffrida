@@ -66,16 +66,17 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             const path = yield* Path.Path;
             const fs = yield* FileSystem.FileSystem;
 
-            const tempDir = path.join(poolOptions.project.config.root, "temp");
-            yield* fs.makeDirectory(tempDir, { recursive: true });
+            // The agent must live inside the project so that frida's compiler
+            // can resolve node_modules, but not under node_modules since
+            // frida's compiler won't emit it
+            const tempDir = yield* fs.makeTempDirectoryScoped({
+                directory: poolOptions.project.config.root,
+                prefix: ".vitest-frida-pool-",
+            });
+            const tempFile = path.join(tempDir, "agent.ts");
 
             const agentUrl = yield* path.fromFileUrl(new URL("../frida/agent.ts", import.meta.url));
             const baseAgent = yield* fs.readFileString(agentUrl);
-            const tempFile = yield* fs.makeTempFileScoped({
-                directory: tempDir,
-                prefix: ".vitest-frida-pool-agent-",
-                suffix: ".ts",
-            });
 
             const setupFiles = poolOptions.project.config.setupFiles;
             const testFiles = yield* Effect.map(
@@ -101,7 +102,11 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             );
 
             yield* fs.writeFileString(tempFile, baseAgent.replace(marker, newContent));
-            return FridaScript.layer(tempFile);
+            const { runtime, platform } = customOptions.attach;
+            return FridaScript.layer(tempFile, {
+                ...(runtime !== undefined ? { runtime } : {}),
+                ...(platform !== undefined ? { platform } : {}),
+            });
         }).pipe(Layer.unwrap, Layer.provide(FridaLive), Layer.provide(NodeServices.layer));
 
         this.scope = Scope.makeUnsafe();
@@ -129,19 +134,33 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         this.cancelables = [];
     }
 
-    // @effect-diagnostics-next-line asyncFunction:off
-    async send(message: VitestNode.WorkerRequest): Promise<void> {
-        let sendPromise: Promise<unknown> = undefined!;
+    send(message: VitestNode.WorkerRequest): void {
+        // Not a const since finally may read it before the assignment when the
+        // body throws synchronously
+        let sendPromise: Promise<void> | undefined;
 
-        try {
-            sendPromise = Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
-                fridaScript.callExport("onMessage")(message)
-            ).pipe(Effect.runPromiseWith(this.scriptContext));
-            this.sends.push(sendPromise);
-            await sendPromise;
-        } finally {
-            this.sends = this.sends.filter((p) => p !== sendPromise);
-        }
+        // @effect-diagnostics-next-line asyncFunction:off
+        sendPromise = (async () => {
+            try {
+                const exit = await Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
+                    fridaScript.callExport("onMessage")(message)
+                ).pipe(Effect.runPromiseExitWith(this.scriptContext));
+                if (Exit.isFailure(exit) && !Cause.hasInterruptsOnly(exit.cause)) {
+                    this.emitError(Cause.prettyErrors(exit.cause)[0]);
+                }
+            } catch (error) {
+                this.emitError(error);
+            } finally {
+                this.sends = this.sends.filter((p) => p !== sendPromise);
+            }
+        })();
+
+        this.sends.push(sendPromise);
+    }
+
+    private emitError(error: unknown): void {
+        const listener = this.listeners.get("error");
+        if (listener) listener(error);
     }
 
     on(event: string, callback: (arg: any) => void): void {

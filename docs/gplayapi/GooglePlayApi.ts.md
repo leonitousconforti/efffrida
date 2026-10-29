@@ -89,6 +89,10 @@ Since v1.0.0
 
 ## downloadToDisk
 
+Note that each file is buffered in memory in full while its integrity is
+hashed, so peak memory use is the size of the largest file (expansion files
+can be several gigabytes).
+
 **Signature**
 
 ```ts
@@ -117,11 +121,11 @@ declare const downloadToDisk: (
   | PlayAccountError
   | Cause.NoSuchElementError
   | PlatformError.PlatformError,
-  PlayAccount | HttpClient.HttpClient | AndroidDeviceService | Crypto.Crypto | FileSystem.FileSystem | Scope.Scope
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService | Digest.Digest | FileSystem.FileSystem | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L299)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L294)
 
 Since v1.0.0
 

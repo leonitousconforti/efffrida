@@ -17,7 +17,10 @@ const program = Effect.gen(function* () {
 
 const ProtocolLive = FridaRpcClient.layerProtocolFrida().pipe(Layer.provide(RpcSerialization.layerNdjson));
 
-const ScriptLive = FridaScript.layer(new URL("../../frida/src/index.ts", import.meta.url)).pipe(
+// Resolved through the "imports" field in package.json, so this points at the
+// agent source whether the app runs from source (`pnpm start`) or from the
+// build output in dist.
+const ScriptLive = FridaScript.layer(new URL(import.meta.resolve("#frida-agent"))).pipe(
     Layer.provide(FridaSession.layer(["sleep", "infinity"])),
     Layer.provide(FridaDevice.layerLocalDevice),
     Layer.provideMerge(NodeServices.layer)

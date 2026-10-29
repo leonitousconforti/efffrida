@@ -40,7 +40,7 @@ declare const layerProtocolFrida: (
 ) => Layer.Layer<RpcServer.Protocol, never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L164)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L193)
 
 Since v1.0.0
 
@@ -58,10 +58,10 @@ declare const makeProtocolFrida: (
         readonly generateExportName?: ((clientId: number) => string) | undefined
       }
     | undefined
-) => Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization>
+) => Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L139)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L166)
 
 Since v1.0.0
 
@@ -75,10 +75,10 @@ declare const makeProtocolFridaNoSendRecv: (
 ) => Effect.Effect<
   { readonly protocol: RpcServer.Protocol["Service"]; readonly rpcExport: () => Promise<string> },
   never,
-  RpcSerialization.RpcSerialization
+  RpcSerialization.RpcSerialization | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L37)
 
 Since v1.0.0

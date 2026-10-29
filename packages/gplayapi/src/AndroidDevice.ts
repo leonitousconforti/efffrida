@@ -18,6 +18,7 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
 import * as SchemaTransformation from "effect/SchemaTransformation";
+import * as Semaphore from "effect/Semaphore";
 
 import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
@@ -99,8 +100,11 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
     "Vending.version": Schema.FiniteFromString,
     "Vending.versionString": Schema.String,
 }) {
-    private authHeadersCache?: { readonly headers: Record<string, string>; readonly expiresAt: number } | undefined =
+    private authHeadersCache: { readonly headers: Record<string, string>; readonly expiresAt: number } | undefined =
         undefined;
+
+    /** Concurrent callers wait for a single acquisition instead of each running their own */
+    private readonly authHeadersLock = Semaphore.makeUnsafe(1);
 
     /**
      * @since 1.0.0
@@ -129,6 +133,9 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
     }
 
     /**
+     * Auth headers derived from this device and the provided account, cached
+     * for {@link authHeadersTtl}. Failed acquisitions are not cached.
+     *
      * @since 1.0.0
      * @category Destructors
      */
@@ -136,18 +143,20 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
         Record<string, string>,
         HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
         HttpClient.HttpClient | PlayAccount
-    > = Effect.gen({ self: this }, function* () {
-        const now = yield* Clock.currentTimeMillis;
-        const cached = this.authHeadersCache;
+    > = this.authHeadersLock.withPermits(1)(
+        Effect.gen({ self: this }, function* () {
+            const now = yield* Clock.currentTimeMillis;
+            const cached = this.authHeadersCache;
 
-        if (cached !== undefined && cached.expiresAt > now) {
-            return cached.headers;
-        }
+            if (cached !== undefined && cached.expiresAt > now) {
+                return cached.headers;
+            }
 
-        const headers = yield* internalAuth.authHeaders(this);
-        this.authHeadersCache = { headers, expiresAt: now + Duration.toMillis(authHeadersTtl) };
-        return headers;
-    });
+            const headers = yield* internalAuth.authHeaders(this);
+            this.authHeadersCache = { headers, expiresAt: now + Duration.toMillis(authHeadersTtl) };
+            return headers;
+        })
+    );
 
     /**
      * Drops the cached auth headers so that the next `authHeaders` evaluation

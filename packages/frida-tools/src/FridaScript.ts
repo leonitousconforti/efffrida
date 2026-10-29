@@ -9,7 +9,6 @@ import type * as Deferred from "effect/Deferred";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
 import type * as Exit from "effect/Exit";
-import type * as FileSystem from "effect/FileSystem";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
 import type * as Path from "effect/Path";
@@ -84,7 +83,7 @@ export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions 
     readonly messageMailboxCapacity?:
         | {
               readonly capacity?: number | undefined;
-              readonly strategy?: "suspend" | "dropping" | "sliding" | undefined;
+              readonly strategy?: "dropping" | "sliding" | undefined;
           }
         | undefined;
     readonly streamShareOptions?:
@@ -168,7 +167,7 @@ export const watch: {
     ): Stream.Stream<
         Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
-        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
+        FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
     (
         entrypoint: URL | string,
@@ -178,7 +177,7 @@ export const watch: {
     ) => Stream.Stream<
         Exit.Exit<A, E | FridaSessionError.FridaSessionError>,
         FridaSessionError.FridaSessionError,
-        FileSystem.FileSystem | FridaSession.FridaSession | Exclude<R, FridaScript>
+        FridaSession.FridaSession | Exclude<R, FridaScript>
     >;
 } = internalScript.watch;
 

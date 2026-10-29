@@ -7,6 +7,8 @@
 
 import "@efffrida/polyfills";
 
+import type * as Scope from "effect/Scope";
+
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
@@ -14,8 +16,20 @@ import * as Queue from "effect/Queue";
 import * as RpcMessage from "effect/rpc/RpcMessage";
 import * as RpcSerialization from "effect/rpc/RpcSerialization";
 import * as RpcServer from "effect/rpc/RpcServer";
+import * as Schema from "effect/Schema";
 
 import * as constants from "../shared/Constants.ts";
+
+/** Encodes defects like effect's own server protocols, so errors survive
+ * serialization. */
+const makeDefectEncoder = (codecFor: RpcSerialization.CodecFor): ((defect: unknown) => unknown) =>
+    Schema.encodeSync(codecFor(Schema.Defect()));
+
+/** Copies only the bytes covered by the view, not its whole backing buffer. */
+const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
+    bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+        ? (bytes.buffer as ArrayBuffer)
+        : (bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
 
 /**
  * @since 1.0.0
@@ -24,7 +38,9 @@ import * as constants from "../shared/Constants.ts";
 export const makeProtocolFridaNoSendRecv = (
     options?:
         | {
-              /** Generates server listener rpc exports for individual clients. */
+              /**
+               * Generates server listener rpc exports for individual clients.
+               */
               readonly generateExportName?: ((clientId: number) => string) | undefined;
           }
         | undefined
@@ -34,13 +50,13 @@ export const makeProtocolFridaNoSendRecv = (
         readonly rpcExport: () => Promise<string>;
     },
     never,
-    RpcSerialization.RpcSerialization
+    RpcSerialization.RpcSerialization | Scope.Scope
 > =>
     Effect.gen(function* () {
         const serialization = yield* RpcSerialization.RpcSerialization;
+        const encodeDefect = makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
-        const parser = serialization.makeUnsafe();
         const encoder = new TextEncoder();
 
         let clientId = 0;
@@ -55,24 +71,39 @@ export const makeProtocolFridaNoSendRecv = (
         let writeRequest!: (clientId: number, message: RpcMessage.FromClientEncoded) => Effect.Effect<void>;
         const makeExportName = options?.generateExportName ?? constants.generateServerExportNameForClient;
 
-        const writeRaw = (data: string | Uint8Array): void => {
-            const transformed = typeof data === "string" ? encoder.encode(data) : data;
-            return send(void 0, (transformed as Uint8Array<ArrayBuffer>).buffer);
+        const removeClient = (id: number): void => {
+            delete rpc.exports[makeExportName(id)];
+            clients.delete(id);
+            clientIds.delete(id);
         };
 
-        const write = (response: RpcMessage.FromServerEncoded): void => {
-            try {
-                const encoded = parser.encode(response);
-                if (encoded === undefined) return;
-                return writeRaw(encoded);
-            } catch (cause) {
-                const encoded = parser.encode(RpcMessage.ResponseDefectEncoded(cause))!;
-                return writeRaw(encoded);
-            }
-        };
+        yield* Effect.addFinalizer(() =>
+            Effect.sync(() => {
+                for (const id of clientIds) removeClient(id);
+            })
+        );
 
         const rpcExport = Effect.gen(function* () {
             const id = ++clientId;
+            const exportName = makeExportName(id);
+            const responseMessage = constants.fridaRpcServerMakeResponseMessageForClient(exportName);
+            const parser = serialization.makeUnsafe();
+
+            const writeRaw = (data: string | Uint8Array): void => {
+                const transformed = typeof data === "string" ? encoder.encode(data) : data;
+                return send(responseMessage, toArrayBuffer(transformed));
+            };
+
+            const write = (response: RpcMessage.FromServerEncoded): void => {
+                try {
+                    const encoded = parser.encode(response);
+                    if (encoded === undefined) return;
+                    return writeRaw(encoded);
+                } catch (cause) {
+                    return writeRaw(parser.encode(RpcMessage.ResponseDefectEncoded(encodeDefect(cause)))!);
+                }
+            };
+
             clients.set(id, { write });
             clientIds.add(id);
 
@@ -91,15 +122,15 @@ export const makeProtocolFridaNoSendRecv = (
                         },
                     });
                 } catch (cause) {
-                    return Effect.sync(() => writeRaw(parser.encode(RpcMessage.ResponseDefectEncoded(cause))!));
+                    return Effect.sync(() => write(RpcMessage.ResponseDefectEncoded(encodeDefect(cause))));
                 }
             };
 
-            rpc.exports[makeExportName(id)] = (data: string | Record<number, string>): Promise<void> =>
+            rpc.exports[exportName] = (data: string | Record<number, string>): Promise<void> =>
                 // @effect-diagnostics-next-line runEffectInsideEffect:off
                 Effect.runPromise(onMessage(data));
 
-            return makeExportName(id);
+            return exportName;
             // @effect-diagnostics-next-line runEffectInsideEffect:off
         }).pipe((export_) => () => Effect.runPromise(export_));
 
@@ -113,8 +144,7 @@ export const makeProtocolFridaNoSendRecv = (
                     return Effect.sync(() => client.write(response));
                 },
                 end(clientId) {
-                    delete rpc.exports[makeExportName(clientId)];
-                    return Effect.void;
+                    return Effect.sync(() => removeClient(clientId));
                 },
                 clientIds: Effect.sync(() => clientIds),
                 initialMessage: Effect.succeedNone,
@@ -145,15 +175,19 @@ export const makeProtocolFrida = (
                */
               readonly exportName?: string | undefined;
 
-              /** Generates server listener rpc exports for individual clients. */
+              /**
+               * Generates server listener rpc exports for individual clients
+               */
               readonly generateExportName?: ((clientId: number) => string) | undefined;
           }
         | undefined
-): Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization> =>
+): Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization | Scope.Scope> =>
     Effect.gen(function* () {
         const protocolOptions = { generateExportName: options?.generateExportName };
         const { protocol, rpcExport } = yield* makeProtocolFridaNoSendRecv(protocolOptions);
-        rpc.exports[options?.exportName ?? constants.defaultServerMainExportName] = rpcExport;
+        const mainExportName = options?.exportName ?? constants.defaultServerMainExportName;
+        yield* Effect.addFinalizer(() => Effect.sync(() => delete rpc.exports[mainExportName]));
+        rpc.exports[mainExportName] = rpcExport;
         return protocol;
     });
 
@@ -170,7 +204,9 @@ export const layerProtocolFrida = (
                */
               readonly exportName?: string | undefined;
 
-              /** Generates server listener rpc exports for individual clients. */
+              /**
+               * Generates server listener rpc exports for individual clients.
+               */
               readonly generateExportName?: ((clientId: number) => string) | undefined;
           }
         | undefined
