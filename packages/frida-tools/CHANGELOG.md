@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.60
+
+### Patch Changes
+
+- ea161b1: Bump to effect v4.1.0 and bug fixes
+
 ## 0.0.59
 
 ### Patch Changes
