@@ -26,7 +26,8 @@ Since v1.0.0
 Bidirectional byte channel over an `IOStream`: upstream chunks are written to
 `iostream.output` and chunks read from `iostream.input` are emitted. The
 channel completes once both sides are done, and the `IOStream` is closed when
-the channel finishes.
+the channel finishes. Unless `endOnDone` is `false`, the output side is also
+closed as soon as upstream is done.
 
 **See**
 
@@ -35,11 +36,13 @@ the channel finishes.
 **Signature**
 
 ```ts
-declare const fromIOStream: <E1, E2, IE = never>(
-  iostream: IOStream,
-  onWriteError: (error: unknown) => E1,
-  onReadError: (error: unknown) => E2,
-  options?: (FridaStream.FromInputStreamOptions & FridaSink.FromWritableOptions) | undefined
+declare const fromIOStream: <E1 = Cause.UnknownError, E2 = Cause.UnknownError, IE = never>(
+  options: FridaStream.FromInputStreamOptions &
+    FridaSink.FromWritableOptions & {
+      readonly evaluate: Function.LazyArg<IOStream>
+      readonly onWriteError?: ((error: unknown) => E1) | undefined
+      readonly onReadError?: ((error: unknown) => E2) | undefined
+    }
 ) => Channel.Channel<
   Array.NonEmptyReadonlyArray<Uint8Array>,
   E1 | E2 | IE,
@@ -51,6 +54,6 @@ declare const fromIOStream: <E1, E2, IE = never>(
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Channel.ts#L25)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Channel.ts#L28)
 
 Since v1.0.0

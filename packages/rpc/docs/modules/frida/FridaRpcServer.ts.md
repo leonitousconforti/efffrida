@@ -19,7 +19,7 @@ Since v1.0.0
   - [layerProtocolFrida](#layerprotocolfrida)
 - [Protocol](#protocol)
   - [makeProtocolFrida](#makeprotocolfrida)
-  - [makeProtocolFridaNoSendRecv](#makeprotocolfridanosendrecv)
+  - [makeProtocolFridaWithRpcExport](#makeprotocolfridawithrpcexport)
 
 ---
 
@@ -40,7 +40,7 @@ declare const layerProtocolFrida: (
 ) => Layer.Layer<RpcServer.Protocol, never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L193)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L201)
 
 Since v1.0.0
 
@@ -61,16 +61,20 @@ declare const makeProtocolFrida: (
 ) => Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization | Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L166)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L172)
 
 Since v1.0.0
 
-## makeProtocolFridaNoSendRecv
+## makeProtocolFridaWithRpcExport
+
+Makes a server protocol without registering the main rpc export. Call the
+returned `rpcExport` (or register it under a name of your choosing) to
+connect a new client.
 
 **Signature**
 
 ```ts
-declare const makeProtocolFridaNoSendRecv: (
+declare const makeProtocolFridaWithRpcExport: (
   options?: { readonly generateExportName?: ((clientId: number) => string) | undefined } | undefined
 ) => Effect.Effect<
   { readonly protocol: RpcServer.Protocol["Service"]; readonly rpcExport: () => Promise<string> },
@@ -79,6 +83,6 @@ declare const makeProtocolFridaNoSendRecv: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L37)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcServer.ts#L43)
 
 Since v1.0.0

@@ -2,7 +2,7 @@
     "$schema": "../../node_modules/@effect/docgen/schema.json",
     "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/",
     "exclude": ["src/internal/**/*.ts"],
-    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/platform",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/platform",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,

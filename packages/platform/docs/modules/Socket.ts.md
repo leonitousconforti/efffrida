@@ -65,8 +65,8 @@ Since v1.0.0
 
 ## liftSocketConnection
 
-Wraps an existing connection. The connection is closed when the scope of
-the first reader acquisition closes, so the socket can be read only once.
+Wraps an existing connection. The connection is closed when the scope of the
+first reader acquisition closes, so the socket can be read only once.
 
 **See**
 
@@ -88,11 +88,11 @@ Since v1.0.0
 
 Opens a TCP or UNIX listening socket and accepts a single connection.
 
-Each reader acquisition binds a listener, waits for exactly one client,
-then closes the listener, so later clients are refused until the next
-acquisition. The bound port is not observable, so pass an explicit `port`
-(or a UNIX `path`); use `makeServer` to accept many connections or to
-learn the bound address.
+Each reader acquisition binds a listener, waits for exactly one client, then
+closes the listener, so later clients are refused until the next acquisition.
+The bound port is not observable, so pass an explicit `port` (or a UNIX
+`path`); use `makeServer` to accept many connections or to learn the
+bound address.
 
 **Signature**
 
@@ -109,9 +109,9 @@ Since v1.0.0
 Opens a TCP or UNIX listening socket as a `SocketServer`. Defaults to
 listening on both IPv4 and IPv6, if supported, and binding on all interfaces
 on a randomly selected TCP port; the bound port is available on `address`.
-`run` accepts connections until interrupted, running the handler for each
-one in its own fiber and closing the connection when the handler finishes.
-The listener is closed when the scope closes.
+`run` accepts connections until interrupted, running the handler for each one
+in its own fiber and closing the connection when the handler finishes. The
+listener is closed when the scope closes.
 
 **Signature**
 

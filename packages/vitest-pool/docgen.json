@@ -1,4 +1,5 @@
 {
     "$schema": "../../node_modules/@effect/docgen/schema.json",
-    "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/"
+    "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/vitest-pool"
 }

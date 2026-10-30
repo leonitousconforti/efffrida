@@ -6,6 +6,10 @@ parent: Modules
 
 ## index.ts overview
 
+A vitest pool that runs test files inside a frida agent.
+
+Since v1.0.0
+
 ---
 
 ## Exports Grouped by Category
@@ -21,7 +25,6 @@ parent: Modules
     - [on (method)](#on-method)
     - [off (method)](#off-method)
     - [deserialize (method)](#deserialize-method)
-    - [serialize (method)](#serialize-method)
     - [name (property)](#name-property)
   - [createFridaPool](#createfridapool)
 
@@ -56,6 +59,7 @@ declare const FridaSchema: Schema.Struct<{
         readonly connection: Schema.Literal<"android-emulator">
         readonly fridaExecutable: Schema.optional<Schema.String>
         readonly emulatorExecutable: Schema.optional<Schema.String>
+        readonly extraEmulatorArgs: Schema.optional<Schema.$Array<Schema.String>>
       }>
     ]
   >
@@ -86,7 +90,7 @@ declare const FridaSchema: Schema.Struct<{
 }>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L38)
 
 Since v1.0.0
 
@@ -102,7 +106,7 @@ declare class FridaPoolWorker {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L40)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L53)
 
 Since v1.0.0
 
@@ -114,7 +118,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L122)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L133)
 
 ### stop (method)
 
@@ -124,7 +128,7 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L129)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L139)
 
 ### send (method)
 
@@ -134,7 +138,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: VitestNode.WorkerRequest) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L136)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L146)
 
 ### emitError (method)
 
@@ -144,7 +148,7 @@ declare const send: (message: VitestNode.WorkerRequest) => void
 declare const emitError: (error: unknown) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L157)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L170)
 
 ### on (method)
 
@@ -154,7 +158,7 @@ declare const emitError: (error: unknown) => void
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L162)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L175)
 
 ### off (method)
 
@@ -164,7 +168,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (event: string, _callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L227)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L240)
 
 ### deserialize (method)
 
@@ -174,17 +178,7 @@ declare const off: (event: string, _callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L231)
-
-### serialize (method)
-
-**Signature**
-
-```ts
-declare const serialize: (data: unknown) => unknown
-```
-
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L236)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L244)
 
 ### name (property)
 
@@ -194,7 +188,7 @@ declare const serialize: (data: unknown) => unknown
 readonly name: "frida-pool"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L41)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L54)
 
 ## createFridaPool
 
@@ -206,6 +200,6 @@ declare const createFridaPool: (
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L245)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L254)
 
 Since v1.0.0

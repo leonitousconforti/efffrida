@@ -22,7 +22,7 @@ Since v1.0.0
 - [Models](#models)
   - [SqliteClient (interface)](#sqliteclient-interface)
   - [SqliteClientConfig (type alias)](#sqliteclientconfig-type-alias)
-- [Tags](#tags)
+- [Services](#services)
   - [SqliteClient](#sqliteclient)
 - [Type ids](#type-ids)
   - [TypeId](#typeid)
@@ -39,10 +39,10 @@ Since v1.0.0
 ```ts
 declare const make: (
   options: SqliteClientConfig
-) => Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity>
+) => Effect.Effect<SqliteClient, SqlError.SqlError, Scope.Scope | Reactivity.Reactivity>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L100)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L104)
 
 Since v1.0.0
 
@@ -53,10 +53,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
+declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L299)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L379)
 
 Since v1.0.0
 
@@ -67,10 +67,10 @@ Since v1.0.0
 ```ts
 declare const layerConfig: (
   config: Config.Wrap<SqliteClientConfig>
-) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError>
+) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError | SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L285)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L365)
 
 Since v1.0.0
 
@@ -92,14 +92,12 @@ export interface SqliteClient extends SqlClient.SqlClient {
    */
   readonly dump: Effect.Effect<string, SqlError.SqlError>
 
-  /** Not supported in frida */
-  readonly backup: never
+  /** Not supported in sqlite */
   readonly updateValues: never
-  readonly loadExtension: never
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L47)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L53)
 
 Since v1.0.0
 
@@ -122,11 +120,11 @@ type SqliteClientConfig = (
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L74)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L78)
 
 Since v1.0.0
 
-# Tags
+# Services
 
 ## SqliteClient
 
@@ -136,7 +134,7 @@ Since v1.0.0
 declare const SqliteClient: Context.Service<SqliteClient, SqliteClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L68)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L72)
 
 Since v1.0.0
 
@@ -147,10 +145,10 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const TypeId: unique symbol
+declare const TypeId: "~@efffrida/sql/SqliteClient"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L41)
 
 Since v1.0.0
 
@@ -159,9 +157,9 @@ Since v1.0.0
 **Signature**
 
 ```ts
-type TypeId = typeof TypeId
+type TypeId = "~@efffrida/sql/SqliteClient"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L41)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L47)
 
 Since v1.0.0

@@ -2,7 +2,7 @@
     "$schema": "../../node_modules/@effect/docgen/schema.json",
     "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/",
     "exclude": ["src/internal/**/*.ts"],
-    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/frida-tools",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/frida-tools",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,

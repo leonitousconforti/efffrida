@@ -2,5 +2,5 @@
     "$schema": "../../node_modules/@effect/docgen/schema.json",
     "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/",
     "exclude": ["src/internal/**/*.ts"],
-    "projectHomepage": ""
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/sql"
 }

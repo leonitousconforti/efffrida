@@ -2,7 +2,7 @@
     "$schema": "../../node_modules/@effect/docgen/schema.json",
     "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/",
     "exclude": ["src/internal/**/*.ts"],
-    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/il2cpp-bridge",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,

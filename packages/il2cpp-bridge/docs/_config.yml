@@ -6,4 +6,4 @@ search_enabled: true
 # Aux links for the upper right navigation
 aux_links:
 '@efffrida/il2cpp-bridge on GitHub':
-  - 'https://github.com/leonitousconforti/efffrida/packages/il2cpp-bridge'
+  - 'https://github.com/leonitousconforti/efffrida/tree/main/packages/il2cpp-bridge'

@@ -6,4 +6,4 @@ search_enabled: true
 # Aux links for the upper right navigation
 aux_links:
 '@efffrida/platform on GitHub':
-  - 'https://github.com/leonitousconforti/efffrida/packages/platform'
+  - 'https://github.com/leonitousconforti/efffrida/tree/main/packages/platform'

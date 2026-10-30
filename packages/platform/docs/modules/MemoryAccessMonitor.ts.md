@@ -15,22 +15,22 @@ Since v1.0.0
 ## Exports Grouped by Category
 
 - [Memory Access Monitor](#memory-access-monitor)
-  - [MemoryAccessMonitorStream](#memoryaccessmonitorstream)
+  - [watch](#watch)
 
 ---
 
 # Memory Access Monitor
 
-## MemoryAccessMonitorStream
+## watch
 
-Starts monitoring one or more memory ranges for access, and notifies on the
-first access of each contained memory page. Stops monitoring when the stream
-is interrupted or the stream is finished.
+Monitors one or more memory ranges for access, and emits on the first access
+of each contained memory page. Stops monitoring when the stream is
+interrupted or the stream is finished.
 
 **Signature**
 
 ```ts
-declare const MemoryAccessMonitorStream: (
+declare const watch: (
   ranges: MemoryAccessRange | Array<MemoryAccessRange>,
   options?:
     | { readonly bufferSize?: number | undefined; readonly strategy?: "sliding" | "dropping" | "suspend" | undefined }

@@ -2,7 +2,7 @@
     "$schema": "../../node_modules/@effect/docgen/schema.json",
     "srcLink": "https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/",
     "exclude": ["src/internal/**/*.ts", "src/generated/**/*.ts"],
-    "projectHomepage": "https://github.com/leonitousconforti/efffrida/packages/gplayapi",
+    "projectHomepage": "https://github.com/leonitousconforti/efffrida/tree/main/packages/gplayapi",
     "examplesCompilerOptions": {
         "noEmit": true,
         "strict": true,
