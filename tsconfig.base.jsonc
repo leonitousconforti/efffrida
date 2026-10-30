@@ -34,11 +34,9 @@
         "plugins": [
             {
                 "name": "@effect/language-service",
-                "transform": "@effect/language-service/transform",
                 "namespaceImportPackages": ["effect", "@effect/*"],
                 // Effect suggestions and warnings surface in the editor and in `tsc` output, but
                 // they do not fail the build. Only Effect diagnostics raised to `error` do.
-                "ignoreEffectSuggestionsInTscExitCode": true,
                 "ignoreEffectWarningsInTscExitCode": true,
                 "diagnosticSeverity": {
                     "unstableApiUsage": "off",
