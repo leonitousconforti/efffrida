@@ -50,7 +50,7 @@ declare const fromInputStream: <E = Cause.UnknownError>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L63)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L71)
 
 Since v1.0.0
 
@@ -69,7 +69,7 @@ declare const makeUnixInputStream: <E = Cause.UnknownError>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L75)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L83)
 
 Since v1.0.0
 
@@ -91,7 +91,7 @@ declare const makeWin32InputStream: <E = Cause.UnknownError>(
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L88)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L96)
 
 Since v1.0.0
 
@@ -109,7 +109,7 @@ Since v1.0.0
 declare const toInputStream: <E, R>(stream: Stream.Stream<Uint8Array, E, R>) => Effect.Effect<InputStream, never, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L101)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L109)
 
 Since v1.0.0
 
@@ -123,13 +123,21 @@ Like `toInputStream` but with `R` fixed to `never`.
 declare const toInputStreamNever: <E>(stream: Stream.Stream<Uint8Array, E, never>) => InputStream
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L110)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L118)
 
 Since v1.0.0
 
 # IPC
 
 ## receiveStream
+
+Receives the messages posted by the host, shared with `Stream.share` using
+the given options.
+
+Frida's `recv` registrations are shared module wide, so every message is
+delivered once across all `receiveStream`s: two of them split the messages
+between each other instead of both seeing every message. Call it once and
+share the resulting stream.
 
 **Signature**
 
@@ -150,7 +158,7 @@ declare const receiveStream: (
 ) => Effect.Effect<Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never>, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L29)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L37)
 
 Since v1.0.0
 

@@ -25,7 +25,9 @@ Since v1.0.0
 
 Monitors one or more memory ranges for access, and emits on the first access
 of each contained memory page. Stops monitoring when the stream is
-interrupted or the stream is finished.
+interrupted or the stream is finished. The buffer is unbounded by default;
+with a `bufferSize`, accesses that arrive while it is full are dropped, or
+evict the oldest one with the `"sliding"` strategy.
 
 **Signature**
 
@@ -33,11 +35,10 @@ interrupted or the stream is finished.
 declare const watch: (
   ranges: MemoryAccessRange | Array<MemoryAccessRange>,
   options?:
-    | { readonly bufferSize?: number | undefined; readonly strategy?: "sliding" | "dropping" | "suspend" | undefined }
-    | undefined
+    { readonly bufferSize?: number | undefined; readonly strategy?: "sliding" | "dropping" | undefined } | undefined
 ) => Stream.Stream<MemoryAccessDetails, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/MemoryAccessMonitor.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/MemoryAccessMonitor.ts#L21)
 
 Since v1.0.0

@@ -38,55 +38,8 @@ Since v1.0.0
 
 ```ts
 declare const FridaSchema: Schema.Struct<{
-  readonly device: Schema.Union<
-    readonly [
-      Schema.Struct<{ readonly connection: Schema.Literal<"local"> }>,
-      Schema.Struct<{
-        readonly connection: Schema.Literal<"usb">
-        readonly timeout: Schema.optional<Schema.DurationFromMillis>
-      }>,
-      Schema.Struct<{
-        readonly address: Schema.String
-        readonly connection: Schema.Literal<"remote">
-        readonly token: Schema.optional<Schema.String>
-        readonly origin: Schema.optional<Schema.String>
-        readonly keepaliveInterval: Schema.optional<Schema.DurationFromMillis>
-      }>,
-      Schema.Struct<{
-        readonly emulatorName: Schema.String
-        readonly hidden: Schema.optional<Schema.Boolean>
-        readonly adbExecutable: Schema.optional<Schema.String>
-        readonly connection: Schema.Literal<"android-emulator">
-        readonly fridaExecutable: Schema.optional<Schema.String>
-        readonly emulatorExecutable: Schema.optional<Schema.String>
-        readonly extraEmulatorArgs: Schema.optional<Schema.$Array<Schema.String>>
-      }>
-    ]
-  >
-  readonly attach: Schema.Union<
-    readonly [
-      Schema.Struct<{
-        readonly pid: Schema.Finite
-        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
-        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
-        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
-      }>,
-      Schema.Struct<{
-        readonly spawn: Schema.NonEmptyArray<Schema.String>
-        readonly preSpawn: Schema.optional<Schema.Boolean>
-        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
-        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
-        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
-      }>,
-      Schema.Struct<{
-        readonly attachFrontmost: Schema.Literal<true>
-        readonly frontmostScope: Schema.optional<Schema.Enum<typeof Scope>>
-        readonly runtime: Schema.optional<Schema.Enum<typeof ScriptRuntime>>
-        readonly platform: Schema.optional<Schema.Enum<typeof JsPlatform>>
-        readonly realm: Schema.optional<Schema.Enum<typeof Realm>>
-      }>
-    ]
-  >
+  readonly device: typeof FridaDevice.DeviceSchema
+  readonly attach: typeof FridaSession.AttachSchema
 }>
 ```
 
@@ -106,7 +59,7 @@ declare class FridaPoolWorker {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L53)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L56)
 
 Since v1.0.0
 
@@ -118,7 +71,7 @@ Since v1.0.0
 declare const start: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L133)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L134)
 
 ### stop (method)
 
@@ -128,7 +81,7 @@ declare const start: () => Promise<void>
 declare const stop: () => Promise<void>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L139)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L140)
 
 ### send (method)
 
@@ -138,7 +91,7 @@ declare const stop: () => Promise<void>
 declare const send: (message: VitestNode.WorkerRequest) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L146)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L147)
 
 ### emitError (method)
 
@@ -148,7 +101,7 @@ declare const send: (message: VitestNode.WorkerRequest) => void
 declare const emitError: (error: unknown) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L170)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L171)
 
 ### on (method)
 
@@ -158,7 +111,7 @@ declare const emitError: (error: unknown) => void
 declare const on: (event: string, callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L175)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L176)
 
 ### off (method)
 
@@ -168,7 +121,7 @@ declare const on: (event: string, callback: (arg: any) => void) => void
 declare const off: (event: string, _callback: (arg: any) => void) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L240)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L241)
 
 ### deserialize (method)
 
@@ -178,7 +131,7 @@ declare const off: (event: string, _callback: (arg: any) => void) => void
 declare const deserialize: (data: unknown) => any
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L244)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L245)
 
 ### name (property)
 
@@ -188,7 +141,7 @@ declare const deserialize: (data: unknown) => any
 readonly name: "frida-pool"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L54)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L57)
 
 ## createFridaPool
 
@@ -200,6 +153,6 @@ declare const createFridaPool: (
 ) => VitestNode.PoolRunnerInitializer
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L254)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/vitest-pool/src/index.ts#L255)
 
 Since v1.0.0

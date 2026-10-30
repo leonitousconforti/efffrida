@@ -53,7 +53,7 @@ declare const compile: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L108)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L107)
 
 Since v1.0.0
 
@@ -66,24 +66,16 @@ declare const load: {
   (
     entrypoint: URL | string,
     options?: LoadOptions | undefined
-  ): Effect.Effect<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    Path.Path | FridaSession.FridaSession | Scope.Scope
-  >
+  ): Effect.Effect<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession | Scope.Scope>
   (
     options?: LoadOptions | undefined
   ): (
     entrypoint: URL | string
-  ) => Effect.Effect<
-    FridaScript,
-    FridaSessionError.FridaSessionError,
-    Path.Path | FridaSession.FridaSession | Scope.Scope
-  >
+  ) => Effect.Effect<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession | Scope.Scope>
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L122)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L121)
 
 Since v1.0.0
 
@@ -100,7 +92,7 @@ declare const logWatchErrors: <A, E1, E2, R>(
 ) => Stream.Stream<Exit.Exit<A, E1>, E2, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L191)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L182)
 
 Since v1.0.0
 
@@ -132,7 +124,7 @@ declare const watch: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L162)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L153)
 
 Since v1.0.0
 
@@ -156,7 +148,7 @@ declare const layer: {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L146)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L137)
 
 Since v1.0.0
 
@@ -191,7 +183,7 @@ export interface FridaScript {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L43)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L42)
 
 Since v1.0.0
 
@@ -225,7 +217,7 @@ export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions 
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L82)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L81)
 
 Since v1.0.0
 
@@ -239,7 +231,7 @@ Since v1.0.0
 declare const isFridaScript: (u: unknown) => u is FridaScript
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L76)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L75)
 
 Since v1.0.0
 
@@ -253,7 +245,7 @@ Since v1.0.0
 declare const FridaScript: Context.Service<FridaScript, FridaScript>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L70)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L69)
 
 Since v1.0.0
 
@@ -267,7 +259,7 @@ Since v1.0.0
 declare const FridaScriptTypeId: unique symbol
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L30)
 
 Since v1.0.0
 
@@ -279,6 +271,6 @@ Since v1.0.0
 type FridaScriptTypeId = typeof FridaScriptTypeId
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L37)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/frida-tools/src/FridaScript.ts#L36)
 
 Since v1.0.0

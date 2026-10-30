@@ -43,7 +43,7 @@ ever reaching for headers that expired underneath it.
 declare const authHeadersTtl: Duration.Duration
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L57)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L56)
 
 Since v1.0.0
 
@@ -61,7 +61,7 @@ declare const EmbeddedPixel7a: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L203)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L204)
 
 Since v1.0.0
 
@@ -75,7 +75,7 @@ declare const fromPropertiesFile: (
 ) => Effect.Effect<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L177)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L173)
 
 Since v1.0.0
 
@@ -93,7 +93,7 @@ declare const layerEmbeddedPixel7a: Layer.Layer<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L216)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L217)
 
 Since v1.0.0
 
@@ -109,7 +109,7 @@ The profile of the android device that google play requests are made as.
 declare class AndroidDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L65)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L64)
 
 Since v1.0.0
 
@@ -124,7 +124,7 @@ for `authHeadersTtl`. Failed acquisitions are not cached.
 readonly authHeaders: Effect.Effect<Record<string, string>, HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError, PlayAccount | HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L143)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L146)
 
 Since v1.0.0
 
@@ -138,6 +138,6 @@ Since v1.0.0
 declare class AndroidDeviceService
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L45)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L44)
 
 Since v1.0.0
