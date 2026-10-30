@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.37
+
+### Patch Changes
+
+- e8230a4: QOL and bug fixes
+
 ## 0.0.36
 
 ### Patch Changes

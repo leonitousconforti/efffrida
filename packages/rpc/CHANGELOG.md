@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.64
+
+### Patch Changes
+
+- e8230a4: QOL and bug fixes
+- Updated dependencies [e8230a4]
+    - @efffrida/frida-tools@0.0.61
+    - @efffrida/polyfills@0.0.19
+
 ## 0.0.63
 
 ### Patch Changes
