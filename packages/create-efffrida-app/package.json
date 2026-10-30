@@ -33,7 +33,7 @@
         "@effect/platform-node": "4.1.0",
         "@types/node": "26.6.6",
         "effect": "4.1.0",
-        "redis": "6.3.0",
+        "redis": "6.3.1",
         "tar": "7.5.22",
         "tsup": "9.0.0",
         "typescript": "7.0.2"
