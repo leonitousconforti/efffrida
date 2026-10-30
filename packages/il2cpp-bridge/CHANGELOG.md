@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.57
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.56
 
 ### Patch Changes

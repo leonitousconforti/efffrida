@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.25
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.24
 
 ### Patch Changes
