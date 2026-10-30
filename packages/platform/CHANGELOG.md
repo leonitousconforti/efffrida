@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.49
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.48
 
 ### Patch Changes

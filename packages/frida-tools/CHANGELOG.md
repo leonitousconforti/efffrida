@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.62
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.61
 
 ### Patch Changes

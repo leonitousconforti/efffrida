@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.48
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.47
 
 ### Patch Changes

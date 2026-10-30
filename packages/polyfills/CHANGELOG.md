@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.20
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.19
 
 ### Patch Changes

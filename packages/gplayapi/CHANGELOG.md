@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.38
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+
 ## 0.0.37
 
 ### Patch Changes

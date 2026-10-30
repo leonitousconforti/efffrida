@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.65
+
+### Patch Changes
+
+- 81eebd0: More bug fixes and QOL fixes
+- Updated dependencies [81eebd0]
+    - @efffrida/frida-tools@0.0.62
+    - @efffrida/polyfills@0.0.20
+
 ## 0.0.64
 
 ### Patch Changes
