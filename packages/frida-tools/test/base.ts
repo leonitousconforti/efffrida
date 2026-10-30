@@ -1,5 +1,4 @@
-import { Effect, Layer } from "effect";
-import { ChildProcess } from "effect/process";
+import { Layer } from "effect";
 
 import { NodeServices } from "@effect/platform-node";
 import { FridaDevice, FridaSession } from "@efffrida/frida-tools";
@@ -8,10 +7,7 @@ export const DeviceLive = FridaDevice.layerLocalDevice;
 export const SessionLive =
     process.env.CI !== undefined
         ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
-        : ChildProcess.make`sleep infinity`.pipe(
-              Effect.map((handle) => FridaSession.layer(handle.pid)),
-              Layer.unwrap
-          );
+        : FridaSession.SessionLive({ preSpawn: true, spawn: ["sleep", "infinity"] });
 
 export const FridaLive = SessionLive.pipe(
     Layer.provide(NodeServices.layer),

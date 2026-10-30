@@ -1,5 +1,4 @@
 import { Effect, Layer, Option, Stream } from "effect";
-import { ChildProcess } from "effect/process";
 import { RpcClient, RpcSerialization } from "effect/rpc";
 
 import { NodeServices } from "@effect/platform-node";
@@ -21,12 +20,7 @@ const DeviceLive = FridaDevice.layerLocalDevice;
 const SessionLive =
     process.env.CI !== undefined
         ? FridaSession.layer(["/usr/bin/sleep", "infinity"])
-        : Layer.unwrap(
-              Effect.gen(function* () {
-                  const handle = yield* ChildProcess.make("sleep", ["infinity"]);
-                  return FridaSession.layer(handle.pid);
-              })
-          ).pipe(Layer.provide(NodeServices.layer));
+        : FridaSession.SessionLive({ preSpawn: true, spawn: ["sleep", "infinity"] });
 
 const FridaLive = Layer.provide(SessionLive, Layer.merge(DeviceLive, NodeServices.layer));
 const ScriptLive = FridaScript.layer(new URL("../../frida/server/agent.ts", import.meta.url), {
