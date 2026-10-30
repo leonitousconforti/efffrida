@@ -13,3 +13,7 @@
 [submodule "repos/frida-tools"]
 	path = repos/frida-tools
 	url = https://github.com/frida/frida-tools
+[submodule "repos/effect"]
+	path = repos/effect
+	url = https://github.com/Effect-TS/effect
+	shallow = true
