@@ -70,7 +70,7 @@
         },
         {
             "description": "Group build tools packages into one PR",
-            "matchPackageNames": ["oxfmt", "oxlint", "@effect/build-utils", "@effect/tsgo", "typescript", "tsx"],
+            "matchPackageNames": ["oxfmt", "oxlint", "@effect/build-utils", "@effect/tsgo", "typescript"],
             "groupName": "build tools packages",
             "addLabels": ["pnpm"]
         },
@@ -90,6 +90,12 @@
             "matchManagers": ["git-submodules"],
             "groupName": "git submodules",
             "addLabels": ["git-submodule"]
+        },
+        {
+            "description": "repos/effect is pinned to the released effect version and bumped by hand with it, not to the head of main",
+            "matchManagers": ["git-submodules"],
+            "matchDepNames": ["repos/effect"],
+            "enabled": false
         },
         {
             "description": "Keep the Nix flake inputs (flake.lock) current",
