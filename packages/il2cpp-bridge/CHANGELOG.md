@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.56
+
+### Patch Changes
+
+- e8230a4: QOL and bug fixes
+
 ## 0.0.55
 
 ### Patch Changes

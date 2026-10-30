@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.48
+
+### Patch Changes
+
+- e8230a4: QOL and bug fixes
+
 ## 0.0.47
 
 ### Patch Changes
