@@ -30,7 +30,6 @@ packages:
 allowBuilds:
   frida: true
   esbuild: true
-  msgpackr-extract: true
   '@bufbuild/buf': true
 
 overrides:
