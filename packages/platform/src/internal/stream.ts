@@ -7,13 +7,9 @@ import * as Channel from "effect/Channel";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
-import * as Option from "effect/Option";
 import * as Pull from "effect/Pull";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
-
-import * as Buffer from "node:buffer";
-import * as util from "node:util";
 
 import type { FromInputStreamOptions } from "../Stream.ts";
 
@@ -83,16 +79,21 @@ export const receiveStream = (
 export const defaultChunkSize = 64 * 1024;
 
 /** @internal */
-export const fromInputStream = <E>(
-    inputStream: Function.LazyArg<InputStream>,
-    onError: (error: unknown) => E,
-    options?: FromInputStreamOptions | undefined
+export const defaultOnError = (error: unknown): Cause.UnknownError => new Cause.UnknownError(error);
+
+/** @internal */
+export const fromInputStream = <E = Cause.UnknownError>(
+    options: FromInputStreamOptions & {
+        readonly evaluate: Function.LazyArg<InputStream>;
+        readonly onError?: ((error: unknown) => E) | undefined;
+    }
 ): Stream.Stream<Uint8Array, E, never> =>
     Stream.fromChannel(
         Channel.fromTransform((_upstream, scope) =>
             Effect.suspend(() => {
-                const resource = inputStream();
-                const chunkSize = options?.chunkSize ? Number(options.chunkSize) : defaultChunkSize;
+                const resource = options.evaluate();
+                const onError = options.onError ?? (defaultOnError as (error: unknown) => E);
+                const chunkSize = options.chunkSize ?? defaultChunkSize;
                 const read = Effect.flatMap(
                     Effect.tryPromise({ try: () => resource.read(chunkSize), catch: onError }),
                     (buffer): Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E> =>
@@ -111,91 +112,79 @@ export const fromInputStream = <E>(
     );
 
 /** @internal */
-export const makeUnixInputStream = <E>(
-    fileDescriptor: number,
-    onError: (error: unknown) => E,
-    options?: (FromInputStreamOptions & UnixStreamOptions) | undefined
+export const makeUnixInputStream = <E = Cause.UnknownError>(
+    options: FromInputStreamOptions &
+        UnixStreamOptions & {
+            readonly fileDescriptor: number;
+            readonly onError?: ((error: unknown) => E) | undefined;
+        }
 ): Stream.Stream<Uint8Array, E, never> =>
-    fromInputStream(() => new UnixInputStream(fileDescriptor, options), onError, options);
+    fromInputStream({
+        evaluate: () => new UnixInputStream(options.fileDescriptor, options),
+        onError: options.onError,
+        chunkSize: options.chunkSize,
+    });
 
 /** @internal */
-export const makeWin32InputStream = <E>(
-    handle: NativePointerValue,
-    onError: (error: unknown) => E,
-    options?: (FromInputStreamOptions & WindowsStreamOptions) | undefined
+export const makeWin32InputStream = <E = Cause.UnknownError>(
+    options: FromInputStreamOptions &
+        WindowsStreamOptions & {
+            readonly handle: NativePointerValue;
+            readonly onError?: ((error: unknown) => E) | undefined;
+        }
 ): Stream.Stream<Uint8Array, E, never> =>
-    fromInputStream(() => new Win32InputStream(handle, options), onError, options);
+    fromInputStream({
+        evaluate: () => new Win32InputStream(options.handle, options),
+        onError: options.onError,
+        chunkSize: options.chunkSize,
+    });
+
+const concatBytes = (chunks: Array.NonEmptyReadonlyArray<Uint8Array>): Uint8Array => {
+    if (chunks.length === 1) return chunks[0];
+    let length = 0;
+    for (const chunk of chunks) length += chunk.byteLength;
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) {
+        bytes.set(chunk, offset);
+        offset += chunk.byteLength;
+    }
+    return bytes;
+};
 
 /**
- * Stream adapter for converting an Effect stream to an InputStream. Modified
- * from the effect platform-node toReadable implementation.
+ * Adapts an effect `Stream` to a Frida `InputStream`. Chunks are pulled from
+ * the stream as needed and whatever doesn't fit in a read is kept for the next
+ * one.
  *
  * @internal
- * @link
- * https://github.com/Effect-TS/effect/blob/03c048ced2f7aa2357be52c62ef8e62e9da50817/packages/platform-node-shared/src/internal/stream.ts#L319-L372
  */
 class StreamAdapter<E, R> implements InputStream {
     private readonly scope: Scope.Closeable;
-    private readonly pull: (callback: (error: Error | null, data: Option.Option<number>) => void) => void;
-
     private readonly context: Context.Context<R>;
-    private readonly stream: Stream.Stream<Uint8Array, E, R>;
+    private readonly pull: Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E, void>;
+    private buffered: Uint8Array = new Uint8Array(0);
 
-    constructor(_context: Context.Context<R>, _stream: Stream.Stream<Uint8Array, E, R>) {
-        this.context = _context;
-        this.stream = _stream;
+    constructor(context: Context.Context<R>, stream: Stream.Stream<Uint8Array, E, R>) {
+        this.context = context;
         this.scope = Scope.makeUnsafe();
-        const pullEffect = this.stream.pipe(
-            Stream.flatMap((arr) => Stream.fromIterable(arr)),
-            Stream.rechunk(1),
-            Stream.toPull,
-            Scope.provide(this.scope)
-        );
-        const pull = Effect.runSyncWith(this.context)(pullEffect).pipe(
-            Effect.map((arr) => Option.some(arr[0])),
-            Pull.catchDone(() => Effect.succeed(Option.none<number>()))
-        );
-        this.pull = function (done) {
-            Effect.runForkWith(this.context)(pull).addObserver((exit: Exit.Exit<Option.Option<number>, E>) => {
-                done(
-                    exit._tag === "Failure"
-                        ? new Error("failure in StreamAdapter", { cause: Cause.squash(exit.cause) })
-                        : null,
-                    exit._tag === "Success" ? exit.value : Option.none<number>()
-                );
-            });
-        };
+        this.pull = Effect.runSyncWith(this.context)(Scope.provide(Stream.toPull(stream), this.scope));
     }
 
-    private async loop(size: number): Promise<ArrayBuffer> {
-        let bytesRead = 0;
-        const buffer = Buffer.Buffer.alloc(size);
-        const pullAsync = util.promisify(this.pull.bind(this));
-
-        try {
-            // Process data in an async loop
-            for (let i = 0; i < size; i++) {
-                const data = await pullAsync();
-
-                if (Option.isNone(data)) {
-                    bytesRead = i;
-                    break;
-                }
-
-                buffer.writeUInt8(data.value, i);
-                bytesRead++;
-            }
-
-            if (bytesRead === size) {
-                return buffer.buffer;
+    /** Resolves with the next non empty chunk, or undefined when the stream is
+     * done. */
+    private async next(): Promise<Uint8Array | undefined> {
+        while (true) {
+            const exit = await Effect.runPromiseExitWith(this.context)(this.pull);
+            if (Exit.isSuccess(exit)) {
+                const bytes = concatBytes(exit.value);
+                if (bytes.byteLength > 0) return bytes;
+            } else if (Pull.isDoneCause(exit.cause)) {
+                return undefined;
             } else {
-                const newBuffer = Buffer.Buffer.alloc(bytesRead);
-                buffer.copy(newBuffer, 0, 0, bytesRead);
-                return newBuffer.buffer;
+                await this.close();
+                throw new Error("failure in StreamAdapter", { cause: Cause.squash(exit.cause) });
             }
-        } catch (error) {
-            await this.close();
-            throw error;
         }
     }
 
@@ -206,19 +195,33 @@ class StreamAdapter<E, R> implements InputStream {
         }
     }
 
-    public read(size: number): Promise<ArrayBuffer> {
-        return this.loop(size);
+    public async read(size: number): Promise<ArrayBuffer> {
+        if (this.buffered.byteLength === 0) {
+            const next = await this.next();
+            if (next === undefined) return new ArrayBuffer(0);
+            this.buffered = next;
+        }
+
+        const bytes = this.buffered.slice(0, size);
+        this.buffered = this.buffered.subarray(bytes.byteLength);
+        return bytes.buffer;
     }
 
     public async readAll(size: number): Promise<ArrayBuffer> {
-        const data = await this.loop(size);
-        if (data.byteLength < size) {
-            const error = new Error("Premature end of stream");
-            (error as any).partialData = data;
-            throw error;
+        const bytes = new Uint8Array(size);
+        let offset = 0;
+        while (offset < size) {
+            const data = await this.read(size - offset);
+            if (data.byteLength === 0) {
+                const error = new Error("Premature end of stream");
+                (error as any).partialData = bytes.slice(0, offset).buffer;
+                throw error;
+            }
+            bytes.set(new Uint8Array(data), offset);
+            offset += data.byteLength;
         }
 
-        return data;
+        return bytes.buffer;
     }
 }
 

@@ -57,14 +57,15 @@
         "check": "tsc -b tsconfig.json",
         "protobuf": "buf generate"
     },
+    "dependencies": {
+        "@bufbuild/protobuf": "2.16.0"
+    },
     "devDependencies": {
         "@bufbuild/buf": "1.75.0",
-        "@bufbuild/protobuf": "2.16.0",
         "@types/node": "26.6.6",
         "effect": "4.1.0"
     },
     "peerDependencies": {
-        "@bufbuild/protobuf": "2.16.0",
         "effect": "4.1.0"
     },
     "tags": [

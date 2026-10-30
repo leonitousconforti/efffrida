@@ -144,8 +144,8 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
         { message: unknown; data: Option.Option<Buffer> },
         FridaSessionError.FridaSessionError
     >({
-        capacity: options?.messageMailboxCapacity?.capacity,
-        strategy: options?.messageMailboxCapacity?.strategy ?? "dropping",
+        capacity: options?.messageQueueCapacity?.capacity,
+        strategy: options?.messageQueueCapacity?.strategy ?? "dropping",
     });
     yield* Effect.addFinalizer(() => Queue.shutdown(queue));
 
@@ -170,7 +170,7 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
                 const cause = new Error();
                 cause.name = "FridaScriptDefect";
                 cause.stack = message.stack ?? "";
-                cause.message = message.description.replace(/^\w{0,}: /, "") ?? "";
+                cause.message = message.description.replace(/^\w*: /, "");
                 Deferred.doneUnsafe(scriptError, Exit.succeed(cause));
                 Queue.failCauseUnsafe(
                     queue,

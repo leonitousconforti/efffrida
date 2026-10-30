@@ -282,13 +282,14 @@ importers:
         version: 5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6))
 
   packages/gplayapi:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: 2.16.0
+        version: 2.16.0
     devDependencies:
       '@bufbuild/buf':
         specifier: 1.75.0
         version: 1.75.0
-      '@bufbuild/protobuf':
-        specifier: 2.16.0
-        version: 2.16.0
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
@@ -363,9 +364,6 @@ importers:
       '@efffrida/frida-tools':
         specifier: workspace:*
         version: link:../frida-tools
-      '@efffrida/platform':
-        specifier: workspace:*
-        version: link:../platform
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -376,6 +374,9 @@ importers:
       '@effect/vitest':
         specifier: 4.1.0
         version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+      '@efffrida/platform':
+        specifier: workspace:*
+        version: link:../platform
       '@types/frida-gum':
         specifier: 19.12.0
         version: 19.12.0
@@ -439,13 +440,10 @@ importers:
       frida:
         specifier: 17.24.3
         version: 17.24.3
-      redis:
-        specifier: 6.3.0
-        version: 6.3.0
     devDependencies:
-      '@effect/platform-node':
+      '@effect/platform-node-shared':
         specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.0)
+        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))
       '@effect/vitest':
         specifier: 4.1.0
         version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))

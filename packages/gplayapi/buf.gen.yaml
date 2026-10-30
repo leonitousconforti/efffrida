@@ -2,6 +2,6 @@ version: v2
 inputs:
     - directory: ./protobuf
 plugins:
-    - remote: buf.build/bufbuild/es:v2.2.2
+    - remote: buf.build/bufbuild/es:v2.16.0
       opt: target=ts,ts_nocheck=false
       out: ./src/generated

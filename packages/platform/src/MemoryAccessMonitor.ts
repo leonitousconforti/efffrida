@@ -9,14 +9,14 @@ import type * as Stream from "effect/Stream";
 import * as internal from "./internal/memoryAccessMonitor.ts";
 
 /**
- * Starts monitoring one or more memory ranges for access, and notifies on the
- * first access of each contained memory page. Stops monitoring when the stream
- * is interrupted or the stream is finished.
+ * Monitors one or more memory ranges for access, and emits on the first access
+ * of each contained memory page. Stops monitoring when the stream is
+ * interrupted or the stream is finished.
  *
  * @since 1.0.0
  * @category Memory Access Monitor
  */
-export const MemoryAccessMonitorStream: (
+export const watch: (
     ranges: MemoryAccessRange | Array<MemoryAccessRange>,
     options?:
         | {
@@ -24,4 +24,4 @@ export const MemoryAccessMonitorStream: (
               readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
           }
         | undefined
-) => Stream.Stream<MemoryAccessDetails, never, never> = internal.memoryAccessMonitorStream;
+) => Stream.Stream<MemoryAccessDetails, never, never> = internal.watch;

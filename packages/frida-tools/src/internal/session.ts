@@ -197,27 +197,55 @@ export const attach = (
             detached: detached,
             resume: resume(session),
             detach: detach(session),
-            enableChildGating: Effect.tryPromise((signal) => {
-                const cancellable = new Frida.Cancellable();
-                signal.onabort = () => cancellable.cancel();
-                return session.enableChildGating(cancellable);
+            enableChildGating: Effect.tryPromise({
+                try: (signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return session.enableChildGating(cancellable);
+                },
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "childGating",
+                        cause,
+                    }),
             }),
-            disableChildGating: Effect.tryPromise((signal) => {
-                const cancellable = new Frida.Cancellable();
-                signal.onabort = () => cancellable.cancel();
-                return session.disableChildGating(cancellable);
+            disableChildGating: Effect.tryPromise({
+                try: (signal) => {
+                    const cancellable = new Frida.Cancellable();
+                    signal.onabort = () => cancellable.cancel();
+                    return session.disableChildGating(cancellable);
+                },
+                catch: (cause) =>
+                    new FridaSessionError.FridaSessionError({
+                        when: "childGating",
+                        cause,
+                    }),
             }),
             setupPeerConnection: (opts?: Frida.PeerOptions | undefined) =>
-                Effect.tryPromise((signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return session.setupPeerConnection(opts, cancellable);
+                Effect.tryPromise({
+                    try: (signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return session.setupPeerConnection(opts, cancellable);
+                    },
+                    catch: (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "peerConnection",
+                            cause,
+                        }),
                 }),
             joinPortal: (address: string, opts?: Frida.PortalOptions | undefined) =>
-                Effect.tryPromise((signal) => {
-                    const cancellable = new Frida.Cancellable();
-                    signal.onabort = () => cancellable.cancel();
-                    return session.joinPortal(address, opts, cancellable);
+                Effect.tryPromise({
+                    try: (signal) => {
+                        const cancellable = new Frida.Cancellable();
+                        signal.onabort = () => cancellable.cancel();
+                        return session.joinPortal(address, opts, cancellable);
+                    },
+                    catch: (cause) =>
+                        new FridaSessionError.FridaSessionError({
+                            when: "joinPortal",
+                            cause,
+                        }),
                 }),
             [FridaSessionTypeId]: FridaSessionTypeId,
         } as const;

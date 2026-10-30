@@ -137,7 +137,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                   adbExecutable?: string | undefined;
                   fridaExecutable?: string | undefined;
                   emulatorExecutable?: string | undefined;
-                  extraEmulatorArgs?: Array<string> | undefined;
+                  extraEmulatorArgs?: ReadonlyArray<string> | undefined;
               }
             | undefined
     ): Effect.fn.Return<
@@ -332,7 +332,7 @@ export const acquireAndroidEmulatorDeviceConfig = (
         | {
               hidden?: boolean | undefined;
               fridaExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ): Effect.Effect<
@@ -341,19 +341,19 @@ export const acquireAndroidEmulatorDeviceConfig = (
     ChildProcessSpawner.ChildProcessSpawner | Path.Path | Scope.Scope
 > =>
     Effect.flatMap(Path.Path, (path) =>
-        Config.String("ANDROID_SDK").pipe(
-            Config.map((androidSdk) => ({
-                adbExecutable: path.join(androidSdk, "platform-tools", "adb"),
-                emulatorExecutable: path.join(androidSdk, "emulator", "emulator"),
+        Config.String("ANDROID_HOME").pipe(
+            Config.map((androidHome) => ({
+                adbExecutable: path.join(androidHome, "platform-tools", "adb"),
+                emulatorExecutable: path.join(androidHome, "emulator", "emulator"),
             })),
-            // TODO: Should this be optional?
+            // Fall back to resolving the executables from the PATH
             Config.withDefault({
                 adbExecutable: "adb",
                 emulatorExecutable: "emulator",
             }),
-            Effect.flatMap((androidSdk) =>
+            Effect.flatMap((executables) =>
                 acquireAndroidEmulatorDevice(name, {
-                    ...androidSdk,
+                    ...executables,
                     ...options,
                 })
             )
@@ -389,7 +389,7 @@ export const layerAndroidEmulatorDevice = (
               adbExecutable?: string | undefined;
               fridaExecutable?: string | undefined;
               emulatorExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ): Layer.Layer<
@@ -405,7 +405,7 @@ export const layerAndroidEmulatorDeviceConfig = (
         | {
               hidden?: boolean | undefined;
               fridaExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ): Layer.Layer<
@@ -438,6 +438,7 @@ export const DeviceSchema: Schema.Union<
             readonly connection: Schema.Literal<"android-emulator">;
             readonly fridaExecutable: Schema.optional<Schema.String>;
             readonly emulatorExecutable: Schema.optional<Schema.String>;
+            readonly extraEmulatorArgs: Schema.optional<Schema.$Array<Schema.String>>;
         }>,
     ]
 > = Schema.Union([
@@ -462,6 +463,7 @@ export const DeviceSchema: Schema.Union<
         connection: Schema.Literal("android-emulator"),
         fridaExecutable: Schema.optional(Schema.String),
         emulatorExecutable: Schema.optional(Schema.String),
+        extraEmulatorArgs: Schema.optional(Schema.Array(Schema.String)),
     }),
 ]);
 
@@ -487,12 +489,13 @@ export const DeviceLive = (
         ),
         Match.when(
             { connection: "android-emulator" },
-            ({ adbExecutable, emulatorExecutable, emulatorName, fridaExecutable, hidden }) =>
+            ({ adbExecutable, emulatorExecutable, emulatorName, extraEmulatorArgs, fridaExecutable, hidden }) =>
                 layerAndroidEmulatorDevice(emulatorName, {
-                    hidden: hidden ?? undefined,
-                    adbExecutable: adbExecutable ?? undefined,
-                    fridaExecutable: fridaExecutable ?? undefined,
-                    emulatorExecutable: emulatorExecutable ?? undefined,
+                    hidden,
+                    adbExecutable,
+                    fridaExecutable,
+                    emulatorExecutable,
+                    extraEmulatorArgs,
                 })
         ),
         Match.exhaustive

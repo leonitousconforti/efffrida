@@ -11,6 +11,7 @@ import * as Cache from "effect/Cache";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import * as Option from "effect/Option";
 
 /**
  * @since 1.0.0
@@ -33,10 +34,9 @@ export const assembly = (name: string): Effect.Effect<Il2Cpp.Assembly, never, ne
  * @category Assembly
  */
 export const tryAssembly = (name: string): Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementError, never> =>
-    Effect.try({
-        try: () => Il2Cpp.domain.tryAssembly(name),
-        catch: () => new Cause.NoSuchElementError(`No assembly with name ${name}`),
-    }).pipe(Effect.flatMap(Effect.fromNullishOr));
+    Effect.sync(() => Option.fromNullishOr(Il2Cpp.domain.tryAssembly(name))).pipe(
+        Effect.flatMap(Effect.fromOption(() => new Cause.NoSuchElementError(`No assembly with name ${name}`)))
+    );
 
 /**
  * @since 1.0.0

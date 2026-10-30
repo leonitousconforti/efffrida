@@ -23,7 +23,10 @@ export class FridaSessionError extends Data.TaggedError("FridaSessionError")<{
         | "unload"
         | "resume"
         | "message"
-        | "rpcCall";
+        | "rpcCall"
+        | "childGating"
+        | "peerConnection"
+        | "joinPortal";
 }> {
     public override get message() {
         return `A Frida session error occurred on ${this.when}`;

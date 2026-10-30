@@ -5,25 +5,27 @@
  * @since 1.0.0
  */
 
+import type * as Array from "effect/Array";
+import type * as EncodingError from "effect/encoding/EncodingError";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 
-import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
-import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
+import * as Base64Url from "effect/encoding/Base64Url";
+import * as Hex from "effect/encoding/Hex";
 import * as FileSystem from "effect/FileSystem";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientError from "effect/http/HttpClientError";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import * as HttpClientResponse from "effect/http/HttpClientResponse";
-import * as Match from "effect/Match";
 import * as PlatformError from "effect/PlatformError";
+import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
 
 import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
-import { type AndroidDevice, AndroidDeviceService } from "./AndroidDevice.ts";
+import { AndroidDeviceService } from "./AndroidDevice.ts";
 import {
     BulkDetailsRequestSchema,
     type BulkDetailsResponse,
@@ -33,40 +35,72 @@ import {
 } from "./generated/GooglePlay_pb.ts";
 import { decodeResponseFromResponseWrapper, encodeRequest } from "./internal/http.ts";
 
+/**
+ * The expected digest of a file as lowercase hex. Expansion files are hashed
+ * with SHA-1 and everything else with SHA-256.
+ *
+ * @since 1.0.0
+ * @category Models
+ */
+export type Integrity = { readonly "SHA-1": string } | { readonly "SHA-256": string };
+
 /** @internal */
 const fdfeBase = "https://android.clients.google.com/fdfe";
 
 /**
- * Play rejects a request with a 401/403 once the credentials behind the
- * device's auth headers stop being good, which can happen well before they
- * expire on their own. Drop them so the next call acquires a fresh set, and
- * report the rejection instead of handing a body that is not a protobuf
- * payload to the caller's decoder.
+ * Backoff for transport failures, timeouts, and transient statuses (408, 429,
+ * 5xx). A `Retry-After` header on the response raises the delay.
  *
  * @internal
  */
-const evictRejectedAuthHeaders =
-    (device: AndroidDevice) =>
-    <E, R>(
-        self: Effect.Effect<HttpClientResponse.HttpClientResponse, E, R>
-    ): Effect.Effect<HttpClientResponse.HttpClientResponse, E | HttpClientError.HttpClientError, R> =>
-        Effect.flatMap(self, (response) => {
-            if (response.status !== 401 && response.status !== 403) {
-                return Effect.succeed(response);
+const transientRetry = {
+    retryOn: "errors-only",
+    schedule: Schedule.exponential("500 millis"),
+    times: 3,
+} as const;
+
+/**
+ * Play rejects a request with a 401/403 once the credentials behind the
+ * device's auth headers stop being good, which can happen well before they
+ * expire on their own.
+ *
+ * @internal
+ */
+const isCredentialRejection = (error: unknown): boolean =>
+    HttpClientError.isHttpClientError(error) &&
+    error.reason._tag === "StatusCodeError" &&
+    (error.reason.response.status === 401 || error.reason.response.status === 403);
+
+/**
+ * A client for the fdfe endpoints. Paths are resolved against the fdfe base url
+ * and every request carries the device's auth headers. Non 2xx responses fail
+ * instead of reaching the protobuf decoders, rejected auth headers are dropped
+ * so that the next request acquires a fresh set, and transient failures are
+ * retried.
+ *
+ * @internal
+ */
+const fdfeClient = Effect.gen(function* () {
+    const device = yield* AndroidDeviceService;
+    const httpClient = yield* HttpClient.HttpClient;
+
+    return httpClient.pipe(
+        HttpClient.mapRequest(HttpClientRequest.prependUrl(fdfeBase)),
+        HttpClient.mapRequestEffect((request) =>
+            Effect.map(device.authHeaders, (headers) => HttpClientRequest.setHeaders(request, headers))
+        ),
+        HttpClient.filterStatusOk,
+        HttpClient.tapError((error) => {
+            if (!isCredentialRejection(error)) {
+                return Effect.void;
             }
 
             device.invalidateAuthHeaders();
-            return Effect.andThen(
-                Effect.logDebug(`google play answered ${response.status}, dropping the cached auth headers`),
-                new HttpClientError.HttpClientError({
-                    reason: new HttpClientError.StatusCodeError({
-                        request: response.request,
-                        response,
-                        description: "google play rejected the request credentials",
-                    }),
-                })
-            );
-        });
+            return Effect.logDebug("google play rejected the request credentials, dropping the cached auth headers");
+        }),
+        HttpClient.retryTransient(transientRetry)
+    );
+});
 
 /**
  * @since 1.0.0
@@ -79,17 +113,9 @@ export const details = Effect.fnUntraced(function* (
     HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
     HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
-    const decoderDetailsResponse = decodeResponseFromResponseWrapper("detailsResponse");
-    const device = yield* AndroidDeviceService;
-
-    const httpRequest = HttpClientRequest.get("/details", {
-        urlParams: { doc: bundleIdentifier },
-        headers: yield* device.authHeaders,
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
-    const pbResponse = yield* decoderDetailsResponse(httpResponse);
-    return pbResponse;
+    const httpClient = yield* fdfeClient;
+    const httpResponse = yield* httpClient.get("/details", { urlParams: { doc: bundleIdentifier } });
+    return yield* decodeResponseFromResponseWrapper(httpResponse, "detailsResponse");
 });
 
 /**
@@ -103,22 +129,15 @@ export const bulkDetails = Effect.fnUntraced(function* (
     HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
     HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
-    const decoderBulkDetailsResponse = decodeResponseFromResponseWrapper("bulkDetailsResponse");
-    const encoderBulkDetailsRequest = encodeRequest(BulkDetailsRequestSchema, {
+    const httpClient = yield* fdfeClient;
+    const httpRequest = yield* encodeRequest(HttpClientRequest.post("/bulkDetails"), BulkDetailsRequestSchema, {
         includeDetails: true,
         includeChildDocs: true,
         DocId: [bundleIdentifier],
     });
 
-    const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.post("/bulkDetails", {
-        headers: yield* device.authHeaders,
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
-
-    const pbRequest = yield* encoderBulkDetailsRequest(httpRequest);
-    const httpResponse = yield* HttpClient.execute(pbRequest).pipe(evictRejectedAuthHeaders(device));
-    const pbResponse = yield* decoderBulkDetailsResponse(httpResponse);
-    return pbResponse;
+    const httpResponse = yield* httpClient.execute(httpRequest);
+    return yield* decodeResponseFromResponseWrapper(httpResponse, "bulkDetailsResponse");
 });
 
 /**
@@ -127,28 +146,27 @@ export const bulkDetails = Effect.fnUntraced(function* (
  */
 export const purchase = Effect.fnUntraced(function* (
     bundleIdentifier: string,
-    options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
+    options: {
+        offerType: number;
+        versionCode: number | bigint;
+        certificateHash?: string | undefined;
+    }
 ): Effect.fn.Return<
     BuyResponse,
     HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
     HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
-    const decoderBuyResponse = decodeResponseFromResponseWrapper("buyResponse");
-
-    const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.post("/purchase", {
-        headers: yield* device.authHeaders,
+    const httpClient = yield* fdfeClient;
+    const httpResponse = yield* httpClient.post("/purchase", {
         urlParams: {
             doc: bundleIdentifier,
             ch: options.certificateHash ?? "",
             ot: options.offerType.toString(),
             vc: options.versionCode.toString(),
         },
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    });
 
-    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
-    const pbResponse = yield* decoderBuyResponse(httpResponse);
-    return pbResponse;
+    return yield* decodeResponseFromResponseWrapper(httpResponse, "buyResponse");
 });
 
 /**
@@ -168,11 +186,8 @@ export const delivery = Effect.fnUntraced(function* (
     HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
     HttpClient.HttpClient | AndroidDeviceService | PlayAccount
 > {
-    const decoderDeliveryResponse = decodeResponseFromResponseWrapper("deliveryResponse");
-
-    const device = yield* AndroidDeviceService;
-    const httpRequest = HttpClientRequest.get("/delivery", {
-        headers: yield* device.authHeaders,
+    const httpClient = yield* fdfeClient;
+    const httpResponse = yield* httpClient.get("/delivery", {
         urlParams: {
             doc: bundleIdentifier,
             dtok: options.deliveryToken,
@@ -180,12 +195,18 @@ export const delivery = Effect.fnUntraced(function* (
             ot: options.offerType.toString(),
             vc: options.versionCode.toString(),
         },
-    }).pipe(HttpClientRequest.prependUrl(fdfeBase));
+    });
 
-    const httpResponse = yield* HttpClient.execute(httpRequest).pipe(evictRejectedAuthHeaders(device));
-    const pbResponse = yield* decoderDeliveryResponse(httpResponse);
-    return pbResponse;
+    return yield* decodeResponseFromResponseWrapper(httpResponse, "deliveryResponse");
 });
+
+/**
+ * Play encodes file digests as url safe base64, convert them to hex.
+ *
+ * @internal
+ */
+const hexFromBase64Url = (encoded: string): Effect.Effect<string, EncodingError.EncodingError, never> =>
+    Effect.map(Effect.fromResult(Base64Url.decode(encoded)), Hex.encode);
 
 /**
  * @since 1.0.0
@@ -202,12 +223,16 @@ export const downloadToStreams = Effect.fnUntraced(function* (
 ): Effect.fn.Return<
     Array.NonEmptyReadonlyArray<{
         stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>;
-        integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
+        integrity: Integrity;
         size: bigint;
         name: string;
         url: string;
     }>,
-    Cause.NoSuchElementError | HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
+    | Cause.NoSuchElementError
+    | EncodingError.EncodingError
+    | HttpClientError.HttpClientError
+    | Schema.SchemaError
+    | PlayAccountError,
     AndroidDeviceService | HttpClient.HttpClient | PlayAccount
 > {
     const { item } = yield* details(bundleIdentifier);
@@ -232,13 +257,16 @@ export const downloadToStreams = Effect.fnUntraced(function* (
 
     // Each request is only made once its stream is run, so that downloads
     // happen one at a time as the caller drains them.
-    const httpClient = HttpClient.filterStatusOk(yield* HttpClient.HttpClient);
+    const httpClient = (yield* HttpClient.HttpClient).pipe(
+        HttpClient.filterStatusOk,
+        HttpClient.retryTransient(transientRetry)
+    );
     const download = (url: string, description: string) =>
         HttpClientResponse.stream(
             httpClient.get(url).pipe(Effect.tap(() => Effect.logDebug(`downloading ${description} from ${url}`)))
         );
 
-    const mainIntegrity = Buffer.from(mainDeliveryData.sha256, "base64url").toString("hex");
+    const mainIntegrity = yield* hexFromBase64Url(mainDeliveryData.sha256);
     const main = {
         name: `${bundleIdentifier}.apk`,
         url: mainDeliveryData.downloadUrl,
@@ -250,9 +278,8 @@ export const downloadToStreams = Effect.fnUntraced(function* (
         ),
     };
 
-    const splits = Array.map(mainDeliveryData.splitDeliveryData, (split) => {
-        const integrity = Buffer.from(split.sha256, "base64url").toString("hex");
-        return {
+    const splits = yield* Effect.forEach(mainDeliveryData.splitDeliveryData, (split) =>
+        Effect.map(hexFromBase64Url(split.sha256), (integrity) => ({
             url: split.downloadUrl,
             size: split.downloadSize,
             name: `${split.name}.apk`,
@@ -261,14 +288,13 @@ export const downloadToStreams = Effect.fnUntraced(function* (
                 split.downloadUrl,
                 `split ${split.name} of ${split.downloadSize}bytes with integrity ${integrity}(sha256)`
             ),
-        };
-    });
+        }))
+    );
 
-    const expansions = Array.map(mainDeliveryData.additionalFile, (expansion) => {
+    const expansions = yield* Effect.forEach(mainDeliveryData.additionalFile, (expansion) => {
         const typeStr = expansion.fileType === 1 ? "main" : "patch";
         const name = `${typeStr}.${expansion.versionCode}.${bundleIdentifier}.obb`;
-        const integrity = Buffer.from(expansion.sha1, "base64url").toString("hex");
-        return {
+        return Effect.map(hexFromBase64Url(expansion.sha1), (integrity) => ({
             name,
             size: expansion.size,
             url: expansion.downloadUrl,
@@ -277,16 +303,22 @@ export const downloadToStreams = Effect.fnUntraced(function* (
                 expansion.downloadUrl,
                 `expansion file ${name} of ${expansion.size}bytes with integrity ${integrity}(sha1)`
             ),
-        };
+        }));
     });
 
     return [main, ...splits, ...expansions];
 });
 
 /**
- * Note that each file is buffered in memory in full while its integrity is
- * hashed, so peak memory use is the size of the largest file (expansion files
- * can be several gigabytes).
+ * Downloads the APK, its splits, and its expansion files into temporary files
+ * and checks each against its expected integrity. Files are hashed as they are
+ * streamed to disk, so they are never held in memory in full.
+ *
+ * The temporary files are created with `FileSystem.makeTempFileScoped`, so they
+ * are deleted when the provided `Scope` closes. Copy or move them somewhere
+ * else first if they need to outlive it. A file that fails its integrity check
+ * fails the effect, and any files written so far are removed along with the
+ * scope.
  *
  * @since 1.0.0
  * @category API
@@ -305,59 +337,35 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         name: string;
         file: string;
         size: bigint;
-        integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
+        integrity: Integrity;
     }>,
     | Cause.NoSuchElementError
+    | EncodingError.EncodingError
     | PlatformError.PlatformError
     | HttpClientError.HttpClientError
     | Schema.SchemaError
     | PlayAccountError,
-    AndroidDeviceService | PlayAccount | Digest.Digest | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
+    AndroidDeviceService | PlayAccount | HttpClient.HttpClient | FileSystem.FileSystem | Scope.Scope
 > {
     const fileSystem = yield* FileSystem.FileSystem;
     const streams = yield* downloadToStreams(bundleIdentifier, options);
+    const { createHash } = yield* Effect.promise(() => import("node:crypto"));
 
-    const digestAlgorithms = {
-        "SHA-1": Digest.sha1,
-        "SHA-256": Digest.sha256,
-        "SHA-384": Digest.sha384,
-        "SHA-512": Digest.sha512,
-    } as const;
-
-    const digest =
-        (algorithm: keyof typeof digestAlgorithms) =>
-        <E, R>(stream: Stream.Stream<Uint8Array, E, R>): Effect.Effect<string, E, R | Digest.Digest> =>
-            stream.pipe(
-                Stream.mkUint8Array,
-                Effect.flatMap((buffer) =>
-                    Digest.Digest.use((digest) => digest.digestHex(digestAlgorithms[algorithm], buffer))
-                )
-            );
-
-    const write: (stream: (typeof streams)[number]) => Effect.Effect<
-        {
-            url: string;
-            name: string;
-            file: string;
-            size: bigint;
-            integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string };
-        },
-        PlatformError.PlatformError | HttpClientError.HttpClientError,
-        Digest.Digest | Scope.Scope
-    > = Effect.fnUntraced(function* ({ stream, name, url, size, integrity }) {
+    const write = Effect.fnUntraced(function* ({ stream, name, url, size, integrity }: (typeof streams)[number]) {
         const file = yield* fileSystem.makeTempFileScoped({ suffix: name.slice(name.lastIndexOf(".")) });
 
-        const digestAlgorithm = Match.value(integrity).pipe(
-            Match.when({ "SHA-1": Match.string }, () => "SHA-1" as const),
-            Match.when({ "SHA-256": Match.string }, () => "SHA-256" as const),
-            Match.when({ "SHA-384": Match.string }, () => "SHA-384" as const),
-            Match.when({ "SHA-512": Match.string }, () => "SHA-512" as const),
-            Match.exhaustive
+        const [algorithm, expectedIntegrity] =
+            "SHA-1" in integrity
+                ? (["sha1", integrity["SHA-1"]] as const)
+                : (["sha256", integrity["SHA-256"]] as const);
+
+        const hash = createHash(algorithm);
+        yield* stream.pipe(
+            Stream.tap((chunk) => Effect.sync(() => hash.update(chunk))),
+            Stream.run(fileSystem.sink(file))
         );
 
-        const expectedIntegrity = (integrity as Record<keyof typeof digestAlgorithms, string>)[digestAlgorithm];
-        const downloadedIntegrity = yield* stream.pipe(Stream.tapSink(fileSystem.sink(file)), digest(digestAlgorithm));
-
+        const downloadedIntegrity = hash.digest("hex");
         if (downloadedIntegrity !== expectedIntegrity) {
             return yield* new PlatformError.PlatformError(
                 new PlatformError.SystemError({
@@ -378,6 +386,5 @@ export const downloadToDisk = Effect.fnUntraced(function* (
         };
     });
 
-    const effects = Array.map(streams, write);
-    return yield* Effect.all(effects);
+    return yield* Effect.forEach(streams, write);
 });

@@ -4,7 +4,6 @@
  * @since 1.0.0
  */
 
-import type * as Cause from "effect/Cause";
 import type * as Context from "effect/Context";
 import type * as Deferred from "effect/Deferred";
 import type * as Effect from "effect/Effect";
@@ -57,13 +56,15 @@ export interface FridaSession {
     >;
     readonly resume: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
     readonly detach: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
-    readonly enableChildGating: Effect.Effect<void, Cause.UnknownError, never>;
-    readonly disableChildGating: Effect.Effect<void, Cause.UnknownError, never>;
-    setupPeerConnection(options?: Frida.PeerOptions | undefined): Effect.Effect<void, Cause.UnknownError, never>;
+    readonly enableChildGating: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
+    readonly disableChildGating: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
+    setupPeerConnection(
+        options?: Frida.PeerOptions | undefined
+    ): Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
     joinPortal(
         address: string,
         options?: Frida.PortalOptions | undefined
-    ): Effect.Effect<Frida.PortalMembership, Cause.UnknownError, never>;
+    ): Effect.Effect<Frida.PortalMembership, FridaSessionError.FridaSessionError, never>;
 }
 
 /**

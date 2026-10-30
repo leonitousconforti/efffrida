@@ -1,4 +1,4 @@
-import { Effect, Layer } from "effect";
+import { Array as Arr, Effect, Layer, Stream } from "effect";
 import { SqlClient } from "effect/sql";
 
 import { unlinkSync } from "node:fs";
@@ -59,6 +59,35 @@ describe("sql tests", () => {
                 );
                 const rows = yield* sql`SELECT * FROM test`;
                 assert.deepStrictEqual(rows, []);
+            })
+        );
+    });
+
+    layer(TestLayer)((it) => {
+        it.effect("stream", () =>
+            Effect.gen(function* () {
+                const sql = yield* SqlClient.SqlClient;
+                yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
+                const names = Arr.makeBy(300, (i) => ({ name: `name-${i}` }));
+                yield* sql`INSERT INTO test ${sql.insert(names)}`;
+
+                const rows = yield* Stream.runCollect(
+                    sql<{ id: number; name: string }>`SELECT * FROM test WHERE id > ${10} ORDER BY id`.stream
+                );
+                assert.strictEqual(rows.length, 290);
+                assert.deepStrictEqual(rows[0], { id: 11, name: "name-10" });
+                assert.deepStrictEqual(rows[289], { id: 300, name: "name-299" });
+
+                const empty = yield* Stream.runCollect(sql`SELECT * FROM test WHERE id < ${0}`.stream);
+                assert.deepStrictEqual(empty, []);
+
+                // Stopping early releases the statement and the connection
+                const first = yield* Stream.runCollect(Stream.take(sql`SELECT * FROM test ORDER BY id`.stream, 2));
+                assert.deepStrictEqual(first, [
+                    { id: 1, name: "name-0" },
+                    { id: 2, name: "name-1" },
+                ]);
+                yield* sql`DROP TABLE test`;
             })
         );
     });

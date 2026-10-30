@@ -1,4 +1,9 @@
-import type * as Context from "effect/Context";
+/**
+ * A vitest pool that runs test files inside a frida agent.
+ *
+ * @since 1.0.0
+ */
+
 import type * as PlatformError from "effect/PlatformError";
 
 import * as Array from "effect/Array";
@@ -9,16 +14,18 @@ import * as Exit from "effect/Exit";
 import * as FileSystem from "effect/FileSystem";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
+import * as ManagedRuntime from "effect/ManagedRuntime";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
-import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 
 import type * as FridaDeviceAcquisitionError from "@efffrida/frida-tools/FridaDeviceAcquisitionError";
 import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError";
 import type * as VitestNode from "vitest/node";
 
-import * as NodeServices from "@effect/platform-node/NodeServices";
+import * as NodeChildProcessSpawner from "@effect/platform-node-shared/NodeChildProcessSpawner";
+import * as NodeFileSystem from "@effect/platform-node-shared/NodeFileSystem";
+import * as NodePath from "@effect/platform-node-shared/NodePath";
 import * as FridaDevice from "@efffrida/frida-tools/FridaDevice";
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 import * as FridaSession from "@efffrida/frida-tools/FridaSession";
@@ -33,6 +40,12 @@ export const FridaSchema = Schema.Struct({
     attach: FridaSession.AttachSchema,
 });
 
+type InitError =
+    | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
+    | FridaSessionError.FridaSessionError
+    | PlatformError.PlatformError
+    | PlatformError.BadArgument;
+
 /**
  * @since 1.0.0
  * @category Tests
@@ -41,17 +54,8 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     public readonly name = "frida-pool";
     private static initQueue: Promise<void> = Promise.resolve();
 
-    private readonly scope: Scope.Closeable;
-    private scriptContext: Context.Context<FridaScript.FridaScript> = undefined!;
-    private readonly scriptContextPromise: Promise<
-        Exit.Exit<
-            Context.Context<FridaScript.FridaScript>,
-            | FridaDeviceAcquisitionError.FridaDeviceAcquisitionError
-            | FridaSessionError.FridaSessionError
-            | PlatformError.PlatformError
-            | PlatformError.BadArgument
-        >
-    >;
+    private readonly runtime: ManagedRuntime.ManagedRuntime<FridaScript.FridaScript, InitError>;
+    private readonly initPromise: Promise<Exit.Exit<void, InitError>>;
 
     private readonly listeners: Map<string, (...args: Array<unknown>) => void> = new Map();
     private cancelables: Array<(interrupter?: number) => void> = [];
@@ -61,6 +65,10 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         const DeviceLive = FridaDevice.DeviceLive(customOptions.device);
         const SessionLive = FridaSession.SessionLive(customOptions.attach);
         const FridaLive = Layer.provide(SessionLive, DeviceLive);
+        const NodeLive = Layer.provideMerge(
+            NodeChildProcessSpawner.layer,
+            Layer.merge(NodeFileSystem.layer, NodePath.layer)
+        );
 
         const ScriptLive = Effect.gen(function* () {
             const path = yield* Path.Path;
@@ -107,13 +115,15 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
                 ...(runtime !== undefined ? { runtime } : {}),
                 ...(platform !== undefined ? { platform } : {}),
             });
-        }).pipe(Layer.unwrap, Layer.provide(FridaLive), Layer.provide(NodeServices.layer));
+        }).pipe(Layer.unwrap, Layer.provide(FridaLive), Layer.provide(NodeLive));
 
-        this.scope = Scope.makeUnsafe();
+        // The runtime builds its layer lazily, so force the build here to
+        // serialize it with the initialization of the other workers
+        this.runtime = ManagedRuntime.make(ScriptLive);
         const prev = FridaPoolWorker.initQueue;
-        const runInit = () => ScriptLive.pipe(Layer.buildWithScope(this.scope), Effect.runPromiseExit);
-        this.scriptContextPromise = prev.then(runInit, runInit);
-        FridaPoolWorker.initQueue = this.scriptContextPromise.then(
+        const runInit = () => Effect.runPromiseExit(Effect.asVoid(this.runtime.contextEffect));
+        this.initPromise = prev.then(runInit, runInit);
+        FridaPoolWorker.initQueue = this.initPromise.then(
             () => undefined,
             () => undefined
         );
@@ -121,16 +131,15 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
     // @effect-diagnostics-next-line asyncFunction:off
     async start(): Promise<void> {
-        const exit = await this.scriptContextPromise;
-        if (Exit.isSuccess(exit)) this.scriptContext = exit.value;
-        else throw Cause.prettyErrors(exit.cause)[0];
+        const exit = await this.initPromise;
+        if (Exit.isFailure(exit)) throw Cause.prettyErrors(exit.cause)[0];
     }
 
     // @effect-diagnostics-next-line asyncFunction:off
     async stop(): Promise<void> {
         await Promise.allSettled(this.sends);
         for (const cancelable of this.cancelables) cancelable();
-        await Scope.close(this.scope, Exit.void).pipe(Effect.runPromise);
+        await this.runtime.dispose();
         this.cancelables = [];
     }
 
@@ -144,7 +153,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
             try {
                 const exit = await Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                     fridaScript.callExport("onMessage")(message)
-                ).pipe(Effect.runPromiseExitWith(this.scriptContext));
+                ).pipe(this.runtime.runPromiseExit);
                 if (Exit.isFailure(exit) && !Cause.hasInterruptsOnly(exit.cause)) {
                     this.emitError(Cause.prettyErrors(exit.cause)[0]);
                 }
@@ -169,7 +178,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
         switch (event) {
             case "message": {
                 makeCancellable = () =>
-                    Effect.runCallbackWith(this.scriptContext)(
+                    this.runtime.runCallback(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                             Stream.runForEach(fridaScript.stream, (input) =>
                                 Effect.sync(() => {
@@ -185,7 +194,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
             case "error":
                 makeCancellable = () =>
-                    Effect.runCallbackWith(this.scriptContext)(
+                    this.runtime.runCallback(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) =>
                             Deferred.await(fridaScript.scriptError)
                         ),
@@ -207,7 +216,7 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
 
             case "exit":
                 makeCancellable = () =>
-                    Effect.runCallbackWith(this.scriptContext)(
+                    this.runtime.runCallback(
                         Effect.flatMap(FridaScript.FridaScript, (fridaScript) => Deferred.await(fridaScript.destroyed)),
                         {
                             onExit: () => {
@@ -235,10 +244,6 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
     deserialize(data: unknown) {
         if (typeof data !== "string") return data;
         else return Flatted.parse(data);
-    }
-
-    serialize(data: unknown) {
-        return data;
     }
 }
 

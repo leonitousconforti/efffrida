@@ -10,6 +10,7 @@ import "@efffrida/polyfills";
 import type * as Scope from "effect/Scope";
 
 import * as Effect from "effect/Effect";
+import * as FiberSet from "effect/FiberSet";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Queue from "effect/Queue";
@@ -32,10 +33,14 @@ const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
         : (bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
 
 /**
+ * Makes a server protocol without registering the main rpc export. Call the
+ * returned `rpcExport` (or register it under a name of your choosing) to
+ * connect a new client.
+ *
  * @since 1.0.0
  * @category Protocol
  */
-export const makeProtocolFridaNoSendRecv = (
+export const makeProtocolFridaWithRpcExport = (
     options?:
         | {
               /**
@@ -57,6 +62,7 @@ export const makeProtocolFridaNoSendRecv = (
         const encodeDefect = makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
+        const runPromise = yield* FiberSet.makeRuntimePromise();
         const encoder = new TextEncoder();
 
         let clientId = 0;
@@ -83,7 +89,7 @@ export const makeProtocolFridaNoSendRecv = (
             })
         );
 
-        const rpcExport = Effect.gen(function* () {
+        const rpcExport = (): Promise<string> => {
             const id = ++clientId;
             const exportName = makeExportName(id);
             const responseMessage = constants.fridaRpcServerMakeResponseMessageForClient(exportName);
@@ -107,9 +113,9 @@ export const makeProtocolFridaNoSendRecv = (
             clients.set(id, { write });
             clientIds.add(id);
 
-            const onMessage = (input: string | Record<number, string>): Effect.Effect<void, never, never> => {
+            const onMessage = (input: string | ArrayBuffer): Effect.Effect<void, never, never> => {
                 try {
-                    const data = typeof input === "string" ? input : Uint8Array.from(Object.values(input));
+                    const data = typeof input === "string" ? input : new Uint8Array(input);
                     const decoded = parser.decode(data) as ReadonlyArray<RpcMessage.FromClientEncoded>;
                     if (decoded.length === 0) return Effect.void;
                     let i = 0;
@@ -126,13 +132,10 @@ export const makeProtocolFridaNoSendRecv = (
                 }
             };
 
-            rpc.exports[exportName] = (data: string | Record<number, string>): Promise<void> =>
-                // @effect-diagnostics-next-line runEffectInsideEffect:off
-                Effect.runPromise(onMessage(data));
-
-            return exportName;
-            // @effect-diagnostics-next-line runEffectInsideEffect:off
-        }).pipe((export_) => () => Effect.runPromise(export_));
+            // Binary data sent as a node Buffer arrives as an ArrayBuffer
+            rpc.exports[exportName] = (data: string | ArrayBuffer): Promise<void> => runPromise(onMessage(data));
+            return Promise.resolve(exportName);
+        };
 
         const protocol = yield* RpcServer.Protocol.make((writeRequest_) => {
             writeRequest = writeRequest_;
@@ -184,7 +187,7 @@ export const makeProtocolFrida = (
 ): Effect.Effect<RpcServer.Protocol["Service"], never, RpcSerialization.RpcSerialization | Scope.Scope> =>
     Effect.gen(function* () {
         const protocolOptions = { generateExportName: options?.generateExportName };
-        const { protocol, rpcExport } = yield* makeProtocolFridaNoSendRecv(protocolOptions);
+        const { protocol, rpcExport } = yield* makeProtocolFridaWithRpcExport(protocolOptions);
         const mainExportName = options?.exportName ?? constants.defaultServerMainExportName;
         yield* Effect.addFinalizer(() => Effect.sync(() => delete rpc.exports[mainExportName]));
         rpc.exports[mainExportName] = rpcExport;

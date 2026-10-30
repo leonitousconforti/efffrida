@@ -30,11 +30,10 @@ describe("sink tests", () => {
                 },
             };
 
-            const sink = FridaSink.fromOutputStream(
-                () => mockOutputStream,
-                (e) => new WriteError({ message: `Write error: ${e}` }),
-                { endOnDone: true }
-            );
+            const sink = FridaSink.fromOutputStream({
+                evaluate: () => mockOutputStream,
+                onError: (e) => new WriteError({ message: `Write error: ${e}` }),
+            });
 
             const testData = new Uint8Array([1, 2, 3, 4, 5]);
             yield* Stream.make(testData).pipe(Stream.run(sink));
@@ -66,11 +65,10 @@ describe("sink tests", () => {
                 },
             };
 
-            const sink = FridaSink.fromOutputStream(
-                () => mockOutputStream,
-                (e) => new WriteError({ message: `Write error: ${e}` }),
-                { endOnDone: true }
-            );
+            const sink = FridaSink.fromOutputStream({
+                evaluate: () => mockOutputStream,
+                onError: (e) => new WriteError({ message: `Write error: ${e}` }),
+            });
 
             const chunk1 = new Uint8Array([1, 2, 3]);
             const chunk2 = new Uint8Array([4, 5, 6]);
@@ -103,11 +101,10 @@ describe("sink tests", () => {
                 },
             };
 
-            const sink = FridaSink.fromOutputStream(
-                () => mockOutputStream,
-                (e) => new WriteError({ message: `Write error: ${e}` }),
-                { endOnDone: true }
-            );
+            const sink = FridaSink.fromOutputStream({
+                evaluate: () => mockOutputStream,
+                onError: (e) => new WriteError({ message: `Write error: ${e}` }),
+            });
 
             yield* (Stream.empty as Stream.Stream<Uint8Array>).pipe(Stream.run(sink));
 

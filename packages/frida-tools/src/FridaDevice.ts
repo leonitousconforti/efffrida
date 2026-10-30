@@ -93,7 +93,7 @@ export const acquireAndroidEmulatorDevice: (
               adbExecutable?: string | undefined;
               fridaExecutable?: string | undefined;
               emulatorExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ) => Effect.Effect<
@@ -103,6 +103,10 @@ export const acquireAndroidEmulatorDevice: (
 > = internal.acquireAndroidEmulatorDevice;
 
 /**
+ * Like {@link acquireAndroidEmulatorDevice}, but resolves `adb` and `emulator`
+ * from the `ANDROID_HOME` environment variable, falling back to the PATH when
+ * it is not set.
+ *
  * @since 1.0.0
  * @category Device acquisition
  */
@@ -112,7 +116,7 @@ export const acquireAndroidEmulatorDeviceConfig: (
         | {
               hidden?: boolean | undefined;
               fridaExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ) => Effect.Effect<
@@ -161,7 +165,7 @@ export const layerAndroidEmulatorDevice: (
               adbExecutable?: string | undefined;
               fridaExecutable?: string | undefined;
               emulatorExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ) => Layer.Layer<
@@ -171,6 +175,10 @@ export const layerAndroidEmulatorDevice: (
 > = internal.layerAndroidEmulatorDevice;
 
 /**
+ * Like {@link layerAndroidEmulatorDevice}, but resolves `adb` and `emulator`
+ * from the `ANDROID_HOME` environment variable, falling back to the PATH when
+ * it is not set.
+ *
  * @since 1.0.0
  * @category Layers
  */
@@ -180,7 +188,7 @@ export const layerAndroidEmulatorDeviceConfig: (
         | {
               hidden?: boolean | undefined;
               fridaExecutable?: string | undefined;
-              extraEmulatorArgs?: Array<string> | undefined;
+              extraEmulatorArgs?: ReadonlyArray<string> | undefined;
           }
         | undefined
 ) => Layer.Layer<
@@ -216,6 +224,7 @@ export const DeviceSchema: Schema.Union<
             readonly connection: Schema.Literal<"android-emulator">;
             readonly fridaExecutable: Schema.optional<Schema.String>;
             readonly emulatorExecutable: Schema.optional<Schema.String>;
+            readonly extraEmulatorArgs: Schema.optional<Schema.$Array<Schema.String>>;
         }>,
     ]
 > = internal.DeviceSchema;

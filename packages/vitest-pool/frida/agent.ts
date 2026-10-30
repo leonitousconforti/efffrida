@@ -159,9 +159,11 @@ rpc.exports["onMessage"] = async (message: unknown): Promise<WorkerResponse | vo
                 providedContext: message.context.providedContext,
                 metaEnv: process.env as WorkerGlobalState["metaEnv"],
 
-                resolvingModules: new Set(), // TODO: share this between runs? https://github.com/vitest-dev/vitest/blob/8508296e9adcd2d9859e8073ac76c0bcb7d78f50/packages/vitest/src/runtime/worker.ts#L9
-                moduleExecutionInfo: new Map(), // TODO: share this between runs? https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/workers/base.ts#L18-L19
-                evaluatedModules: new EvaluatedModules(), // TODO: share this between runs? https://github.com/vitest-dev/vitest/blob/4f58c77147796d48bf70579222a577df977300f8/packages/vitest/src/runtime/workers/base.ts#L18-L19
+                // Only vitest's module runner populates these, and the agent
+                // imports test files through frida's compiler instead
+                resolvingModules: new Set(),
+                moduleExecutionInfo: new Map(),
+                evaluatedModules: new EvaluatedModules(),
 
                 onCleanup: (listener) => cleanupListeners.add(listener),
                 onFilterStackTrace: (stack) => createStackString(parseStacktrace(stack)),

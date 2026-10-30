@@ -25,21 +25,22 @@ import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 import * as internalAuth from "./internal/auth.ts";
 
 /** @internal */
-const StringArrayFromString = Schema.suspend(() => {
-    const splitter = SchemaGetter.split({ separator: "," });
-    const joiner = SchemaGetter.transform((arr: ReadonlyArray<string>) => arr.join(","));
-    const transform = SchemaTransformation.makeTransformation({ encode: joiner, decode: splitter });
-    return Schema.String.pipe(Schema.decodeTo(Schema.Array(Schema.String), transform));
-});
+const StringArrayFromString = Schema.String.pipe(
+    Schema.decodeTo(
+        Schema.Array(Schema.String),
+        SchemaTransformation.makeTransformation({
+            decode: SchemaGetter.split({ separator: "," }),
+            encode: SchemaGetter.transform((array: ReadonlyArray<string>) => array.join(",")),
+        })
+    )
+);
 
 /** @internal */
-const BooleanFromString = Schema.Literals(["true", "false"])
-    .transform([true, false])
-    .pipe(Schema.decodeTo(Schema.Boolean));
+const BooleanFromString = Schema.Literals(["true", "false"]).transform([true, false]);
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export class AndroidDeviceService extends Context.Service<AndroidDeviceService, AndroidDevice>()(
     "@efffrida/gplayapi/AndroidDevice"
@@ -212,7 +213,7 @@ export const EmbeddedPixel7a: Effect.Effect<
  * @since 1.0.0
  * @category Layers
  */
-export const EmbeddedPixel7aLive: Layer.Layer<
+export const layerEmbeddedPixel7a: Layer.Layer<
     AndroidDeviceService,
     Schema.SchemaError | PlatformError.BadArgument | PlatformError.PlatformError,
     Path.Path | FileSystem.FileSystem

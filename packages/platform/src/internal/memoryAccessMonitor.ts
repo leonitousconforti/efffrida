@@ -3,7 +3,7 @@ import * as Queue from "effect/Queue";
 import * as Stream from "effect/Stream";
 
 /** @internal */
-export const memoryAccessMonitorStream = (
+export const watch = (
     ranges: MemoryAccessRange | Array<MemoryAccessRange>,
     options?:
         | {

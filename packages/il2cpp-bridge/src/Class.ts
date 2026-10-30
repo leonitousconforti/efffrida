@@ -7,11 +7,11 @@ import "frida-il2cpp-bridge";
 
 import * as Cache from "effect/Cache";
 import * as Cause from "effect/Cause";
-import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Equal from "effect/Equal";
 import * as Function from "effect/Function";
 import * as Hash from "effect/Hash";
+import * as Option from "effect/Option";
 
 import { CacheCapacity } from "./Assembly.ts";
 
@@ -23,14 +23,20 @@ export {
     CacheCapacity,
 } from "./Assembly.ts";
 
-/** @internal */
-class ImageNameKey
-    extends Data.Class<{
-        readonly image: Il2Cpp.Image;
-        readonly name: string;
-    }>
-    implements Equal.Equal, Hash.Hash
-{
+/**
+ * Cache keys identify il2cpp objects by their native handle rather than by
+ * reference, since frida-il2cpp-bridge can hand out distinct wrapper instances
+ * for the same underlying image/class.
+ *
+ * @internal
+ */
+class ImageNameKey implements Equal.Equal {
+    readonly image: Il2Cpp.Image;
+    readonly name: string;
+    constructor({ image, name }: { image: Il2Cpp.Image; name: string }) {
+        this.image = image;
+        this.name = name;
+    }
     [Hash.symbol](): number {
         return Hash.string(`${this.image.handle}:${this.name}`);
     }
@@ -40,13 +46,13 @@ class ImageNameKey
 }
 
 /** @internal */
-class ClassNameKey
-    extends Data.Class<{
-        readonly klass: Il2Cpp.Class;
-        readonly name: string;
-    }>
-    implements Equal.Equal, Hash.Hash
-{
+class ClassNameKey implements Equal.Equal {
+    readonly klass: Il2Cpp.Class;
+    readonly name: string;
+    constructor({ klass, name }: { klass: Il2Cpp.Class; name: string }) {
+        this.klass = klass;
+        this.name = name;
+    }
     [Hash.symbol](): number {
         return Hash.string(`${this.klass.handle}:${this.name}`);
     }
@@ -56,14 +62,23 @@ class ClassNameKey
 }
 
 /** @internal */
-class MethodKey
-    extends Data.Class<{
-        readonly klass: Il2Cpp.Class;
-        readonly name: string;
-        readonly parameterCount: number | undefined;
-    }>
-    implements Equal.Equal, Hash.Hash
-{
+class MethodKey implements Equal.Equal {
+    readonly klass: Il2Cpp.Class;
+    readonly name: string;
+    readonly parameterCount: number | undefined;
+    constructor({
+        klass,
+        name,
+        parameterCount,
+    }: {
+        klass: Il2Cpp.Class;
+        name: string;
+        parameterCount: number | undefined;
+    }) {
+        this.klass = klass;
+        this.name = name;
+        this.parameterCount = parameterCount;
+    }
     [Hash.symbol](): number {
         return Hash.string(`${this.klass.handle}:${this.name}:${this.parameterCount}`);
     }
@@ -102,10 +117,9 @@ export const tryClass = Function.dual<
     (name: string) => (image: Il2Cpp.Image) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
     (image: Il2Cpp.Image, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>
 >(2, (image: Il2Cpp.Image, name: string) =>
-    Effect.try({
-        try: () => image.tryClass(name),
-        catch: () => new Cause.NoSuchElementError(`No class with name ${name}`),
-    }).pipe(Effect.flatMap(Effect.fromNullishOr))
+    Effect.sync(() => Option.fromNullishOr(image.tryClass(name))).pipe(
+        Effect.flatMap(Effect.fromOption(() => new Cause.NoSuchElementError(`No class with name ${name}`)))
+    )
 );
 
 /**
@@ -197,10 +211,9 @@ export const tryField = Function.dual<
         klass: Il2Cpp.Class,
         name: string
     ): Effect.Effect<Il2Cpp.Field<T>, Cause.NoSuchElementError, never> =>
-        Effect.try({
-            try: () => klass.field<T>(name),
-            catch: () => new Cause.NoSuchElementError(`No field with name ${name}`),
-        }).pipe(Effect.flatMap(Effect.fromNullishOr))
+        Effect.sync(() => Option.fromNullishOr(klass.tryField<T>(name))).pipe(
+            Effect.flatMap(Effect.fromOption(() => new Cause.NoSuchElementError(`No field with name ${name}`)))
+        )
 );
 
 /**
@@ -326,10 +339,18 @@ export const tryMethod = Function.dual<
         name: string,
         parameterCount?: number | undefined
     ): Effect.Effect<Il2Cpp.Method<T>, Cause.NoSuchElementError, never> =>
-        Effect.try({
-            try: () => klass.tryMethod<T>(name, parameterCount),
-            catch: () => new Cause.NoSuchElementError(`No method with name ${name}`),
-        }).pipe(Effect.flatMap(Effect.fromNullishOr))
+        Effect.sync(() => Option.fromNullishOr(klass.tryMethod<T>(name, parameterCount))).pipe(
+            Effect.flatMap(
+                Effect.fromOption(
+                    () =>
+                        new Cause.NoSuchElementError(
+                            parameterCount === undefined
+                                ? `No method with name ${name}`
+                                : `No method with name ${name} and ${parameterCount} parameters`
+                        )
+                )
+            )
+        )
 );
 
 /**
@@ -413,10 +434,9 @@ export const tryNested = Function.dual<
     (name: string) => (klass: Il2Cpp.Class) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>,
     (klass: Il2Cpp.Class, name: string) => Effect.Effect<Il2Cpp.Class, Cause.NoSuchElementError, never>
 >(2, (klass: Il2Cpp.Class, name: string) =>
-    Effect.try({
-        try: () => klass.tryNested(name),
-        catch: () => new Cause.NoSuchElementError(`No nested class with name ${name}`),
-    }).pipe(Effect.flatMap(Effect.fromNullishOr))
+    Effect.sync(() => Option.fromNullishOr(klass.tryNested(name))).pipe(
+        Effect.flatMap(Effect.fromOption(() => new Cause.NoSuchElementError(`No nested class with name ${name}`)))
+    )
 );
 
 /**

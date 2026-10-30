@@ -1,6 +1,7 @@
 import type * as HttpClientError from "effect/http/HttpClientError";
 import type * as Schema from "effect/Schema";
 
+import * as Clock from "effect/Clock";
 import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as HttpClient from "effect/http/HttpClient";
@@ -9,17 +10,47 @@ import * as HttpClientResponse from "effect/http/HttpClientResponse";
 import * as Redacted from "effect/Redacted";
 
 import type { AndroidDevice } from "../AndroidDevice.ts";
+import type * as Protobuf from "@bufbuild/protobuf";
 
 import {
     AndroidCheckinRequestSchema,
     AndroidCheckinResponseSchema,
+    type DeviceConfigurationProtoSchema,
     UploadDeviceConfigRequestSchema,
 } from "../generated/GooglePlay_pb.ts";
 import { PlayAccount, type PlayAccountError } from "../PlayAccount.ts";
 import { decodeResponse, decodeResponseFromResponseWrapper, encodeRequest } from "./http.ts";
 
+/**
+ * The device configuration that is reported both on checkin and when uploading
+ * the device config.
+ *
+ * @internal
+ */
+const deviceConfiguration = (
+    device: AndroidDevice
+): Protobuf.MessageInitShape<typeof DeviceConfigurationProtoSchema> => ({
+    touchScreen: device["TouchScreen"],
+    keyboard: device["Keyboard"],
+    navigation: device["Navigation"],
+    screenLayout: device["ScreenLayout"],
+    hasHardKeyboard: device["HasHardKeyboard"],
+    hasFiveWayNavigation: device["HasFiveWayNavigation"],
+    glEsVersion: device["GL.Version"],
+    glExtension: [...device["GL.Extensions"]],
+    systemSharedLibrary: [...device["SharedLibraries"]],
+    systemAvailableFeature: [...device["Features"]],
+    nativePlatform: [...device["Platforms"]],
+    screenDensity: device["Screen.Density"],
+    screenWidth: device["Screen.Width"],
+    screenHeight: device["Screen.Height"],
+    systemSupportedLocale: [...device["Locales"]],
+    deviceClass: 0,
+    deviceFeature: device["Features"].map((name) => ({ name, value: 0 })),
+});
+
 /** @internal */
-export const authHeaders = Effect.fn(function* (
+export const authHeaders = Effect.fn("authHeaders")(function* (
     device: AndroidDevice
 ): Effect.fn.Return<
     Record<string, string>,
@@ -28,6 +59,7 @@ export const authHeaders = Effect.fn(function* (
 > {
     const account = yield* PlayAccount;
     const credentials = yield* account.credentials;
+    const now = yield* Clock.currentTimeMillis;
 
     const checkinResponse = yield* Function.pipe(
         HttpClientRequest.post("https://android.clients.google.com/checkin"),
@@ -60,29 +92,11 @@ export const authHeaders = Effect.fn(function* (
                     manufacturer: device["Build.MANUFACTURER"],
                     buildProduct: device["Build.PRODUCT"],
                     client: device["Client"],
-                    timestamp: BigInt(Date.now()),
+                    timestamp: BigInt(now),
                     googleServices: device["GSF.version"],
                 },
             },
-            deviceConfiguration: {
-                touchScreen: device["TouchScreen"],
-                keyboard: device["Keyboard"],
-                navigation: device["Navigation"],
-                screenLayout: device["ScreenLayout"],
-                hasHardKeyboard: device["HasHardKeyboard"],
-                hasFiveWayNavigation: device["HasFiveWayNavigation"],
-                glEsVersion: device["GL.Version"],
-                glExtension: device["GL.Extensions"] as Array<string>,
-                systemSharedLibrary: device["SharedLibraries"] as Array<string>,
-                systemAvailableFeature: device["Features"] as Array<string>,
-                nativePlatform: device["Platforms"] as Array<string>,
-                screenDensity: device["Screen.Density"],
-                screenWidth: device["Screen.Width"],
-                screenHeight: device["Screen.Height"],
-                systemSupportedLocale: device["Locales"] as Array<string>,
-                deviceClass: 0,
-                deviceFeature: device["Features"].map((val) => ({ name: val, value: 0 })),
-            },
+            deviceConfiguration: deviceConfiguration(device),
         }),
         Effect.flatMap(HttpClient.execute),
         Effect.flatMap(HttpClientResponse.filterStatusOk),
@@ -112,25 +126,7 @@ export const authHeaders = Effect.fn(function* (
             Host: "android.clients.google.com",
         }),
         encodeRequest(UploadDeviceConfigRequestSchema, {
-            deviceConfiguration: {
-                touchScreen: device["TouchScreen"],
-                keyboard: device["Keyboard"],
-                navigation: device["Navigation"],
-                screenLayout: device["ScreenLayout"],
-                hasHardKeyboard: device["HasHardKeyboard"],
-                hasFiveWayNavigation: device["HasFiveWayNavigation"],
-                glEsVersion: device["GL.Version"],
-                glExtension: device["GL.Extensions"] as Array<string>,
-                systemSharedLibrary: device["SharedLibraries"] as Array<string>,
-                systemAvailableFeature: device["Features"] as Array<string>,
-                nativePlatform: device["Platforms"] as Array<string>,
-                screenDensity: device["Screen.Density"],
-                screenWidth: device["Screen.Width"],
-                screenHeight: device["Screen.Height"],
-                systemSupportedLocale: device["Locales"] as Array<string>,
-                deviceClass: 0,
-                deviceFeature: device["Features"].map((val) => ({ name: val, value: 0 })),
-            },
+            deviceConfiguration: deviceConfiguration(device),
         }),
         Effect.flatMap(HttpClient.execute),
         Effect.flatMap(HttpClientResponse.filterStatusOk),

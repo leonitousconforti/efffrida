@@ -11,6 +11,7 @@ import type * as RpcMessage from "effect/rpc/RpcMessage";
 import type * as Scope from "effect/Scope";
 
 import * as Effect from "effect/Effect";
+import * as FiberSet from "effect/FiberSet";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as RpcClient from "effect/rpc/RpcClient";
@@ -40,6 +41,7 @@ export const makeProtocolFrida = (): Effect.Effect<
     RpcClient.Protocol.make(
         Effect.fnUntraced(function* (writeResponse, clientIds) {
             const serialization = yield* RpcSerialization.RpcSerialization;
+            const runPromise = yield* FiberSet.makeRuntimePromise();
 
             const encoder = new TextEncoder();
             const parser = serialization.makeUnsafe();
@@ -58,10 +60,12 @@ export const makeProtocolFrida = (): Effect.Effect<
                     send(disconnectionRequest);
                 })
             );
-            rpc.exports[exportName] = (data: string | Record<string, number>): Promise<void> => {
+
+            // Binary data sent as a node Buffer arrives as an ArrayBuffer
+            rpc.exports[exportName] = (data: string | ArrayBuffer): Promise<void> => {
                 try {
                     const responses = parser.decode(
-                        typeof data === "string" ? data : Uint8Array.from(Object.values(data))
+                        typeof data === "string" ? data : new Uint8Array(data)
                     ) as Array<RpcMessage.FromServerEncoded>;
                     if (responses.length === 0) return Promise.resolve();
                     let i = 0;
@@ -76,7 +80,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                                 return writeResponse(clientId, response);
                             } else return broadcast(response);
                         },
-                    }).pipe(Effect.runPromise);
+                    }).pipe(runPromise);
                 } catch (defect) {
                     return broadcast({
                         _tag: "ClientProtocolError",
@@ -86,7 +90,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                                 cause: defect,
                             }),
                         }),
-                    }).pipe(Effect.runPromise);
+                    }).pipe(runPromise);
                 }
             };
 

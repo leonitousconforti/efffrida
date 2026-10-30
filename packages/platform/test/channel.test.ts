@@ -41,11 +41,11 @@ describe("channel tests", () => {
                 },
             };
 
-            const channel = FridaChannel.fromIOStream(
-                iostream,
-                (cause) => new WriteError({ cause }),
-                (cause) => new ReadError({ cause })
-            );
+            const channel = FridaChannel.fromIOStream({
+                evaluate: () => iostream,
+                onWriteError: (cause) => new WriteError({ cause }),
+                onReadError: (cause) => new ReadError({ cause }),
+            });
 
             const read = yield* Stream.make(new Uint8Array([9, 8]), new Uint8Array([7])).pipe(
                 Stream.pipeThroughChannel(channel),
@@ -87,11 +87,11 @@ describe("channel tests", () => {
             const connection = yield* Effect.promise(() => Socket.connect({ host: "127.0.0.1", port }));
             const response = yield* Stream.make(encoder.encode("ping")).pipe(
                 Stream.pipeThroughChannel(
-                    FridaChannel.fromIOStream(
-                        connection,
-                        (cause) => new WriteError({ cause }),
-                        (cause) => new ReadError({ cause })
-                    )
+                    FridaChannel.fromIOStream({
+                        evaluate: () => connection,
+                        onWriteError: (cause) => new WriteError({ cause }),
+                        onReadError: (cause) => new ReadError({ cause }),
+                    })
                 ),
                 Stream.runCollect
             );

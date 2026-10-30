@@ -24,6 +24,12 @@ import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 
 import * as constants from "../shared/Constants.ts";
 
+/**
+ * Frida only sends node Buffers as binary data, other typed arrays get JSON
+ * encoded as `{"0": .., "1": ..}`. This is a view, not a copy.
+ */
+const toBuffer = (bytes: Uint8Array): Buffer => Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
 /** Encodes defects like effect's own server protocols, so errors survive serialization. */
 const makeDefectEncoder = (codecFor: RpcSerialization.CodecFor): ((defect: unknown) => unknown) =>
     Schema.encodeSync(codecFor(Schema.Defect()));
@@ -43,7 +49,6 @@ export const makeProtocolFrida = (): Effect.Effect<
         const encodeDefect = makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
-        const encoder = new TextEncoder();
 
         let clientId = 0;
         const clientIds = new Set<number>();
@@ -72,12 +77,11 @@ export const makeProtocolFrida = (): Effect.Effect<
         );
 
         let writeRequest!: (clientId: number, message: RpcMessage.FromClientEncoded) => Effect.Effect<void>;
-        const makeRawWriter =
-            (exportName: string) =>
-            (data: string | Uint8Array): Effect.Effect<void> => {
-                const transformed = typeof data === "string" ? encoder.encode(data) : data;
-                return script.callExport(exportName)(transformed).pipe(Effect.orDie);
-            };
+        const makeRawWriter = (exportName: string) => {
+            const callExport = script.callExport(exportName);
+            return (data: string | Uint8Array): Effect.Effect<void> =>
+                callExport(typeof data === "string" ? data : toBuffer(data)).pipe(Effect.orDie);
+        };
 
         const onClientConnect = (message: string): Effect.Effect<void> => {
             const exportName = stripConnectionPrefix(message);

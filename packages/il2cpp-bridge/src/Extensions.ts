@@ -5,7 +5,11 @@
 
 import "frida-il2cpp-bridge";
 
-import { Array, Option, Record, pipe, Result } from "effect";
+import * as Array from "effect/Array";
+import * as Function from "effect/Function";
+import * as Option from "effect/Option";
+import * as Record from "effect/Record";
+import * as Result from "effect/Result";
 
 /**
  * @since 1.0.0
@@ -82,17 +86,14 @@ export class Dictionary<
     }
 
     public *[Symbol.iterator](): IterableIterator<[K, V]> {
-        const entries = this.entries;
-        for (let i = 0; i < this.length; i++) {
-            yield entries[i];
-        }
+        yield* this.entries;
     }
 
     public override toString(): string {
-        return this.isNull() ? "null" : `{${[...this.entries].map(([k, v]) => `${k}: ${v}`).join(", ")}}`;
+        return this.isNull() ? "null" : `{${this.entries.map(([k, v]) => `${k}: ${v}`).join(", ")}}`;
     }
 
-    public toRecord(keys?: Array<K> | undefined): Record<string, V> {
+    public toRecord(keys?: ReadonlyArray<K> | undefined): Record<string, V> {
         const readKeyOptionString = (key: K): Option.Option<string> =>
             key instanceof Il2Cpp.String
                 ? Option.fromNullOr(key.isNull() ? null : key.content)
@@ -101,7 +102,7 @@ export class Dictionary<
         const readValueOption = (key: K): Option.Option<V> =>
             this.containsKey(key) ? Option.some(this.get(key)) : Option.none();
 
-        return pipe(
+        return Function.pipe(
             keys ?? this.keys,
             Array.filterMap((key) => {
                 const maybeKey = readKeyOptionString(key);
@@ -118,7 +119,10 @@ export class Dictionary<
         return Il2Cpp.corlib.class("System.Collections.Generic.Dictionary`2");
     }
 
-    /** Lifts an Il2Cpp.Object to a Dictionary. */
+    /**
+     * Lifts an Il2Cpp.Object holding a System.Collections.Generic.Dictionary
+     * instance to a Dictionary.
+     */
     public static lift<
         K extends Il2Cpp.Field.Type = Il2Cpp.Field.Type,
         V extends Il2Cpp.Field.Type = Il2Cpp.Field.Type,
@@ -229,7 +233,10 @@ export class List<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type> extends Il2Cp
         return Il2Cpp.corlib.class("System.Collections.Generic.List`1");
     }
 
-    /** Lifts an Il2Cpp.Array to a List. */
+    /**
+     * Lifts an Il2Cpp.Object holding a System.Collections.Generic.List instance
+     * to a List.
+     */
     public static lift<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(object: Il2Cpp.Object): List<T> {
         return new List<T>(object.handle);
     }
@@ -237,7 +244,7 @@ export class List<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type> extends Il2Cp
     /** Creates a new list with the given elements. */
     public static of<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type>(
         klass: Il2Cpp.Class,
-        elements: Array<T> | undefined = []
+        elements: ReadonlyArray<T> | undefined = []
     ): List<T> {
         const list = new List<T>(List.class.inflate(klass).alloc());
         for (const element of elements) {

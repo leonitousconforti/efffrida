@@ -80,7 +80,7 @@ export const isFridaScript: (u: unknown) => u is FridaScript = internalScript.is
  * @category Options
  */
 export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions {
-    readonly messageMailboxCapacity?:
+    readonly messageQueueCapacity?:
         | {
               readonly capacity?: number | undefined;
               readonly strategy?: "dropping" | "sliding" | undefined;

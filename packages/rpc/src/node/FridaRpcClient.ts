@@ -27,6 +27,12 @@ import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 import * as constants from "../shared/Constants.ts";
 
 /**
+ * Frida only sends node Buffers as binary data, other typed arrays get JSON
+ * encoded as `{"0": .., "1": ..}`. This is a view, not a copy.
+ */
+const toBuffer = (bytes: Uint8Array): Buffer => Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+/**
  * @since 1.0.0
  * @category Protocol
  */
@@ -52,7 +58,10 @@ export const makeProtocolFrida = (
 
             const mainExportName = options?.exportName ?? constants.defaultServerMainExportName;
             const informServerToSetupExport = script.callExport(mainExportName, Schema.String);
-            const clientExportName = yield* Effect.orDie(informServerToSetupExport());
+            const clientExportName = yield* informServerToSetupExport().pipe(
+                Effect.catchTag("SchemaError", Effect.die)
+            );
+            const callClientExport = script.callExport(clientExportName);
             const responseMessage = constants.fridaRpcServerMakeResponseMessageForClient(clientExportName);
 
             const parser = serialization.makeUnsafe();
@@ -60,7 +69,7 @@ export const makeProtocolFrida = (
             let currentError: RpcClientError.RpcClientError | undefined = undefined;
 
             const broadcast = (response: RpcMessage.FromServerEncoded) =>
-                Effect.forEach(clientIds, (clientId) => writeResponse(clientId, response));
+                Effect.forEach(clientIds, (clientId) => writeResponse(clientId, response), { discard: true });
 
             yield* Stream.runForEach(script.stream, ({ message, data }) => {
                 if (message !== responseMessage || Option.isNone(data)) {
@@ -129,7 +138,17 @@ export const makeProtocolFrida = (
 
                     const encoded = parser.encode(request);
                     if (encoded === undefined) return Effect.void;
-                    return Effect.orDie(script.callExport(clientExportName)(encoded));
+                    return callClientExport(typeof encoded === "string" ? encoded : toBuffer(encoded)).pipe(
+                        Effect.mapError(
+                            (cause) =>
+                                new RpcClientError.RpcClientError({
+                                    reason: new RpcClientError.RpcClientDefect({
+                                        message: "Error sending message to Frida rpc server",
+                                        cause,
+                                    }),
+                                })
+                        )
+                    );
                 },
             };
         })

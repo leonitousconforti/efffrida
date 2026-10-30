@@ -4,9 +4,13 @@
  * @since 1.0.0
  */
 
+import type * as Pull from "effect/Pull";
+import type * as Scope from "effect/Scope";
 import type * as SqlConnection from "effect/sql/SqlConnection";
 
+import * as Array from "effect/Array";
 import * as Cache from "effect/Cache";
+import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Duration from "effect/Duration";
@@ -14,7 +18,6 @@ import * as Effect from "effect/Effect";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Reactivity from "effect/reactivity/Reactivity";
-import * as Scope from "effect/Scope";
 import * as Semaphore from "effect/Semaphore";
 import * as SqlClient from "effect/sql/SqlClient";
 import * as SqlError from "effect/sql/SqlError";
@@ -25,6 +28,9 @@ import * as Stream from "effect/Stream";
 const ATTR_DB_SYSTEM_NAME = "db.system.name";
 
 /** @internal */
+const STREAM_CHUNK_SIZE = 128;
+
+/** @internal */
 const classifyError = (cause: unknown, message: string, operation: string) =>
     SqlError.classifySqliteError(cause, { message, operation });
 
@@ -32,13 +38,13 @@ const classifyError = (cause: unknown, message: string, operation: string) =>
  * @since 1.0.0
  * @category Type ids
  */
-export const TypeId: unique symbol = Symbol.for("@efffrida/effect-sql-frida/SqliteClient");
+export const TypeId: TypeId = "~@efffrida/sql/SqliteClient";
 
 /**
  * @since 1.0.0
  * @category Type ids
  */
-export type TypeId = typeof TypeId;
+export type TypeId = "~@efffrida/sql/SqliteClient";
 
 /**
  * @since 1.0.0
@@ -55,17 +61,15 @@ export interface SqliteClient extends SqlClient.SqlClient {
      */
     readonly dump: Effect.Effect<string, SqlError.SqlError>;
 
-    /** Not supported in frida */
-    readonly backup: never;
+    /** Not supported in sqlite */
     readonly updateValues: never;
-    readonly loadExtension: never;
 }
 
 /**
  * @since 1.0.0
  * @category Tags
  */
-export const SqliteClient = Context.Service<SqliteClient>("@efffrida/effect-sql-frida/SqliteClient");
+export const SqliteClient = Context.Service<SqliteClient>("@efffrida/sql/SqliteClient");
 
 /**
  * @since 1.0.0
@@ -99,7 +103,7 @@ interface SqliteConnection extends SqlConnection.Connection {
  */
 export const make = (
     options: SqliteClientConfig
-): Effect.Effect<SqliteClient, never, Scope.Scope | Reactivity.Reactivity> =>
+): Effect.Effect<SqliteClient, SqlError.SqlError, Scope.Scope | Reactivity.Reactivity> =>
     Effect.gen(function* () {
         const compiler = Statement.makeCompilerSqlite(options.transformQueryNames);
         const transformRows = options.transformResultNames
@@ -107,32 +111,45 @@ export const make = (
             : undefined;
 
         const makeConnection = Effect.gen(function* () {
-            const scope = yield* Effect.scope;
-            const db =
-                "inlineData" in options
-                    ? SqliteDatabase.openInline(options.inlineData)
-                    : SqliteDatabase.open(options.filename, { flags: options.openFlags ?? ["readwrite", "create"] });
-
-            yield* Scope.addFinalizer(
-                scope,
-                Effect.sync(() => db.close())
+            const db = yield* Effect.acquireRelease(
+                Effect.try({
+                    try: () =>
+                        "inlineData" in options
+                            ? SqliteDatabase.openInline(options.inlineData)
+                            : SqliteDatabase.open(options.filename, {
+                                  flags: options.openFlags ?? ["readwrite", "create"],
+                              }),
+                    catch: (cause) =>
+                        new SqlError.SqlError({
+                            reason: classifyError(cause, "Failed to open database", "connect"),
+                        }),
+                }),
+                (db) => Effect.sync(() => db.close())
             );
 
             if (options.disableWAL !== true) {
-                db.exec("PRAGMA journal_mode = WAL");
+                yield* Effect.try({
+                    try: () => db.exec("PRAGMA journal_mode = WAL"),
+                    catch: (cause) =>
+                        new SqlError.SqlError({
+                            reason: classifyError(cause, "Failed to configure database", "connect"),
+                        }),
+                });
             }
+
+            const prepare = (sql: string): Effect.Effect<SqliteStatement, SqlError.SqlError> =>
+                Effect.try({
+                    try: () => db.prepare(sql),
+                    catch: (cause) =>
+                        new SqlError.SqlError({
+                            reason: classifyError(cause, "Failed to prepare statement", "prepare"),
+                        }),
+                });
 
             const prepareCache = yield* Cache.make({
                 capacity: options.prepareCacheSize ?? 200,
                 timeToLive: options.prepareCacheTTL ?? Duration.minutes(10),
-                lookup: (sql: string) =>
-                    Effect.try({
-                        try: () => db.prepare(sql),
-                        catch: (cause) =>
-                            new SqlError.SqlError({
-                                reason: classifyError(cause, "Failed to prepare statement", "prepare"),
-                            }),
-                    }),
+                lookup: prepare,
             });
 
             const bind = (statement: SqliteStatement, index: number, param: unknown): void => {
@@ -171,6 +188,12 @@ export const make = (
                 }
             };
 
+            const toRecord = (columns: ReadonlyArray<string>, row: ReadonlyArray<any>): Record<string, any> => {
+                const record: Record<string, any> = {};
+                for (let i = 0; i < columns.length; i++) record[columns[i]] = row[i];
+                return record;
+            };
+
             const runStatement = (
                 statement: SqliteStatement,
                 params: ReadonlyArray<unknown>,
@@ -187,11 +210,7 @@ export const make = (
                                 return result;
                             }
                             const columns = statement.columnNames;
-                            while ((row = statement.step()) !== null) {
-                                const record: Record<string, any> = {};
-                                for (let i = 0; i < columns.length; i++) record[columns[i]] = row[i];
-                                result.push(record);
-                            }
+                            while ((row = statement.step()) !== null) result.push(toRecord(columns, row));
                             return result;
                         } finally {
                             statement.reset();
@@ -210,6 +229,66 @@ export const make = (
             ): Effect.Effect<ReadonlyArray<any>, SqlError.SqlError, never> =>
                 Effect.flatMap(Cache.get(prepareCache, sql), (s) => runStatement(s, params, raw));
 
+            // Streams prepare their own statement, rather than taking one from
+            // the cache, so that a query run while the stream is still open
+            // can't step or reset it. Resetting on release ends the read
+            // transaction even if the stream is not fully consumed.
+            const stream = (
+                sql: string,
+                params: ReadonlyArray<unknown>
+            ): Stream.Stream<Record<string, any>, SqlError.SqlError> =>
+                Stream.scoped(
+                    Stream.fromPull(
+                        Effect.map(
+                            Effect.acquireRelease(
+                                Effect.tap(prepare(sql), (statement) =>
+                                    Effect.try({
+                                        try: () => bindAll(statement, params),
+                                        catch: (cause) =>
+                                            new SqlError.SqlError({
+                                                reason: classifyError(cause, "Failed to bind parameters", "bind"),
+                                            }),
+                                    })
+                                ),
+                                (statement) => Effect.sync(() => statement.reset())
+                            ),
+                            (statement) => {
+                                const columns = statement.columnNames;
+                                // Stepping a finished statement would restart
+                                // it
+                                let done = false;
+                                const step = Effect.try({
+                                    try: () => {
+                                        const rows: Array<Record<string, any>> = [];
+                                        while (rows.length < STREAM_CHUNK_SIZE) {
+                                            const row = statement.step();
+                                            if (row === null) {
+                                                done = true;
+                                                break;
+                                            }
+                                            rows.push(toRecord(columns, row));
+                                        }
+                                        return rows;
+                                    },
+                                    catch: (cause) =>
+                                        new SqlError.SqlError({
+                                            reason: classifyError(cause, "Failed to execute statement", "stream"),
+                                        }),
+                                });
+                                const pull: Pull.Pull<
+                                    Array.NonEmptyReadonlyArray<Record<string, any>>,
+                                    SqlError.SqlError
+                                > = Effect.suspend(() =>
+                                    done
+                                        ? Cause.done()
+                                        : Effect.filterOrElse(step, Array.isArrayNonEmpty, () => Cause.done())
+                                );
+                                return pull;
+                            }
+                        )
+                    )
+                );
+
             return Function.identity<SqliteConnection>({
                 execute(sql, params, transformRows) {
                     const effect = run(sql, params, false);
@@ -222,14 +301,19 @@ export const make = (
                     return run(sql, params, true);
                 },
                 executeUnprepared(sql, params, transformRows) {
-                    const effect = runStatement(db.prepare(sql), params ?? [], false);
+                    const effect = Effect.flatMap(prepare(sql), (s) => runStatement(s, params ?? [], false));
                     return transformRows ? Effect.map(effect, transformRows) : effect;
                 },
                 executeValuesUnprepared(sql, params) {
-                    return runStatement(db.prepare(sql), params ?? [], true);
+                    return Effect.flatMap(prepare(sql), (s) => runStatement(s, params ?? [], true));
                 },
-                executeStream(_sql, _params, _transformRows) {
-                    return Stream.die("executeStream not implemented");
+                executeStream(sql, params, transformRows) {
+                    return transformRows
+                        ? Stream.mapArray(
+                              stream(sql, params),
+                              (rows) => transformRows(rows) as Array.NonEmptyReadonlyArray<Record<string, any>>
+                          )
+                        : stream(sql, params);
                 },
                 dump: Effect.try({
                     try: () => db.dump(),
@@ -244,25 +328,21 @@ export const make = (
             });
         });
 
-        const semaphore = yield* Semaphore.make(1);
-        const connection = yield* makeConnection;
-
-        const acquirer = semaphore.withPermits(1)(Effect.succeed(connection));
-        const transactionAcquirer = Effect.uninterruptibleMask((restore) =>
-            Effect.as(
-                Effect.andThen(
-                    restore(semaphore.take(1)),
-                    Effect.tap(Effect.scope, (scope) => Scope.addFinalizer(scope, semaphore.release(1)))
-                ),
-                connection
-            )
-        );
+        // Frida doesn't expose sqlite3_get_autocommit, so there is no
+        // isTransaction and a failed COMMIT always issues a ROLLBACK.
+        const { acquirer, borrower, onCommitFailure, transactionAcquirer } = SqlClient.makeSqliteAcquirers({
+            connection: Effect.succeed(yield* makeConnection),
+            semaphore: yield* Semaphore.make(1),
+        });
 
         return Object.assign(
             (yield* SqlClient.make({
                 acquirer,
+                borrower,
                 compiler,
                 transactionAcquirer,
+                onCommitFailure,
+                prepareTransactionControls: true,
                 driver: "sqlite-frida",
                 spanAttributes: [
                     ...(options.spanAttributes ? Object.entries(options.spanAttributes) : []),
@@ -273,7 +353,7 @@ export const make = (
             {
                 [TypeId]: TypeId,
                 config: options,
-                dump: Effect.flatMap(acquirer, (_) => _.dump),
+                dump: Effect.scoped(Effect.flatMap(acquirer, (_) => _.dump)),
             }
         );
     });
@@ -284,7 +364,7 @@ export const make = (
  */
 export const layerConfig = (
     config: Config.Wrap<SqliteClientConfig>
-): Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError> =>
+): Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError | SqlError.SqlError> =>
     Layer.effectContext(
         Config.unwrap(config).pipe(
             Effect.flatMap(make),
@@ -296,9 +376,7 @@ export const layerConfig = (
  * @since 1.0.0
  * @category Layers
  */
-export const layer = (
-    config: SqliteClientConfig
-): Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError> =>
+export const layer = (config: SqliteClientConfig): Layer.Layer<SqliteClient | SqlClient.SqlClient, SqlError.SqlError> =>
     Layer.effectContext(
         Effect.map(make(config), (client) =>
             Context.make(SqliteClient, client).pipe(Context.add(SqlClient.SqlClient, client))

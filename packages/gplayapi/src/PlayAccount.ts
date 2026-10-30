@@ -62,7 +62,7 @@ export interface PlayAccountService {
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export class PlayAccount extends Context.Service<PlayAccount, PlayAccountService>()("@efffrida/gplayapi/PlayAccount") {}
 
@@ -107,7 +107,7 @@ export const layerAuroraDispenser = (
                 Effect.flatMap(HttpClientResponse.filterStatusOk),
                 Effect.flatMap(HttpClientResponse.schemaBodyJson(AuroraDispenserResponse)),
                 Effect.map(({ auth, email }) => ({ email, token: Redacted.make(auth) })),
-                Effect.catch((cause) => new PlayAccountError({ strategy: "aurora-dispenser", cause }))
+                Effect.mapError((cause) => new PlayAccountError({ strategy: "aurora-dispenser", cause }))
             );
 
             return { credentials };
@@ -133,7 +133,7 @@ export const layerConfig = (
     const credentials = Effect.all({
         email: options?.email ?? Config.String("GPLAY_EMAIL"),
         token: options?.token ?? Config.Redacted("GPLAY_AUTH_TOKEN"),
-    }).pipe(Effect.catch((cause) => new PlayAccountError({ strategy: "config", cause })));
+    }).pipe(Effect.mapError((cause) => new PlayAccountError({ strategy: "config", cause })));
 
     return Layer.succeed(PlayAccount, { credentials });
 };
