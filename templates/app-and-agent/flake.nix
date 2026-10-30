@@ -13,15 +13,22 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.alejandra);
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            nixd
-            nixfmt
-            corepack
-            nodejs-slim_22
-          ];
-        };
-      });
+      devShells = forAllSystems (
+        pkgs:
+        let
+          nodejs = pkgs.nodejs-slim_26;
+          corepack = pkgs.corepack.override { nodejs-slim = nodejs; };
+        in
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              nixd
+              nixfmt
+              nodejs
+              corepack
+            ];
+          };
+        }
+      );
     };
 }
