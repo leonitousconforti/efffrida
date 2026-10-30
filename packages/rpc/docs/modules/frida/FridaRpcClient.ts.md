@@ -32,7 +32,7 @@ Since v1.0.0
 declare const layerProtocolFrida: Layer.Layer<RpcClient.Protocol, never, RpcSerialization.RpcSerialization>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L121)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L116)
 
 Since v1.0.0
 
@@ -50,6 +50,6 @@ declare const makeProtocolFrida: () => Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L36)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/rpc/src/FridaRpcClient.ts#L31)
 
 Since v1.0.0

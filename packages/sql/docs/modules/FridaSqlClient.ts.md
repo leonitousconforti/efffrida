@@ -42,7 +42,7 @@ declare const make: (
 ) => Effect.Effect<SqliteClient, SqlError.SqlError, Scope.Scope | Reactivity.Reactivity>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L104)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L105)
 
 Since v1.0.0
 
@@ -56,7 +56,7 @@ Since v1.0.0
 declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L379)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L385)
 
 Since v1.0.0
 
@@ -70,7 +70,7 @@ declare const layerConfig: (
 ) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError | SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L365)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L371)
 
 Since v1.0.0
 
@@ -97,7 +97,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L53)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L54)
 
 Since v1.0.0
 
@@ -120,7 +120,7 @@ type SqliteClientConfig = (
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L78)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L79)
 
 Since v1.0.0
 
@@ -134,7 +134,7 @@ Since v1.0.0
 declare const SqliteClient: Context.Service<SqliteClient, SqliteClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L72)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L73)
 
 Since v1.0.0
 
@@ -148,7 +148,7 @@ Since v1.0.0
 declare const TypeId: "~@efffrida/sql/SqliteClient"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L41)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L42)
 
 Since v1.0.0
 
@@ -160,6 +160,6 @@ Since v1.0.0
 type TypeId = "~@efffrida/sql/SqliteClient"
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L47)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L48)
 
 Since v1.0.0

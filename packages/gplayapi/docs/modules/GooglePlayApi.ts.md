@@ -31,6 +31,8 @@ Since v1.0.0
 
 ## bulkDetails
 
+Fetches the details of an app through the bulk details endpoint.
+
 **Signature**
 
 ```ts
@@ -43,11 +45,13 @@ declare const bulkDetails: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L125)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L132)
 
 Since v1.0.0
 
 ## delivery
+
+Fetches the download urls and digests of an app's APK, splits and OBBs.
 
 **Signature**
 
@@ -67,11 +71,13 @@ declare const delivery: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L176)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L187)
 
 Since v1.0.0
 
 ## details
+
+Fetches the store listing details of an app.
 
 **Signature**
 
@@ -85,7 +91,7 @@ declare const details: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L109)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L114)
 
 Since v1.0.0
 
@@ -122,11 +128,13 @@ declare const downloadToDisk: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L326)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L339)
 
 Since v1.0.0
 
 ## downloadToStreams
+
+Purchases and delivers an app, returning a lazy stream per file to download.
 
 **Signature**
 
@@ -160,11 +168,13 @@ declare const downloadToStreams: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L215)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L228)
 
 Since v1.0.0
 
 ## purchase
+
+Acquires an app for the account, returning the token that `delivery` needs.
 
 **Signature**
 
@@ -179,7 +189,7 @@ declare const purchase: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L147)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L156)
 
 Since v1.0.0
 
