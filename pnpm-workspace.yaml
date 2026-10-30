@@ -39,6 +39,7 @@ overrides:
 peerDependencyRules:
   ignoreMissing:
     - tsx
+
   # Ranges, so that Renovate's bumps don't break the lockfile update
   allowedVersions:
     typescript: "7"
