@@ -176,10 +176,10 @@ importers:
     devDependencies:
       '@babel/cli':
         specifier: 8.0.6
-        version: 8.0.6(@babel/core@8.0.7)
+        version: 8.0.6(@babel/core@8.0.10)
       '@babel/core':
-        specifier: 8.0.7
-        version: 8.0.7
+        specifier: 8.0.10
+        version: 8.0.10
       '@changesets/cli':
         specifier: 3.0.3
         version: 3.0.3
@@ -200,7 +200,7 @@ importers:
         version: 26.6.6
       babel-plugin-annotate-pure-calls:
         specifier: 0.5.0
-        version: 0.5.0(@babel/core@8.0.7)
+        version: 0.5.0(@babel/core@8.0.10)
       madge:
         specifier: 8.0.0
         version: 8.0.0(typescript@7.0.2)
@@ -654,8 +654,8 @@ packages:
     resolution: {integrity: sha512-YLsYoQMvL8l8WrGpN3Zj7O1wK5LEBN+cQtux7BcuHyxIXve724XG+zuJ1n3U1cUweRtTzQOA4IHbuQw3N34SZw==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/core@8.0.7':
-    resolution: {integrity: sha512-ZIsZWBG6Y1oa+8fkQVp0xeCdjCHBkXFCCIWrmg9SvejVvfcVQgKKRmGrBDWfM7rilhvnRoEuaqa5dkK7KB3pHA==}
+  '@babel/core@8.0.10':
+    resolution: {integrity: sha512-T6dEcoMJ3L1hyLuNfRXcVlqQrN79kU/SB5bDygVgQNIOUgStdyEGzigtRA9K+9Coh7SZUSt543oWRBxvqYdyuQ==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
   '@babel/generator@8.0.10':
@@ -3316,9 +3316,9 @@ packages:
 
 snapshots:
 
-  '@babel/cli@8.0.6(@babel/core@8.0.7)':
+  '@babel/cli@8.0.6(@babel/core@8.0.10)':
     dependencies:
-      '@babel/core': 8.0.7
+      '@babel/core': 8.0.10
       '@jridgewell/trace-mapping': 0.3.31
       chokidar: 5.0.0
       commander: 14.0.3
@@ -3333,7 +3333,7 @@ snapshots:
 
   '@babel/compat-data@8.0.5': {}
 
-  '@babel/core@8.0.7':
+  '@babel/core@8.0.10':
     dependencies:
       '@babel/code-frame': 8.0.6
       '@babel/generator': 8.0.10
@@ -4309,9 +4309,9 @@ snapshots:
     dependencies:
       gulp-header: 1.8.12
 
-  babel-plugin-annotate-pure-calls@0.5.0(@babel/core@8.0.7):
+  babel-plugin-annotate-pure-calls@0.5.0(@babel/core@8.0.10):
     dependencies:
-      '@babel/core': 8.0.7
+      '@babel/core': 8.0.10
 
   balanced-match@4.0.4: {}
 

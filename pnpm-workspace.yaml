@@ -39,9 +39,10 @@ overrides:
 peerDependencyRules:
   ignoreMissing:
     - tsx
+  # Ranges, so that Renovate's bumps don't break the lockfile update
   allowedVersions:
-    typescript: "7.0.2"
-    "@babel/core": "8.0.7"
+    typescript: "7"
+    "@babel/core": "8"
 
 # Frida's V8 runtime is built without ICU, so regexes using `\p{...}` fail to
 # compile inside agents. Drop these once https://github.com/frida/frida-gum/issues/1195
