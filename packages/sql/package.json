@@ -1,7 +1,7 @@
 {
     "name": "@efffrida/sql",
     "version": "0.0.47",
-    "description": "effect-ts sql-frida",
+    "description": "effect/sql driver for Frida's SqliteDatabase",
     "keywords": [
         "effect-ts",
         "frida.re",

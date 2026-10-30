@@ -1,7 +1,7 @@
 {
     "name": "@efffrida/frida-tools",
     "version": "0.0.61",
-    "description": "Frida with effect-ts",
+    "description": "Acquire Frida devices, spawn and attach to processes, and compile and load agents",
     "keywords": [
         "effect-ts",
         "frida.re",

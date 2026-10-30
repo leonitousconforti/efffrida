@@ -1,7 +1,7 @@
 {
     "name": "@efffrida/gplayapi",
     "version": "0.0.37",
-    "description": "Google play api",
+    "description": "Google Play API client for downloading apps",
     "keywords": [
         "effect-ts",
         "frida.re",

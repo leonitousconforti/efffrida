@@ -1,7 +1,7 @@
 {
     "name": "create-efffrida-app",
     "version": "0.0.24",
-    "description": "Create efffrida applications with a single command",
+    "description": "Scaffold a new efffrida project with a single command",
     "keywords": [
         "effect-ts",
         "frida.re"
