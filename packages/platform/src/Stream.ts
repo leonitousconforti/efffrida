@@ -23,6 +23,14 @@ export interface FromInputStreamOptions {
 }
 
 /**
+ * Receives the messages posted by the host, shared with `Stream.share` using
+ * the given options.
+ *
+ * Frida's `recv` registrations are shared module wide, so every message is
+ * delivered once across all `receiveStream`s: two of them split the messages
+ * between each other instead of both seeing every message. Call it once and
+ * share the resulting stream.
+ *
  * @since 1.0.0
  * @category IPC
  */

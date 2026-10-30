@@ -16,23 +16,14 @@ import * as Queue from "effect/Queue";
 import * as RpcMessage from "effect/rpc/RpcMessage";
 import * as RpcSerialization from "effect/rpc/RpcSerialization";
 import * as RpcServer from "effect/rpc/RpcServer";
-import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
 
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 
 import * as constants from "../shared/Constants.ts";
-
-/**
- * Frida only sends node Buffers as binary data, other typed arrays get JSON
- * encoded as `{"0": .., "1": ..}`. This is a view, not a copy.
- */
-const toBuffer = (bytes: Uint8Array): Buffer => Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-
-/** Encodes defects like effect's own server protocols, so errors survive serialization. */
-const makeDefectEncoder = (codecFor: RpcSerialization.CodecFor): ((defect: unknown) => unknown) =>
-    Schema.encodeSync(codecFor(Schema.Defect()));
+import * as internalDefect from "../shared/internal/defect.ts";
+import * as internalBytes from "./internal/bytes.ts";
 
 /**
  * @since 1.0.0
@@ -46,7 +37,7 @@ export const makeProtocolFrida = (): Effect.Effect<
     Effect.gen(function* () {
         const serialization = yield* RpcSerialization.RpcSerialization;
         const script = yield* FridaScript.FridaScript;
-        const encodeDefect = makeDefectEncoder(serialization.codecFor);
+        const encodeDefect = internalDefect.makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
 
@@ -80,7 +71,7 @@ export const makeProtocolFrida = (): Effect.Effect<
         const makeRawWriter = (exportName: string) => {
             const callExport = script.callExport(exportName);
             return (data: string | Uint8Array): Effect.Effect<void> =>
-                callExport(typeof data === "string" ? data : toBuffer(data)).pipe(Effect.orDie);
+                callExport(typeof data === "string" ? data : internalBytes.toBuffer(data)).pipe(Effect.orDie);
         };
 
         const onClientConnect = (message: string): Effect.Effect<void> => {

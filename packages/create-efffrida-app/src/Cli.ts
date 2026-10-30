@@ -1,5 +1,13 @@
-import { Effect, FileSystem, Path, Record, Schema } from "effect";
-import { Argument, CliError, Command, Flag, Prompt } from "effect/cli";
+import * as Argument from "effect/cli/Argument";
+import * as CliError from "effect/cli/CliError";
+import * as Command from "effect/cli/Command";
+import * as Flag from "effect/cli/Flag";
+import * as Prompt from "effect/cli/Prompt";
+import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Path from "effect/Path";
+import * as Record from "effect/Record";
+import * as Schema from "effect/Schema";
 
 import { type ProjectConfig, templates } from "./Domain.ts";
 import { GitHub } from "./GitHub.ts";

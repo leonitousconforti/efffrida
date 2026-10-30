@@ -39,6 +39,8 @@
             "default": "./dist/*.js"
         },
         "./internal/*": null,
+        "./frida/internal/*": null,
+        "./node/internal/*": null,
         "./shared/*": null,
         "./*/index": null
     },
@@ -49,6 +51,8 @@
             "./frida": "./dist/frida/index.js",
             "./*": "./dist/*.js",
             "./internal/*": null,
+            "./frida/internal/*": null,
+            "./node/internal/*": null,
             "./shared/*": null,
             "./*/index": null
         },

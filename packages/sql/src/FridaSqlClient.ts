@@ -15,6 +15,7 @@ import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
+import * as Exit from "effect/Exit";
 import * as Function from "effect/Function";
 import * as Layer from "effect/Layer";
 import * as Reactivity from "effect/reactivity/Reactivity";
@@ -146,10 +147,12 @@ export const make = (
                         }),
                 });
 
-            const prepareCache = yield* Cache.make({
+            // Failed prepares aren't cached, so a query run before its table
+            // exists can succeed once the table is created
+            const prepareCacheTTL = options.prepareCacheTTL ?? Duration.minutes(10);
+            const prepareCache = yield* Cache.makeWith(prepare, {
                 capacity: options.prepareCacheSize ?? 200,
-                timeToLive: options.prepareCacheTTL ?? Duration.minutes(10),
-                lookup: prepare,
+                timeToLive: (exit) => (Exit.isFailure(exit) ? Duration.zero : prepareCacheTTL),
             });
 
             const bind = (statement: SqliteStatement, index: number, param: unknown): void => {
@@ -162,8 +165,11 @@ export const make = (
                         return Number.isSafeInteger(param)
                             ? statement.bindInteger(index, param)
                             : statement.bindFloat(index, param);
-                    case "bigint":
-                        return statement.bindInteger(index, Number(param));
+                    case "bigint": {
+                        const value = Number(param);
+                        if (Number.isSafeInteger(value)) return statement.bindInteger(index, value);
+                        break;
+                    }
                     case "boolean":
                         return statement.bindInteger(index, param ? 1 : 0);
                     case "object": {

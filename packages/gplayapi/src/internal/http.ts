@@ -174,10 +174,12 @@ export const decodeResponseFromResponseWrapper = Function.dual<
         type Out = Exclude<Protobuf.MessageShape<typeof PayloadSchema>[ExtractPayload], undefined>;
         const responseWrapper = yield* decodeResponse(response, ResponseWrapperSchema, options);
 
-        if (Predicate.isNotUndefined(responseWrapper.commands?.displayErrorMessage)) {
+        // An unset proto2 string decodes as "" rather than undefined, and commands can come without an error
+        const displayErrorMessage = responseWrapper.commands?.displayErrorMessage;
+        if (Predicate.isNotUndefined(displayErrorMessage) && displayErrorMessage !== "") {
             return yield* new HttpClientError.HttpClientError({
                 reason: new HttpClientError.DecodeError({
-                    description: responseWrapper.commands.displayErrorMessage,
+                    description: displayErrorMessage,
                     request: response.request,
                     response,
                 }),

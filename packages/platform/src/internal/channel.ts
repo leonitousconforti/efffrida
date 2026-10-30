@@ -1,9 +1,9 @@
 import type * as Array from "effect/Array";
 import type * as Cause from "effect/Cause";
-import type * as Function from "effect/Function";
 
 import * as Channel from "effect/Channel";
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 
@@ -55,5 +55,7 @@ export const fromIOStream = <E1 = Cause.UnknownError, E2 = Cause.UnknownError, I
             })
             .pipe(Stream.toChannel);
 
-        return Channel.merge(readChannel, writeChannel).pipe(Channel.ensuring(Effect.promise(() => iostream.close())));
+        return Channel.merge(readChannel, writeChannel).pipe(
+            Channel.ensuring(Effect.promise(() => iostream.close().catch(Function.constVoid)))
+        );
     });

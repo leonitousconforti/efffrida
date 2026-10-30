@@ -63,7 +63,7 @@ const runMainFrida = Runtime.makeRunMain(({ fiber, teardown }) => {
     fiber.addObserver((exit) =>
         teardown(exit, (code) => {
             if (code === 0 || Exit.isSuccess(exit) || Cause.hasInterruptsOnly(exit.cause)) return;
-            throwNextTick(exit.cause);
+            throwNextTick(Cause.squash(exit.cause));
         })
     );
 });

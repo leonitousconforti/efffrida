@@ -49,7 +49,8 @@ const fdfeBase = "https://android.clients.google.com/fdfe";
 
 /**
  * Backoff for transport failures, timeouts, and transient statuses (408, 429,
- * 5xx). A `Retry-After` header on the response raises the delay.
+ * 500, 502, 503 and 504). A `Retry-After` header on the response raises the
+ * delay.
  *
  * @internal
  */
@@ -95,14 +96,18 @@ const fdfeClient = Effect.gen(function* () {
                 return Effect.void;
             }
 
-            device.invalidateAuthHeaders();
-            return Effect.logDebug("google play rejected the request credentials, dropping the cached auth headers");
+            return Effect.andThen(
+                device.invalidateAuthHeaders,
+                Effect.logDebug("google play rejected the request credentials, dropping the cached auth headers")
+            );
         }),
         HttpClient.retryTransient(transientRetry)
     );
 });
 
 /**
+ * Fetches the store listing details of an app.
+ *
  * @since 1.0.0
  * @category API
  */
@@ -119,6 +124,8 @@ export const details = Effect.fnUntraced(function* (
 });
 
 /**
+ * Fetches the details of an app through the bulk details endpoint.
+ *
  * @since 1.0.0
  * @category API
  */
@@ -141,6 +148,8 @@ export const bulkDetails = Effect.fnUntraced(function* (
 });
 
 /**
+ * Acquires an app for the account, returning the token that `delivery` needs.
+ *
  * @since 1.0.0
  * @category API
  */
@@ -170,6 +179,8 @@ export const purchase = Effect.fnUntraced(function* (
 });
 
 /**
+ * Fetches the download urls and digests of an app's APK, splits and OBBs.
+ *
  * @since 1.0.0
  * @category API
  */
@@ -209,6 +220,8 @@ const hexFromBase64Url = (encoded: string): Effect.Effect<string, EncodingError.
     Effect.map(Effect.fromResult(Base64Url.decode(encoded)), Hex.encode);
 
 /**
+ * Purchases and delivers an app, returning a lazy stream per file to download.
+ *
  * @since 1.0.0
  * @category API
  */
@@ -292,7 +305,7 @@ export const downloadToStreams = Effect.fnUntraced(function* (
     );
 
     const expansions = yield* Effect.forEach(mainDeliveryData.additionalFile, (expansion) => {
-        const typeStr = expansion.fileType === 1 ? "main" : "patch";
+        const typeStr = expansion.fileType === 0 ? "main" : "patch";
         const name = `${typeStr}.${expansion.versionCode}.${bundleIdentifier}.obb`;
         return Effect.map(hexFromBase64Url(expansion.sha1), (integrity) => ({
             name,

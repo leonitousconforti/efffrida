@@ -25,12 +25,7 @@ import type * as FridaSessionError from "@efffrida/frida-tools/FridaSessionError
 import * as FridaScript from "@efffrida/frida-tools/FridaScript";
 
 import * as constants from "../shared/Constants.ts";
-
-/**
- * Frida only sends node Buffers as binary data, other typed arrays get JSON
- * encoded as `{"0": .., "1": ..}`. This is a view, not a copy.
- */
-const toBuffer = (bytes: Uint8Array): Buffer => Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+import * as internalBytes from "./internal/bytes.ts";
 
 /**
  * @since 1.0.0
@@ -138,7 +133,9 @@ export const makeProtocolFrida = (
 
                     const encoded = parser.encode(request);
                     if (encoded === undefined) return Effect.void;
-                    return callClientExport(typeof encoded === "string" ? encoded : toBuffer(encoded)).pipe(
+                    return callClientExport(
+                        typeof encoded === "string" ? encoded : internalBytes.toBuffer(encoded)
+                    ).pipe(
                         Effect.mapError(
                             (cause) =>
                                 new RpcClientError.RpcClientError({

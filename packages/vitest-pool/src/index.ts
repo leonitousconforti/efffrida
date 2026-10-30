@@ -35,7 +35,10 @@ import * as Flatted from "flatted";
  * @since 1.0.0
  * @category Schemas
  */
-export const FridaSchema = Schema.Struct({
+export const FridaSchema: Schema.Struct<{
+    readonly device: typeof FridaDevice.DeviceSchema;
+    readonly attach: typeof FridaSession.AttachSchema;
+}> = Schema.Struct({
     device: FridaDevice.DeviceSchema,
     attach: FridaSession.AttachSchema,
 });
@@ -91,19 +94,17 @@ export class FridaPoolWorker implements VitestNode.PoolWorker {
                 Effect.promise(() => poolOptions.project.globTestFiles()),
                 ({ testFiles }) => testFiles
             );
-            const globalSetupFiles = Array.isArray(poolOptions.project.config.globalSetup)
-                ? poolOptions.project.config.globalSetup
-                : Array.make(poolOptions.project.config.globalSetup);
 
+            // globalSetup files run in the main node process, not the agent
             const marker = "// @efffrida/vitest-pool/agent/file-map";
-            const allFiles = Array.flatten([setupFiles, testFiles, globalSetupFiles]);
+            const allFiles = Array.appendAll(setupFiles, testFiles);
             const newContent = Function.pipe(
                 allFiles,
                 Array.map(
                     (file) => `
-                        if (_file === "${file}") {
+                        if (_file === ${JSON.stringify(file)}) {
                             // @ts-ignore
-                            return await import("${file}")
+                            return await import(${JSON.stringify(file)})
                         }`
                 ),
                 Array.join("\n")
@@ -257,6 +258,6 @@ export const createFridaPool = (
     return {
         name: "frida-pool",
         createPoolWorker: (options: VitestNode.PoolOptions) =>
-            new FridaPoolWorker(options, Schema.decodeUnknownSync(FridaSchema)(customOptions)),
+            new FridaPoolWorker(options, Schema.decodeSync(FridaSchema)(customOptions)),
     };
 };

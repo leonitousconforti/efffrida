@@ -11,7 +11,6 @@ import type * as Effect from "effect/Effect";
 import type * as Exit from "effect/Exit";
 import type * as Layer from "effect/Layer";
 import type * as Option from "effect/Option";
-import type * as Path from "effect/Path";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";
 import type * as Sink from "effect/Sink";
@@ -123,20 +122,12 @@ export const load: {
     (
         entrypoint: URL | string,
         options?: LoadOptions | undefined
-    ): Effect.Effect<
-        FridaScript,
-        FridaSessionError.FridaSessionError,
-        Path.Path | FridaSession.FridaSession | Scope.Scope
-    >;
+    ): Effect.Effect<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession | Scope.Scope>;
     (
         options?: LoadOptions | undefined
     ): (
         entrypoint: URL | string
-    ) => Effect.Effect<
-        FridaScript,
-        FridaSessionError.FridaSessionError,
-        Path.Path | FridaSession.FridaSession | Scope.Scope
-    >;
+    ) => Effect.Effect<FridaScript, FridaSessionError.FridaSessionError, FridaSession.FridaSession | Scope.Scope>;
 } = internalScript.load;
 
 /**

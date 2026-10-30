@@ -113,7 +113,9 @@ export const spawn = (
             })
         ).pipe(Effect.ignore);
 
-    const resource = Effect.acquireRelease(acquire, release);
+    // Acquire interruptibly so that interrupting aborts the signal and cancels
+    // the spawn
+    const resource = Effect.acquireRelease(acquire, release, { interruptible: true });
     return resource;
 };
 
@@ -138,7 +140,7 @@ export const attach = (
                     parameters: unknown;
                 }>;
             },
-            FridaSessionError.FridaSessionError
+            never
         >();
 
         const onDetached = (reason: Frida.SessionDetachReason, crash: Frida.Crash | null): void => {
@@ -189,7 +191,9 @@ export const attach = (
                 return session.detach(cancellable);
             }).pipe(Effect.ignore);
 
-        const session = yield* Effect.acquireRelease(acquire, release);
+        // Acquire interruptibly so that interrupting aborts the signal and
+        // cancels the attach
+        const session = yield* Effect.acquireRelease(acquire, release, { interruptible: true });
 
         return {
             session,
@@ -349,39 +353,24 @@ export const SessionLive = (
     FridaDevice.FridaDevice | ChildProcessSpawner.ChildProcessSpawner
 > =>
     Match.value(config).pipe(
-        Match.when({ pid: Match.number }, ({ pid, runtime, platform, realm }) =>
-            layer(pid, {
-                ...(runtime !== undefined ? { runtime } : {}),
-                ...(platform !== undefined ? { platform } : {}),
-                ...(realm !== undefined ? { realm } : {}),
-            })
+        Match.when({ pid: Match.number }, ({ pid, realm }) => layer(pid, realm !== undefined ? { realm } : {})),
+        Match.when({ attachFrontmost: true }, ({ frontmostScope, realm }) =>
+            layerFrontmost(
+                frontmostScope !== undefined ? { scope: frontmostScope } : {},
+                realm !== undefined ? { realm } : {}
+            )
         ),
-        Match.when({ attachFrontmost: true }, ({ frontmostScope, runtime, platform, realm }) =>
-            layerFrontmost({
-                ...(frontmostScope !== undefined ? { scope: frontmostScope } : {}),
-                ...(runtime !== undefined ? { runtime } : {}),
-                ...(platform !== undefined ? { platform } : {}),
-                ...(realm !== undefined ? { realm } : {}),
-            })
-        ),
-        Match.when({ preSpawn: true }, ({ spawn, runtime, platform, realm }) =>
+        Match.when({ preSpawn: true }, ({ spawn, realm }) =>
             Layer.unwrap(
                 Effect.gen(function* () {
+                    // Nothing reads the output, so leaving it piped would
+                    // eventually block the process once the pipe buffer fills
+                    // up
                     const [command, ...args] = spawn;
-                    const handle = yield* ChildProcess.make(command, args);
-                    return layer(handle.pid, {
-                        ...(runtime !== undefined ? { runtime } : {}),
-                        ...(platform !== undefined ? { platform } : {}),
-                        ...(realm !== undefined ? { realm } : {}),
-                    });
+                    const handle = yield* ChildProcess.make(command, args, { stdout: "ignore", stderr: "ignore" });
+                    return layer(handle.pid, realm !== undefined ? { realm } : {});
                 })
             )
         ),
-        Match.orElse(({ spawn, runtime, platform, realm }) =>
-            layer(spawn, {
-                ...(runtime !== undefined ? { runtime } : {}),
-                ...(platform !== undefined ? { platform } : {}),
-                ...(realm !== undefined ? { realm } : {}),
-            })
-        )
+        Match.orElse(({ spawn, realm }) => layer(spawn, realm !== undefined ? { realm } : {}))
     );

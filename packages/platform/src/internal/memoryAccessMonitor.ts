@@ -8,7 +8,7 @@ export const watch = (
     options?:
         | {
               readonly bufferSize?: number | undefined;
-              readonly strategy?: "sliding" | "dropping" | "suspend" | undefined;
+              readonly strategy?: "sliding" | "dropping" | undefined;
           }
         | undefined
 ): Stream.Stream<MemoryAccessDetails, never, never> =>

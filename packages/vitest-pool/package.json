@@ -56,8 +56,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@efffrida/frida-tools": "workspace:*",
-        "frida": "17.24.3"
+        "@efffrida/frida-tools": "workspace:*"
     },
     "devDependencies": {
         "@effect/platform-node-shared": "4.1.0",

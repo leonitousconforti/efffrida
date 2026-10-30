@@ -1,4 +1,4 @@
-import { Data, Effect, Stream } from "effect";
+import { Cause, Data, Effect, Stream } from "effect";
 
 import { describe, expect, it } from "@effect/vitest";
 
@@ -59,6 +59,33 @@ describe("stream tests", () => {
 
             expect(error).toBeInstanceOf(Error);
             expect(Array.from(new Uint8Array((error as { partialData: ArrayBuffer }).partialData))).toEqual([1, 2, 3]);
+        })
+    );
+
+    it.effect("reads a stream with async setup", () =>
+        Effect.gen(function* () {
+            const chunks = [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5])];
+            const inputStream = FridaStream.toInputStreamNever(
+                Stream.fromPull(
+                    Effect.sleep("10 millis").pipe(
+                        Effect.as(
+                            Effect.suspend(() => {
+                                const chunk = chunks.shift();
+                                return chunk === undefined ? Cause.done() : Effect.succeed([chunk] as const);
+                            })
+                        )
+                    )
+                )
+            );
+
+            const first = yield* Effect.promise(() => inputStream.read(2));
+            const rest = yield* Effect.promise(() => inputStream.readAll(3));
+            const end = yield* Effect.promise(() => inputStream.read(4));
+            yield* Effect.promise(() => inputStream.close());
+
+            expect(Array.from(new Uint8Array(first))).toEqual([1, 2]);
+            expect(Array.from(new Uint8Array(rest))).toEqual([3, 4, 5]);
+            expect(end.byteLength).toBe(0);
         })
     );
 });

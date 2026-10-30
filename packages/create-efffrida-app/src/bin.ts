@@ -3,7 +3,6 @@
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Logger from "effect/Logger";
-import * as References from "effect/References";
 
 import * as NodeHttpClient from "@effect/platform-node/NodeHttpClient";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
@@ -14,14 +13,7 @@ import { GitHub } from "./GitHub.ts";
 import { PrefixLogger } from "./Logger.ts";
 
 const MainLive = GitHub.layer.pipe(
-    Layer.provideMerge(
-        Layer.mergeAll(
-            Logger.layer([PrefixLogger]),
-            Layer.succeed(References.MinimumLogLevel, "Info"),
-            NodeHttpClient.layerFetch,
-            NodeServices.layer
-        )
-    )
+    Layer.provideMerge(Layer.mergeAll(Logger.layer([PrefixLogger]), NodeHttpClient.layerFetch, NodeServices.layer))
 );
 
 // oxlint-disable-next-line effecttsgo/strict-effect-provide -- this is the entry point

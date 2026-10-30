@@ -8,3 +8,4 @@ dist/
 build/
 .direnv/
 coverage/
+.vitest-frida-pool-*/

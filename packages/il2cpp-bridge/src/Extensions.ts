@@ -136,7 +136,7 @@ export class Dictionary<
         valueClass: Il2Cpp.Class,
         elements?: Map<K, V> | undefined
     ): Dictionary<K, V> {
-        const dictionary = new Dictionary<K, V>(Dictionary.class.inflate(keyClass, valueClass).alloc());
+        const dictionary = new Dictionary<K, V>(Dictionary.class.inflate(keyClass, valueClass).new());
         for (const [key, value] of elements ?? []) {
             dictionary.set(key, value);
         }
@@ -246,7 +246,7 @@ export class List<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type> extends Il2Cp
         klass: Il2Cpp.Class,
         elements: ReadonlyArray<T> | undefined = []
     ): List<T> {
-        const list = new List<T>(List.class.inflate(klass).alloc());
+        const list = new List<T>(List.class.inflate(klass).new());
         for (const element of elements) {
             list.add(element);
         }

@@ -43,7 +43,7 @@ export const load = Function.dual<
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        Path.Path | FridaSession.FridaSession | Scope.Scope
+        FridaSession.FridaSession | Scope.Scope
     >,
     (
         entrypoint: URL | string,
@@ -51,39 +51,46 @@ export const load = Function.dual<
     ) => Effect.Effect<
         FridaScript.FridaScript,
         FridaSessionError.FridaSessionError,
-        Path.Path | FridaSession.FridaSession | Scope.Scope
+        FridaSession.FridaSession | Scope.Scope
     >
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], "href") || Predicate.isString(arguments_[0]),
-    Effect.fnUntraced(function* (entrypoint: URL | string, options?: FridaScript.LoadOptions | undefined) {
-        const path = yield* Path.Path;
-        const entrypointString = Predicate.isString(entrypoint)
-            ? entrypoint
-            : yield* path.fromFileUrl(entrypoint).pipe(
-                  Effect.mapError(
-                      (cause) =>
-                          new FridaSessionError.FridaSessionError({
-                              when: "compile",
-                              cause,
-                          })
-                  )
-              );
+    Effect.fnUntraced(
+        function* (entrypoint: URL | string, options?: FridaScript.LoadOptions | undefined) {
+            const path = yield* Path.Path;
+            const entrypointString = Predicate.isString(entrypoint)
+                ? entrypoint
+                : yield* path.fromFileUrl(entrypoint).pipe(
+                      Effect.mapError(
+                          (cause) =>
+                              new FridaSessionError.FridaSessionError({
+                                  when: "compile",
+                                  cause,
+                              })
+                      )
+                  );
 
-        const source = yield* internalCompiler
-            .compile(entrypointString, compilerOptions(path.dirname(entrypointString), options))
-            .pipe(
-                Effect.timeoutOrElse({
-                    duration: "1 minute",
-                    orElse: () =>
-                        new FridaSessionError.FridaSessionError({
-                            cause: "Compilation timed out",
-                            when: "compile",
-                        }),
-                })
-            );
+            const source = yield* internalCompiler
+                .compile(entrypointString, compilerOptions(path.dirname(entrypointString), options))
+                .pipe(
+                    Effect.timeoutOrElse({
+                        duration: "1 minute",
+                        orElse: () =>
+                            new FridaSessionError.FridaSessionError({
+                                cause: "Compilation timed out",
+                                when: "compile",
+                            }),
+                    })
+                );
 
-        return yield* make(source, options);
-    })
+            return yield* make(source, options);
+        },
+        // Path.layer has no scoped resources, so providing it here does not
+        // affect the lifetime of the script
+        //
+        // oxlint-disable-next-line effecttsgo/strict-effect-provide
+        Effect.provide(Path.layer)
+    )
 );
 
 /** Modules are resolved from the entrypoint's directory unless a project root
@@ -97,7 +104,7 @@ const compilerOptions = (projectRoot: string, options: FridaScript.LoadOptions |
 const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.LoadOptions | undefined) {
     const { session } = yield* FridaSession.FridaSession;
 
-    const script = yield* Effect.tryPromise({
+    const acquire = Effect.tryPromise({
         try: (signal) => {
             const cancellable = new Frida.Cancellable();
             signal.onabort = () => cancellable.cancel();
@@ -119,7 +126,7 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
 
     // The script is destroyed if the target process exits, in which case unload
     // rejects
-    yield* Effect.addFinalizer(() =>
+    const release = (script: Frida.Script) =>
         Effect.suspend(() =>
             script.isDestroyed
                 ? Effect.void
@@ -130,8 +137,11 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
                           return script.unload(cancellable);
                       })
                   )
-        )
-    );
+        );
+
+    // Registering the finalizer as part of the acquisition means that an
+    // interrupt (e.g. a rebuild in watch) can not leak a created script
+    const script = yield* Effect.acquireRelease(acquire, release, { interruptible: true });
 
     const scriptError = yield* Deferred.make<unknown, never>();
     const destroyed = yield* Deferred.make<void, never>();
@@ -300,7 +310,7 @@ export const layer = Function.dual<
 >(
     (arguments_) => Predicate.hasProperty(arguments_[0], "href") || Predicate.isString(arguments_[0]),
     (entrypoint: URL | string, options?: FridaScript.LoadOptions | undefined) =>
-        Layer.effect(Tag, load(entrypoint, options)).pipe(Layer.provide(Path.layer))
+        Layer.effect(Tag, load(entrypoint, options))
 );
 
 /** @internal */

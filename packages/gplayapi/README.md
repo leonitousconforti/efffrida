@@ -56,8 +56,8 @@ There is no default, so pick one of:
 
 The device derives auth headers from itself and the account once, then caches
 them for 30 minutes. A 401 or a 403 from the store evicts them early, so the
-next call acquires a fresh set. Transport failures, timeouts, 429s and 5xx
-responses are retried with backoff.
+next call acquires a fresh set. Transport failures, timeouts and 408, 429, 500,
+502, 503 and 504 responses are retried with backoff.
 
 `downloadToDisk` writes each file to a scoped temporary file and checks its
 integrity while it streams, so the files are deleted when the surrounding

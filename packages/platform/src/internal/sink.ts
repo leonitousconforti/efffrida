@@ -1,24 +1,18 @@
 import type * as Cause from "effect/Cause";
-import type * as Function from "effect/Function";
 
 import * as Effect from "effect/Effect";
+import * as Function from "effect/Function";
 import * as Sink from "effect/Sink";
 
 import type { FromWritableOptions } from "../Sink.ts";
 
+import { toArrayBuffer } from "./bytes.ts";
 import { defaultOnError } from "./stream.ts";
 
 /** @internal */
 export const sendSink: Sink.Sink<void, string, never, never, never> = Sink.forEach((message) =>
     Effect.sync(() => send(message))
 );
-
-/** Frida only takes an `ArrayBuffer` or an array of numbers, so copy only when
- * the view doesn't cover its buffer. */
-const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
-    bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
-        ? (bytes.buffer as ArrayBuffer)
-        : bytes.slice().buffer;
 
 /** @internal */
 export const fromOutputStream = <E = Cause.UnknownError>(
@@ -42,7 +36,7 @@ export const fromOutputStream = <E = Cause.UnknownError>(
             ? sink
             : Sink.ensuring(
                   sink,
-                  Effect.promise(() => writable.close())
+                  Effect.promise(() => writable.close().catch(Function.constVoid))
               );
     });
 

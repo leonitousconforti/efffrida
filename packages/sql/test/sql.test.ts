@@ -1,4 +1,4 @@
-import { Array as Arr, Effect, Layer, Stream } from "effect";
+import { Array as Arr, Effect, Exit, Layer, Stream } from "effect";
 import { SqlClient } from "effect/sql";
 
 import { unlinkSync } from "node:fs";
@@ -88,6 +88,34 @@ describe("sql tests", () => {
                     { id: 2, name: "name-1" },
                 ]);
                 yield* sql`DROP TABLE test`;
+            })
+        );
+    });
+
+    layer(TestLayer)((it) => {
+        it.effect("failed prepares are not cached", () =>
+            Effect.gen(function* () {
+                const sql = yield* SqlClient.SqlClient;
+                const before = yield* Effect.exit(sql`SELECT * FROM test`);
+                assert.isTrue(Exit.isFailure(before));
+                yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
+                const after = yield* sql`SELECT * FROM test`;
+                assert.deepStrictEqual(after, []);
+            })
+        );
+    });
+
+    layer(TestLayer)((it) => {
+        it.effect("bigint params", () =>
+            Effect.gen(function* () {
+                const sql = yield* SqlClient.SqlClient;
+                yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
+                yield* sql`INSERT INTO test (id, name) VALUES (${BigInt(Number.MAX_SAFE_INTEGER)}, 'safe')`;
+                const unsafe = BigInt(Number.MAX_SAFE_INTEGER) + 2n;
+                const exit = yield* Effect.exit(sql`INSERT INTO test (id, name) VALUES (${unsafe}, 'unsafe')`);
+                assert.isTrue(Exit.isFailure(exit));
+                const rows = yield* sql`SELECT * FROM test`;
+                assert.deepStrictEqual(rows, [{ id: Number.MAX_SAFE_INTEGER, name: "safe" }]);
             })
         );
     });

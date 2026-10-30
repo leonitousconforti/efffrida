@@ -114,7 +114,9 @@ export const acquireRemoteDevice = (
             return Frida.getDeviceManager().removeRemoteDevice(address, cancellable);
         });
 
-    const resource = Effect.acquireRelease(acquire, release);
+    // Acquire interruptibly so that interrupting (e.g. the emulator timeout)
+    // aborts the signal and cancels the connection attempt
+    const resource = Effect.acquireRelease(acquire, release, { interruptible: true });
 
     return Effect.map(
         resource,
@@ -274,9 +276,12 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
             )
         );
 
-        yield* ChildProcess.make(adbExecutable, ["-s", emulator, "shell", `"${fridaExecutable}"`]).pipe(
-            Effect.andThen(Effect.sleep("3 seconds"))
-        );
+        // Nothing reads the output, so leaving it piped would eventually block
+        // frida-server once the pipe buffer fills up
+        yield* ChildProcess.make(adbExecutable, ["-s", emulator, "shell", `"${fridaExecutable}"`], {
+            stdout: "ignore",
+            stderr: "ignore",
+        }).pipe(Effect.andThen(Effect.sleep("3 seconds")));
 
         const fridaPort = yield* ChildProcess.make(adbExecutable, [
             "-s",

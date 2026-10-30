@@ -52,7 +52,7 @@ export interface FridaSession {
                 parameters: unknown;
             }>;
         },
-        FridaSessionError.FridaSessionError
+        never
     >;
     readonly resume: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;
     readonly detach: Effect.Effect<void, FridaSessionError.FridaSessionError, never>;

@@ -17,20 +17,10 @@ import * as Queue from "effect/Queue";
 import * as RpcMessage from "effect/rpc/RpcMessage";
 import * as RpcSerialization from "effect/rpc/RpcSerialization";
 import * as RpcServer from "effect/rpc/RpcServer";
-import * as Schema from "effect/Schema";
 
 import * as constants from "../shared/Constants.ts";
-
-/** Encodes defects like effect's own server protocols, so errors survive
- * serialization. */
-const makeDefectEncoder = (codecFor: RpcSerialization.CodecFor): ((defect: unknown) => unknown) =>
-    Schema.encodeSync(codecFor(Schema.Defect()));
-
-/** Copies only the bytes covered by the view, not its whole backing buffer. */
-const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
-    bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
-        ? (bytes.buffer as ArrayBuffer)
-        : (bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+import * as internalDefect from "../shared/internal/defect.ts";
+import * as internalBytes from "./internal/bytes.ts";
 
 /**
  * Makes a server protocol without registering the main rpc export. Call the
@@ -59,7 +49,7 @@ export const makeProtocolFridaWithRpcExport = (
 > =>
     Effect.gen(function* () {
         const serialization = yield* RpcSerialization.RpcSerialization;
-        const encodeDefect = makeDefectEncoder(serialization.codecFor);
+        const encodeDefect = internalDefect.makeDefectEncoder(serialization.codecFor);
 
         const disconnects = yield* Queue.unbounded<number>();
         const runPromise = yield* FiberSet.makeRuntimePromise();
@@ -97,7 +87,7 @@ export const makeProtocolFridaWithRpcExport = (
 
             const writeRaw = (data: string | Uint8Array): void => {
                 const transformed = typeof data === "string" ? encoder.encode(data) : data;
-                return send(responseMessage, toArrayBuffer(transformed));
+                return send(responseMessage, internalBytes.toArrayBuffer(transformed));
             };
 
             const write = (response: RpcMessage.FromServerEncoded): void => {

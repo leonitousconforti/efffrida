@@ -1,5 +1,3 @@
-import type * as Cause from "effect/Cause";
-
 import * as Array from "effect/Array";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -9,13 +7,13 @@ import * as Function from "effect/Function";
 import * as Latch from "effect/Latch";
 import * as Layer from "effect/Layer";
 import * as NetAddress from "effect/net/NetAddress";
-import * as References from "effect/References";
 import * as Result from "effect/Result";
 import * as Scope from "effect/Scope";
 import * as Semaphore from "effect/Semaphore";
 import * as EffectSocket from "effect/socket/Socket";
 import * as SocketServer from "effect/socket/SocketServer";
 
+import * as internalBytes from "./bytes.ts";
 import * as internalStream from "./stream.ts";
 
 const openError = (cause: unknown): EffectSocket.SocketError =>
@@ -26,23 +24,6 @@ const closeError = (code: number, closeReason?: string | undefined): EffectSocke
 
 const toBytes = (chunk: Uint8Array | string): Uint8Array =>
     typeof chunk === "string" ? new TextEncoder().encode(chunk) : chunk;
-
-const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
-    (bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
-        ? bytes.buffer
-        : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)) as ArrayBuffer;
-
-const concat = (chunks: Array.NonEmptyReadonlyArray<Uint8Array | string>): Uint8Array => {
-    if (chunks.length === 1) return toBytes(chunks[0]);
-    const parts = Array.map(chunks, toBytes);
-    const out = new Uint8Array(parts.reduce((total, part) => total + part.byteLength, 0));
-    let offset = 0;
-    for (const part of parts) {
-        out.set(part, offset);
-        offset += part.byteLength;
-    }
-    return out;
-};
 
 /**
  * Awaits a promised connection, closing it if the waiting fiber was interrupted
@@ -186,7 +167,7 @@ export const fromSocketConnection = <R>(
             bytes: Uint8Array
         ): Effect.Effect<void, EffectSocket.SocketError> =>
             Effect.tryPromise({
-                try: () => connection.output.writeAll(toArrayBuffer(bytes)),
+                try: () => connection.output.writeAll(internalBytes.toArrayBuffer(bytes)),
                 catch: (cause) =>
                     new EffectSocket.SocketError({ reason: new EffectSocket.SocketWriteError({ cause }) }),
             });
@@ -210,7 +191,9 @@ export const fromSocketConnection = <R>(
             Effect.suspend(() => {
                 const conn = current;
                 if (conn === undefined) return latch.whenOpen(writeAll(chunks));
-                return writeLock.withPermit(writeBytes(conn.connection, concat(chunks)));
+                return writeLock.withPermit(
+                    writeBytes(conn.connection, internalBytes.concat(Array.map(chunks, toBytes)))
+                );
             });
 
         const writer: EffectSocket.Socket["writer"] = Effect.succeed({ write, writeAll });
@@ -256,15 +239,6 @@ const listenerAddress = (
     );
 };
 
-const reportUnhandledError = <E>(cause: Cause.Cause<E>): Effect.Effect<void> =>
-    Effect.withFiber<void>((fiber) => {
-        const unhandledLogLevel = fiber.getRef(References.UnhandledLogLevel);
-        if (unhandledLogLevel) {
-            return Effect.logWithLevel(unhandledLogLevel)(cause, "Unhandled error in SocketServer");
-        }
-        return Effect.void;
-    });
-
 /** @internal */
 export const makeServer = Effect.fnUntraced(function* (options?: SocketListenOptions | undefined) {
     const socketListener = yield* Effect.acquireRelease(
@@ -288,7 +262,7 @@ export const makeServer = Effect.fnUntraced(function* (options?: SocketListenOpt
             Function.pipe(
                 fromSocketConnection(Effect.succeed(connection)),
                 Effect.flatMap(handler),
-                Effect.catchCause(reportUnhandledError),
+                Effect.ignoreCause({ log: "Unhandled", message: "Unhandled error in SocketServer" }),
                 Effect.ensuring(Effect.promise(() => connection.close().catch(Function.constVoid))),
                 Effect.runForkWith(services),
                 trackFiber,

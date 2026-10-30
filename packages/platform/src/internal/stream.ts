@@ -1,5 +1,4 @@
 import type * as Duration from "effect/Duration";
-import type * as Function from "effect/Function";
 
 import * as Array from "effect/Array";
 import * as Cause from "effect/Cause";
@@ -7,11 +6,14 @@ import * as Channel from "effect/Channel";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
+import * as Function from "effect/Function";
 import * as Pull from "effect/Pull";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 
 import type { FromInputStreamOptions } from "../Stream.ts";
+
+import * as internalBytes from "./bytes.ts";
 
 interface ReceivedMessage {
     message: string;
@@ -103,7 +105,7 @@ export const fromInputStream = <E = Cause.UnknownError>(
                 return Effect.as(
                     Scope.addFinalizer(
                         scope,
-                        Effect.promise(() => resource.close())
+                        Effect.promise(() => resource.close().catch(Function.constVoid))
                     ),
                     read
                 );
@@ -139,19 +141,6 @@ export const makeWin32InputStream = <E = Cause.UnknownError>(
         chunkSize: options.chunkSize,
     });
 
-const concatBytes = (chunks: Array.NonEmptyReadonlyArray<Uint8Array>): Uint8Array => {
-    if (chunks.length === 1) return chunks[0];
-    let length = 0;
-    for (const chunk of chunks) length += chunk.byteLength;
-    const bytes = new Uint8Array(length);
-    let offset = 0;
-    for (const chunk of chunks) {
-        bytes.set(chunk, offset);
-        offset += chunk.byteLength;
-    }
-    return bytes;
-};
-
 /**
  * Adapts an effect `Stream` to a Frida `InputStream`. Chunks are pulled from
  * the stream as needed and whatever doesn't fit in a read is kept for the next
@@ -162,22 +151,31 @@ const concatBytes = (chunks: Array.NonEmptyReadonlyArray<Uint8Array>): Uint8Arra
 class StreamAdapter<E, R> implements InputStream {
     private readonly scope: Scope.Closeable;
     private readonly context: Context.Context<R>;
-    private readonly pull: Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E, void>;
+    private readonly stream: Stream.Stream<Uint8Array, E, R>;
+    private pull: Promise<Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E, void>> | undefined;
     private buffered: Uint8Array = new Uint8Array(0);
 
     constructor(context: Context.Context<R>, stream: Stream.Stream<Uint8Array, E, R>) {
         this.context = context;
+        this.stream = stream;
         this.scope = Scope.makeUnsafe();
-        this.pull = Effect.runSyncWith(this.context)(Scope.provide(Stream.toPull(stream), this.scope));
+    }
+
+    /** Builds the pull on the first read, as the stream's setup can be async,
+     * and reuses it for the following reads. */
+    private makePull(): Promise<Pull.Pull<Array.NonEmptyReadonlyArray<Uint8Array>, E, void>> {
+        this.pull ??= Effect.runPromiseWith(this.context)(Scope.provide(Stream.toPull(this.stream), this.scope));
+        return this.pull;
     }
 
     /** Resolves with the next non empty chunk, or undefined when the stream is
      * done. */
     private async next(): Promise<Uint8Array | undefined> {
+        const pull = await this.makePull();
         while (true) {
-            const exit = await Effect.runPromiseExitWith(this.context)(this.pull);
+            const exit = await Effect.runPromiseExitWith(this.context)(pull);
             if (Exit.isSuccess(exit)) {
-                const bytes = concatBytes(exit.value);
+                const bytes = internalBytes.concat(exit.value);
                 if (bytes.byteLength > 0) return bytes;
             } else if (Pull.isDoneCause(exit.cause)) {
                 return undefined;

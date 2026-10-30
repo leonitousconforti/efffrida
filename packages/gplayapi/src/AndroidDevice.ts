@@ -8,17 +8,16 @@ import type * as HttpClient from "effect/http/HttpClient";
 import type * as HttpClientError from "effect/http/HttpClientError";
 import type * as PlatformError from "effect/PlatformError";
 
-import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
+import * as Exit from "effect/Exit";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as SchemaGetter from "effect/SchemaGetter";
 import * as SchemaTransformation from "effect/SchemaTransformation";
-import * as Semaphore from "effect/Semaphore";
 
 import type { PlayAccount, PlayAccountError } from "./PlayAccount.ts";
 
@@ -101,11 +100,15 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
     "Vending.version": Schema.FiniteFromString,
     "Vending.versionString": Schema.String,
 }) {
-    private authHeadersCache: { readonly headers: Record<string, string>; readonly expiresAt: number } | undefined =
-        undefined;
-
-    /** Concurrent callers wait for a single acquisition instead of each running their own */
-    private readonly authHeadersLock = Semaphore.makeUnsafe(1);
+    /**
+     * Concurrent callers share a single in-flight acquisition, failures are
+     * not cached and interrupted acquisitions are never published.
+     */
+    private readonly authHeadersCache = Effect.runSync(
+        Effect.cachedInvalidateWithTTL(internalAuth.authHeaders(this), (exit) =>
+            Exit.isSuccess(exit) ? authHeadersTtl : Duration.zero
+        )
+    );
 
     /**
      * @since 1.0.0
@@ -144,20 +147,7 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
         Record<string, string>,
         HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
         HttpClient.HttpClient | PlayAccount
-    > = this.authHeadersLock.withPermits(1)(
-        Effect.gen({ self: this }, function* () {
-            const now = yield* Clock.currentTimeMillis;
-            const cached = this.authHeadersCache;
-
-            if (cached !== undefined && cached.expiresAt > now) {
-                return cached.headers;
-            }
-
-            const headers = yield* internalAuth.authHeaders(this);
-            this.authHeadersCache = { headers, expiresAt: now + Duration.toMillis(authHeadersTtl) };
-            return headers;
-        })
-    );
+    > = this.authHeadersCache[0];
 
     /**
      * Drops the cached auth headers so that the next `authHeaders` evaluation
@@ -165,10 +155,16 @@ export class AndroidDevice extends Schema.Class<AndroidDevice, { readonly brand:
      *
      * @internal
      */
-    public invalidateAuthHeaders(): void {
-        this.authHeadersCache = undefined;
-    }
+    public readonly invalidateAuthHeaders: Effect.Effect<void> = this.authHeadersCache[1];
 }
+
+/**
+ * Undoes java properties escaping, so `\:`, `\=` and `\\` become `:`, `=` and
+ * `\`.
+ *
+ * @internal
+ */
+const unescapeProperty = (value: string): string => value.replace(/\\(.)/g, "$1");
 
 /**
  * @since 1.0.0
@@ -185,6 +181,7 @@ export const fromPropertiesFile = Effect.fnUntraced(function* (
                 SchemaTransformation.splitKeyValue({
                     keyValueSeparator: "=",
                     separator: "\n",
+                    trim: true,
                 })
             )
         )
@@ -193,7 +190,11 @@ export const fromPropertiesFile = Effect.fnUntraced(function* (
     const fileSystem = yield* FileSystem.FileSystem;
     const content = yield* fileSystem.readFileString(file);
     const properties = yield* decodePropertiesFile(content);
-    return yield* decodeDevice(properties);
+    return yield* decodeDevice(
+        Object.fromEntries(
+            Object.entries(properties).map(([key, value]) => [unescapeProperty(key), unescapeProperty(value)])
+        )
+    );
 });
 
 /**

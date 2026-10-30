@@ -19,12 +19,7 @@ import * as RpcClientError from "effect/rpc/RpcClientError";
 import * as RpcSerialization from "effect/rpc/RpcSerialization";
 
 import * as constants from "../shared/Constants.ts";
-
-/** Copies only the bytes covered by the view, not its whole backing buffer. */
-const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer =>
-    bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
-        ? (bytes.buffer as ArrayBuffer)
-        : (bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+import * as internalBytes from "./internal/bytes.ts";
 
 /** Export names only need to be unique within this script. */
 let nextExportId = 0;
@@ -108,7 +103,7 @@ export const makeProtocolFrida = (): Effect.Effect<
                     const encoded = parser.encode(request);
                     if (encoded === undefined) return Effect.void;
                     const transformed = typeof encoded === "string" ? encoder.encode(encoded) : encoded;
-                    return Effect.sync(() => send(exportName, toArrayBuffer(transformed)));
+                    return Effect.sync(() => send(exportName, internalBytes.toArrayBuffer(transformed)));
                 },
             };
         })
