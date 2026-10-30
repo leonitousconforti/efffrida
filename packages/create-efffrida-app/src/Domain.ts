@@ -2,6 +2,7 @@ export const templates = ["agent-only", "app-and-agent"] as const;
 export type TemplateType = (typeof templates)[number];
 
 export interface ProjectConfig {
+    /** Absolute path of the directory to scaffold the project into */
     readonly projectName: string;
     readonly template: TemplateType;
     readonly withOxcTools: boolean;

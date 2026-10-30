@@ -13,7 +13,7 @@ import { cli } from "./Cli.ts";
 import { GitHub } from "./GitHub.ts";
 import { PrefixLogger } from "./Logger.ts";
 
-const MainLive = GitHub.Default.pipe(
+const MainLive = GitHub.layer.pipe(
     Layer.provideMerge(
         Layer.mergeAll(
             Logger.layer([PrefixLogger]),
