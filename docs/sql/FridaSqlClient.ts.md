@@ -56,7 +56,7 @@ Since v1.0.0
 declare const layer: (config: SqliteClientConfig) => Layer.Layer<SqliteClient | SqlClient.SqlClient, SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L385)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L387)
 
 Since v1.0.0
 
@@ -70,7 +70,7 @@ declare const layerConfig: (
 ) => Layer.Layer<SqliteClient | SqlClient.SqlClient, Config.ConfigError | SqlError.SqlError>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L371)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/sql/src/FridaSqlClient.ts#L373)
 
 Since v1.0.0
 
