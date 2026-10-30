@@ -110,12 +110,15 @@ describe("sql tests", () => {
             Effect.gen(function* () {
                 const sql = yield* SqlClient.SqlClient;
                 yield* sql`CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)`;
-                yield* sql`INSERT INTO test (id, name) VALUES (${BigInt(Number.MAX_SAFE_INTEGER)}, 'safe')`;
-                const unsafe = BigInt(Number.MAX_SAFE_INTEGER) + 2n;
-                const exit = yield* Effect.exit(sql`INSERT INTO test (id, name) VALUES (${unsafe}, 'unsafe')`);
+                // Every 64 bit integer is bound losslessly, even past Number.MAX_SAFE_INTEGER
+                const large = BigInt(Number.MAX_SAFE_INTEGER) + 2n;
+                yield* sql`INSERT INTO test (id, name) VALUES (${large}, 'large')`;
+                // Read back as text, since Frida returns integer columns as numbers
+                const rows = yield* sql<{ id: string }>`SELECT CAST(id AS TEXT) AS id FROM test`;
+                assert.strictEqual(rows[0].id, large.toString());
+                // Outside of SQLite's 64 bit range it fails instead of losing precision
+                const exit = yield* Effect.exit(sql`INSERT INTO test (id, name) VALUES (${2n ** 63n}, 'too large')`);
                 assert.isTrue(Exit.isFailure(exit));
-                const rows = yield* sql`SELECT * FROM test`;
-                assert.deepStrictEqual(rows, [{ id: Number.MAX_SAFE_INTEGER, name: "safe" }]);
             })
         );
     });

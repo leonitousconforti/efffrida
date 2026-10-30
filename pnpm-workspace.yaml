@@ -56,3 +56,4 @@ minimumReleaseAgeExclude:
   - '@effect/platform-node'
   - '@effect/vitest'
   - effect
+  - frida
