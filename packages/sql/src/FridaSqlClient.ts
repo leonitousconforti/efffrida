@@ -165,11 +165,13 @@ export const make = (
                         return Number.isSafeInteger(param)
                             ? statement.bindInteger(index, param)
                             : statement.bindFloat(index, param);
-                    case "bigint": {
-                        const value = Number(param);
-                        if (Number.isSafeInteger(value)) return statement.bindInteger(index, value);
+                    case "bigint":
+                        // Frida >= 17.23.2 binds BigInts losslessly, but the
+                        // typings still say number
+                        if (param >= -(2n ** 63n) && param < 2n ** 63n) {
+                            return statement.bindInteger(index, param as unknown as number);
+                        }
                         break;
-                    }
                     case "boolean":
                         return statement.bindInteger(index, param ? 1 : 0);
                     case "object": {
