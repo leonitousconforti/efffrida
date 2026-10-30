@@ -67,10 +67,5 @@
     },
     "peerDependencies": {
         "effect": "4.1.0"
-    },
-    "tags": [
-        "frida.re",
-        "reverse engineering",
-        "effect-ts"
-    ]
+    }
 }
