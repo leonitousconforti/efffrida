@@ -8,5 +8,5 @@ search_enabled: true
 
 # Aux links for the upper right navigation
 aux_links:
-"efffrida on GitHub":
-  - "https://github.com/leonitousconforti/efffrida"
+  "efffrida on GitHub":
+    - "https://github.com/leonitousconforti/efffrida"

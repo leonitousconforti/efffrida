@@ -32,6 +32,9 @@ Since v1.0.0
 
 ## fromInputStream
 
+Reads from a Frida `InputStream`, which is closed when the stream finishes.
+Errors are mapped with `onError`, defaulting to `Cause.UnknownError`.
+
 **See**
 
 - https://frida.re/docs/javascript-api/#inputstream
@@ -39,14 +42,15 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const fromInputStream: <E>(
-  evaluate: Function.LazyArg<InputStream>,
-  onError: (error: unknown) => E,
-  options?: FromInputStreamOptions | undefined
+declare const fromInputStream: <E = Cause.UnknownError>(
+  options: FromInputStreamOptions & {
+    readonly evaluate: Function.LazyArg<InputStream>
+    readonly onError?: ((error: unknown) => E) | undefined
+  }
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L59)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L63)
 
 Since v1.0.0
 
@@ -59,14 +63,13 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeUnixInputStream: <E>(
-  fileDescriptor: number,
-  onError: (error: unknown) => E,
-  options?: (FromInputStreamOptions & UnixStreamOptions) | undefined
+declare const makeUnixInputStream: <E = Cause.UnknownError>(
+  options: FromInputStreamOptions &
+    UnixStreamOptions & { readonly fileDescriptor: number; readonly onError?: ((error: unknown) => E) | undefined }
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L70)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L75)
 
 Since v1.0.0
 
@@ -79,14 +82,16 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeWin32InputStream: <E>(
-  handle: NativePointerValue,
-  onError: (error: unknown) => E,
-  options?: (FromInputStreamOptions & WindowsStreamOptions) | undefined
+declare const makeWin32InputStream: <E = Cause.UnknownError>(
+  options: FromInputStreamOptions &
+    WindowsStreamOptions & {
+      readonly handle: NativePointerValue
+      readonly onError?: ((error: unknown) => E) | undefined
+    }
 ) => Stream.Stream<Uint8Array, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L81)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L88)
 
 Since v1.0.0
 
@@ -104,7 +109,7 @@ Since v1.0.0
 declare const toInputStream: <E, R>(stream: Stream.Stream<Uint8Array, E, R>) => Effect.Effect<InputStream, never, R>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L92)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L101)
 
 Since v1.0.0
 
@@ -118,7 +123,7 @@ Like `toInputStream` but with `R` fixed to `never`.
 declare const toInputStreamNever: <E>(stream: Stream.Stream<Uint8Array, E, never>) => InputStream
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L101)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L110)
 
 Since v1.0.0
 
@@ -145,7 +150,7 @@ declare const receiveStream: (
 ) => Effect.Effect<Stream.Stream<{ message: string; data?: Uint8Array | undefined }, never, never>, never, Scope.Scope>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Stream.ts#L29)
 
 Since v1.0.0
 
@@ -157,7 +162,8 @@ Since v1.0.0
 
 ```ts
 export interface FromInputStreamOptions {
-  readonly chunkSize?: ByteSize.ByteSize | undefined
+  /** Size passed to each `InputStream.read` call, defaults to 64 KiB. */
+  readonly chunkSize?: number | undefined
 }
 ```
 

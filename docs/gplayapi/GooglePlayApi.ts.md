@@ -22,6 +22,8 @@ Since v1.0.0
   - [downloadToDisk](#downloadtodisk)
   - [downloadToStreams](#downloadtostreams)
   - [purchase](#purchase)
+- [Models](#models)
+  - [Integrity (type alias)](#integrity-type-alias)
 
 ---
 
@@ -41,7 +43,7 @@ declare const bulkDetails: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L99)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L125)
 
 Since v1.0.0
 
@@ -65,7 +67,7 @@ declare const delivery: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L158)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L176)
 
 Since v1.0.0
 
@@ -83,15 +85,21 @@ declare const details: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L75)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L109)
 
 Since v1.0.0
 
 ## downloadToDisk
 
-Note that each file is buffered in memory in full while its integrity is
-hashed, so peak memory use is the size of the largest file (expansion files
-can be several gigabytes).
+Downloads the APK, its splits, and its expansion files into temporary files
+and checks each against its expected integrity. Files are hashed as they are
+streamed to disk, so they are never held in memory in full.
+
+The temporary files are created with `FileSystem.makeTempFileScoped`, so they
+are deleted when the provided `Scope` closes. Copy or move them somewhere
+else first if they need to outlive it. A file that fails its integrity check
+fails the effect, and any files written so far are removed along with the
+scope.
 
 **Signature**
 
@@ -101,31 +109,20 @@ declare const downloadToDisk: (
   options?: { offerType?: number | undefined; versionCode?: number | bigint | undefined } | undefined
 ) => Effect.Effect<
   readonly [
-    {
-      url: string
-      name: string
-      file: string
-      size: bigint
-      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
-    },
-    ...{
-      url: string
-      name: string
-      file: string
-      size: bigint
-      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
-    }[]
+    { url: string; name: string; file: string; size: bigint; integrity: Integrity },
+    ...{ url: string; name: string; file: string; size: bigint; integrity: Integrity }[]
   ],
   | HttpClientError.HttpClientError
   | Schema.SchemaError
   | PlayAccountError
   | Cause.NoSuchElementError
+  | EncodingError.EncodingError
   | PlatformError.PlatformError,
-  PlayAccount | HttpClient.HttpClient | AndroidDeviceService | Digest.Digest | FileSystem.FileSystem | Scope.Scope
+  PlayAccount | HttpClient.HttpClient | AndroidDeviceService | FileSystem.FileSystem | Scope.Scope
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L294)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L326)
 
 Since v1.0.0
 
@@ -141,25 +138,29 @@ declare const downloadToStreams: (
   readonly [
     {
       stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>
-      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+      integrity: Integrity
       size: bigint
       name: string
       url: string
     },
     ...{
       stream: Stream.Stream<Uint8Array, HttpClientError.HttpClientError, never>
-      integrity: { "SHA-1": string } | { "SHA-256": string } | { "SHA-384": string } | { "SHA-512": string }
+      integrity: Integrity
       size: bigint
       name: string
       url: string
     }[]
   ],
-  HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError | Cause.NoSuchElementError,
+  | HttpClientError.HttpClientError
+  | Schema.SchemaError
+  | PlayAccountError
+  | Cause.NoSuchElementError
+  | EncodingError.EncodingError,
   PlayAccount | HttpClient.HttpClient | AndroidDeviceService
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L194)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L215)
 
 Since v1.0.0
 
@@ -170,7 +171,7 @@ Since v1.0.0
 ```ts
 declare const purchase: (
   bundleIdentifier: string,
-  options: { offerType: number; versionCode: number | bigint; certificateHash?: string }
+  options: { offerType: number; versionCode: number | bigint; certificateHash?: string | undefined }
 ) => Effect.Effect<
   BuyResponse,
   HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError,
@@ -178,6 +179,23 @@ declare const purchase: (
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L128)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L147)
+
+Since v1.0.0
+
+# Models
+
+## Integrity (type alias)
+
+The expected digest of a file as lowercase hex. Expansion files are hashed
+with SHA-1 and everything else with SHA-256.
+
+**Signature**
+
+```ts
+type Integrity = { readonly "SHA-1": string } | { readonly "SHA-256": string }
+```
+
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/GooglePlayApi.ts#L45)
 
 Since v1.0.0

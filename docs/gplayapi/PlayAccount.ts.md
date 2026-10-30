@@ -26,7 +26,7 @@ Since v1.0.0
   - [PlayAccountService (interface)](#playaccountservice-interface)
   - [PlayAccountStrategy (type alias)](#playaccountstrategy-type-alias)
   - [PlayCredentials (interface)](#playcredentials-interface)
-- [Tags](#tags)
+- [Services](#services)
   - [PlayAccount (class)](#playaccount-class)
 
 ---
@@ -165,7 +165,7 @@ export interface PlayCredentials {
 
 Since v1.0.0
 
-# Tags
+# Services
 
 ## PlayAccount (class)
 

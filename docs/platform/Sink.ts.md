@@ -28,6 +28,9 @@ Since v1.0.0
 
 ## fromOutputStream
 
+Writes to a Frida `OutputStream`. Errors are mapped with `onError`,
+defaulting to `Cause.UnknownError`.
+
 **See**
 
 - https://frida.re/docs/javascript-api/#outputstream
@@ -35,14 +38,15 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const fromOutputStream: <E>(
-  evaluate: Function.LazyArg<OutputStream>,
-  onError: (error: unknown) => E,
-  options?: FromWritableOptions | undefined
+declare const fromOutputStream: <E = Cause.UnknownError>(
+  options: FromWritableOptions & {
+    readonly evaluate: Function.LazyArg<OutputStream>
+    readonly onError?: ((error: unknown) => E) | undefined
+  }
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L31)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L39)
 
 Since v1.0.0
 
@@ -55,14 +59,13 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeUnixOutputStream: <E>(
-  fileDescriptor: number,
-  onError: (error: unknown) => E,
-  options?: (UnixStreamOptions & FromWritableOptions) | undefined
+declare const makeUnixOutputStream: <E = Cause.UnknownError>(
+  options: FromWritableOptions &
+    UnixStreamOptions & { readonly fileDescriptor: number; readonly onError?: ((error: unknown) => E) | undefined }
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L42)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L51)
 
 Since v1.0.0
 
@@ -75,26 +78,30 @@ Since v1.0.0
 **Signature**
 
 ```ts
-declare const makeWin32OutputStream: <E>(
-  handle: NativePointerValue,
-  onError: (error: unknown) => E,
-  options?: (WindowsStreamOptions & FromWritableOptions) | undefined
+declare const makeWin32OutputStream: <E = Cause.UnknownError>(
+  options: FromWritableOptions &
+    WindowsStreamOptions & {
+      readonly handle: NativePointerValue
+      readonly onError?: ((error: unknown) => E) | undefined
+    }
 ) => Sink.Sink<void, Uint8Array, never, E, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L53)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L64)
 
 Since v1.0.0
 
 ## sendSink
 
+Sends each string to the host with Frida's `send`.
+
 **Signature**
 
 ```ts
-declare const sendSink: () => Sink.Sink<void, string, never, never, never>
+declare const sendSink: Sink.Sink<void, string, never, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L24)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L29)
 
 Since v1.0.0
 
@@ -106,10 +113,12 @@ Since v1.0.0
 
 ```ts
 export interface FromWritableOptions {
+  /** Whether to close the `OutputStream` when the sink is done, defaults to
+   * `true`. */
   readonly endOnDone?: boolean | undefined
 }
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L16)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/platform/src/Sink.ts#L17)
 
 Since v1.0.0

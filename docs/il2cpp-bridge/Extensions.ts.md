@@ -55,13 +55,14 @@ Since v1.0.0
 declare class Dictionary<K, V>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L14)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L18)
 
 Since v1.0.0
 
 ### lift (static method)
 
-Lifts an Il2Cpp.Object to a Dictionary.
+Lifts an Il2Cpp.Object holding a System.Collections.Generic.Dictionary
+instance to a Dictionary.
 
 **Signature**
 
@@ -71,7 +72,7 @@ declare const lift: <K extends Il2Cpp.Field.Type = any, V extends Il2Cpp.Field.T
 ) => Dictionary<K, V>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L122)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L126)
 
 ### of (static method)
 
@@ -87,7 +88,7 @@ declare const of: <K extends Il2Cpp.Field.Type = any, V extends Il2Cpp.Field.Typ
 ) => Dictionary<K, V>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L130)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L134)
 
 ### get (method)
 
@@ -99,7 +100,7 @@ Gets the value by the specified key of the current dictionary.
 declare const get: (key: K) => V
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L45)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L49)
 
 ### set (method)
 
@@ -111,7 +112,7 @@ Sets the pair of the current dictionary.
 declare const set: (key: K, value: V) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L50)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L54)
 
 ### add (method)
 
@@ -123,7 +124,7 @@ Adds a new key to the current dictionary.
 declare const add: (key: K, value: V) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L55)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L59)
 
 ### clear (method)
 
@@ -135,7 +136,7 @@ Clears the current dictionary.
 declare const clear: () => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L60)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L64)
 
 ### containsKey (method)
 
@@ -147,7 +148,7 @@ Determines if the key is in the current dictionary.
 declare const containsKey: (key: K) => boolean
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L65)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L69)
 
 ### containsValue (method)
 
@@ -159,7 +160,7 @@ Determines if the value is in the current dictionary.
 declare const containsValue: (value: V) => boolean
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L70)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L74)
 
 ### find (method)
 
@@ -171,7 +172,7 @@ Finds a key in the current dictionary and returns its index.
 declare const find: (key: K) => number
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L75)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L79)
 
 ### remove (method)
 
@@ -183,7 +184,7 @@ Removes the given key from the current dictionary.
 declare const remove: (key: K) => boolean
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L80)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L84)
 
 ### [Symbol.iterator] (method)
 
@@ -193,7 +194,7 @@ declare const remove: (key: K) => boolean
 declare const [Symbol.iterator]: () => IterableIterator<[K, V]>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L84)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L88)
 
 ### toString (method)
 
@@ -203,17 +204,17 @@ declare const [Symbol.iterator]: () => IterableIterator<[K, V]>
 declare const toString: () => string
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L91)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L92)
 
 ### toRecord (method)
 
 **Signature**
 
 ```ts
-declare const toRecord: (keys?: Array<K> | undefined) => Record<string, V>
+declare const toRecord: (keys?: ReadonlyArray<K> | undefined) => Record<string, V>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L95)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L96)
 
 ## List (class)
 
@@ -223,13 +224,14 @@ declare const toRecord: (keys?: Array<K> | undefined) => Record<string, V>
 declare class List<T>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L148)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L152)
 
 Since v1.0.0
 
 ### lift (static method)
 
-Lifts an Il2Cpp.Array to a List.
+Lifts an Il2Cpp.Object holding a System.Collections.Generic.List instance
+to a List.
 
 **Signature**
 
@@ -237,7 +239,7 @@ Lifts an Il2Cpp.Array to a List.
 declare const lift: <T extends Il2Cpp.Field.Type = any>(object: Il2Cpp.Object) => List<T>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L233)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L240)
 
 ### of (static method)
 
@@ -246,10 +248,13 @@ Creates a new list with the given elements.
 **Signature**
 
 ```ts
-declare const of: <T extends Il2Cpp.Field.Type = any>(klass: Il2Cpp.Class, elements?: Array<T> | undefined) => List<T>
+declare const of: <T extends Il2Cpp.Field.Type = any>(
+  klass: Il2Cpp.Class,
+  elements?: ReadonlyArray<T> | undefined
+) => List<T>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L238)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L245)
 
 ### get (method)
 
@@ -261,7 +266,7 @@ Gets the value by the specified index of the current list.
 declare const get: (index: number) => T
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L163)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L167)
 
 ### set (method)
 
@@ -273,7 +278,7 @@ Sets the element of the current list.
 declare const set: (index: number, value: T) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L168)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L172)
 
 ### add (method)
 
@@ -285,7 +290,7 @@ Adds a new element to the current list.
 declare const add: (item: T) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L173)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L177)
 
 ### clear (method)
 
@@ -297,7 +302,7 @@ Clears the current list.
 declare const clear: () => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L178)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L182)
 
 ### contains (method)
 
@@ -309,7 +314,7 @@ Determines if the key is in the current list.
 declare const contains: (item: T) => boolean
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L183)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L187)
 
 ### indexOf (method)
 
@@ -321,7 +326,7 @@ Determines the index of the element of the current list.
 declare const indexOf: (item: T) => number
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L188)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L192)
 
 ### insert (method)
 
@@ -333,7 +338,7 @@ Inserts an element at the given index of the current list.
 declare const insert: (index: number, item: T) => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L193)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L197)
 
 ### remove (method)
 
@@ -345,7 +350,7 @@ Removes a data element from the current list.
 declare const remove: (item: T) => boolean
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L198)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L202)
 
 ### reverse (method)
 
@@ -357,7 +362,7 @@ Reverses the current list.
 declare const reverse: () => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L203)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L207)
 
 ### sort (method)
 
@@ -369,7 +374,7 @@ Sorts the current list.
 declare const sort: () => void
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L208)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L212)
 
 ### [Symbol.iterator] (method)
 
@@ -379,7 +384,7 @@ declare const sort: () => void
 declare const [Symbol.iterator]: () => IterableIterator<T>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L217)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L221)
 
 ### toString (method)
 
@@ -389,4 +394,4 @@ declare const [Symbol.iterator]: () => IterableIterator<T>
 declare const toString: () => string
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L223)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Extensions.ts#L227)

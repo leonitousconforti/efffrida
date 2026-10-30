@@ -20,11 +20,11 @@ Since v1.0.0
   - [EmbeddedPixel7a](#embeddedpixel7a)
   - [fromPropertiesFile](#frompropertiesfile)
 - [Layers](#layers)
-  - [EmbeddedPixel7aLive](#embeddedpixel7alive)
+  - [layerEmbeddedPixel7a](#layerembeddedpixel7a)
 - [Models](#models)
   - [AndroidDevice (class)](#androiddevice-class)
     - [authHeaders (property)](#authheaders-property)
-- [Tags](#tags)
+- [Services](#services)
   - [AndroidDeviceService (class)](#androiddeviceservice-class)
 
 ---
@@ -43,7 +43,7 @@ ever reaching for headers that expired underneath it.
 declare const authHeadersTtl: Duration.Duration
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L56)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L57)
 
 Since v1.0.0
 
@@ -61,7 +61,7 @@ declare const EmbeddedPixel7a: Effect.Effect<
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L202)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L203)
 
 Since v1.0.0
 
@@ -75,25 +75,25 @@ declare const fromPropertiesFile: (
 ) => Effect.Effect<AndroidDevice, Schema.SchemaError | PlatformError.PlatformError, FileSystem.FileSystem>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L176)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L177)
 
 Since v1.0.0
 
 # Layers
 
-## EmbeddedPixel7aLive
+## layerEmbeddedPixel7a
 
 **Signature**
 
 ```ts
-declare const EmbeddedPixel7aLive: Layer.Layer<
+declare const layerEmbeddedPixel7a: Layer.Layer<
   AndroidDeviceService,
   Schema.SchemaError | PlatformError.PlatformError | PlatformError.BadArgument,
   FileSystem.FileSystem | Path.Path
 >
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L215)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L216)
 
 Since v1.0.0
 
@@ -109,7 +109,7 @@ The profile of the android device that google play requests are made as.
 declare class AndroidDevice
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L64)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L65)
 
 Since v1.0.0
 
@@ -124,11 +124,11 @@ for `authHeadersTtl`. Failed acquisitions are not cached.
 readonly authHeaders: Effect.Effect<Record<string, string>, HttpClientError.HttpClientError | Schema.SchemaError | PlayAccountError, PlayAccount | HttpClient.HttpClient>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L142)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L143)
 
 Since v1.0.0
 
-# Tags
+# Services
 
 ## AndroidDeviceService (class)
 
@@ -138,6 +138,6 @@ Since v1.0.0
 declare class AndroidDeviceService
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L44)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/gplayapi/src/AndroidDevice.ts#L45)
 
 Since v1.0.0

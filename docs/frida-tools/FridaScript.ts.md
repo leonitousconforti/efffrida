@@ -27,7 +27,7 @@ Since v1.0.0
   - [LoadOptions (interface)](#loadoptions-interface)
 - [Predicates](#predicates)
   - [isFridaScript](#isfridascript)
-- [Tags](#tags)
+- [Services](#services)
   - [FridaScript](#fridascript)
 - [Type ids](#type-ids)
   - [FridaScriptTypeId](#fridascripttypeid)
@@ -203,7 +203,7 @@ Since v1.0.0
 
 ```ts
 export interface LoadOptions extends Frida.ScriptOptions, Frida.CompilerOptions {
-  readonly messageMailboxCapacity?:
+  readonly messageQueueCapacity?:
     | {
         readonly capacity?: number | undefined
         readonly strategy?: "dropping" | "sliding" | undefined
@@ -243,7 +243,7 @@ declare const isFridaScript: (u: unknown) => u is FridaScript
 
 Since v1.0.0
 
-# Tags
+# Services
 
 ## FridaScript
 

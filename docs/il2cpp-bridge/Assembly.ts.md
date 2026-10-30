@@ -33,7 +33,7 @@ Since v1.0.0
 declare const assembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, never, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L28)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L29)
 
 Since v1.0.0
 
@@ -73,7 +73,7 @@ Since v1.0.0
 declare const tryAssembly: (name: string) => Effect.Effect<Il2Cpp.Assembly, Cause.NoSuchElementError, never>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L35)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L36)
 
 Since v1.0.0
 
@@ -103,6 +103,6 @@ Since v1.0.0
 declare const CacheCapacity: Context.Reference<number>
 ```
 
-[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L19)
+[Source](https://github.com/leonitousconforti/efffrida/blob/main/packages/il2cpp-bridge/src/Assembly.ts#L20)
 
 Since v1.0.0
