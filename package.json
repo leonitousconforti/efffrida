@@ -1,8 +1,5 @@
 {
     "private": true,
-    "workspaces": [
-        "packages/*"
-    ],
     "type": "module",
     "scripts": {
         "clean": "node scripts/clean.mjs",
