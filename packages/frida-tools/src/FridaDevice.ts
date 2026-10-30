@@ -42,7 +42,7 @@ export interface FridaDevice {
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export const FridaDevice: Context.Service<FridaDevice, FridaDevice> = internal.Tag;
 

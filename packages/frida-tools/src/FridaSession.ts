@@ -69,7 +69,7 @@ export interface FridaSession {
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export const FridaSession: Context.Service<FridaSession, FridaSession> = internal.Tag;
 

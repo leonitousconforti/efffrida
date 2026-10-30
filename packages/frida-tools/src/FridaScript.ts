@@ -65,7 +65,7 @@ export interface FridaScript {
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export const FridaScript: Context.Service<FridaScript, FridaScript> = internalScript.Tag;
 

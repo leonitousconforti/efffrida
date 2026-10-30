@@ -67,7 +67,7 @@ export interface SqliteClient extends SqlClient.SqlClient {
 
 /**
  * @since 1.0.0
- * @category Tags
+ * @category Services
  */
 export const SqliteClient = Context.Service<SqliteClient>("@efffrida/sql/SqliteClient");
 
