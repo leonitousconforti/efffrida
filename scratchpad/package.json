@@ -14,8 +14,8 @@
         "frida": "17.25.0"
     },
     "devDependencies": {
-        "@effect/platform-node": "4.1.0",
-        "effect": "4.1.0",
+        "@effect/platform-node": "4.1.1",
+        "effect": "4.1.1",
         "redis": "6.3.1"
     }
 }
