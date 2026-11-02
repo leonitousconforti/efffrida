@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.58
+
+### Patch Changes
+
+- 5797c25: bump to effect 4.1.1
+
 ## 0.0.57
 
 ### Patch Changes
