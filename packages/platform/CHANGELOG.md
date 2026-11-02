@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.51
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.50
 
 ### Patch Changes

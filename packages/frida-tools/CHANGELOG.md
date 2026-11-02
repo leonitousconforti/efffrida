@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.64
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.63
 
 ### Patch Changes

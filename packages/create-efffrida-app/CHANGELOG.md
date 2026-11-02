@@ -1,5 +1,11 @@
 # create-efffrida-app
 
+## 0.0.27
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.26
 
 ### Patch Changes

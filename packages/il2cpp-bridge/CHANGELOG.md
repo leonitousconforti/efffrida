@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.59
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.58
 
 ### Patch Changes

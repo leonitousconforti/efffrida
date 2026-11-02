@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.50
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.49
 
 ### Patch Changes

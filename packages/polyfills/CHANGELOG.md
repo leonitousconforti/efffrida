@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.22
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+
 ## 0.0.21
 
 ### Patch Changes
