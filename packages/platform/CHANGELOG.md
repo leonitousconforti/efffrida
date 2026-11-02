@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.50
+
+### Patch Changes
+
+- 5797c25: bump to effect 4.1.1
+
 ## 0.0.49
 
 ### Patch Changes
