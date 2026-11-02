@@ -167,7 +167,7 @@ overrides:
   madge>typescript: 7.0.2
 
 patchedDependencies:
-  effect@4.1.0: e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f
+  effect@4.1.1: bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132
   vitest@5.0.5: 330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99
 
 importers:
@@ -190,8 +190,8 @@ importers:
         specifier: 0.8.9
         version: 0.8.9
       '@effect/docgen':
-        specifier: 4.1.0
-        version: 4.1.0(redis@6.3.1)(typescript@7.0.2)
+        specifier: 4.1.1
+        version: 4.1.1(redis@6.3.1)(typescript@7.0.2)
       '@effect/tsgo':
         specifier: 0.63.0
         version: 0.63.0
@@ -229,14 +229,14 @@ importers:
   packages/create-efffrida-app:
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       redis:
         specifier: 6.3.1
         version: 6.3.1
@@ -257,11 +257,11 @@ importers:
         version: 17.25.0
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@types/frida-gum':
         specifier: 19.12.0
         version: 19.12.0
@@ -269,8 +269,8 @@ importers:
         specifier: 26.6.6
         version: 26.6.6
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       redis:
         specifier: 6.3.1
         version: 6.3.1
@@ -297,8 +297,8 @@ importers:
         specifier: 26.6.6
         version: 26.6.6
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
 
   packages/il2cpp-bridge:
     dependencies:
@@ -310,14 +310,14 @@ importers:
         specifier: 19.12.0
         version: 19.12.0
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
 
   packages/platform:
     devDependencies:
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -334,8 +334,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       flatted:
         specifier: 3.4.4
         version: 3.4.4
@@ -372,11 +372,11 @@ importers:
         version: link:../polyfills
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/platform':
         specifier: workspace:*
         version: link:../platform
@@ -387,8 +387,8 @@ importers:
         specifier: 26.6.6
         version: 26.6.6
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       frida:
         specifier: 17.25.0
         version: 17.25.0
@@ -405,8 +405,8 @@ importers:
   packages/sql:
     devDependencies:
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -423,8 +423,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       flatted:
         specifier: 3.4.4
         version: 3.4.4
@@ -442,11 +442,11 @@ importers:
         version: link:../frida-tools
     devDependencies:
       '@effect/platform-node-shared':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -463,8 +463,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       flatted:
         specifier: 3.4.4
         version: 3.4.4
@@ -503,11 +503,11 @@ importers:
         version: 17.25.0
     devDependencies:
       '@effect/platform-node':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       redis:
         specifier: 6.3.1
         version: 6.3.1
@@ -518,15 +518,15 @@ importers:
         specifier: latest
         version: link:../../packages/platform
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
     devDependencies:
       '@effect/tsgo':
         specifier: 0.63.0
         version: 0.63.0
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/polyfills':
         specifier: latest
         version: link:../../packages/polyfills
@@ -570,8 +570,8 @@ importers:
   templates/app-and-agent:
     dependencies:
       '@effect/platform-node':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       '@efffrida/frida-tools':
         specifier: latest
         version: link:../../packages/frida-tools
@@ -582,15 +582,15 @@ importers:
         specifier: latest
         version: link:../../packages/rpc
       effect:
-        specifier: 4.1.0
-        version: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+        specifier: 4.1.1
+        version: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
     devDependencies:
       '@effect/tsgo':
         specifier: 0.63.0
         version: 0.63.0
       '@effect/vitest':
-        specifier: 4.1.0
-        version: 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
+        specifier: 4.1.1
+        version: 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))
       '@efffrida/polyfills':
         specifier: latest
         version: link:../../packages/polyfills
@@ -865,8 +865,8 @@ packages:
     engines: {node: '>=16.17.1'}
     hasBin: true
 
-  '@effect/docgen@4.1.0':
-    resolution: {integrity: sha512-V/B0t7DHDqVQa0tl+VQ654W0IBHLfD7IJwUsznuWUMPCANvXYD8L8j+dY6bwnwVuGKjATTWDiYjCW16pj3PoGg==}
+  '@effect/docgen@4.1.1':
+    resolution: {integrity: sha512-RjjizClydAQLwraEYJcll/FO+fp39TAOUuZ9WzUIa2TOvjD2ywWVu7FyRgipwI0r7MQXKBfs84/cA6CDHQ6+nQ==}
     engines: {node: '>=22.19.0'}
     hasBin: true
     peerDependencies:
@@ -878,18 +878,18 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  '@effect/platform-node-shared@4.1.0':
-    resolution: {integrity: sha512-uYQfFRoxWLo8fIhiSeBcmz/R1ooOfE3HF3cWHFgxz82tZMk2Wn02BGABcdLmaAch9VpDLbtWnuhSxNyBsGMUFg==}
+  '@effect/platform-node-shared@4.1.1':
+    resolution: {integrity: sha512-29zdEDs3i5W+t92+mWTFNSfzSHsTpZMcFZ9k4lkkz4tETlC1m4lRwjdjieJtvQ/bKHMnYrCtZwizsBFSf3L5Yg==}
     engines: {node: '>=22.19.0'}
     peerDependencies:
-      effect: ^4.1.0
+      effect: ^4.1.1
 
-  '@effect/platform-node@4.1.0':
-    resolution: {integrity: sha512-v+X7moGVF9k5oMVvz0slA+NgtEod+W+oygeI285MDJgSlUCW3JcqElj+cD3rlijFZtpKhC7RLkU1GuCxjGHTpA==}
+  '@effect/platform-node@4.1.1':
+    resolution: {integrity: sha512-Oy3eP27XeipUgejftptHy0zf2W75HU8/yPKwBqdz8uYxAvWdf4c48OFYs6KJX/+uIEKdMjnF6mXYgbauWgIcVA==}
     engines: {node: '>=22.19.0'}
     peerDependencies:
-      effect: ^4.1.0
-      redis: '>=5.0.0 <7.0.0'
+      effect: ^4.1.1
+      redis: '>=5.1.0 <7.0.0'
 
   '@effect/tsgo-darwin-arm64@0.63.0':
     resolution: {integrity: sha512-KBvYatuEol71+i+BERWuDRU9XE+4sTK78N83Ko6VNF5gy6yXiujj/bgtWs2P3cDGXsevAV6L+HtpuAWjAQKC6Q==}
@@ -930,10 +930,10 @@ packages:
     resolution: {integrity: sha512-bRbvVj+YLE/nBmcBWGAwsul3mjEYlqqOmWMxvwSVKq/oNnJEuZYgi2OFDeUf7q49E2g3w+oMHMWyN2QayZ77RQ==}
     hasBin: true
 
-  '@effect/vitest@4.1.0':
-    resolution: {integrity: sha512-+APF69oTYgGj5WCewowk1/udepH74xz4ONyH7d+UfcK0SrF3osiSwsWEyODUpJvWd6MIk5F5PcFJiE4evMuG2A==}
+  '@effect/vitest@4.1.1':
+    resolution: {integrity: sha512-VkE9EUXE4G7mXMmV3X3Iu+6k3pZswWjOf7PB2qiaHMoFAZAPtHp+eUZo9oJM4Ip5z+ghQ9K0IDAQM2iG6+w5MA==}
     peerDependencies:
-      effect: ^4.1.0
+      effect: ^4.1.1
       vitest: '>=5.0.0 <6.0.0'
 
   '@esbuild/aix-ppc64@0.28.2':
@@ -2176,8 +2176,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  effect@4.1.0:
-    resolution: {integrity: sha512-lGx2MJJyrXA8RZb2UpQ/0Nkb5Utaimby7oD92+18noBxLPE85IFOvptdzau8dvcxAOwfwHo9iqapbKeFzqQM/Q==}
+  effect@4.1.1:
+    resolution: {integrity: sha512-XYu65BrcmNqu5i7PPvP4dqL+R5ma37zIsfuSPjcn78mog+6e5PkilNg7Xo+pBpjXJYlWEIpH4j91tMrfW05CMw==}
 
   electron-to-chromium@1.5.467:
     resolution: {integrity: sha512-Nw9X371rtZmYcBSnEijnCDONILjs93biCZO34juC7MBOmK8E+GFnyD4T/WvyrlJkppul7oxg6TwvtKst9SODTw==}
@@ -3597,14 +3597,14 @@ snapshots:
       micromatch: 4.0.8
       pkg-entry-points: 1.1.2
 
-  '@effect/docgen@4.1.0(redis@6.3.1)(typescript@7.0.2)':
+  '@effect/docgen@4.1.1(redis@6.3.1)(typescript@7.0.2)':
     dependencies:
       '@babel/code-frame': 8.0.6
       '@effect/markdown-toc': 0.1.0
-      '@effect/platform-node': 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)
+      '@effect/platform-node': 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)
       chalk: 6.0.1
       doctrine: 3.0.0
-      effect: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+      effect: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       glob: 13.0.6
       prettier: 3.9.10
       ts-morph: 28.0.0
@@ -3630,19 +3630,19 @@ snapshots:
       repeat-string: 1.6.1
       strip-color: 0.1.0
 
-  '@effect/platform-node-shared@4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))':
+  '@effect/platform-node-shared@4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))':
     dependencies:
       '@types/ws': 8.18.2
-      effect: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+      effect: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(redis@6.3.1)':
+  '@effect/platform-node@4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(redis@6.3.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))
-      effect: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+      '@effect/platform-node-shared': 4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))
+      effect: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       redis: 6.3.1
       undici: 8.12.3
     transitivePeerDependencies:
@@ -3680,9 +3680,9 @@ snapshots:
       '@effect/tsgo-win32-arm64': 0.63.0
       '@effect/tsgo-win32-x64': 0.63.0
 
-  '@effect/vitest@4.1.0(effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
+  '@effect/vitest@4.1.1(effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132))(vitest@5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)))':
     dependencies:
-      effect: 4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f)
+      effect: 4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132)
       vitest: 5.0.5(patch_hash=330117083d54876c7134dd38164636c1694bc1bd0492dc8c50c11f485e8d6d99)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6))
 
   '@esbuild/aix-ppc64@0.28.2':
@@ -4513,7 +4513,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  effect@4.1.0(patch_hash=e8e0266732916e3bbc75b2538d8b91e1880e8f1bd6d0d4b6a87f6d6c2445f60f): {}
+  effect@4.1.1(patch_hash=bb3b600aca0483b520c5998874e4dac78a1d9494b875234b13cd57877eb45132): {}
 
   electron-to-chromium@1.5.467: {}
 
