@@ -11,6 +11,7 @@ import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as Schema from "effect/Schema";
+import * as Stream from "effect/Stream";
 import * as Tuple from "effect/Tuple";
 
 import type * as FridaSession from "../FridaSession.ts";
@@ -344,6 +345,67 @@ export const AttachSchema: Schema.Union<
     )
 );
 
+/**
+ * Spawns the process to attach to for `preSpawn`, it is killed when the scope
+ * closes.
+ *
+ * On Linux Frida's injector traces from a thread of this process, and the
+ * kernel reports the ptrace stops of a child traced by its real parent's
+ * process to every thread of that process. libuv reaps its children on every
+ * SIGCHLD, so it consumes those stops, the attach times out and Node.js thinks
+ * the child exited (frida/frida-core#1277). So on Linux the target is started
+ * from a shell that stays alive, which makes it a grandchild that libuv never
+ * waits for. It stays in the shell's process group, which is what gets killed
+ * when the scope closes.
+ *
+ * @internal
+ */
+const preSpawnProcess = Effect.fnUntraced(function* (
+    spawn: readonly [string, ...Array<string>]
+): Effect.fn.Return<
+    number,
+    FridaSessionError.FridaSessionError | PlatformError.PlatformError,
+    ChildProcessSpawner.ChildProcessSpawner | Scope.Scope
+> {
+    const [command, ...args] = spawn;
+
+    // Nothing reads the output, so leaving it piped would eventually block the
+    // process once the pipe buffer fills up
+    if (process.platform !== "linux") {
+        const handle = yield* ChildProcess.make(command, args, { stdout: "ignore", stderr: "ignore" });
+        return handle.pid;
+    }
+
+    // Prints the target's pid, then closes stdout so that reading it ends, and
+    // exits with the target's exit status. The background job is a copy of the
+    // shell until it execs the target, so the pid is only printed once it has,
+    // otherwise Frida could inject into the shell right before it is replaced
+    const script = [
+        '"$@" >/dev/null 2>&1 &',
+        "pid=$!",
+        "i=0",
+        'while [ "$(readlink /proc/$pid/exe)" = "$(readlink /proc/$$/exe)" ] && [ $i -lt 1000 ]; do',
+        "    sleep 0.005",
+        "    i=$((i + 1))",
+        "done",
+        'echo "$pid"',
+        "exec >/dev/null",
+        'wait "$pid"',
+    ].join("\n");
+
+    const shell = yield* ChildProcess.make("sh", ["-c", script, "sh", command, ...args], { stderr: "ignore" });
+    const output = yield* Stream.mkString(Stream.decodeText(shell.stdout));
+    const pid = Number(output.trim());
+    if (!Number.isSafeInteger(pid) || pid <= 0) {
+        return yield* new FridaSessionError.FridaSessionError({
+            cause: new Error(`Unable to spawn ${command}, the shell printed '${output.trim()}' instead of its pid`),
+            when: "spawn",
+        });
+    }
+
+    return pid;
+});
+
 /** @internal */
 export const SessionLive = (
     config: Schema.Schema.Type<typeof AttachSchema>
@@ -361,16 +423,7 @@ export const SessionLive = (
             )
         ),
         Match.when({ preSpawn: true }, ({ spawn, realm }) =>
-            Layer.unwrap(
-                Effect.gen(function* () {
-                    // Nothing reads the output, so leaving it piped would
-                    // eventually block the process once the pipe buffer fills
-                    // up
-                    const [command, ...args] = spawn;
-                    const handle = yield* ChildProcess.make(command, args, { stdout: "ignore", stderr: "ignore" });
-                    return layer(handle.pid, realm !== undefined ? { realm } : {});
-                })
-            )
+            Layer.unwrap(Effect.map(preSpawnProcess(spawn), (pid) => layer(pid, realm !== undefined ? { realm } : {})))
         ),
         Match.orElse(({ spawn, realm }) => layer(spawn, realm !== undefined ? { realm } : {}))
     );
