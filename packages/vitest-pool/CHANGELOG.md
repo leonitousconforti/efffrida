@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.55
+
+### Patch Changes
+
+- c2be819: bump to frida 17.25.1
+- Updated dependencies [c2be819]
+    - @efffrida/frida-tools@0.0.64
+    - @efffrida/polyfills@0.0.22
+
 ## 0.0.54
 
 ### Patch Changes
