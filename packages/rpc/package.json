@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/rpc",
-    "version": "0.0.67",
+    "version": "0.0.68",
     "description": "effect/rpc protocols between Node and Frida agents",
     "keywords": [
         "effect-ts",

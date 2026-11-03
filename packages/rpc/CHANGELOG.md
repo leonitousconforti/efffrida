@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.68
+
+### Patch Changes
+
+- edf94bf: Frida 17.25.2 <https://frida.re/news/2026/11/02/frida-17-25-2-released/>
+- Updated dependencies [edf94bf]
+    - @efffrida/frida-tools@0.0.65
+
 ## 0.0.67
 
 ### Patch Changes
