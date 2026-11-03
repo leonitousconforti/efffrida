@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.65
+
+### Patch Changes
+
+- edf94bf: Frida 17.25.2 <https://frida.re/news/2026/11/02/frida-17-25-2-released/>
+
 ## 0.0.64
 
 ### Patch Changes
