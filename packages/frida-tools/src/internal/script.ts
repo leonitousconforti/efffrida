@@ -125,17 +125,22 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
     });
 
     // The script is destroyed if the target process exits, in which case unload
-    // rejects
+    // rejects. Finalizers are uninterruptible, so an unload that never settles
+    // would block every finalizer after it
     const release = (script: Frida.Script) =>
         Effect.suspend(() =>
             script.isDestroyed
                 ? Effect.void
-                : Effect.ignore(
-                      Effect.promise((signal) => {
-                          const cancellable = new Frida.Cancellable();
-                          signal.onabort = () => cancellable.cancel();
-                          return script.unload(cancellable);
-                      })
+                : Effect.tryPromise((signal) => {
+                      const cancellable = new Frida.Cancellable();
+                      signal.onabort = () => cancellable.cancel();
+                      return script.unload(cancellable);
+                  }).pipe(
+                      Effect.timeoutOrElse({
+                          duration: "10 seconds",
+                          orElse: () => Effect.logWarning("Timed out unloading the script"),
+                      }),
+                      Effect.ignore
                   )
         );
 

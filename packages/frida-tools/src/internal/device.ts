@@ -107,12 +107,20 @@ export const acquireRemoteDevice = (
             }),
     });
 
+    // Finalizers are uninterruptible, so a call that never settles would block
+    // every finalizer after it (e.g. stopping frida-server and the emulator)
     const release = (_device: Frida.Device) =>
-        Effect.promise((signal) => {
+        Effect.tryPromise((signal) => {
             const cancellable = new Frida.Cancellable();
             signal.onabort = () => cancellable.cancel();
             return Frida.getDeviceManager().removeRemoteDevice(address, cancellable);
-        });
+        }).pipe(
+            Effect.timeoutOrElse({
+                duration: "10 seconds",
+                orElse: () => Effect.logWarning(`Timed out removing remote device ${address}`),
+            }),
+            Effect.ignore
+        );
 
     // Acquire interruptibly so that interrupting (e.g. the emulator timeout)
     // aborts the signal and cancels the connection attempt
@@ -203,7 +211,9 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
         const emulator = `emulator-${firstPort}`;
 
         // Nothing reads stderr, so leaving it piped would eventually block the
-        // emulator once the pipe buffer fills up
+        // emulator once the pipe buffer fills up. The emu kill finalizer below
+        // normally stops the emulator, otherwise it gets SIGTERM and then
+        // SIGKILL
         const emulatorProcess = yield* ChildProcess.make(
             emulatorExecutable,
             [
@@ -216,12 +226,13 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
                 ...(hidden ? ["-no-window"] : []),
                 ...(options?.extraEmulatorArgs ?? []),
             ],
-            { stderr: "ignore" }
+            { stderr: "ignore", forceKillAfter: "30 seconds" }
         );
 
         yield* Effect.addFinalizer(() =>
             ChildProcess.make(adbExecutable, ["-s", emulator, "emu", "kill"]).pipe(
                 childProcessSpawner.exitCode,
+                Effect.timeout("30 seconds"),
                 Effect.flatMap(filterExitOk),
                 Effect.orDie
             )
@@ -281,6 +292,7 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
         yield* ChildProcess.make(adbExecutable, ["-s", emulator, "shell", `"${fridaExecutable}"`], {
             stdout: "ignore",
             stderr: "ignore",
+            forceKillAfter: "5 seconds",
         }).pipe(Effect.andThen(Effect.sleep("3 seconds")));
 
         const fridaPort = yield* ChildProcess.make(adbExecutable, [
