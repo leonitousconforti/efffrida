@@ -36,6 +36,10 @@ export const FridaScriptTypeId: unique symbol = internalScript.FridaScriptTypeId
 export type FridaScriptTypeId = typeof FridaScriptTypeId;
 
 /**
+ * Once the session detaches, `stream`, `sink` and `callExport` fail with a
+ * `FridaSessionError` whose `when` is `"detached"`, including calls that were
+ * already running, so callers can retry with a new session.
+ *
  * @since 1.0.0
  * @category Models
  */

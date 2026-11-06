@@ -164,15 +164,27 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
     });
     yield* Effect.addFinalizer(() => Queue.shutdown(queue));
 
+    // A detaching session marks itself detached before it destroys its
+    // scripts and rejects their pending calls, but signals `detached` only
+    // after that. So `session.isDetached()`, not the session's `detached`, tells
+    // whether a script failed because its session detached
+    const detachedError = () =>
+        new FridaSessionError.FridaSessionError({
+            cause: "Session is detached",
+            when: "detached",
+        });
+
     const destroyedHandler: Frida.ScriptDestroyedHandler = () => {
         Deferred.doneUnsafe(destroyed, Exit.void);
         Queue.failCauseUnsafe(
             queue,
             Cause.fail(
-                new FridaSessionError.FridaSessionError({
-                    cause: "Script destroyed",
-                    when: "message",
-                })
+                session.isDetached()
+                    ? detachedError()
+                    : new FridaSessionError.FridaSessionError({
+                          cause: "Script destroyed",
+                          when: "message",
+                      })
             )
         );
     };
@@ -225,6 +237,8 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
         });
     });
 
+    const failIfDetached = Effect.suspend(() => (session.isDetached() ? Effect.fail(detachedError()) : Effect.void));
+
     const failIfDestroyed = Effect.fnUntraced(function* (when: FridaSessionError.FridaSessionError["when"]) {
         const isDone = yield* Deferred.isDone(destroyed);
         if (!isDone) return yield* Effect.void;
@@ -250,6 +264,7 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
         never
     >(
         Effect.fnUntraced(function* ({ data, message }) {
+            yield* failIfDetached;
             yield* failIfDestroyed("message");
             yield* failIfScriptError("message");
             script.post(message, Option.getOrNull(data));
@@ -261,15 +276,18 @@ const make = Effect.fnUntraced(function* (source: string, options?: FridaScript.
             ...args: Array<any>
         ): Effect.fn.Return<A, FridaSessionError.FridaSessionError | Schema.SchemaError, R> {
             yield* Effect.annotateCurrentSpan("args", args);
+            yield* failIfDetached;
             yield* failIfDestroyed("rpcCall");
             yield* failIfScriptError("rpcCall");
             const result = yield* Effect.tryPromise({
                 try: () => script.exports[exportName](...args),
                 catch: (cause) =>
-                    new FridaSessionError.FridaSessionError({
-                        when: "rpcCall",
-                        cause,
-                    }),
+                    session.isDetached()
+                        ? detachedError()
+                        : new FridaSessionError.FridaSessionError({
+                              when: "rpcCall",
+                              cause,
+                          }),
             });
             yield* Effect.annotateCurrentSpan("result", result);
             const decoder = Schema.decodeEffect(schema ?? Schema.Unknown);
