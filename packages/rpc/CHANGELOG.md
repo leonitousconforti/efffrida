@@ -1,5 +1,13 @@
 # @efffrida/rpc
 
+## 0.0.69
+
+### Patch Changes
+
+- 1b8a77e: Frida 17.26.0 <https://frida.re/news/2026/11/05/frida-17-26-0-released/>
+- Updated dependencies [1b8a77e]
+    - @efffrida/frida-tools@0.0.66
+
 ## 0.0.68
 
 ### Patch Changes
