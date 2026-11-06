@@ -4,8 +4,10 @@
  * @since 1.0.0
  */
 
+import type * as Cause from "effect/Cause";
 import type * as Config from "effect/Config";
 import type * as Context from "effect/Context";
+import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";
 import type * as Layer from "effect/Layer";
 import type * as Path from "effect/Path";
@@ -53,6 +55,20 @@ export const FridaDevice: Context.Service<FridaDevice, FridaDevice> = internal.T
 export const isFridaDevice: (u: unknown) => u is FridaDevice = internal.isFridaDevice;
 
 /**
+ * Waits until the device answers, for example while the Android emulator
+ * device restarts a crashed frida-server. It queries the device's system
+ * parameters every 250 milliseconds until one query succeeds, and fails with a
+ * `TimeoutError` that carries the last query error after `timeout`, 30 seconds
+ * by default.
+ *
+ * @since 1.0.0
+ * @category Frida
+ */
+export const awaitReachable: (
+    timeout?: Duration.Input | undefined
+) => Effect.Effect<void, Cause.TimeoutError, FridaDevice> = internal.awaitReachable;
+
+/**
  * @since 1.0.0
  * @category Device acquisition
  */
@@ -82,6 +98,12 @@ export const acquireRemoteDevice: (
     internal.acquireRemoteDevice;
 
 /**
+ * Boots the emulator, starts frida-server on it and connects to it.
+ * frida-server is restarted when it exits, at most 5 times over the life of
+ * the device. Sessions on a server that exited detach with
+ * `"connection-terminated"`, see `FridaSession.failOnDetached` and
+ * {@link awaitReachable}.
+ *
  * @since 1.0.0
  * @category Device acquisition
  */
@@ -154,6 +176,8 @@ export const layerUsbDevice: (
 ) => Layer.Layer<FridaDevice, FridaDeviceAcquisitionError.FridaDeviceAcquisitionError, never> = internal.layerUsbDevice;
 
 /**
+ * {@link acquireAndroidEmulatorDevice} as a layer.
+ *
  * @since 1.0.0
  * @category Layers
  */

@@ -80,6 +80,28 @@ export const FridaSession: Context.Service<FridaSession, FridaSession> = interna
 export const isFridaSession: (u: unknown) => u is FridaSession = internal.isFridaSession;
 
 /**
+ * Runs `self` and, if the session in context detaches first, interrupts it and
+ * fails with a `FridaSessionError` whose `when` is `"detached"` and whose
+ * `cause` is the value of `detached`. Every detach reason counts: a crashed or
+ * restarted frida-server, the target process exiting, or an explicit `detach`.
+ *
+ * What the detach breaks, like the session's scripts, can fail before the
+ * detach is seen, so a failure of `self` is held for up to 1 second and
+ * replaced by the `"detached"` error if the session detaches in that time.
+ * Interruptions pass through at once. `self` runs on its own fiber, as with
+ * `Effect.timeout`.
+ *
+ * Use it to tell a lost session apart from other failures, for example to
+ * retry with a new session after `FridaDevice.awaitReachable`.
+ *
+ * @since 1.0.0
+ * @category Frida
+ */
+export const failOnDetached: <A, E, R>(
+    self: Effect.Effect<A, E, R>
+) => Effect.Effect<A, E | FridaSessionError.FridaSessionError, R | FridaSession> = internal.failOnDetached;
+
+/**
  * @since 1.0.0
  * @category Frida
  */

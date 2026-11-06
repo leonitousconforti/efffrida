@@ -17,6 +17,7 @@ export class FridaSessionError extends Data.TaggedError("FridaSessionError")<{
         | "kill"
         | "attach"
         | "detach"
+        | "detached"
         | "compile"
         | "watch"
         | "load"
