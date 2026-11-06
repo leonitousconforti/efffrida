@@ -50,7 +50,7 @@ peerDependencyRules:
 # is resolved.
 patchedDependencies:
   effect@4.1.2: patches/effect@4.1.2.patch
-  vitest@5.0.5: patches/vitest@5.0.5.patch
+  vitest@5.1.0: patches/vitest@5.1.0.patch
 
 minimumReleaseAgeExclude:
   - '@effect/docgen'
