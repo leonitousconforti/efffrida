@@ -79,8 +79,8 @@
         "effect": "4.1.2",
         "frida": "17.26.0",
         "redis": "6.3.1",
-        "vite": "8.3.5",
-        "vitest": "5.0.5"
+        "vite": "8.3.6",
+        "vitest": "5.1.0"
     },
     "peerDependencies": {
         "effect": "4.1.2"

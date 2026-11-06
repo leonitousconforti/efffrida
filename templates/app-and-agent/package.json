@@ -29,7 +29,7 @@
         "@efffrida/vitest-pool": "latest",
         "@types/frida-gum": "19.13.0",
         "@types/node": "26.6.6",
-        "@vitest/utils": "5.0.5",
+        "@vitest/utils": "5.1.0",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
         "frida": "17.26.0",
@@ -38,8 +38,8 @@
         "oxlint-tsgolint": "7.0.2005",
         "redis": "6.3.1",
         "typescript": "7.0.2",
-        "vite": "8.3.5",
-        "vitest": "5.0.5"
+        "vite": "8.3.6",
+        "vitest": "5.1.0"
     },
     "peerDependencies": {
         "effect": "4.1.2"
