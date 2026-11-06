@@ -59,3 +59,4 @@ minimumReleaseAgeExclude:
   - '@effect/vitest'
   - effect
   - frida
+  - '@types/frida-gum'
