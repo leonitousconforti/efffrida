@@ -103,7 +103,9 @@ export const spawn = (
         })
     );
 
-    // The process may already have exited, in which case kill rejects
+    // The process may already have exited, in which case kill rejects.
+    // Finalizers are uninterruptible, so a kill that never settles would block
+    // every finalizer after it
     const release = (pid: number) =>
         Effect.flatMap(FridaDevice.FridaDevice, ({ device }) =>
             Effect.tryPromise((signal) => {
@@ -111,7 +113,13 @@ export const spawn = (
                 signal.onabort = () => cancellable.cancel();
                 return device.kill(pid, cancellable);
             })
-        ).pipe(Effect.ignore);
+        ).pipe(
+            Effect.timeoutOrElse({
+                duration: "10 seconds",
+                orElse: () => Effect.logWarning(`Timed out killing process ${pid}`),
+            }),
+            Effect.ignore
+        );
 
     // Acquire interruptibly so that interrupting aborts the signal and cancels
     // the spawn
@@ -182,14 +190,21 @@ export const attach = (
         );
 
         // The session may already be detached (e.g. the process exited), in
-        // which case detach rejects
+        // which case detach rejects. Finalizers are uninterruptible, so a
+        // detach that never settles would block every finalizer after it
         const release = (session: Frida.Session) =>
             Effect.tryPromise((signal) => {
                 const cancellable = new Frida.Cancellable();
                 signal.onabort = () => cancellable.cancel();
                 session.detached.disconnect(onDetached);
                 return session.detach(cancellable);
-            }).pipe(Effect.ignore);
+            }).pipe(
+                Effect.timeoutOrElse({
+                    duration: "10 seconds",
+                    orElse: () => Effect.logWarning(`Timed out detaching from process ${session.pid}`),
+                }),
+                Effect.ignore
+            );
 
         // Acquire interruptibly so that interrupting aborts the signal and
         // cancels the attach
