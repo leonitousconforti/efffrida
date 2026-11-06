@@ -34,6 +34,9 @@
         // an Effect, so that adding parameters later is not a breaking change. Worth seeing, not
         // worth failing the build over.
         "effecttsgo/lazy-effect": "warn",
+        // The remaining bare Effect.tryPromise calls are release paths that ignore failures, or are
+        // followed by an explicit mapError.
+        "effecttsgo/effect-try-without-catch": "warn",
         "effecttsgo/unstable-api-usage": "off",
         // Import rules
         "typescript/consistent-type-imports": [
