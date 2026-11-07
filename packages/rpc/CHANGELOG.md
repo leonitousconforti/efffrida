@@ -1,5 +1,12 @@
 # @efffrida/rpc
 
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [65b1cac]
+    - @efffrida/frida-tools@0.0.67
+
 ## 0.0.69
 
 ### Patch Changes
