@@ -2,6 +2,7 @@ import type * as PlatformError from "effect/PlatformError";
 import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as Scope from "effect/Scope";
 
+import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -60,6 +61,30 @@ export const detach = (session: Frida.Session): Effect.Effect<void, FridaSession
                 when: "detach",
                 cause,
             }),
+    });
+
+/** @internal */
+export const failOnDetached = <A, E, R>(
+    self: Effect.Effect<A, E, R>
+): Effect.Effect<A, E | FridaSessionError.FridaSessionError, R | FridaSession.FridaSession> =>
+    Effect.flatMap(Tag, ({ detached }) => {
+        const detachedError = Effect.flatMap(Deferred.await(detached), (cause) =>
+            Effect.fail(new FridaSessionError.FridaSessionError({ when: "detached", cause }))
+        );
+
+        return self.pipe(
+            Effect.raceFirst(detachedError),
+            // What the detach breaks, like the session's scripts, can fail
+            // before the detach is seen, so prefer the detach if it follows
+            Effect.catchCauseIf(
+                (cause) => !Cause.hasInterruptsOnly(cause),
+                (cause) =>
+                    Effect.timeoutOrElse(detachedError, {
+                        duration: "1 second",
+                        orElse: () => Effect.failCause(cause),
+                    })
+            )
+        );
     });
 
 /** @internal */
