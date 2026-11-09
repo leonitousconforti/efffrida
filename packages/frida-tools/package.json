@@ -54,7 +54,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "frida": "17.26.0"
+        "frida": "17.26.2"
     },
     "devDependencies": {
         "@effect/platform-node": "4.1.2",
