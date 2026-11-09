@@ -1,5 +1,18 @@
 # @efffrida/rpc
 
+## 0.0.70
+
+### Patch Changes
+
+- 9b4b5ea: bump to effect 4.1.2
+- b91c0e6: Frida 17.26.2 <https://frida.re/news/2026/11/07/frida-17-26-2-released/>
+- Updated dependencies [65b1cac]
+- Updated dependencies [9b4b5ea]
+- Updated dependencies [b91c0e6]
+- Updated dependencies [9b4b5ea]
+    - @efffrida/frida-tools@0.0.67
+    - @efffrida/polyfills@0.0.23
+
 ## 0.0.69
 
 ### Patch Changes

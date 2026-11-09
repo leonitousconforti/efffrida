@@ -1,5 +1,11 @@
 # @efffrida/polyfills
 
+## 0.0.23
+
+### Patch Changes
+
+- 9b4b5ea: bump to effect 4.1.2
+
 ## 0.0.22
 
 ### Patch Changes
