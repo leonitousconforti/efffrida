@@ -1,5 +1,11 @@
 # @efffrida/rpc
 
+## 0.0.71
+
+### Patch Changes
+
+- f5b98ae: When the script's message stream fails, the node `FridaRpcClient` now keeps the `FridaSessionError` as the cause of the `RpcClientDefect` instead of only that error's own cause, so callers can see its `when`, e.g. `"detached"` after the session detaches.
+
 ## 0.0.70
 
 ### Patch Changes
