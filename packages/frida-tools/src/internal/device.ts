@@ -1,6 +1,7 @@
 import type * as PlatformError from "effect/PlatformError";
 import type * as Scope from "effect/Scope";
 
+import * as Cause from "effect/Cause";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
@@ -12,6 +13,7 @@ import * as Path from "effect/Path";
 import * as Predicate from "effect/Predicate";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
+import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import * as String from "effect/String";
@@ -33,6 +35,40 @@ export const Tag = Context.Service<FridaDevice.FridaDevice>("@efffrida/frida-too
 
 /** @internal */
 export const isFridaDevice = (u: unknown): u is FridaDevice.FridaDevice => Predicate.hasProperty(u, FridaDeviceTypeId);
+
+/** @internal */
+export const awaitReachable = (
+    timeout: Duration.Input = "30 seconds"
+): Effect.Effect<void, Cause.TimeoutError, FridaDevice.FridaDevice> =>
+    Effect.flatMap(Tag, ({ device }) => {
+        // Kept for the timeout, so that a device that never answers, e.g.
+        // because its frida-server is incompatible, says why
+        let lastError: string | undefined;
+        return Effect.tryPromise({
+            try: (signal) => {
+                const cancellable = new Frida.Cancellable();
+                signal.onabort = () => cancellable.cancel();
+                return device.querySystemParameters(cancellable);
+            },
+            catch: (cause) => {
+                lastError = cause instanceof Error ? cause.message : globalThis.String(cause);
+                return lastError;
+            },
+        }).pipe(
+            Effect.tapError(() => Effect.sleep("250 millis")),
+            Effect.eventually,
+            Effect.asVoid,
+            Effect.timeoutOrElse({
+                duration: timeout,
+                orElse: () =>
+                    new Cause.TimeoutError(
+                        lastError === undefined
+                            ? "The device did not answer"
+                            : `The device did not answer, last error: ${lastError}`
+                    ),
+            })
+        );
+    });
 
 /** @internal */
 export const acquireLocalDevice = (): Effect.Effect<
@@ -289,11 +325,24 @@ export const acquireAndroidEmulatorDevice = Effect.fn("acquireAndroidEmulatorDev
 
         // Nothing reads the output, so leaving it piped would eventually block
         // frida-server once the pipe buffer fills up
-        yield* ChildProcess.make(adbExecutable, ["-s", emulator, "shell", `"${fridaExecutable}"`], {
+        const fridaServer = ChildProcess.make(adbExecutable, ["-s", emulator, "shell", `"${fridaExecutable}"`], {
             stdout: "ignore",
             stderr: "ignore",
             forceKillAfter: "5 seconds",
-        }).pipe(Effect.andThen(Effect.sleep("3 seconds")));
+        });
+
+        // Restart frida-server when it exits, e.g. when it crashes, at most 5
+        // times over the life of the device. The remote device below reconnects
+        // on its own, but sessions on the old server detach with
+        // "connection-terminated" and have to be created again
+        yield* childProcessSpawner.exitCode(fridaServer).pipe(
+            Effect.flatMap((code) => Effect.logWarning(`frida-server exited with code ${code}`)),
+            Effect.repeat({ schedule: Schedule.spaced("1 second"), times: 5 }),
+            Effect.flatMap(() => Effect.logError("frida-server keeps exiting, giving up on restarting it")),
+            Effect.catch((error) => Effect.logError("Failed to run frida-server", error)),
+            Effect.forkScoped
+        );
+        yield* Effect.sleep("3 seconds");
 
         const fridaPort = yield* ChildProcess.make(adbExecutable, [
             "-s",
