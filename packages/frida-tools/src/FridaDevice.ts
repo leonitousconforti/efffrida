@@ -55,9 +55,9 @@ export const FridaDevice: Context.Service<FridaDevice, FridaDevice> = internal.T
 export const isFridaDevice: (u: unknown) => u is FridaDevice = internal.isFridaDevice;
 
 /**
- * Waits until the device answers, for example while the Android emulator
- * device restarts a crashed frida-server. It queries the device's system
- * parameters every 250 milliseconds until one query succeeds, and fails with a
+ * Waits until the device answers, for example while the Android emulator device
+ * restarts a crashed frida-server. It queries the device's system parameters
+ * every 250 milliseconds until one query succeeds, and fails with a
  * `TimeoutError` that carries the last query error after `timeout`, 30 seconds
  * by default.
  *
@@ -99,8 +99,8 @@ export const acquireRemoteDevice: (
 
 /**
  * Boots the emulator, starts frida-server on it and connects to it.
- * frida-server is restarted when it exits, at most 5 times over the life of
- * the device. Sessions on a server that exited detach with
+ * frida-server is restarted when it exits, at most 5 times over the life of the
+ * device. Sessions on a server that exited detach with
  * `"connection-terminated"`, and their scripts fail with a `FridaSessionError`
  * whose `when` is `"detached"`, see {@link awaitReachable}.
  *
