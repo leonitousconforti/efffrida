@@ -36,3 +36,12 @@ export class CallbackRpcs extends RpcGroup.make(
         payload: Schema.Union([User, Schema.Array(User)]),
     })
 ) {}
+
+// `Hang` never completes, so a call to it is still running when the session
+// detaches. A `Ping` answered after a `Hang` means the agent got the `Hang`
+export class DetachRpcs extends RpcGroup.make(
+    Rpc.make("Ping", {
+        success: Schema.String,
+    }),
+    Rpc.make("Hang")
+) {}

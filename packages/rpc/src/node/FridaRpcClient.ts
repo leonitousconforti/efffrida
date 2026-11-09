@@ -105,7 +105,7 @@ export const makeProtocolFrida = (
                     const defect = hasError
                         ? new RpcClientError.RpcClientDefect({
                               message: error.success.message,
-                              cause: error.success.cause,
+                              cause: error.success,
                           })
                         : new RpcClientError.RpcClientDefect({
                               message: "Unknown error in Frida RPC client stream",

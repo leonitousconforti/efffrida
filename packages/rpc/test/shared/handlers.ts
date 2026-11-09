@@ -6,7 +6,7 @@ import * as Layer from "effect/Layer";
 import * as Ref from "effect/Ref";
 import * as Stream from "effect/Stream";
 
-import { User, UserRpcs } from "./requests.ts";
+import { DetachRpcs, User, UserRpcs } from "./requests.ts";
 
 // ---------------------------------------------
 // Imaginary Database
@@ -57,3 +57,8 @@ export const UsersLive: Layer.Layer<Rpc.Handler<"UserList"> | Rpc.Handler<"UserB
         // Provide the UserRepository layer
         Layer.provide(UserRepository.layer)
     );
+
+export const DetachLive: Layer.Layer<Rpc.Handler<"Ping"> | Rpc.Handler<"Hang">> = DetachRpcs.toLayer({
+    Ping: () => Effect.succeed("pong"),
+    Hang: () => Effect.never,
+});
