@@ -1,5 +1,14 @@
 # @efffrida/frida-tools
 
+## 0.0.67
+
+### Patch Changes
+
+- 65b1cac: Bound teardown. Unloading a script, detaching a session, killing a spawned process and removing a remote device now give up after 10 seconds with a warning, so one Frida call that never settles no longer blocks the finalizers after it. The Android emulator device also bounds `emu kill` and force kills the emulator and the `adb shell` running frida-server if they do not exit after SIGTERM. A script unload that rejects is now ignored instead of raising a defect.
+- 9b4b5ea: bump to effect 4.1.2
+- b91c0e6: Frida 17.26.2 <https://frida.re/news/2026/11/07/frida-17-26-2-released/>
+- 9b4b5ea: The Android emulator device restarts frida-server when it exits, up to 5 times over the life of the device. Once a script's session detaches, its `stream`, `sink` and `callExport` fail with a `FridaSessionError` whose `when` is `"detached"`, including calls that were already running, so callers can retry with a new session. Add `FridaDevice.awaitReachable`, which waits until the device answers again.
+
 ## 0.0.66
 
 ### Patch Changes
