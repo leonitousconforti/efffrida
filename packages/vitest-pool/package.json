@@ -68,7 +68,7 @@
         "birpc": "4.2.0",
         "effect": "4.1.2",
         "flatted": "3.4.4",
-        "vite": "8.3.6",
+        "vite": "8.3.7",
         "vitest": "5.1.0"
     },
     "peerDependencies": {
@@ -78,7 +78,7 @@
         "birpc": "4.2.0",
         "effect": "4.1.2",
         "flatted": "3.4.4",
-        "vite": "8.3.6",
+        "vite": "8.3.7",
         "vitest": "5.1.0"
     },
     "engines": {
