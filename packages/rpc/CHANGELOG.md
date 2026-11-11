@@ -1,5 +1,14 @@
 # @efffrida/rpc
 
+## 0.0.72
+
+### Patch Changes
+
+- 952c567: bump to effect 4.1.3
+- Updated dependencies [952c567]
+    - @efffrida/frida-tools@0.0.68
+    - @efffrida/polyfills@0.0.24
+
 ## 0.0.71
 
 ### Patch Changes

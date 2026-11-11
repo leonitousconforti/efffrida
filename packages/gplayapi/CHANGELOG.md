@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.42
+
+### Patch Changes
+
+- 952c567: bump to effect 4.1.3
+
 ## 0.0.41
 
 ### Patch Changes
