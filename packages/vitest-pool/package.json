@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/vitest-pool",
-    "version": "0.0.59",
+    "version": "0.0.60",
     "description": "Vitest pool that runs tests inside a Frida agent",
     "keywords": [
         "effect-ts",

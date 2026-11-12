@@ -1,6 +1,6 @@
 {
     "name": "@efffrida/platform",
-    "version": "0.0.53",
+    "version": "0.0.54",
     "description": "Runtime, streams, sinks, sockets and memory access monitoring inside Frida agents",
     "keywords": [
         "effect-ts",

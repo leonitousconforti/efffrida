@@ -1,5 +1,11 @@
 # @efffrida/platform
 
+## 0.0.54
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+
 ## 0.0.53
 
 ### Patch Changes

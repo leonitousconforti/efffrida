@@ -1,5 +1,14 @@
 # @efffrida/vitest-pool
 
+## 0.0.60
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+- Updated dependencies [f530fc7]
+    - @efffrida/frida-tools@0.0.69
+    - @efffrida/polyfills@0.0.25
+
 ## 0.0.59
 
 ### Patch Changes
