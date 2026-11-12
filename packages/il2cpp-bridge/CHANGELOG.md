@@ -1,5 +1,11 @@
 # @efffrida/il2cpp-bridge
 
+## 0.0.62
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+
 ## 0.0.61
 
 ### Patch Changes

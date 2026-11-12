@@ -1,5 +1,11 @@
 # @efffrida/frida-tools
 
+## 0.0.69
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+
 ## 0.0.68
 
 ### Patch Changes

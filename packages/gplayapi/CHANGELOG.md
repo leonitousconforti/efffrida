@@ -1,5 +1,11 @@
 # @efffrida/gplayapi
 
+## 0.0.43
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+
 ## 0.0.42
 
 ### Patch Changes

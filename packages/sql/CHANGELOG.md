@@ -1,5 +1,11 @@
 # @efffrida/sql
 
+## 0.0.53
+
+### Patch Changes
+
+- f530fc7: bump to effect 4.1.4
+
 ## 0.0.52
 
 ### Patch Changes
