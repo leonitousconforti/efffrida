@@ -35,7 +35,7 @@
         "frida": "17.26.2",
         "oxfmt": "0.78.0",
         "oxlint": "1.93.0",
-        "oxlint-tsgolint": "7.0.2006",
+        "oxlint-tsgolint": "7.0.2007",
         "redis": "6.3.1",
         "typescript": "7.0.2",
         "vite": "8.3.8",
