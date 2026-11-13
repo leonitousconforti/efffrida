@@ -23,7 +23,7 @@
         "effect": "4.1.4"
     },
     "devDependencies": {
-        "@effect/tsgo": "0.67.7",
+        "@effect/tsgo": "0.68.1",
         "@effect/vitest": "4.1.4",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
