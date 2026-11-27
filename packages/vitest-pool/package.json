@@ -63,7 +63,7 @@
         "@effect/vitest": "4.1.4",
         "@efffrida/polyfills": "workspace:*",
         "@types/frida-gum": "19.13.0",
-        "@types/node": "26.6.6",
+        "@types/node": "26.6.11",
         "@vitest/utils": "5.1.0",
         "birpc": "4.2.0",
         "effect": "4.1.4",
