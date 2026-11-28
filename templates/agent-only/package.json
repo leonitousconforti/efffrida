@@ -21,7 +21,7 @@
         "effect": "4.1.4"
     },
     "devDependencies": {
-        "@effect/tsgo": "0.73.2",
+        "@effect/tsgo": "0.73.7",
         "@effect/vitest": "4.1.4",
         "@efffrida/polyfills": "latest",
         "@efffrida/vitest-pool": "latest",
@@ -30,9 +30,9 @@
         "@vitest/utils": "5.1.0",
         "birpc": "4.2.0",
         "flatted": "3.4.4",
-        "oxfmt": "0.79.0",
-        "oxlint": "1.94.0",
-        "oxlint-tsgolint": "7.0.2007",
+        "oxfmt": "0.80.0",
+        "oxlint": "1.95.0",
+        "oxlint-tsgolint": "7.0.2009",
         "typescript": "7.0.2",
         "vite": "8.3.8",
         "vitest": "5.1.0"
